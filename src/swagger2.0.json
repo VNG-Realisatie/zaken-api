@@ -49,6 +49,31 @@
                     "api"
                 ]
             },
+            "post": {
+                "operationId": "status_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
             "parameters": [
                 {
                     "name": "version",
@@ -69,6 +94,69 @@
                         "schema": {
                             "$ref": "#/definitions/Status"
                         }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "put": {
+                "operationId": "status_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "patch": {
+                "operationId": "status_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "delete": {
+                "operationId": "status_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
                     }
                 },
                 "tags": [
@@ -246,8 +334,8 @@
         "Status": {
             "required": [
                 "zaak",
-                "status_type",
-                "datum_status_gezet"
+                "statusType",
+                "datumStatusGezet"
             ],
             "type": "object",
             "properties": {
@@ -262,14 +350,14 @@
                     "type": "string",
                     "format": "uri"
                 },
-                "status_type": {
+                "statusType": {
                     "title": "Status type",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
                 },
-                "datum_status_gezet": {
+                "datumStatusGezet": {
                     "title": "Datum status gezet",
                     "description": "De datum waarop de ZAAK de status heeft verkregen.",
                     "type": "string",

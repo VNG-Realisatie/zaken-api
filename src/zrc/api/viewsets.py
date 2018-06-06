@@ -22,6 +22,6 @@ class ZaakViewSet(viewsets.ModelViewSet):
     serializer_class = ZaakSerializer
 
 
-class StatusViewSet(viewsets.ReadOnlyModelViewSet):
+class StatusViewSet(viewsets.ModelViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer

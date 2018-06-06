@@ -10,6 +10,7 @@ django-axes
 django-choices
 
 djangorestframework
-drf-yasg
 django-filter
+djangorestframework-camel-case
 djangorestframework-filters
+drf-yasg

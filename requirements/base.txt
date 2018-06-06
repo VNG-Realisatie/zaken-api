@@ -15,6 +15,7 @@ django-choices==1.6.0
 django-filter==1.1.0
 django-ipware==2.1.0      # via django-axes
 django==2.0.6
+djangorestframework-camel-case==0.2.0
 djangorestframework-filters==0.10.2
 djangorestframework==3.8.2
 drf-yasg==1.8.0

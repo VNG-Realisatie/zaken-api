@@ -25,6 +25,20 @@ paths:
                   $ref: '#/components/schemas/Status'
       tags:
         - api
+    post:
+      operationId: status_create
+      description: ''
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      tags:
+        - api
+      requestBody:
+        $ref: '#/components/requestBodies/Status'
     parameters:
       - name: version
         in: path
@@ -42,6 +56,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+      tags:
+        - api
+    put:
+      operationId: status_update
+      description: ''
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      tags:
+        - api
+      requestBody:
+        $ref: '#/components/requestBodies/Status'
+    patch:
+      operationId: status_partial_update
+      description: ''
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      tags:
+        - api
+      requestBody:
+        $ref: '#/components/requestBodies/Status'
+    delete:
+      operationId: status_delete
+      description: ''
+      responses:
+        '204':
+          description: ''
       tags:
         - api
     parameters:
@@ -161,6 +211,12 @@ servers:
   - url: /
 components:
   requestBodies:
+    Status:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+      required: true
     Zaak:
       content:
         application/json:
@@ -175,8 +231,8 @@ components:
     Status:
       required:
         - zaak
-        - status_type
-        - datum_status_gezet
+        - statusType
+        - datumStatusGezet
       type: object
       properties:
         url:
@@ -188,13 +244,13 @@ components:
           title: Zaak
           type: string
           format: uri
-        status_type:
+        statusType:
           title: Status type
           type: string
           format: uri
           maxLength: 200
           minLength: 1
-        datum_status_gezet:
+        datumStatusGezet:
           title: Datum status gezet
           description: De datum waarop de ZAAK de status heeft verkregen.
           type: string
