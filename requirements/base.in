@@ -1,0 +1,14 @@
+pip-tools
+psycopg2-binary
+python-dotenv
+pytz
+raven
+
+Django
+django-axes
+django-choices
+
+djangorestframework
+drf-yasg
+django-filter
+djangorestframework-filters
