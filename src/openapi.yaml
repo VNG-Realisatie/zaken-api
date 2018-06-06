@@ -25,20 +25,6 @@ paths:
                   $ref: '#/components/schemas/Status'
       tags:
         - api
-    post:
-      operationId: status_create
-      description: ''
-      responses:
-        '201':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-      tags:
-        - api
-      requestBody:
-        $ref: '#/components/requestBodies/Status'
     parameters:
       - name: version
         in: path
@@ -58,42 +44,6 @@ paths:
                 $ref: '#/components/schemas/Status'
       tags:
         - api
-    put:
-      operationId: status_update
-      description: ''
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-      tags:
-        - api
-      requestBody:
-        $ref: '#/components/requestBodies/Status'
-    patch:
-      operationId: status_partial_update
-      description: ''
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-      tags:
-        - api
-      requestBody:
-        $ref: '#/components/requestBodies/Status'
-    delete:
-      operationId: status_delete
-      description: ''
-      responses:
-        '204':
-          description: ''
-      tags:
-        - api
     parameters:
       - name: id
         in: path
@@ -109,7 +59,7 @@ paths:
   '/api/v{version}/zaken/':
     get:
       operationId: zaak_list
-      description: ''
+      description: Opvragen en bewerken van ZAAKen.
       responses:
         '200':
           description: ''
@@ -123,7 +73,12 @@ paths:
         - api
     post:
       operationId: zaak_create
-      description: ''
+      description: >-
+        Registreer een ZAAK.
+
+
+        Indien geen zaakidentificatie gegeven is, dan wordt deze automatisch
+        gegenereerd.
       responses:
         '201':
           description: ''
@@ -144,7 +99,7 @@ paths:
   '/api/v{version}/zaken/{id}/':
     get:
       operationId: zaak_read
-      description: ''
+      description: Opvragen en bewerken van ZAAKen.
       responses:
         '200':
           description: ''
@@ -156,7 +111,7 @@ paths:
         - api
     put:
       operationId: zaak_update
-      description: ''
+      description: Opvragen en bewerken van ZAAKen.
       responses:
         '200':
           description: ''
@@ -170,7 +125,7 @@ paths:
         $ref: '#/components/requestBodies/Zaak'
     patch:
       operationId: zaak_partial_update
-      description: ''
+      description: Opvragen en bewerken van ZAAKen.
       responses:
         '200':
           description: ''
@@ -184,7 +139,7 @@ paths:
         $ref: '#/components/requestBodies/Zaak'
     delete:
       operationId: zaak_delete
-      description: ''
+      description: Opvragen en bewerken van ZAAKen.
       responses:
         '204':
           description: ''
@@ -206,12 +161,6 @@ servers:
   - url: /
 components:
   requestBodies:
-    Status:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-      required: true
     Zaak:
       content:
         application/json:
@@ -258,7 +207,7 @@ components:
           type: string
     Zaak:
       required:
-        - zaakidentificatie
+        - zaaktype
       type: object
       properties:
         url:
@@ -273,9 +222,16 @@ components:
             verantwoordelijk is voor de behandeling van de ZAAK.
           type: string
           maxLength: 40
+        zaaktype:
+          title: Zaaktype
+          description: URL naar het zaaktype in de CATALOGUS waar deze voorkomt
+          type: string
+          format: uri
+          maxLength: 200
           minLength: 1
         status:
           title: Status
+          description: 'Indien geen status bekend is, dan is de waarde ''null'''
           type: string
           format: uri
           readOnly: true

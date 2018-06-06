@@ -36,6 +36,7 @@ REST_FRAMEWORK = {
     #
     # # Exception handling
     # 'EXCEPTION_HANDLER': 'ztc.api.utils.exceptions.exception_handler',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 SWAGGER_SETTINGS = {

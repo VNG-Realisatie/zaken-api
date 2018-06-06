@@ -6,5 +6,6 @@ freezegun
 isort
 mock
 pyquery
+pyyaml
 tblib
 webtest

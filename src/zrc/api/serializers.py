@@ -5,8 +5,9 @@ from zrc.datamodel.models import Zaak, Status
 
 class ZaakSerializer(serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
-        source='current_status.pk', read_only=True,
-        view_name='status-detail'
+        source='current_status_pk', read_only=True,
+        view_name='status-detail',
+        help_text="Indien geen status bekend is, dan is de waarde 'null'"
     )
 
     class Meta:
@@ -14,6 +15,7 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'url',
             'zaakidentificatie',
+            'zaaktype',
             'status'
         )
 

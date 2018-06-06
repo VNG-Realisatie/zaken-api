@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 from zrc.validators import alphanumeric_excluding_diacritic
@@ -12,11 +14,12 @@ class Zaak(models.Model):
     bewaakt moeten worden.
     """
     zaakidentificatie = models.CharField(
-        max_length=40, unique=True,
+        max_length=40, unique=True, blank=True,
         help_text='De unieke identificatie van de ZAAK binnen de organisatie die '
                   'verantwoordelijk is voor de behandeling van de ZAAK.',
         validators=[alphanumeric_excluding_diacritic]
     )
+    zaaktype = models.URLField(help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
 
     class Meta:
         verbose_name = 'zaak'
@@ -25,9 +28,15 @@ class Zaak(models.Model):
     def __str__(self):
         return self.zaakidentificatie
 
+    def save(self, *args, **kwargs):
+        if not self.zaakidentificatie:
+            self.zaakidentificatie = str(uuid.uuid4())
+        super().save(*args, **kwargs)
+
     @property
-    def current_status(self):
-        return self.status_set.order_by('-datum_status_gezet').first()
+    def current_status_pk(self):
+        status = self.status_set.order_by('-datum_status_gezet').first()
+        return status.pk if status else None
 
 
 class Status(models.Model):
