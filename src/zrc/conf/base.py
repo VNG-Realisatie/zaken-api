@@ -3,6 +3,8 @@ import os
 # Django-hijack (and Django-hijack-admin)
 from django.urls import reverse_lazy
 
+from .api import *  # noqa
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 DJANGO_PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 BASE_DIR = os.path.abspath(os.path.join(DJANGO_PROJECT_DIR, os.path.pardir, os.path.pardir))
@@ -49,9 +51,13 @@ INSTALLED_APPS = [
 
     # External applications.
     'axes',
+    'django_filters',
+    'rest_framework',
+    'rest_framework_filters',
 
     # Project applications.
     'zrc.accounts',
+    'zrc.datamodel',
     'zrc.utils',
 ]
 
@@ -89,8 +95,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'zrc.utils.context_processors.settings',
-                # REQUIRED FOR ADMIN INDEX
-                'django_admin_index.context_processors.dashboard',
             ],
             'loaders': RAW_TEMPLATE_LOADERS
         },

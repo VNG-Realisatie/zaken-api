@@ -3,6 +3,7 @@ psycopg2-binary
 python-dotenv
 pytz
 raven
+unidecode
 
 Django
 django-axes

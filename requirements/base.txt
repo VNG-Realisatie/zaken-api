@@ -34,5 +34,6 @@ raven==6.9.0
 requests==2.18.4          # via coreapi
 ruamel.yaml==0.15.37      # via drf-yasg
 six==1.11.0               # via drf-yasg, pip-tools
+unidecode==1.0.22
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.22             # via requests

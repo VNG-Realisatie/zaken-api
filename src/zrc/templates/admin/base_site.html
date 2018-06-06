@@ -1,11 +1,10 @@
 {% extends "admin/base.html" %}
-{% load i18n static hijack_tags %}
+{% load i18n static %}
 
 {% block title %}{{ title }} | {{ site_title|default:_('Administration') }}{% endblock %}
 
 {% block extrastyle %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/admin/admin_overrides.css' %}">
 
     {% if settings.ENVIRONMENT and settings.ENVIRONMENT != 'production' %}
@@ -55,11 +54,6 @@
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
-
-{% block messages %}
-    {% hijack_notification %}
-    {{ block.super }}
-{% endblock %}
 
 {% block footer %}
     {{ block.super }}
