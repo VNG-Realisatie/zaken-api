@@ -25,6 +25,10 @@ class Zaak(models.Model):
     def __str__(self):
         return self.zaakidentificatie
 
+    @property
+    def current_status(self):
+        return self.status_set.order_by('-datum_status_gezet').first()
+
 
 class Status(models.Model):
     """
