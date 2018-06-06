@@ -30,10 +30,31 @@ REST_FRAMEWORK = {
     # 'ORDERING_PARAM': 'sorteer',  # 'ordering',
     #
     # Versioning
-    'DEFAULT_VERSION': 1,
-    'ALLOWED_VERSIONS': (1, ),
+    'DEFAULT_VERSION': '1',
+    'ALLOWED_VERSIONS': ('1', ),
     'VERSION_PARAM': 'version',
     #
     # # Exception handling
     # 'EXCEPTION_HANDLER': 'ztc.api.utils.exceptions.exception_handler',
+}
+
+SWAGGER_SETTINGS = {
+    # 'SECURITY_DEFINITIONS': {
+    #     'OAuth2': {
+    #         'type': 'oauth2',
+    #         'flow': 'application',
+    #         'tokenUrl': '/oauth2/token/',
+    #         'scopes': {
+    #             'write': 'Schrijftoegang tot de catalogus en gerelateerde objecten.',
+    #             'read': 'Leestoegang tot de catalogus en gerelateerde objecten.'
+    #         }
+    #     },
+    #     'Bearer': {
+    #         'type': 'apiKey',
+    #         'name': 'Authorization',
+    #         'in': 'header'
+    #     },
+    # },
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'zds_schema.schema.AutoSchema',
+    'DEFAULT_INFO': 'zrc.api.schema.info',
 }

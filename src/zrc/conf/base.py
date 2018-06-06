@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     # External applications.
     'axes',
     'django_filters',
+    'drf_yasg',
     'rest_framework',
     'rest_framework_filters',
 
