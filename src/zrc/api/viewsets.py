@@ -1,9 +1,9 @@
 from rest_framework import mixins, viewsets
 from zds_schema.decorators import action_description
 
-from zrc.datamodel.models import Zaak, Status
+from zrc.datamodel.models import Status, Zaak
 
-from .serializers import ZaakSerializer, StatusSerializer
+from .serializers import StatusSerializer, ZaakSerializer
 
 
 @action_description('create', "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, "

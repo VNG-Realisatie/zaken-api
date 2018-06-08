@@ -4,7 +4,7 @@ Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from zrc.datamodel.models import Zaak, Status
+from zrc.datamodel.models import Status, Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import get_operation_url, isodatetime

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Zaak, Status
+from .models import Status, Zaak
 
 
 @admin.register(Zaak)

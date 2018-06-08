@@ -11,7 +11,9 @@ echo "Generating Swagger schema"
 src/manage.py generate_swagger \
     ./src/swagger2.0.json \
     --overwrite \
-    --format=json
+    --format=json \
+    --mock-request \
+    --url https://example.com/api/v1
 
 echo "Converting Swagger to OpenAPI 3.0..."
 npm run convert

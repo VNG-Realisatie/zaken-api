@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from zrc.datamodel.models import Zaak, Status
+from zrc.datamodel.models import Status, Zaak
 
 
 class ZaakSerializer(serializers.HyperlinkedModelSerializer):

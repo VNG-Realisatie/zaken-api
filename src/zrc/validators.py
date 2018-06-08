@@ -1,5 +1,5 @@
-from django.utils.deconstruct import deconstructible
 from django.core.exceptions import ValidationError
+from django.utils.deconstruct import deconstructible
 
 from unidecode import unidecode
 
