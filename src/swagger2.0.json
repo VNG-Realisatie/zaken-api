@@ -29,6 +29,34 @@
         }
     ],
     "paths": {
+        "/statussen/": {
+            "post": {
+                "operationId": "status_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Status"
+                        }
+                    }
+                },
+                "tags": [
+                    "statussen"
+                ]
+            },
+            "parameters": []
+        },
         "/statussen/{id}/": {
             "get": {
                 "operationId": "status_read",
@@ -83,6 +111,33 @@
                 ]
             },
             "parameters": []
+        },
+        "/zaken/{id}/": {
+            "get": {
+                "operationId": "zaak_read",
+                "description": "Opvragen en bewerken van ZAAKen.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Zaak"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "A unique integer value identifying this zaak.",
+                    "required": true,
+                    "type": "integer"
+                }
+            ]
         }
     },
     "definitions": {

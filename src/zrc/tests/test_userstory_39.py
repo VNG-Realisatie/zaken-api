@@ -3,11 +3,12 @@ Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.models import Status, Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
 
-from .utils import get_operation_url, isodatetime
+from .utils import isodatetime
 
 ZAAKTYPE = 'https://example.com/api/v1/catalogus/1/zaaktypen/1/'
 STATUS_TYPE = 'https://example.com/api/v1/catalogus/1/zaaktypen/1/statustypen/1/'

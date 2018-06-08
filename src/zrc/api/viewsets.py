@@ -8,7 +8,9 @@ from .serializers import StatusSerializer, ZaakSerializer
 
 @action_description('create', "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, "
                               "dan wordt deze automatisch gegenereerd.")
-class ZaakViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+class ZaakViewSet(mixins.CreateModelMixin,
+                  mixins.RetrieveModelMixin,
+                  viewsets.GenericViewSet):
     """
     Opvragen en bewerken van ZAAKen.
     """
@@ -16,6 +18,8 @@ class ZaakViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = ZaakSerializer
 
 
-class StatusViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class StatusViewSet(mixins.CreateModelMixin,
+                    mixins.RetrieveModelMixin,
+                    viewsets.GenericViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer

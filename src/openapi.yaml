@@ -10,6 +10,26 @@ info:
 security:
   - basic: []
 paths:
+  /statussen/:
+    post:
+      operationId: status_create
+      description: ''
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      tags:
+        - statussen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Status'
+        required: true
+    parameters: []
   '/statussen/{id}/':
     get:
       operationId: status_read
@@ -55,6 +75,26 @@ paths:
               $ref: '#/components/schemas/Zaak'
         required: true
     parameters: []
+  '/zaken/{id}/':
+    get:
+      operationId: zaak_read
+      description: Opvragen en bewerken van ZAAKen.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaak'
+      tags:
+        - zaken
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this zaak.
+        required: true
+        schema:
+          type: integer
 servers:
   - url: /api/v1
 components:
