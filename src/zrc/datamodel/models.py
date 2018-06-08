@@ -55,7 +55,7 @@ class Status(models.Model):
         help_text='De datum waarop de ZAAK de status heeft verkregen.'
     )
     statustoelichting = models.TextField(
-        blank=True,
+        max_length=1000, blank=True,
         help_text='Een, voor de initiator van de zaak relevante, toelichting '
                   'op de status van een zaak.'
     )

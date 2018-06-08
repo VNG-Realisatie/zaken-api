@@ -136,6 +136,7 @@ components:
             Een, voor de initiator van de zaak relevante, toelichting op de
             status van een zaak.
           type: string
+          maxLength: 1000
     Zaak:
       required:
         - zaaktype
