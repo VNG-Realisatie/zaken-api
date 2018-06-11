@@ -8,7 +8,9 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 from dateutil import parser
 
-from zrc.datamodel.models import DomeinData, Status, Zaak, ZaakObject
+from zrc.datamodel.models import (
+    DomeinData, KlantContact, Status, Zaak, ZaakObject
+)
 from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import isodatetime, utcdatetime
@@ -160,6 +162,36 @@ class US39TestCase(APITestCase):
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
                 'domeinData': DOMEIN_DATA,
+            }
+        )
+
+    def test_create_klantcontact(self):
+        url = get_operation_url('klantcontact_create')
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        data = {
+            'zaak': zaak_url,
+            'datumtijd': isodatetime(2018, 6, 11, 13, 47, 55),
+            'kanaal': 'Webformulier',
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = response.json()
+        klantcontact = KlantContact.objects.get()
+        self.assertIsInstance(klantcontact.identificatie, str)
+        self.assertNotEqual(klantcontact.identificatie, '')
+        self.assertEqual(klantcontact.zaak, zaak)
+        detail_url = get_operation_url('klantcontact_read', id=klantcontact.id)
+        self.assertEqual(
+            response_data,
+            {
+                'url': f"http://testserver{detail_url}",
+                'zaak': f"http://testserver{zaak_url}",
+                'identificatie': klantcontact.identificatie,
+                'datumtijd': '2018-06-11T13:47:55Z',
+                'kanaal': 'Webformulier',
             }
         )
 

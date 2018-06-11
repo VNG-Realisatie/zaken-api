@@ -115,3 +115,31 @@ class DomeinData(models.Model):
     class Meta:
         verbose_name = 'domeindatareferentie'
         verbose_name_plural = 'domeindatareferenties'
+
+
+class KlantContact(models.Model):
+    """
+    Modelleer het contact tussen een medewerker en een klant.
+
+    Een uniek en persoonlijk contact van een burger of bedrijfsmedewerker met
+    een MEDEWERKER van de zaakbehandelende organisatie over een onderhanden of
+    afgesloten ZAAK.
+    """
+    identificatie = models.CharField(
+        max_length=14, unique=True,
+        help_text='De unieke aanduiding van een KLANTCONTACT'
+    )
+    datumtijd = models.DateTimeField(
+        help_text='De datum en het tijdstip waarop het KLANTCONTACT begint'
+    )
+    kanaal = models.CharField(
+        blank=True, max_length=20,
+        help_text='Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt'
+    )
+
+    class Meta:
+        verbose_name = "klantcontact"
+        verbose_name_plural = "klantcontacten"
+
+    def __str__(self):
+        return self.identificatie
