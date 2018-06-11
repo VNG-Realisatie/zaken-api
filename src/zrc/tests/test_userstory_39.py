@@ -12,7 +12,7 @@ from .utils import isodatetime
 
 ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/'
 STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1/'
-ADRES_BINNENLAND = 'https://example.com/orc/api/v1/adressen/1/'
+OBJECT_MET_ADRES = 'https://example.com/orc/api/v1/objecten/1/'
 
 TEST_DATA = {
     "id": 9966,
@@ -103,7 +103,7 @@ class US39TestCase(APITestCase):
         zaak_url = get_operation_url('zaak_read', id=zaak.id)
         data = {
             'zaak': zaak_url,
-            'object': ADRES_BINNENLAND,
+            'object': OBJECT_MET_ADRES,
             'relatieOmschrijving': 'Het adres waar de overlast vastgesteld werd.',
         }
 

@@ -7,7 +7,7 @@ from zrc.validators import alphanumeric_excluding_diacritic
 
 class Zaak(models.Model):
     """
-    Modelleer de structuur van een zaak.
+    Modelleer de structuur van een ZAAK.
 
     Een samenhangende hoeveelheid werk met een welgedefinieerde aanleiding
     en een welgedefinieerd eindresultaat, waarvan kwaliteit en doorlooptijd
@@ -41,7 +41,7 @@ class Zaak(models.Model):
 
 class Status(models.Model):
     """
-    Modelleer een status van een zaak.
+    Modelleer een status van een ZAAK.
 
     Een aanduiding van de stand van zaken van een ZAAK op basis van
     betekenisvol behaald resultaat voor de initiator van de ZAAK.
@@ -66,3 +66,18 @@ class Status(models.Model):
 
     def __str__(self):
         return "Status op {}".format(self.datum_status_gezet)
+
+
+class ZaakObject(models.Model):
+    """
+    Modelleer een object behorende bij een ZAAK.
+
+    Het OBJECT in kwestie kan in verschillende andere componenten leven,
+    zoals het RSGB.
+    """
+    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
+    object = models.URLField(help_text='URL naar de resource die het OBJECT beschrijft.')
+    relatieomschrijving = models.CharField(
+        max_length=80, blank=True,
+        help_text='Omschrijving van de betrekking tussen de ZAAK en het OBJECT.'
+    )
