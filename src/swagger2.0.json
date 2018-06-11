@@ -303,6 +303,12 @@
                     "type": "string",
                     "format": "date"
                 },
+                "toelichting": {
+                    "title": "Toelichting",
+                    "description": "Een toelichting op de zaak.",
+                    "type": "string",
+                    "maxLength": 1000
+                },
                 "status": {
                     "title": "Status",
                     "description": "Indien geen status bekend is, dan is de waarde 'null'",

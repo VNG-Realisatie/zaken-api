@@ -50,6 +50,8 @@ class US39TestCase(APITestCase):
         data = {
             'zaaktype': ZAAKTYPE,
             'registratiedatum': '2018-06-11',
+            'toelichting': 'Een stel dronken toeristen speelt versterkte '
+                           'muziek af vanuit een gehuurde boot.'
         }
 
         response = self.client.post(url, data)
@@ -65,6 +67,11 @@ class US39TestCase(APITestCase):
         zaak = Zaak.objects.get()
         self.assertEqual(zaak.zaaktype, ZAAKTYPE)
         self.assertEqual(zaak.registratiedatum, date(2018, 6, 11))
+        self.assertEqual(
+            zaak.toelichting,
+            'Een stel dronken toeristen speelt versterkte '
+            'muziek af vanuit een gehuurde boot.'
+        )
 
     def test_zet_zaakstatus(self):
         """

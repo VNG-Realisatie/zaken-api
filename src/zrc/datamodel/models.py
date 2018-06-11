@@ -23,6 +23,10 @@ class Zaak(models.Model):
     registratiedatum = models.DateField(
         help_text='De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd'
     )
+    toelichting = models.TextField(
+        max_length=1000, blank=True,
+        help_text='Een toelichting op de zaak.'
+    )
 
     class Meta:
         verbose_name = 'zaak'
