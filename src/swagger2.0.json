@@ -84,6 +84,61 @@
                 }
             ]
         },
+        "/klantcontacten/": {
+            "post": {
+                "operationId": "klantcontact_create",
+                "description": "Registreer een klantcontact bij een zaak.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch gegenereerd.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/KlantContact"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/KlantContact"
+                        }
+                    }
+                },
+                "tags": [
+                    "klantcontacten"
+                ]
+            },
+            "parameters": []
+        },
+        "/klantcontacten/{id}/": {
+            "get": {
+                "operationId": "klantcontact_read",
+                "description": "Geef de details van een klantcontact voor een ZAAK.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/KlantContact"
+                        }
+                    }
+                },
+                "tags": [
+                    "klantcontacten"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "A unique integer value identifying this klantcontact.",
+                    "required": true,
+                    "type": "integer"
+                }
+            ]
+        },
         "/statussen/": {
             "post": {
                 "operationId": "status_create",
@@ -276,6 +331,45 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
+                }
+            }
+        },
+        "KlantContact": {
+            "required": [
+                "zaak",
+                "datumtijd"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
+                "zaak": {
+                    "title": "Zaak",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "identificatie": {
+                    "title": "Identificatie",
+                    "description": "De unieke aanduiding van een KLANTCONTACT",
+                    "type": "string",
+                    "maxLength": 14,
+                    "minLength": 1
+                },
+                "datumtijd": {
+                    "title": "Datumtijd",
+                    "description": "De datum en het tijdstip waarop het KLANTCONTACT begint",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "kanaal": {
+                    "title": "Kanaal",
+                    "description": "Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt",
+                    "type": "string",
+                    "maxLength": 20
                 }
             }
         },

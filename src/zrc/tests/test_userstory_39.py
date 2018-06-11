@@ -3,10 +3,10 @@ Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/
 """
 from datetime import date
 
+from dateutil import parser
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
-from dateutil import parser
 
 from zrc.datamodel.models import (
     DomeinData, KlantContact, Status, Zaak, ZaakObject
@@ -177,7 +177,7 @@ class US39TestCase(APITestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()
         klantcontact = KlantContact.objects.get()
         self.assertIsInstance(klantcontact.identificatie, str)
@@ -209,6 +209,7 @@ class Application:
         self.registreer_zaak()
         self.zet_statussen()
         self.registreer_domein_data()
+        self.registreer_klantcontact()
 
     @property
     def domein_data_url(self):
@@ -253,6 +254,14 @@ class Application:
         })
         self.references['domein_data_url'] = response.json()['url']
 
+    def registreer_klantcontact(self):
+        url = get_operation_url('klantcontact_create')
+        self.client.post(url, {
+            'zaak': self.references['zaak_url'],
+            'datumtijd': self.data['datetime'],
+            'kanaal': self.data['source'],
+        })
+
 
 class US39IntegrationTestCase(APITestCase):
     """
@@ -268,8 +277,14 @@ class US39IntegrationTestCase(APITestCase):
         self.assertEqual(zaak.toelichting, 'test')
 
         self.assertEqual(zaak.status_set.count(), 2)
+
         last_status = zaak.status_set.order_by('-datum_status_gezet').first()
         self.assertEqual(last_status.status_type, STATUS_TYPE)
+        self.assertEqual(
+            last_status.datum_status_gezet,
+            utcdatetime(2018, 5, 28, 7, 5, 8, 732587),
+        )
+
         first_status = zaak.status_set.order_by('datum_status_gezet').first()
         self.assertEqual(first_status.status_type, STATUS_TYPE_OVERLAST_GECONSTATEERD)
         self.assertEqual(
@@ -279,3 +294,10 @@ class US39IntegrationTestCase(APITestCase):
 
         domein_data = self.client.get(app.domein_data_url).json()['domeinData']
         self.assertEqual(domein_data, DOMEIN_DATA)
+
+        klantcontact = zaak.klantcontact_set.get()
+        self.assertEqual(klantcontact.kanaal, 'Telefoon 14020')
+        self.assertEqual(
+            klantcontact.datumtijd,
+            utcdatetime(2018, 5, 28, 7, 5, 8, 732587),
+        )

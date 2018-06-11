@@ -50,6 +50,51 @@ paths:
         required: true
         schema:
           type: integer
+  /klantcontacten/:
+    post:
+      operationId: klantcontact_create
+      description: >-
+        Registreer een klantcontact bij een zaak.
+
+
+        Indien geen identificatie gegeven is, dan wordt deze automatisch
+        gegenereerd.
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KlantContact'
+      tags:
+        - klantcontacten
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KlantContact'
+        required: true
+    parameters: []
+  '/klantcontacten/{id}/':
+    get:
+      operationId: klantcontact_read
+      description: Geef de details van een klantcontact voor een ZAAK.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KlantContact'
+      tags:
+        - klantcontacten
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this klantcontact.
+        required: true
+        schema:
+          type: integer
   /statussen/:
     post:
       operationId: status_create
@@ -205,6 +250,37 @@ components:
           format: uri
           maxLength: 200
           minLength: 1
+    KlantContact:
+      required:
+        - zaak
+        - datumtijd
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+          format: uri
+          readOnly: true
+        zaak:
+          title: Zaak
+          type: string
+          format: uri
+        identificatie:
+          title: Identificatie
+          description: De unieke aanduiding van een KLANTCONTACT
+          type: string
+          maxLength: 14
+          minLength: 1
+        datumtijd:
+          title: Datumtijd
+          description: De datum en het tijdstip waarop het KLANTCONTACT begint
+          type: string
+          format: date-time
+        kanaal:
+          title: Kanaal
+          description: Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt
+          type: string
+          maxLength: 20
     Status:
       required:
         - zaak

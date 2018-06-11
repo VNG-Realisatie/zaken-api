@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.utils.crypto import get_random_string
 
 from zrc.validators import alphanumeric_excluding_diacritic
 
@@ -125,6 +126,7 @@ class KlantContact(models.Model):
     een MEDEWERKER van de zaakbehandelende organisatie over een onderhanden of
     afgesloten ZAAK.
     """
+    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     identificatie = models.CharField(
         max_length=14, unique=True,
         help_text='De unieke aanduiding van een KLANTCONTACT'
@@ -143,3 +145,12 @@ class KlantContact(models.Model):
 
     def __str__(self):
         return self.identificatie
+
+    def save(self, *args, **kwargs):
+        if not self.identificatie:
+            gen_id = True
+            while gen_id:
+                identificatie = get_random_string(length=12)
+                gen_id = self.__class__.objects.filter(identificatie=identificatie).exists()
+            self.identificatie = identificatie
+        super().save(*args, **kwargs)

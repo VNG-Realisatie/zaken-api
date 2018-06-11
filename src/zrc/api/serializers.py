@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
-from zrc.datamodel.models import DomeinData, Status, Zaak, ZaakObject
+from zrc.datamodel.models import (
+    DomeinData, KlantContact, Status, Zaak, ZaakObject
+)
 
 
 class ZaakSerializer(serializers.HyperlinkedModelSerializer):
@@ -55,3 +57,18 @@ class DomeinDataSerializer(serializers.HyperlinkedModelSerializer):
             'zaak',
             'domein_data',
         )
+
+
+class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = KlantContact
+        fields = (
+            'url',
+            'zaak',
+            'identificatie',
+            'datumtijd',
+            'kanaal',
+        )
+        extra_kwargs = {
+            'identificatie': {'required': False},
+        }
