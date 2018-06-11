@@ -6,6 +6,7 @@ from datetime import date
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
+from dateutil import parser
 
 from zrc.datamodel.models import DomeinData, Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
@@ -164,7 +165,61 @@ class US39TestCase(APITestCase):
 
 
 class Application:
-    pass
+
+    def __init__(self, client, data: dict):
+        self.client = client
+
+        self.data = data
+        self.references = {}
+
+    def store_notification(self):
+        # registreer zaak & zet statussen
+        self.registreer_zaak()
+        self.zet_statussen()
+        self.registreer_domein_data()
+
+    @property
+    def domein_data_url(self):
+        return self.references['domein_data_url']
+
+    def registreer_zaak(self):
+        zaak_create_url = get_operation_url('zaak_create')
+
+        created = parser.parse(self.data['datetime'])
+        intern_id = self.data['id']
+
+        response = self.client.post(zaak_create_url, {
+            'zaaktype': ZAAKTYPE,
+            'zaakidentificatie': f'AMS{intern_id}',
+            'registratiedatum': created.strftime('%Y-%m-%d'),
+            'toelichting': self.data['text'],
+        })
+        self.references['zaak_url'] = response.json()['url']
+
+    def zet_statussen(self):
+        status_create_url = get_operation_url('status_create')
+
+        created = parser.parse(self.data['datetime'])
+
+        self.client.post(status_create_url, {
+            'zaak': self.references['zaak_url'],
+            'statusType': STATUS_TYPE,
+            'datumStatusGezet': created.isoformat(),
+        })
+
+        self.client.post(status_create_url, {
+            'zaak': self.references['zaak_url'],
+            'statusType': STATUS_TYPE_OVERLAST_GECONSTATEERD,
+            'datumStatusGezet': parser.parse(self.data['datetime_overlast']).isoformat(),
+        })
+
+    def registreer_domein_data(self):
+        url = get_operation_url('domeindata_create')
+        response = self.client.post(url, {
+            'zaak': self.references['zaak_url'],
+            'domeinData': DOMEIN_DATA,
+        })
+        self.references['domein_data_url'] = response.json()['url']
 
 
 class US39IntegrationTestCase(APITestCase):
@@ -173,15 +228,16 @@ class US39IntegrationTestCase(APITestCase):
     """
 
     def test_full_flow(self):
-        app = Application()
+        app = Application(self.client, TEST_DATA)
 
-        app.store_notification(TEST_DATA)
+        app.store_notification()
 
         zaak = Zaak.objects.get(zaakidentificatie='AMS9966')
+        self.assertEqual(zaak.toelichting, 'test')
+
         self.assertEqual(zaak.status_set.count(), 2)
         last_status = zaak.status_set.order_by('-datum_status_gezet').first()
         self.assertEqual(last_status.status_type, STATUS_TYPE)
-
         first_status = zaak.status_set.order_by('datum_status_gezet').first()
         self.assertEqual(first_status.status_type, STATUS_TYPE_OVERLAST_GECONSTATEERD)
         self.assertEqual(
@@ -189,6 +245,5 @@ class US39IntegrationTestCase(APITestCase):
             utcdatetime(2018, 5, 28, 6, 35, 11)
         )
 
-        self.assertTrue(
-            zaak.domeindata_set.filter(domein_data=app.domein_data_url).exists()
-        )
+        domein_data = self.client.get(app.domein_data_url).json()['domeinData']
+        self.assertEqual(domein_data, DOMEIN_DATA)
