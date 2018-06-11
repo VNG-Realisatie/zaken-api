@@ -104,7 +104,7 @@ class US39TestCase(APITestCase):
         data = {
             'zaak': zaak_url,
             'object': OBJECT_MET_ADRES,
-            'relatieOmschrijving': 'Het adres waar de overlast vastgesteld werd.',
+            'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
         }
 
         response = self.client.post(url, data)
@@ -119,6 +119,6 @@ class US39TestCase(APITestCase):
             {
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
-                'relatieOmschrijving': 'Het adres waar de overlast vastgesteld werd.',
+                'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
             }
         )

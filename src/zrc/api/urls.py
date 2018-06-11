@@ -3,11 +3,12 @@ from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter
 
 from .schema import schema_view
-from .viewsets import StatusViewSet, ZaakViewSet
+from .viewsets import StatusViewSet, ZaakObjectViewSet, ZaakViewSet
 
 router = DefaultRouter()
 router.register('zaken', ZaakViewSet)
 router.register('statussen', StatusViewSet)
+router.register('zaakobjecten', ZaakObjectViewSet)
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path
 

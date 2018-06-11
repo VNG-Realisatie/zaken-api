@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from zrc.datamodel.models import Status, Zaak
+from zrc.datamodel.models import Status, Zaak, ZaakObject
 
 
 class ZaakSerializer(serializers.HyperlinkedModelSerializer):
@@ -29,4 +29,15 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             'status_type',
             'datum_status_gezet',
             'statustoelichting'
+        )
+
+
+class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ZaakObject
+        fields = (
+            'url',
+            'zaak',
+            'object',
+            'relatieomschrijving'
         )

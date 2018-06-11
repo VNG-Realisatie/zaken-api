@@ -1,9 +1,9 @@
 from rest_framework import mixins, viewsets
 from zds_schema.decorators import action_description
 
-from zrc.datamodel.models import Status, Zaak
+from zrc.datamodel.models import Status, Zaak, ZaakObject
 
-from .serializers import StatusSerializer, ZaakSerializer
+from .serializers import StatusSerializer, ZaakObjectSerializer, ZaakSerializer
 
 
 @action_description('create', "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, "
@@ -23,3 +23,10 @@ class StatusViewSet(mixins.CreateModelMixin,
                     viewsets.GenericViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
+
+
+class ZaakObjectViewSet(mixins.CreateModelMixin,
+                        mixins.RetrieveModelMixin,
+                        viewsets.GenericViewSet):
+    queryset = ZaakObject.objects.all()
+    serializer_class = ZaakObjectSerializer
