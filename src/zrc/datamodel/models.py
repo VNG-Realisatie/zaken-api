@@ -88,3 +88,30 @@ class ZaakObject(models.Model):
         max_length=80, blank=True,
         help_text='Omschrijving van de betrekking tussen de ZAAK en het OBJECT.'
     )
+
+    class Meta:
+        verbose_name = 'zaakobject'
+        verbose_name_plural = 'zaakobjecten'
+
+
+class DomeinData(models.Model):
+    """
+    Modelleer domeindata die behoort tot een ZAAK.
+
+    Domeindata kan buiten het ZRC leven, zoals specifiek in een vakapplicatie.
+    Dit model staat niet beschreven in RGBZ 2.0, maar er blijkt wel een
+    noodzaak voor te zijn.
+
+    TODO/vraagstukken:
+
+    * hoe vendor locking voorkomen?
+    * hoe mogelijk maken dat deze data door verschillende componenten/applicaties
+     'begrepen' wordt?
+
+    """
+    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
+    domein_data = models.URLField(help_text="URL naar de domein data resource")
+
+    class Meta:
+        verbose_name = 'domeindatareferentie'
+        verbose_name_plural = 'domeindatareferenties'

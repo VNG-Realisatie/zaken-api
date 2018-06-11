@@ -1,9 +1,12 @@
 from rest_framework import mixins, viewsets
 from zds_schema.decorators import action_description
 
-from zrc.datamodel.models import Status, Zaak, ZaakObject
+from zrc.datamodel.models import DomeinData, Status, Zaak, ZaakObject
 
-from .serializers import StatusSerializer, ZaakObjectSerializer, ZaakSerializer
+from .serializers import (
+    DomeinDataSerializer, StatusSerializer, ZaakObjectSerializer,
+    ZaakSerializer
+)
 
 
 @action_description('create', "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, "
@@ -32,3 +35,12 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
                         viewsets.GenericViewSet):
     queryset = ZaakObject.objects.all()
     serializer_class = ZaakObjectSerializer
+
+
+@action_description('create', "Registreer DOMEINDATA bij een zaak.")
+@action_description('retrieve', "Geef de details van DOMEINDATA voor een ZAAK.")
+class DomeinDataViewSet(mixins.CreateModelMixin,
+                        mixins.RetrieveModelMixin,
+                        viewsets.GenericViewSet):
+    queryset = DomeinData.objects.all()
+    serializer_class = DomeinDataSerializer

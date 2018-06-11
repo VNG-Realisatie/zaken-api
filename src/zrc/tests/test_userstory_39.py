@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 
-from zrc.datamodel.models import Status, Zaak, ZaakObject
+from zrc.datamodel.models import DomeinData, Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import isodatetime
@@ -15,6 +15,7 @@ from .utils import isodatetime
 ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/'
 STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1/'
 OBJECT_MET_ADRES = 'https://example.com/orc/api/v1/objecten/1/'
+DOMEIN_DATA = 'https://example.com/domeindata/api/v1/data/1/'
 
 TEST_DATA = {
     "id": 9966,
@@ -51,7 +52,7 @@ class US39TestCase(APITestCase):
             'zaaktype': ZAAKTYPE,
             'registratiedatum': '2018-06-11',
             'toelichting': 'Een stel dronken toeristen speelt versterkte '
-                           'muziek af vanuit een gehuurde boot.'
+                           'muziek af vanuit een gehuurde boot.',
         }
 
         response = self.client.post(url, data)
@@ -132,5 +133,30 @@ class US39TestCase(APITestCase):
                 'zaak': f"http://testserver{zaak_url}",
                 'object': OBJECT_MET_ADRES,
                 'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
+            }
+        )
+
+    def test_zet_domeindata(self):
+        url = get_operation_url('domeindata_create')
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        data = {
+            'zaak': zaak_url,
+            'domeinData': DOMEIN_DATA,
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = response.json()
+        domeindata = DomeinData.objects.get()
+        self.assertEqual(domeindata.zaak, zaak)
+        detail_url = get_operation_url('domeindata_read', id=domeindata.id)
+        self.assertEqual(
+            response_data,
+            {
+                'url': f"http://testserver{detail_url}",
+                'zaak': f"http://testserver{zaak_url}",
+                'domeinData': DOMEIN_DATA,
             }
         )

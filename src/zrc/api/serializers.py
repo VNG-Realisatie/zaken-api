@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from zrc.datamodel.models import Status, Zaak, ZaakObject
+from zrc.datamodel.models import DomeinData, Status, Zaak, ZaakObject
 
 
 class ZaakSerializer(serializers.HyperlinkedModelSerializer):
@@ -18,6 +18,8 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
             'zaaktype',
             'registratiedatum',
             'toelichting',
+
+            # read-only veld, on-the-fly opgevraagd
             'status'
         )
 
@@ -42,4 +44,14 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
             'zaak',
             'object',
             'relatieomschrijving'
+        )
+
+
+class DomeinDataSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = DomeinData
+        fields = (
+            'url',
+            'zaak',
+            'domein_data',
         )
