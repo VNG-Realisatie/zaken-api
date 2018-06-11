@@ -10,10 +10,11 @@ from zds_schema.tests import get_operation_url
 from zrc.datamodel.models import DomeinData, Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
 
-from .utils import isodatetime
+from .utils import isodatetime, utcdatetime
 
 ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/'
 STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1/'
+STATUS_TYPE_OVERLAST_GECONSTATEERD = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/2/'
 OBJECT_MET_ADRES = 'https://example.com/orc/api/v1/objecten/1/'
 DOMEIN_DATA = 'https://example.com/domeindata/api/v1/data/1/'
 
@@ -26,7 +27,7 @@ TEST_DATA = {
     "waternet_soort_boot": "Nee",
     "waternet_rederij": "Onbekend",
     "waternet_naam_boot": "",
-    "datetime_overlast": None,
+    "datetime_overlast": "2018-05-28T08:35:11+02:00",
     "email": "",
     "phone_number": "",
     "source": "Telefoon 14020",
@@ -159,4 +160,35 @@ class US39TestCase(APITestCase):
                 'zaak': f"http://testserver{zaak_url}",
                 'domeinData': DOMEIN_DATA,
             }
+        )
+
+
+class Application:
+    pass
+
+
+class US39IntegrationTestCase(APITestCase):
+    """
+    Simulate a full realistic flow.
+    """
+
+    def test_full_flow(self):
+        app = Application()
+
+        app.store_notification(TEST_DATA)
+
+        zaak = Zaak.objects.get(zaakidentificatie='AMS9966')
+        self.assertEqual(zaak.status_set.count(), 2)
+        last_status = zaak.status_set.order_by('-datum_status_gezet').first()
+        self.assertEqual(last_status.status_type, STATUS_TYPE)
+
+        first_status = zaak.status_set.order_by('datum_status_gezet').first()
+        self.assertEqual(first_status.status_type, STATUS_TYPE_OVERLAST_GECONSTATEERD)
+        self.assertEqual(
+            first_status.datum_status_gezet,
+            utcdatetime(2018, 5, 28, 6, 35, 11)
+        )
+
+        self.assertTrue(
+            zaak.domeindata_set.filter(domein_data=app.domein_data_url).exists()
         )
