@@ -16,6 +16,7 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'zaakidentificatie',
             'zaaktype',
+            'registratiedatum',
             'status'
         )
 

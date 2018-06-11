@@ -207,6 +207,7 @@ components:
     Zaak:
       required:
         - zaaktype
+        - registratiedatum
       type: object
       properties:
         url:
@@ -228,6 +229,13 @@ components:
           format: uri
           maxLength: 200
           minLength: 1
+        registratiedatum:
+          title: Registratiedatum
+          description: >-
+            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
+            geregistreerd
+          type: string
+          format: date
         status:
           title: Status
           description: 'Indien geen status bekend is, dan is de waarde ''null'''

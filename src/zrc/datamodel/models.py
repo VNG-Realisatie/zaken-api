@@ -20,6 +20,9 @@ class Zaak(models.Model):
         validators=[alphanumeric_excluding_diacritic]
     )
     zaaktype = models.URLField(help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
+    registratiedatum = models.DateField(
+        help_text='De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd'
+    )
 
     class Meta:
         verbose_name = 'zaak'

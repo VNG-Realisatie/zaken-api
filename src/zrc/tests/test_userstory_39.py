@@ -1,6 +1,8 @@
 """
 Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/39
 """
+from datetime import date
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
@@ -47,6 +49,7 @@ class US39TestCase(APITestCase):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'registratiedatum': '2018-06-11',
         }
 
         response = self.client.post(url, data)
@@ -61,6 +64,7 @@ class US39TestCase(APITestCase):
 
         zaak = Zaak.objects.get()
         self.assertEqual(zaak.zaaktype, ZAAKTYPE)
+        self.assertEqual(zaak.registratiedatum, date(2018, 6, 11))
 
     def test_zet_zaakstatus(self):
         """

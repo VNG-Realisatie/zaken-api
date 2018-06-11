@@ -272,7 +272,8 @@
         },
         "Zaak": {
             "required": [
-                "zaaktype"
+                "zaaktype",
+                "registratiedatum"
             ],
             "type": "object",
             "properties": {
@@ -295,6 +296,12 @@
                     "format": "uri",
                     "maxLength": 200,
                     "minLength": 1
+                },
+                "registratiedatum": {
+                    "title": "Registratiedatum",
+                    "description": "De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd",
+                    "type": "string",
+                    "format": "date"
                 },
                 "status": {
                     "title": "Status",
