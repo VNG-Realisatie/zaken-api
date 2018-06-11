@@ -50,6 +50,46 @@ paths:
         required: true
         schema:
           type: integer
+  /zaakobjecten/:
+    post:
+      operationId: zaakobject_create
+      description: Registreer een ZAAKOBJECT relatie.
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakObject'
+      tags:
+        - zaakobjecten
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakObject'
+        required: true
+    parameters: []
+  '/zaakobjecten/{id}/':
+    get:
+      operationId: zaakobject_read
+      description: Geef de details van een ZAAKOBJECT relatie.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakObject'
+      tags:
+        - zaakobjecten
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this zaak object.
+        required: true
+        schema:
+          type: integer
   /zaken/:
     post:
       operationId: zaak_create
@@ -137,6 +177,33 @@ components:
             status van een zaak.
           type: string
           maxLength: 1000
+    ZaakObject:
+      required:
+        - zaak
+        - object
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+          format: uri
+          readOnly: true
+        zaak:
+          title: Zaak
+          type: string
+          format: uri
+        object:
+          title: Object
+          description: URL naar de resource die het OBJECT beschrijft.
+          type: string
+          format: uri
+          maxLength: 200
+          minLength: 1
+        relatieomschrijving:
+          title: Relatieomschrijving
+          description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
+          type: string
+          maxLength: 80
     Zaak:
       required:
         - zaaktype

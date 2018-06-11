@@ -25,6 +25,8 @@ class StatusViewSet(mixins.CreateModelMixin,
     serializer_class = StatusSerializer
 
 
+@action_description('create', "Registreer een ZAAKOBJECT relatie.")
+@action_description('retrieve', "Geef de details van een ZAAKOBJECT relatie.")
 class ZaakObjectViewSet(mixins.CreateModelMixin,
                         mixins.RetrieveModelMixin,
                         viewsets.GenericViewSet):

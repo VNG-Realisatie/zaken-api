@@ -119,6 +119,7 @@ class US39TestCase(APITestCase):
             {
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
+                'object': OBJECT_MET_ADRES,
                 'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
             }
         )

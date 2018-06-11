@@ -84,6 +84,61 @@
                 }
             ]
         },
+        "/zaakobjecten/": {
+            "post": {
+                "operationId": "zaakobject_create",
+                "description": "Registreer een ZAAKOBJECT relatie.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ZaakObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakObject"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaakobjecten"
+                ]
+            },
+            "parameters": []
+        },
+        "/zaakobjecten/{id}/": {
+            "get": {
+                "operationId": "zaakobject_read",
+                "description": "Geef de details van een ZAAKOBJECT relatie.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakObject"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaakobjecten"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "A unique integer value identifying this zaak object.",
+                    "required": true,
+                    "type": "integer"
+                }
+            ]
+        },
         "/zaken/": {
             "post": {
                 "operationId": "zaak_create",
@@ -178,6 +233,40 @@
                     "description": "Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak.",
                     "type": "string",
                     "maxLength": 1000
+                }
+            }
+        },
+        "ZaakObject": {
+            "required": [
+                "zaak",
+                "object"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
+                "zaak": {
+                    "title": "Zaak",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "object": {
+                    "title": "Object",
+                    "description": "URL naar de resource die het OBJECT beschrijft.",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "relatieomschrijving": {
+                    "title": "Relatieomschrijving",
+                    "description": "Omschrijving van de betrekking tussen de ZAAK en het OBJECT.",
+                    "type": "string",
+                    "maxLength": 80
                 }
             }
         },
