@@ -5,13 +5,37 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 
-from zrc.datamodel.models import Status, Zaak
+from zrc.datamodel.models import Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import isodatetime
 
-ZAAKTYPE = 'https://example.com/api/v1/catalogus/1/zaaktypen/1/'
-STATUS_TYPE = 'https://example.com/api/v1/catalogus/1/zaaktypen/1/statustypen/1/'
+ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/'
+STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1/'
+ADRES_BINNENLAND = 'https://example.com/orc/api/v1/adressen/1/'
+
+TEST_DATA = {
+    "id": 9966,
+    "last_status": "o",
+    "adres": "Oosterdok 51, 1011 Amsterdam, Netherlands",
+    "datetime": "2018-05-28T09:05:08.732587+02:00",
+    "text": "test",
+    "waternet_soort_boot": "Nee",
+    "waternet_rederij": "Onbekend",
+    "waternet_naam_boot": "",
+    "datetime_overlast": None,
+    "email": "",
+    "phone_number": "",
+    "source": "Telefoon 14020",
+    "text_extra": "",
+    "image": None,
+    "main_category": "",
+    "sub_category": "Geluid",
+    "ml_cat": "melding openbare ruimte",
+    "stadsdeel": "Centrum",
+    "coordinates": "POINT (4.910649523925713 52.37240093589432)",
+    "verantwoordelijk": "Waternet"
+}
 
 
 class US39TestCase(APITestCase):
@@ -67,5 +91,34 @@ class US39TestCase(APITestCase):
                 'statusType': STATUS_TYPE,
                 'datumStatusGezet': '2018-06-06T17:23:43Z',  # UTC
                 'statustoelichting': '',
+            }
+        )
+
+    def test_zet_adres_binnenland(self):
+        """
+        Het adres van de melding moet in de zaak beschikbaar zijn.
+        """
+        url = get_operation_url('zaakobject_create')
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        data = {
+            'zaak': zaak_url,
+            'object': ADRES_BINNENLAND,
+            'relatieOmschrijving': 'Het adres waar de overlast vastgesteld werd.',
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = response.json()
+        zaakobject = ZaakObject.objects.get()
+        self.assertEqual(zaakobject.zaak, zaak)
+        detail_url = get_operation_url('zaakobject_read', id=zaakobject.id)
+        self.assertEqual(
+            response_data,
+            {
+                'url': f"http://testserver{detail_url}",
+                'zaak': f"http://testserver{zaak_url}",
+                'relatieOmschrijving': 'Het adres waar de overlast vastgesteld werd.',
             }
         )
