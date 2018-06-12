@@ -10,7 +10,7 @@ info:
 security:
   - basic: []
 paths:
-  /domeindata/:
+  /domeindata:
     post:
       operationId: domeindata_create
       description: Registreer DOMEINDATA bij een zaak.
@@ -30,7 +30,7 @@ paths:
               $ref: '#/components/schemas/DomeinData'
         required: true
     parameters: []
-  '/domeindata/{id}/':
+  '/domeindata/{id}':
     get:
       operationId: domeindata_read
       description: Geef de details van DOMEINDATA voor een ZAAK.
@@ -50,7 +50,7 @@ paths:
         required: true
         schema:
           type: integer
-  /klantcontacten/:
+  /klantcontacten:
     post:
       operationId: klantcontact_create
       description: >-
@@ -75,7 +75,7 @@ paths:
               $ref: '#/components/schemas/KlantContact'
         required: true
     parameters: []
-  '/klantcontacten/{id}/':
+  '/klantcontacten/{id}':
     get:
       operationId: klantcontact_read
       description: Geef de details van een klantcontact voor een ZAAK.
@@ -95,7 +95,7 @@ paths:
         required: true
         schema:
           type: integer
-  /statussen/:
+  /statussen:
     post:
       operationId: status_create
       description: ''
@@ -115,7 +115,7 @@ paths:
               $ref: '#/components/schemas/Status'
         required: true
     parameters: []
-  '/statussen/{id}/':
+  '/statussen/{id}':
     get:
       operationId: status_read
       description: ''
@@ -135,7 +135,7 @@ paths:
         required: true
         schema:
           type: integer
-  /zaakobjecten/:
+  /zaakobjecten:
     post:
       operationId: zaakobject_create
       description: Registreer een ZAAKOBJECT relatie.
@@ -155,7 +155,7 @@ paths:
               $ref: '#/components/schemas/ZaakObject'
         required: true
     parameters: []
-  '/zaakobjecten/{id}/':
+  '/zaakobjecten/{id}':
     get:
       operationId: zaakobject_read
       description: Geef de details van een ZAAKOBJECT relatie.
@@ -175,7 +175,7 @@ paths:
         required: true
         schema:
           type: integer
-  /zaken/:
+  /zaken:
     post:
       operationId: zaak_create
       description: >-
@@ -200,7 +200,7 @@ paths:
               $ref: '#/components/schemas/Zaak'
         required: true
     parameters: []
-  '/zaken/{id}/':
+  '/zaken/{id}':
     get:
       operationId: zaak_read
       description: Opvragen en bewerken van ZAAKen.

@@ -29,7 +29,7 @@
         }
     ],
     "paths": {
-        "/domeindata/": {
+        "/domeindata": {
             "post": {
                 "operationId": "domeindata_create",
                 "description": "Registreer DOMEINDATA bij een zaak.",
@@ -57,7 +57,7 @@
             },
             "parameters": []
         },
-        "/domeindata/{id}/": {
+        "/domeindata/{id}": {
             "get": {
                 "operationId": "domeindata_read",
                 "description": "Geef de details van DOMEINDATA voor een ZAAK.",
@@ -84,7 +84,7 @@
                 }
             ]
         },
-        "/klantcontacten/": {
+        "/klantcontacten": {
             "post": {
                 "operationId": "klantcontact_create",
                 "description": "Registreer een klantcontact bij een zaak.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch gegenereerd.",
@@ -112,7 +112,7 @@
             },
             "parameters": []
         },
-        "/klantcontacten/{id}/": {
+        "/klantcontacten/{id}": {
             "get": {
                 "operationId": "klantcontact_read",
                 "description": "Geef de details van een klantcontact voor een ZAAK.",
@@ -139,7 +139,7 @@
                 }
             ]
         },
-        "/statussen/": {
+        "/statussen": {
             "post": {
                 "operationId": "status_create",
                 "description": "",
@@ -167,7 +167,7 @@
             },
             "parameters": []
         },
-        "/statussen/{id}/": {
+        "/statussen/{id}": {
             "get": {
                 "operationId": "status_read",
                 "description": "",
@@ -194,7 +194,7 @@
                 }
             ]
         },
-        "/zaakobjecten/": {
+        "/zaakobjecten": {
             "post": {
                 "operationId": "zaakobject_create",
                 "description": "Registreer een ZAAKOBJECT relatie.",
@@ -222,7 +222,7 @@
             },
             "parameters": []
         },
-        "/zaakobjecten/{id}/": {
+        "/zaakobjecten/{id}": {
             "get": {
                 "operationId": "zaakobject_read",
                 "description": "Geef de details van een ZAAKOBJECT relatie.",
@@ -249,7 +249,7 @@
                 }
             ]
         },
-        "/zaken/": {
+        "/zaken": {
             "post": {
                 "operationId": "zaak_create",
                 "description": "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, dan wordt deze automatisch gegenereerd.",
@@ -277,7 +277,7 @@
             },
             "parameters": []
         },
-        "/zaken/{id}/": {
+        "/zaken/{id}": {
             "get": {
                 "operationId": "zaak_read",
                 "description": "Opvragen en bewerken van ZAAKen.",

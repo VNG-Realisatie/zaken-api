@@ -8,7 +8,7 @@ from .viewsets import (
     ZaakViewSet
 )
 
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=False)
 router.register('zaken', ZaakViewSet)
 router.register('statussen', StatusViewSet)
 router.register('zaakobjecten', ZaakObjectViewSet)
