@@ -4,8 +4,8 @@ from rest_framework.routers import DefaultRouter
 
 from .schema import schema_view
 from .viewsets import (
-    DomeinDataViewSet, KlantContactViewSet, StatusViewSet, ZaakObjectViewSet,
-    ZaakViewSet
+    DomeinDataViewSet, KlantContactViewSet, StatusViewSet,
+    ZaakInformatieObjectViewSet, ZaakObjectViewSet, ZaakViewSet
 )
 
 router = DefaultRouter(trailing_slash=False)
@@ -14,6 +14,7 @@ router.register('statussen', StatusViewSet)
 router.register('zaakobjecten', ZaakObjectViewSet)
 router.register('domeindata', DomeinDataViewSet)
 router.register('klantcontacten', KlantContactViewSet)
+router.register('zaakinformatieobjecten', ZaakInformatieObjectViewSet)
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path
 

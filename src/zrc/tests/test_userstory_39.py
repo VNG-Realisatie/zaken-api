@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.models import (
-    DomeinData, KlantContact, Status, Zaak, ZaakObject
+    DomeinData, KlantContact, Status, Zaak, ZaakInformatieObject, ZaakObject
 )
 from zrc.datamodel.tests.factories import ZaakFactory
 
@@ -20,6 +20,7 @@ STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustype
 STATUS_TYPE_OVERLAST_GECONSTATEERD = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/2/'
 OBJECT_MET_ADRES = 'https://example.com/orc/api/v1/objecten/1/'
 DOMEIN_DATA = 'https://example.com/domeindata/api/v1/data/1/'
+FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1/'
 
 TEST_DATA = {
     "id": 9966,
@@ -195,6 +196,31 @@ class US39TestCase(APITestCase):
             }
         )
 
+    def test_create_zaakinformatieobject(self):
+        url = get_operation_url('zaakinformatieobject_create')
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        data = {
+            'zaak': zaak_url,
+            'informatieobject': FOTO,
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+        response_data = response.json()
+        zio = ZaakInformatieObject.objects.get()
+        self.assertEqual(zio.zaak, zaak)
+        detail_url = get_operation_url('zaakinformatieobject_read', id=zio.id)
+        self.assertEqual(
+            response_data,
+            {
+                'url': f"http://testserver{detail_url}",
+                'zaak': f"http://testserver{zaak_url}",
+                'informatieobject': FOTO,
+            }
+        )
+
 
 class Application:
 
@@ -210,6 +236,7 @@ class Application:
         self.zet_statussen()
         self.registreer_domein_data()
         self.registreer_klantcontact()
+        self.registreer_foto()
 
     @property
     def domein_data_url(self):
@@ -262,6 +289,16 @@ class Application:
             'kanaal': self.data['source'],
         })
 
+    def registreer_foto(self):
+        if not self.data['image']:
+            return
+
+        url = get_operation_url('zaakinformatieobject_create')
+        self.client.post(url, {
+            'zaak': self.references['zaak_url'],
+            'informatieobject': self.data['image'],
+        })
+
 
 class US39IntegrationTestCase(APITestCase):
     """
@@ -301,3 +338,5 @@ class US39IntegrationTestCase(APITestCase):
             klantcontact.datumtijd,
             utcdatetime(2018, 5, 28, 7, 5, 8, 732587),
         )
+
+        self.assertFalse(zaak.zaakinformatieobject_set.exists())

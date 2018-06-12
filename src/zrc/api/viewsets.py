@@ -2,12 +2,12 @@ from rest_framework import mixins, viewsets
 from zds_schema.decorators import action_description
 
 from zrc.datamodel.models import (
-    DomeinData, KlantContact, Status, Zaak, ZaakObject
+    DomeinData, KlantContact, Status, Zaak, ZaakInformatieObject, ZaakObject
 )
 
 from .serializers import (
     DomeinDataSerializer, KlantContactSerializer, StatusSerializer,
-    ZaakObjectSerializer, ZaakSerializer
+    ZaakInformatieObjectSerializer, ZaakObjectSerializer, ZaakSerializer
 )
 
 
@@ -48,7 +48,7 @@ class DomeinDataViewSet(mixins.CreateModelMixin,
     serializer_class = DomeinDataSerializer
 
 
-@action_description('create', "Registreer een klantcontact bij een zaak.\n\nIndien geen identificatie "
+@action_description('create', "Registreer een klantcontact bij een ZAAK.\n\nIndien geen identificatie "
                               "gegeven is, dan wordt deze automatisch gegenereerd.")
 @action_description('retrieve', "Geef de details van een klantcontact voor een ZAAK.")
 class KlantContactViewSet(mixins.CreateModelMixin,
@@ -56,3 +56,12 @@ class KlantContactViewSet(mixins.CreateModelMixin,
                           viewsets.GenericViewSet):
     queryset = KlantContact.objects.all()
     serializer_class = KlantContactSerializer
+
+
+@action_description('create', "Registreer een INFORMATIEOBJECT bij een ZAAK.")
+@action_description('retrieve', "Geef de details van een ZAAKINFORMATIEOBJECT relatie.")
+class ZaakInformatieObjectViewSet(mixins.CreateModelMixin,
+                                  mixins.RetrieveModelMixin,
+                                  viewsets.GenericViewSet):
+    queryset = ZaakInformatieObject.objects.all()
+    serializer_class = ZaakInformatieObjectSerializer

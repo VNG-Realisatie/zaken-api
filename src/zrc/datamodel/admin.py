@@ -1,6 +1,8 @@
 from django.contrib import admin
 
-from .models import DomeinData, KlantContact, Status, Zaak, ZaakObject
+from .models import (
+    DomeinData, KlantContact, Status, Zaak, ZaakInformatieObject, ZaakObject
+)
 
 
 class StatusInline(admin.TabularInline):
@@ -19,10 +21,20 @@ class KlantContactInline(admin.TabularInline):
     model = KlantContact
 
 
+class ZaakInformatieObjectInline(admin.TabularInline):
+    model = ZaakInformatieObject
+
+
 @admin.register(Zaak)
 class ZaakAdmin(admin.ModelAdmin):
     list_display = ['zaakidentificatie']
-    inlines = [StatusInline, ZaakObjectInline, KlantContactInline, DomeinDataInline]
+    inlines = [
+        StatusInline,
+        ZaakObjectInline,
+        ZaakInformatieObjectInline,
+        KlantContactInline,
+        DomeinDataInline
+    ]
 
 
 @admin.register(Status)
@@ -49,5 +61,12 @@ class KlantContactAdmin(admin.ModelAdmin):
 @admin.register(DomeinData)
 class DomeinDataAdmin(admin.ModelAdmin):
     list_display = ['zaak', 'domein_data']
+    list_select_related = ['zaak']
+    raw_id_fields = ['zaak']
+
+
+@admin.register(ZaakInformatieObject)
+class ZaakInformatieObjectAdmin(admin.ModelAdmin):
+    list_display = ['zaak', 'informatieobject']
     list_select_related = ['zaak']
     raw_id_fields = ['zaak']
