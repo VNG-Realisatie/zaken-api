@@ -33,16 +33,10 @@ RUN apk --no-cache add \
     nodejs-npm \
     python
 
-COPY ./build /app/build
 COPY ./src /app/src
-COPY ./*.js /app/
 COPY ./*.json /app/
 
 RUN npm install
-# See: https://stackoverflow.com/questions/22115400/why-do-we-need-to-install-gulp-globally-and-locally
-RUN npm install -g gulp
-RUN npm install gulp
-RUN gulp build
 
 # Stage 2 - Build docker image suitable for execution and deployment
 FROM alpine:3.7
