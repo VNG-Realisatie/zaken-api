@@ -3,9 +3,12 @@ version: '3'
 
 services:
   db:
-    # NOTE: No persistance storage configured.
-    # See: https://hub.docker.com/_/postgres/
     image: postgres
+    # environment:
+    #   - POSTGRES_USER=${PG_USER:zrc}
+    #   - POSTGRES_PASSWORD=${PG_PASSWORD:zrc}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   web:
     build: .
     environment:
@@ -14,6 +17,10 @@ services:
       - 8000:8000
     depends_on:
       - db
+
+volumes:
+  postgres_data:
+
 
   # See: src/zrc/conf/docker.py
   # Optional containers below:
