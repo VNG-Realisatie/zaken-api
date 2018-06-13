@@ -3,7 +3,7 @@ version: '3'
 
 services:
   db:
-    image: postgres
+    image: mdillon/postgis
     # environment:
     #   - POSTGRES_USER=${PG_USER:zrc}
     #   - POSTGRES_PASSWORD=${PG_PASSWORD:zrc}

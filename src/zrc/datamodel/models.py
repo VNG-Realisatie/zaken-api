@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.gis.db.models import GeometryField
 from django.db import models
 from django.utils.crypto import get_random_string
 
@@ -27,6 +28,10 @@ class Zaak(models.Model):
     toelichting = models.TextField(
         max_length=1000, blank=True,
         help_text='Een toelichting op de zaak.'
+    )
+    zaakgeometrie = GeometryField(
+        blank=True, null=True,
+        help_text="Punt, lijn of (multi-)vlak geometrie-informatie, in WKT formaat."
     )
 
     class Meta:

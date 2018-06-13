@@ -58,6 +58,7 @@ class US39TestCase(APITestCase):
             'registratiedatum': '2018-06-11',
             'toelichting': 'Een stel dronken toeristen speelt versterkte '
                            'muziek af vanuit een gehuurde boot.',
+            'zaakgeometrie': 'POINT (4.910649523925713 52.37240093589432)',
         }
 
         response = self.client.post(url, data)
@@ -78,6 +79,8 @@ class US39TestCase(APITestCase):
             'Een stel dronken toeristen speelt versterkte '
             'muziek af vanuit een gehuurde boot.'
         )
+        self.assertEqual(zaak.zaakgeometrie.x, 4.910649523925713)
+        self.assertEqual(zaak.zaakgeometrie.y, 52.37240093589432)
 
     def test_zet_zaakstatus(self):
         """
@@ -253,6 +256,7 @@ class Application:
             'zaakidentificatie': f'AMS{intern_id}',
             'registratiedatum': created.strftime('%Y-%m-%d'),
             'toelichting': self.data['text'],
+            'zaakgeometrie': self.data['coordinates'],
         })
         self.references['zaak_url'] = response.json()['url']
 
@@ -312,6 +316,8 @@ class US39IntegrationTestCase(APITestCase):
 
         zaak = Zaak.objects.get(zaakidentificatie='AMS9966')
         self.assertEqual(zaak.toelichting, 'test')
+        self.assertEqual(zaak.zaakgeometrie.x, 4.910649523925713)
+        self.assertEqual(zaak.zaakgeometrie.y, 52.37240093589432)
 
         self.assertEqual(zaak.status_set.count(), 2)
 

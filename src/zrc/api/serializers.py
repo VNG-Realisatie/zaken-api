@@ -20,6 +20,7 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
             'zaaktype',
             'registratiedatum',
             'toelichting',
+            'zaakgeometrie',
 
             # read-only veld, on-the-fly opgevraagd
             'status'

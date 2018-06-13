@@ -20,7 +20,7 @@ You need the following libraries and/or programs:
 
 * `Python`_ 3.4 or above
 * Python `Virtualenv`_ and `Pip`_
-* `PostgreSQL`_ 9.1 or above
+* `PostgreSQL`_ 9.1 or above, with postgis extension
 * `Node.js`_
 * `npm`_
 
@@ -44,7 +44,7 @@ development machine.
 
    .. code-block:: bash
 
-       $ git clone git@bitbucket.org:maykinmedia/zrc.git
+       $ git clone git@github.com:maykinmedia/gemma-zaakregistratiecomponent.git
        $ cd zrc
 
 3. Install all required libraries.

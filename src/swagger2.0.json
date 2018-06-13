@@ -569,6 +569,11 @@
                     "type": "string",
                     "maxLength": 1000
                 },
+                "zaakgeometrie": {
+                    "title": "Zaakgeometrie",
+                    "description": "Punt, lijn of (multi-)vlak geometrie-informatie, in WKT formaat.",
+                    "type": "string"
+                },
                 "status": {
                     "title": "Status",
                     "description": "Indien geen status bekend is, dan is de waarde 'null'",
