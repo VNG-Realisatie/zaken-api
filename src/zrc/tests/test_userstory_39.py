@@ -15,12 +15,15 @@ from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import isodatetime, utcdatetime
 
-ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/'
-STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1/'
-STATUS_TYPE_OVERLAST_GECONSTATEERD = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/2/'
-OBJECT_MET_ADRES = 'https://example.com/orc/api/v1/objecten/1/'
-DOMEIN_DATA = 'https://example.com/domeindata/api/v1/data/1/'
-FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1/'
+ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1'
+STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1'
+STATUS_TYPE_OVERLAST_GECONSTATEERD = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/2'
+OBJECT_MET_ADRES = 'https://example.com/orc/api/v1/objecten/1'
+DOMEIN_DATA = 'https://example.com/domeindata/api/v1/data/1'
+FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
+# file:///home/bbt/Downloads/2a.aansluitspecificatieskennisgevingen-gegevenswoordenboek-entiteitenv1.0.6.pdf
+# Stadsdeel is een WijkObject in het RSGB
+STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 TEST_DATA = {
     "id": 9966,
@@ -221,6 +224,33 @@ class US39TestCase(APITestCase):
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
                 'informatieobject': FOTO,
+            }
+        )
+
+    def test_zet_stadsdeel(self):
+        url = get_operation_url('zaakobject_create')
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        data = {
+            'zaak': zaak_url,
+            'object': STADSDEEL,
+            'relatieomschrijving': 'Afgeleid gebied',
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = response.json()
+        zaakobject = ZaakObject.objects.get()
+        self.assertEqual(zaakobject.zaak, zaak)
+        detail_url = get_operation_url('zaakobject_read', id=zaakobject.id)
+        self.assertEqual(
+            response_data,
+            {
+                'url': f"http://testserver{detail_url}",
+                'zaak': f"http://testserver{zaak_url}",
+                'object': STADSDEEL,
+                'relatieomschrijving': 'Afgeleid gebied',
             }
         )
 
