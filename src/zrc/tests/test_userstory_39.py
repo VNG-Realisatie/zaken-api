@@ -9,9 +9,12 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.models import (
-    DomeinData, KlantContact, Status, Zaak, ZaakInformatieObject, ZaakObject
+    DomeinData, KlantContact, Rol, Status, Zaak, ZaakInformatieObject,
+    ZaakObject
 )
-from zrc.datamodel.tests.factories import ZaakFactory
+from zrc.datamodel.tests.factories import (
+    OrganisatorischeEenheidFactory, ZaakFactory
+)
 
 from .utils import isodatetime, utcdatetime
 
@@ -251,6 +254,40 @@ class US39TestCase(APITestCase):
                 'zaak': f"http://testserver{zaak_url}",
                 'object': STADSDEEL,
                 'relatieomschrijving': 'Afgeleid gebied',
+            }
+        )
+
+    def test_zet_verantwoordelijk(self):
+        url = get_operation_url('rol_create')
+        betrokkene = OrganisatorischeEenheidFactory.create(naam='Waternet', datum_ontstaan=date(2006, 1, 1))
+        betrokkene_url = get_operation_url('betrokkene_read', id=betrokkene.id)
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        data = {
+            'zaak': zaak_url,
+            'betrokkene': betrokkene_url,
+            'rolomschrijving': 'Behandelaar',
+            'rolomschrijvingGeneriek': 'Behandelaar',
+            'roltoelichting': 'Baggeren van gracht',
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = response.json()
+        rol = Rol.objects.get()
+        self.assertEqual(rol.zaak, zaak)
+        self.assertEqual(rol.betrokkene, betrokkene)
+        detail_url = get_operation_url('rol_read', id=rol.id)
+        self.assertEqual(
+            response_data,
+            {
+                'url': f"http://testserver{detail_url}",
+                'zaak': f"http://testserver{zaak_url}",
+                'betrokkene': f"http://testserver{betrokkene_url}",
+                'rolomschrijving': 'Behandelaar',
+                'rolomschrijvingGeneriek': 'Behandelaar',
+                'roltoelichting': 'Baggeren van gracht',
             }
         )
 

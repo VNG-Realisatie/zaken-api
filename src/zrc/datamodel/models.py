@@ -6,6 +6,8 @@ from django.utils.crypto import get_random_string
 
 from zrc.validators import alphanumeric_excluding_diacritic
 
+from .constants import RolOmschrijving, RolOmschrijvingGeneriek
+
 
 class Zaak(models.Model):
     """
@@ -79,6 +81,31 @@ class Status(models.Model):
 
     def __str__(self):
         return "Status op {}".format(self.datum_status_gezet)
+
+
+class Rol(models.Model):
+    """
+    Modelleer de rol van een BETROKKENE bij een ZAAK.
+
+    Een of meerdere BETROKKENEn hebben een of meerdere ROL(len) in een ZAAK.
+    """
+    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
+    # TODO: very naive and simple approach - for now
+    betrokkene = models.ForeignKey('OrganisatorischeEenheid', on_delete=models.PROTECT)
+
+    rolomschrijving = models.CharField(
+        max_length=80, choices=RolOmschrijving.choices,
+        help_text='Algemeen gehanteerde benaming van de aard van de ROL'
+    )
+    rolomschrijving_generiek = models.CharField(
+        max_length=40, choices=RolOmschrijvingGeneriek.choices,
+        help_text='Algemeen gehanteerde benaming van de aard van de ROL'
+    )
+    roltoelichting = models.TextField(max_length=1000)
+
+    class Meta:
+        verbose_name = "Rol"
+        verbose_name_plural = "Rollen"
 
 
 class ZaakObject(models.Model):
@@ -174,3 +201,27 @@ class ZaakInformatieObject(models.Model):
     class Meta:
         verbose_name = 'Zaakinformatieobject'
         verbose_name_plural = 'Zaakinformatieobjecten'
+
+
+#
+# Betrokkenen
+#
+# Relevant: https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
+#
+class OrganisatorischeEenheid(models.Model):
+    organisatie_eenheid_identificatie = models.CharField(
+        max_length=24, validators=[alphanumeric_excluding_diacritic],
+        help_text="Een korte identificatie van de organisatorische eenheid."
+    )
+    organisatie_identificatie = models.PositiveIntegerField(
+        help_text='Het RSIN van de organisatie zijnde een Niet-natuurlijk '
+                  'persoon waarvan de ORGANISATORISCHE EENHEID deel uit maakt.'
+    )
+    datum_ontstaan = models.DateField(help_text="De datum wrop de organisatorische eenheid is ontstaan.")
+    naam = models.CharField(
+        max_length=50, help_text='De feitelijke naam van de organisatorische eenheid.'
+    )
+
+    class Meta:
+        verbose_name = "Organisatorische eenheid"
+        verbose_name_plural = "Organisatorische eenheden"
