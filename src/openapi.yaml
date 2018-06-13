@@ -10,6 +10,26 @@ info:
 security:
   - basic: []
 paths:
+  '/betrokkenen/{id}':
+    get:
+      operationId: organisatorischeeenheid_read
+      description: ''
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganisatorischeEenheid'
+      tags:
+        - betrokkenen
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Organisatorische eenheid.
+        required: true
+        schema:
+          type: integer
   /domeindata:
     post:
       operationId: domeindata_create
@@ -92,6 +112,46 @@ paths:
       - name: id
         in: path
         description: A unique integer value identifying this klantcontact.
+        required: true
+        schema:
+          type: integer
+  /rollen:
+    post:
+      operationId: rol_create
+      description: Koppel een BETROKKENE aan een ZAAK.
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rol'
+      tags:
+        - rollen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rol'
+        required: true
+    parameters: []
+  '/rollen/{id}':
+    get:
+      operationId: rol_read
+      description: ''
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rol'
+      tags:
+        - rollen
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Rol.
         required: true
         schema:
           type: integer
@@ -268,6 +328,44 @@ components:
       type: http
       scheme: basic
   schemas:
+    OrganisatorischeEenheid:
+      required:
+        - organisatieEenheidIdentificatie
+        - organisatieIdentificatie
+        - datumOntstaan
+        - naam
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+          format: uri
+          readOnly: true
+        organisatieEenheidIdentificatie:
+          title: Organisatie eenheid identificatie
+          description: Een korte identificatie van de organisatorische eenheid.
+          type: string
+          maxLength: 24
+          minLength: 1
+        organisatieIdentificatie:
+          title: Organisatie identificatie
+          description: >-
+            Het RSIN van de organisatie zijnde een Niet-natuurlijk persoon
+            waarvan de ORGANISATORISCHE EENHEID deel uit maakt.
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        datumOntstaan:
+          title: Datum ontstaan
+          description: De datum wrop de organisatorische eenheid is ontstaan.
+          type: string
+          format: date
+        naam:
+          title: Naam
+          description: De feitelijke naam van de organisatorische eenheid.
+          type: string
+          maxLength: 50
+          minLength: 1
     DomeinData:
       required:
         - zaak
@@ -321,6 +419,58 @@ components:
           description: Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt
           type: string
           maxLength: 20
+    Rol:
+      required:
+        - zaak
+        - betrokkene
+        - rolomschrijving
+        - rolomschrijvingGeneriek
+        - roltoelichting
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+          format: uri
+          readOnly: true
+        zaak:
+          title: Zaak
+          type: string
+          format: uri
+        betrokkene:
+          title: Betrokkene
+          type: string
+          format: uri
+        rolomschrijving:
+          title: Rolomschrijving
+          description: Algemeen gehanteerde benaming van de aard van de ROL
+          type: string
+          enum:
+            - Adviseur
+            - Behandelaar
+            - Belanghebbende
+            - Beslisser
+            - Initiator
+            - Klantcontacter
+            - Zaakcoördinator
+        rolomschrijvingGeneriek:
+          title: Rolomschrijving generiek
+          description: Algemeen gehanteerde benaming van de aard van de ROL
+          type: string
+          enum:
+            - Adviseur
+            - Behandelaar
+            - Belanghebbende
+            - Beslisser
+            - Initiator
+            - Klantcontacter
+            - Zaakcoördinator
+            - Mede-initiator
+        roltoelichting:
+          title: Roltoelichting
+          type: string
+          maxLength: 1000
+          minLength: 1
     Status:
       required:
         - zaak

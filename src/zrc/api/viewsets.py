@@ -2,11 +2,13 @@ from rest_framework import mixins, viewsets
 from zds_schema.decorators import action_description
 
 from zrc.datamodel.models import (
-    DomeinData, KlantContact, Status, Zaak, ZaakInformatieObject, ZaakObject
+    DomeinData, KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak,
+    ZaakInformatieObject, ZaakObject
 )
 
 from .serializers import (
-    DomeinDataSerializer, KlantContactSerializer, StatusSerializer,
+    DomeinDataSerializer, KlantContactSerializer,
+    OrganisatorischeEenheidSerializer, RolSerializer, StatusSerializer,
     ZaakInformatieObjectSerializer, ZaakObjectSerializer, ZaakSerializer
 )
 
@@ -65,3 +67,17 @@ class ZaakInformatieObjectViewSet(mixins.CreateModelMixin,
                                   viewsets.GenericViewSet):
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
+
+
+class BetrokkeneViewSet(mixins.RetrieveModelMixin,
+                        viewsets.GenericViewSet):
+    queryset = OrganisatorischeEenheid.objects.all()
+    serializer_class = OrganisatorischeEenheidSerializer
+
+
+@action_description('create', "Koppel een BETROKKENE aan een ZAAK.")
+class RolViewSet(mixins.CreateModelMixin,
+                 mixins.RetrieveModelMixin,
+                 viewsets.GenericViewSet):
+    queryset = Rol.objects.all()
+    serializer_class = RolSerializer

@@ -259,8 +259,10 @@ class US39TestCase(APITestCase):
 
     def test_zet_verantwoordelijk(self):
         url = get_operation_url('rol_create')
-        betrokkene = OrganisatorischeEenheidFactory.create(naam='Waternet', datum_ontstaan=date(2006, 1, 1))
-        betrokkene_url = get_operation_url('betrokkene_read', id=betrokkene.id)
+        betrokkene = OrganisatorischeEenheidFactory.create(
+            naam='Waternet', datum_ontstaan=date(2006, 1, 1)
+        )
+        betrokkene_url = get_operation_url('organisatorischeeenheid_read', id=betrokkene.id)
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', id=zaak.id)
         data = {

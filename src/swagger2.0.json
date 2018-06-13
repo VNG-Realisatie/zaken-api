@@ -29,6 +29,33 @@
         }
     ],
     "paths": {
+        "/betrokkenen/{id}": {
+            "get": {
+                "operationId": "organisatorischeeenheid_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/OrganisatorischeEenheid"
+                        }
+                    }
+                },
+                "tags": [
+                    "betrokkenen"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "A unique integer value identifying this Organisatorische eenheid.",
+                    "required": true,
+                    "type": "integer"
+                }
+            ]
+        },
         "/domeindata": {
             "post": {
                 "operationId": "domeindata_create",
@@ -134,6 +161,61 @@
                     "name": "id",
                     "in": "path",
                     "description": "A unique integer value identifying this klantcontact.",
+                    "required": true,
+                    "type": "integer"
+                }
+            ]
+        },
+        "/rollen": {
+            "post": {
+                "operationId": "rol_create",
+                "description": "Koppel een BETROKKENE aan een ZAAK.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Rol"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Rol"
+                        }
+                    }
+                },
+                "tags": [
+                    "rollen"
+                ]
+            },
+            "parameters": []
+        },
+        "/rollen/{id}": {
+            "get": {
+                "operationId": "rol_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Rol"
+                        }
+                    }
+                },
+                "tags": [
+                    "rollen"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "A unique integer value identifying this Rol.",
                     "required": true,
                     "type": "integer"
                 }
@@ -361,6 +443,50 @@
         }
     },
     "definitions": {
+        "OrganisatorischeEenheid": {
+            "required": [
+                "organisatieEenheidIdentificatie",
+                "organisatieIdentificatie",
+                "datumOntstaan",
+                "naam"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
+                "organisatieEenheidIdentificatie": {
+                    "title": "Organisatie eenheid identificatie",
+                    "description": "Een korte identificatie van de organisatorische eenheid.",
+                    "type": "string",
+                    "maxLength": 24,
+                    "minLength": 1
+                },
+                "organisatieIdentificatie": {
+                    "title": "Organisatie identificatie",
+                    "description": "Het RSIN van de organisatie zijnde een Niet-natuurlijk persoon waarvan de ORGANISATORISCHE EENHEID deel uit maakt.",
+                    "type": "integer",
+                    "maximum": 2147483647,
+                    "minimum": 0
+                },
+                "datumOntstaan": {
+                    "title": "Datum ontstaan",
+                    "description": "De datum wrop de organisatorische eenheid is ontstaan.",
+                    "type": "string",
+                    "format": "date"
+                },
+                "naam": {
+                    "title": "Naam",
+                    "description": "De feitelijke naam van de organisatorische eenheid.",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                }
+            }
+        },
         "DomeinData": {
             "required": [
                 "zaak",
@@ -425,6 +551,69 @@
                     "description": "Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt",
                     "type": "string",
                     "maxLength": 20
+                }
+            }
+        },
+        "Rol": {
+            "required": [
+                "zaak",
+                "betrokkene",
+                "rolomschrijving",
+                "rolomschrijvingGeneriek",
+                "roltoelichting"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
+                "zaak": {
+                    "title": "Zaak",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "betrokkene": {
+                    "title": "Betrokkene",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "rolomschrijving": {
+                    "title": "Rolomschrijving",
+                    "description": "Algemeen gehanteerde benaming van de aard van de ROL",
+                    "type": "string",
+                    "enum": [
+                        "Adviseur",
+                        "Behandelaar",
+                        "Belanghebbende",
+                        "Beslisser",
+                        "Initiator",
+                        "Klantcontacter",
+                        "Zaakco\u00f6rdinator"
+                    ]
+                },
+                "rolomschrijvingGeneriek": {
+                    "title": "Rolomschrijving generiek",
+                    "description": "Algemeen gehanteerde benaming van de aard van de ROL",
+                    "type": "string",
+                    "enum": [
+                        "Adviseur",
+                        "Behandelaar",
+                        "Belanghebbende",
+                        "Beslisser",
+                        "Initiator",
+                        "Klantcontacter",
+                        "Zaakco\u00f6rdinator",
+                        "Mede-initiator"
+                    ]
+                },
+                "roltoelichting": {
+                    "title": "Roltoelichting",
+                    "type": "string",
+                    "maxLength": 1000,
+                    "minLength": 1
                 }
             }
         },
