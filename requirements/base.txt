@@ -4,6 +4,7 @@
 #
 #    pip-compile --no-index --output-file requirements/base.txt requirements/base.in
 #
+-e git+https://github.com/maykinmedia/gemma-zaken-common.git@master#egg=zds_schema
 certifi==2018.4.16        # via requests
 chardet==3.0.4            # via requests
 click==6.7                # via pip-tools
@@ -32,6 +33,7 @@ psycopg2-binary==2.7.4
 python-dateutil==2.7.3
 python-dotenv==0.8.2
 pytz==2018.4
+pyyaml==3.12
 raven==6.9.0
 requests==2.18.4          # via coreapi
 ruamel.yaml==0.15.37      # via drf-yasg

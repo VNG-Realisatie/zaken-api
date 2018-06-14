@@ -15,3 +15,5 @@ django-filter
 djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
+
+-e git+https://github.com/maykinmedia/gemma-zaken-common.git@master#egg=zds_schema
