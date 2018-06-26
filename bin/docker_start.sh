@@ -1,6 +1,7 @@
 #!/bin/sh
 
-set -e
+set -e # exit on error
+set -x # echo commands
 
 # Wait for the database container
 # See: https://docs.docker.com/compose/startup-order/
@@ -25,4 +26,5 @@ python src/manage.py migrate
 
 # Start server
 >&2 echo "Starting server"
+
 uwsgi --http :8000 --module zrc.wsgi --static-map /static=/app/static --chdir=src

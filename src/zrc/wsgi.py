@@ -10,6 +10,8 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+from zrc.setup import setup_env
+
 
 def init_newrelic():
     if os.environ.get('PROJECT_ROOT'):
@@ -24,4 +26,5 @@ def init_newrelic():
 # Enable New Relic on production
 # init_newrelic()
 
+setup_env()
 application = get_wsgi_application()

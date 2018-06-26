@@ -1,6 +1,13 @@
 from django.core.exceptions import ImproperlyConfigured
 
-from .base import *
+import os
+
+os.environ.setdefault('DB_USER', os.getenv('DATABASE_USER', 'postgres'))
+os.environ.setdefault('DB_NAME', os.getenv('DATABASE_NAME', 'postgres'))
+os.environ.setdefault('DB_PASSWORD', os.getenv('DATABASE_PASSWORD', ''))
+os.environ.setdefault('DB_HOST', os.getenv('DATABASE_HOST', 'db'))
+
+from .base import *  # noqa isort:skip
 
 # Helper function
 missing_environment_vars = []
@@ -27,17 +34,17 @@ MANAGERS = ADMINS
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = getenv('ALLOWED_HOSTS', '*', split=True)
 
-# Database
-DATABASES = {
+CACHES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'USER': getenv('DATABASE_USER', 'postgres'),
-        'NAME': getenv('DATABASE_NAME', 'postgres'),
-        'PASSWORD': getenv('DATABASE_PASSWORD', ''),
-        'HOST': getenv('DATABASE_USER', 'db'),
-        'PORT': getenv('DATABASE_PORT', '5432'),
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # https://github.com/jazzband/django-axes/blob/master/docs/configuration.rst#cache-problems
+    'axes_cache': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
 
 # See: docker-compose.yml
 # Optional Docker container usage below:
@@ -75,16 +82,33 @@ CSRF_COOKIE_SECURE = getenv('CSRF_COOKIE_SECURE', False)
 #
 # Custom settings
 #
-AXES_BEHIND_REVERSE_PROXY = False
-ENVIRONMENT = 'docker'
 
-# Override settings with local settings.
-try:
-    from .local import *
-except ImportError:
-    pass
+ENVIRONMENT = 'docker'
 
 
 if missing_environment_vars:
     raise ImproperlyConfigured(
         'These environment variables are required but missing: {}'.format(', '.join(missing_environment_vars)))
+
+#
+# Library settings
+#
+
+# django-axes
+AXES_BEHIND_REVERSE_PROXY = False
+AXES_CACHE = 'axes_cache'
+
+# Raven
+# INSTALLED_APPS = INSTALLED_APPS + [
+#     'raven.contrib.django.raven_compat',
+# ]
+# RAVEN_CONFIG = {
+#     'dsn': 'https://',
+# }
+# LOGGING['handlers'].update({
+#     'sentry': {
+#         'level': 'WARNING',
+#         'class': 'raven.handlers.logging.SentryHandler',
+#         'dsn': RAVEN_CONFIG['dsn']
+#     },
+# })
