@@ -44,6 +44,7 @@ CACHES = {
     }
 }
 
+FORCE_SCRIPT_NAME = '/zrc'
 GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
 
 # See: docker-compose.yml
