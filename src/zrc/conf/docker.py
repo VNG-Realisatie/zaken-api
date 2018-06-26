@@ -44,7 +44,11 @@ CACHES = {
     }
 }
 
+# Deal with being hosted on a subpath
 FORCE_SCRIPT_NAME = '/zrc'
+STATIC_URL = f"{FORCE_SCRIPT_NAME}{STATIC_URL}"
+MEDIA_URL = f"{FORCE_SCRIPT_NAME}{MEDIA_URL}"
+
 GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
 
 # See: docker-compose.yml
