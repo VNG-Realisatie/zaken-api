@@ -276,61 +276,6 @@
                 }
             ]
         },
-        "/zaakinformatieobjecten": {
-            "post": {
-                "operationId": "zaakinformatieobject_create",
-                "description": "Registreer een INFORMATIEOBJECT bij een ZAAK.",
-                "parameters": [
-                    {
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ZaakInformatieObject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/ZaakInformatieObject"
-                        }
-                    }
-                },
-                "tags": [
-                    "zaakinformatieobjecten"
-                ]
-            },
-            "parameters": []
-        },
-        "/zaakinformatieobjecten/{id}": {
-            "get": {
-                "operationId": "zaakinformatieobject_read",
-                "description": "Geef de details van een ZAAKINFORMATIEOBJECT relatie.",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/ZaakInformatieObject"
-                        }
-                    }
-                },
-                "tags": [
-                    "zaakinformatieobjecten"
-                ]
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "description": "A unique integer value identifying this Zaakinformatieobject.",
-                    "required": true,
-                    "type": "integer"
-                }
-            ]
-        },
         "/zaakobjecten": {
             "post": {
                 "operationId": "zaakobject_create",
@@ -654,34 +599,6 @@
                     "description": "Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak.",
                     "type": "string",
                     "maxLength": 1000
-                }
-            }
-        },
-        "ZaakInformatieObject": {
-            "required": [
-                "zaak",
-                "informatieobject"
-            ],
-            "type": "object",
-            "properties": {
-                "url": {
-                    "title": "Url",
-                    "type": "string",
-                    "format": "uri",
-                    "readOnly": true
-                },
-                "zaak": {
-                    "title": "Zaak",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "informatieobject": {
-                    "title": "Informatieobject",
-                    "description": "URL naar het INFORMATIEOBJECT in het DRC.",
-                    "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
-                    "minLength": 1
                 }
             }
         },

@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.models import (
-    DomeinData, KlantContact, Rol, Status, Zaak, ZaakInformatieObject,
+    DomeinData, KlantContact, Rol, Status, Zaak,
     ZaakObject
 )
 from zrc.datamodel.tests.factories import (
@@ -205,31 +205,6 @@ class US39TestCase(APITestCase):
             }
         )
 
-    def test_create_zaakinformatieobject(self):
-        url = get_operation_url('zaakinformatieobject_create')
-        zaak = ZaakFactory.create()
-        zaak_url = get_operation_url('zaak_read', id=zaak.id)
-        data = {
-            'zaak': zaak_url,
-            'informatieobject': FOTO,
-        }
-
-        response = self.client.post(url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        response_data = response.json()
-        zio = ZaakInformatieObject.objects.get()
-        self.assertEqual(zio.zaak, zaak)
-        detail_url = get_operation_url('zaakinformatieobject_read', id=zio.id)
-        self.assertEqual(
-            response_data,
-            {
-                'url': f"http://testserver{detail_url}",
-                'zaak': f"http://testserver{zaak_url}",
-                'informatieobject': FOTO,
-            }
-        )
-
     def test_zet_stadsdeel(self):
         url = get_operation_url('zaakobject_create')
         zaak = ZaakFactory.create()
@@ -360,16 +335,6 @@ class Application:
             'zaak': self.references['zaak_url'],
             'datumtijd': self.data['datetime'],
             'kanaal': self.data['source'],
-        })
-
-    def registreer_foto(self):
-        if not self.data['image']:
-            return
-
-        url = get_operation_url('zaakinformatieobject_create')
-        self.client.post(url, {
-            'zaak': self.references['zaak_url'],
-            'informatieobject': self.data['image'],
         })
 
 

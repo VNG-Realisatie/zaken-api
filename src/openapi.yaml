@@ -195,46 +195,6 @@ paths:
         required: true
         schema:
           type: integer
-  /zaakinformatieobjecten:
-    post:
-      operationId: zaakinformatieobject_create
-      description: Registreer een INFORMATIEOBJECT bij een ZAAK.
-      responses:
-        '201':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ZaakInformatieObject'
-      tags:
-        - zaakinformatieobjecten
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ZaakInformatieObject'
-        required: true
-    parameters: []
-  '/zaakinformatieobjecten/{id}':
-    get:
-      operationId: zaakinformatieobject_read
-      description: Geef de details van een ZAAKINFORMATIEOBJECT relatie.
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ZaakInformatieObject'
-      tags:
-        - zaakinformatieobjecten
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this Zaakinformatieobject.
-        required: true
-        schema:
-          type: integer
   /zaakobjecten:
     post:
       operationId: zaakobject_create
@@ -505,28 +465,6 @@ components:
             status van een zaak.
           type: string
           maxLength: 1000
-    ZaakInformatieObject:
-      required:
-        - zaak
-        - informatieobject
-      type: object
-      properties:
-        url:
-          title: Url
-          type: string
-          format: uri
-          readOnly: true
-        zaak:
-          title: Zaak
-          type: string
-          format: uri
-        informatieobject:
-          title: Informatieobject
-          description: URL naar het INFORMATIEOBJECT in het DRC.
-          type: string
-          format: uri
-          maxLength: 200
-          minLength: 1
     ZaakObject:
       required:
         - zaak

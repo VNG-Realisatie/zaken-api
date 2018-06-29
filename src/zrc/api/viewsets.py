@@ -3,13 +3,13 @@ from zds_schema.decorators import action_description
 
 from zrc.datamodel.models import (
     DomeinData, KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak,
-    ZaakInformatieObject, ZaakObject
+    ZaakObject
 )
 
 from .serializers import (
     DomeinDataSerializer, KlantContactSerializer,
     OrganisatorischeEenheidSerializer, RolSerializer, StatusSerializer,
-    ZaakInformatieObjectSerializer, ZaakObjectSerializer, ZaakSerializer
+    ZaakObjectSerializer, ZaakSerializer
 )
 
 
@@ -58,15 +58,6 @@ class KlantContactViewSet(mixins.CreateModelMixin,
                           viewsets.GenericViewSet):
     queryset = KlantContact.objects.all()
     serializer_class = KlantContactSerializer
-
-
-@action_description('create', "Registreer een INFORMATIEOBJECT bij een ZAAK.")
-@action_description('retrieve', "Geef de details van een ZAAKINFORMATIEOBJECT relatie.")
-class ZaakInformatieObjectViewSet(mixins.CreateModelMixin,
-                                  mixins.RetrieveModelMixin,
-                                  viewsets.GenericViewSet):
-    queryset = ZaakInformatieObject.objects.all()
-    serializer_class = ZaakInformatieObjectSerializer
 
 
 class BetrokkeneViewSet(mixins.RetrieveModelMixin,
