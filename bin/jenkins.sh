@@ -1,9 +1,7 @@
 #!/bin/bash
 
-python --version
-python3 --version
-python3.6 --version
-postgres --version
-psql --version
+set -e  # exit on errors
+set -x  # echo commands
 
-exit 0
+docker-compose -p zrc_tests -f ./docker-compose.yml build tests
+docker-compose -p zrc_tests -f ./docker-compose.yml run tests

@@ -1,0 +1,25 @@
+FROM nlxio/gemma-zrc
+
+# need to install extra dependencies...
+RUN apk --no-cache add \
+    gcc \
+    musl-dev \
+    pcre-dev \
+    linux-headers \
+    postgresql-dev \
+    python3-dev \
+    # libraries installed using git
+    git \
+    # lxml dependencies
+    libxslt-dev \
+    # pillow dependencies
+    jpeg-dev \
+    openjpeg-dev \
+    zlib-dev
+
+COPY ./requirements /app/requirements
+RUN pip install -r requirements/jenkins.txt
+
+COPY ./src/zrc/conf/jenkins.py /app/src/zrc/conf/jenkins.py
+COPY ./bin/runtests.sh /runtests.sh
+CMD ["/runtests.sh"]

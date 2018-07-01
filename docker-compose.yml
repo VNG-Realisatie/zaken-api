@@ -7,8 +7,8 @@ services:
     # environment:
     #   - POSTGRES_USER=${PG_USER:zrc}
     #   - POSTGRES_PASSWORD=${PG_PASSWORD:zrc}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
   web:
     image: nlxio/gemma-zrc
     environment:
@@ -18,6 +18,19 @@ services:
       - 8000:8000
     depends_on:
       - db
+  tests:
+    build:
+      context: ./
+      dockerfile: Dockerfile_tests
+    environment:
+      - DJANGO_SETTINGS_MODULE=zrc.conf.jenkins
+      - SECRET_KEY=jenkins
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=
+      - DB_HOST=db
+    depends_on:
+      - db
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:
