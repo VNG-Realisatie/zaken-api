@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .schema import schema_view
 from .viewsets import (
     BetrokkeneViewSet, DomeinDataViewSet, KlantContactViewSet, RolViewSet,
-    StatusViewSet, ZaakInformatieObjectViewSet, ZaakObjectViewSet, ZaakViewSet
+    StatusViewSet, ZaakObjectViewSet, ZaakViewSet
 )
 
 router = DefaultRouter(trailing_slash=False)
@@ -14,7 +14,6 @@ router.register('statussen', StatusViewSet)
 router.register('zaakobjecten', ZaakObjectViewSet)
 router.register('domeindata', DomeinDataViewSet)
 router.register('klantcontacten', KlantContactViewSet)
-router.register('zaakinformatieobjecten', ZaakInformatieObjectViewSet)
 router.register('betrokkenen', BetrokkeneViewSet)
 router.register('rollen', RolViewSet)
 

@@ -188,21 +188,6 @@ class KlantContact(models.Model):
         super().save(*args, **kwargs)
 
 
-class ZaakInformatieObject(models.Model):
-    """
-    Modelleer een INFORMATIEOBJECT horend bij een ZAAK.
-
-    INFORMATIEOBJECTen zijn bestanden die in het DRC leven. Een collectie van
-    (enkelvoudige) INFORMATIEOBJECTen wordt ook als 1 enkele resource ontsloten.
-    """
-    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
-    informatieobject = models.URLField(help_text="URL naar het INFORMATIEOBJECT in het DRC.")
-
-    class Meta:
-        verbose_name = 'Zaakinformatieobject'
-        verbose_name_plural = 'Zaakinformatieobjecten'
-
-
 #
 # Betrokkenen
 #
