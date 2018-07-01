@@ -3,10 +3,13 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 info = openapi.Info(
-    title="Zaakregistratiecomponent (ZRC) API documentatie",
+    title="Zaakregistratiecomponent (ZRC) API",
     default_version='1',
-    description="TODO",
-    contact=openapi.Contact(email="support@maykinmedia.nl"),
+    description="Een API om een zaakregistratiecomponent te benaderen",
+    contact=openapi.Contact(
+        email="support@maykinmedia.nl",
+        url="https://github.com/VNG-Realisatie/gemma-zaken"
+    ),
     license=openapi.License(name="EUPL 1.2"),
 )
 

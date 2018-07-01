@@ -1,8 +1,9 @@
 openapi: 3.0.0
 info:
-  title: Zaakregistratiecomponent (ZRC) API documentatie
-  description: TODO
+  title: Zaakregistratiecomponent (ZRC) API
+  description: Een API om een zaakregistratiecomponent te benaderen
   contact:
+    url: 'https://github.com/VNG-Realisatie/gemma-zaken'
     email: support@maykinmedia.nl
   license:
     name: EUPL 1.2
@@ -531,8 +532,8 @@ components:
           maxLength: 1000
         zaakgeometrie:
           title: Zaakgeometrie
-          description: 'Punt, lijn of (multi-)vlak geometrie-informatie, in WKT formaat.'
-          type: string
+          description: 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
+          type: object
         status:
           title: Status
           description: 'Indien geen status bekend is, dan is de waarde ''null'''

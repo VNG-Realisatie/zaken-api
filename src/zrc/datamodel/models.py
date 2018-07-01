@@ -33,7 +33,7 @@ class Zaak(models.Model):
     )
     zaakgeometrie = GeometryField(
         blank=True, null=True,
-        help_text="Punt, lijn of (multi-)vlak geometrie-informatie, in WKT formaat."
+        help_text="Punt, lijn of (multi-)vlak geometrie-informatie."
     )
 
     class Meta:

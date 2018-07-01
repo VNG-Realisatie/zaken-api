@@ -11,6 +11,7 @@ django-axes
 django-choices
 
 djangorestframework
+djangorestframework-gis
 django-filter
 djangorestframework-camel-case
 djangorestframework-filters

@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'zds_schema',  # before drf_yasg to override the management command
     'drf_yasg',
     'rest_framework',
+    'rest_framework_gis',
     'rest_framework_filters',
 
     # Project applications.

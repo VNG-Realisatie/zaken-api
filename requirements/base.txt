@@ -18,6 +18,7 @@ django-ipware==2.1.0      # via django-axes
 django==2.0.6
 djangorestframework-camel-case==0.2.0
 djangorestframework-filters==0.10.2
+djangorestframework-gis==0.13
 djangorestframework==3.8.2
 drf-yasg==1.8.0
 first==2.0.1              # via pip-tools
@@ -37,7 +38,7 @@ pyyaml==3.12
 raven==6.9.0
 requests==2.18.4          # via coreapi
 ruamel.yaml==0.15.37      # via drf-yasg
-six==1.11.0               # via drf-yasg, pip-tools, python-dateutil
+six==1.11.0               # via djangorestframework-gis, drf-yasg, pip-tools, python-dateutil
 unidecode==1.0.22
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.22             # via requests

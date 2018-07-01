@@ -63,7 +63,13 @@ class US39TestCase(APITestCase):
             'registratiedatum': '2018-06-11',
             'toelichting': 'Een stel dronken toeristen speelt versterkte '
                            'muziek af vanuit een gehuurde boot.',
-            'zaakgeometrie': 'POINT (4.910649523925713 52.37240093589432)',
+            'zaakgeometrie': {
+                'type': 'Point',
+                'coordinates': [
+                    4.910649523925713,
+                    52.37240093589432
+                ]
+            }
         }
 
         response = self.client.post(url, data)
@@ -75,6 +81,7 @@ class US39TestCase(APITestCase):
         # verify that the identification has been generated
         self.assertIsInstance(data['zaakidentificatie'], str)
         self.assertNotEqual(data['zaakidentificatie'], '')
+        self.assertIsInstance(data['zaakgeometrie'], dict)  # geojson object
 
         zaak = Zaak.objects.get()
         self.assertEqual(zaak.zaaktype, ZAAKTYPE)

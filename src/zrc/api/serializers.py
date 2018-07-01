@@ -26,6 +26,11 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
             # read-only veld, on-the-fly opgevraagd
             'status'
         )
+        extra_kwargs = {
+            'zaakgeometrie': {
+                'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
+            }
+        }
 
 
 class StatusSerializer(serializers.HyperlinkedModelSerializer):
