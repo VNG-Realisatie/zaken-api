@@ -9,8 +9,7 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.models import (
-    DomeinData, KlantContact, Rol, Status, Zaak,
-    ZaakObject
+    DomeinData, KlantContact, Rol, Status, Zaak, ZaakObject
 )
 from zrc.datamodel.tests.factories import (
     OrganisatorischeEenheidFactory, ZaakFactory
@@ -283,7 +282,6 @@ class Application:
         self.zet_statussen()
         self.registreer_domein_data()
         self.registreer_klantcontact()
-        self.registreer_foto()
 
     @property
     def domein_data_url(self):
@@ -378,5 +376,3 @@ class US39IntegrationTestCase(APITestCase):
             klantcontact.datumtijd,
             utcdatetime(2018, 5, 28, 7, 5, 8, 732587),
         )
-
-        self.assertFalse(zaak.zaakinformatieobject_set.exists())
