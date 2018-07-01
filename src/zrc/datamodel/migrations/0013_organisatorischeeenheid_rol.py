@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import zrc.validators
+import zds_schema.validators
 
 
 class Migration(migrations.Migration):
@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='OrganisatorischeEenheid',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('organisatie_eenheid_identificatie', models.CharField(help_text='Een korte identificatie van de organisatorische eenheid.', max_length=24, validators=[zrc.validators.AlphanumericExcludingDiacritic()])),
+                ('organisatie_eenheid_identificatie', models.CharField(help_text='Een korte identificatie van de organisatorische eenheid.', max_length=24, validators=[zds_schema.validators.AlphanumericExcludingDiacritic()])),
                 ('organisatie_identificatie', models.PositiveIntegerField(help_text='Het RSIN van de organisatie zijnde een Niet-natuurlijk persoon waarvan de ORGANISATORISCHE EENHEID deel uit maakt.')),
                 ('datum_ontstaan', models.DateField(help_text='De datum wrop de organisatorische eenheid is ontstaan.')),
                 ('naam', models.CharField(help_text='De feitelijke naam van de organisatorische eenheid.', max_length=50)),

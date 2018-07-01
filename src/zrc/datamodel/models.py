@@ -4,7 +4,7 @@ from django.contrib.gis.db.models import GeometryField
 from django.db import models
 from django.utils.crypto import get_random_string
 
-from zrc.validators import alphanumeric_excluding_diacritic
+from zds_schema.validators import alphanumeric_excluding_diacritic
 
 from .constants import RolOmschrijving, RolOmschrijvingGeneriek
 

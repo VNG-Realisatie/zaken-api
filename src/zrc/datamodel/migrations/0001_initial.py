@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import zrc.validators
+import zds_schema.validators
 
 
 class Migration(migrations.Migration):
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
             name='Zaak',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('zaakidentificatie', models.CharField(help_text='De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.', max_length=40, unique=True, validators=[zrc.validators.AlphanumericExcludingDiacritic()])),
+                ('zaakidentificatie', models.CharField(help_text='De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.', max_length=40, unique=True, validators=[zds_schema.validators.AlphanumericExcludingDiacritic()])),
             ],
             options={
                 'verbose_name': 'zaak',
