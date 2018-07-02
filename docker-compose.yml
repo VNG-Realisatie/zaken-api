@@ -22,6 +22,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile_tests
+    volumes:
+      - ${WORKSPACE}/reports:/app/reports
     environment:
       - DJANGO_SETTINGS_MODULE=zrc.conf.jenkins
       - SECRET_KEY=jenkins
@@ -33,4 +35,4 @@ services:
       - db
 
 # volumes:
-#   postgres_data:
+  # postgres_data:
