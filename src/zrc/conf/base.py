@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 
     # Project applications.
     'zrc.accounts',
+    'zrc.api',
     'zrc.datamodel',
     'zrc.utils',
 ]
