@@ -3,7 +3,7 @@
 set -e
 set -x
 
-python src/manage.py jenkins \
+cd src
+python manage.py jenkins \
   --noinput \
-  --project-apps-tests \
   --enable-coverage

@@ -21,5 +21,6 @@ COPY ./requirements /app/requirements
 RUN pip install -r requirements/jenkins.txt --exists-action=s
 
 COPY ./src/zrc/conf/jenkins.py /app/src/zrc/conf/jenkins.py
+RUN rm /app/src/zrc/conf/test.py
 COPY ./bin/runtests.sh /runtests.sh
 CMD ["/runtests.sh"]

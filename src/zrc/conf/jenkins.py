@@ -52,10 +52,8 @@ AXES_CACHE = 'axes_cache'
 INSTALLED_APPS += [
     'django_jenkins',
 ]
-PROJECT_APPS = [app for app in INSTALLED_APPS if app.startswith('zrc.')] + [
-    'zrc.api',
-    'zrc.tests',
-]
+PROJECT_APPS = [app for app in INSTALLED_APPS if app.startswith('zrc.')]
+
 JENKINS_TASKS = (
     'django_jenkins.tasks.run_pylint',
     'django_jenkins.tasks.run_pep8',

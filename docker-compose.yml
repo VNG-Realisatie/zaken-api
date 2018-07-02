@@ -23,7 +23,7 @@ services:
       context: ./
       dockerfile: Dockerfile_tests
     volumes:
-      - ${WORKSPACE}/reports:/app/reports
+      - ${WORKSPACE}/reports:/app/src/reports
     environment:
       - DJANGO_SETTINGS_MODULE=zrc.conf.jenkins
       - SECRET_KEY=jenkins
