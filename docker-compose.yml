@@ -1,5 +1,5 @@
 # Inspired by https://docs.docker.com/compose/django/
-version: '3'
+version: '3.4'
 
 services:
   db:
@@ -7,8 +7,8 @@ services:
     # environment:
     #   - POSTGRES_USER=${PG_USER:zrc}
     #   - POSTGRES_PASSWORD=${PG_PASSWORD:zrc}
-    # volumes:
-    #   - postgres_data:/var/lib/postgresql/data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   web:
     image: nlxio/gemma-zrc
     environment:
@@ -21,9 +21,9 @@ services:
   tests:
     build:
       context: ./
-      dockerfile: Dockerfile_tests
+      target: jenkins
     volumes:
-      - ${WORKSPACE}/reports:/app/src/reports
+      - ${WORKSPACE}/reports:/app/reports
     environment:
       - DJANGO_SETTINGS_MODULE=zrc.conf.jenkins
       - SECRET_KEY=jenkins
@@ -34,5 +34,5 @@ services:
     depends_on:
       - db
 
-# volumes:
-  # postgres_data:
+volumes:
+  postgres_data:
