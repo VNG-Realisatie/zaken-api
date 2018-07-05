@@ -102,18 +102,3 @@ if missing_environment_vars:
 # django-axes
 AXES_BEHIND_REVERSE_PROXY = False
 AXES_CACHE = 'axes_cache'
-
-# Raven
-# INSTALLED_APPS = INSTALLED_APPS + [
-#     'raven.contrib.django.raven_compat',
-# ]
-# RAVEN_CONFIG = {
-#     'dsn': 'https://',
-# }
-# LOGGING['handlers'].update({
-#     'sentry': {
-#         'level': 'WARNING',
-#         'class': 'raven.handlers.logging.SentryHandler',
-#         'dsn': RAVEN_CONFIG['dsn']
-#     },
-# })
