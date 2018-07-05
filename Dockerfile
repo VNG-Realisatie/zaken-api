@@ -30,24 +30,37 @@ RUN apk --no-cache add \
 COPY ./*.json /app/
 
 RUN npm install
+# Don't copy source code here, as changes will bust the cache for everyting
+# below
 
-# Stage 1.3 - Copy source code
-COPY ./src /app/src
 
 # Stage 2 - Prepare jenkins tests image
 FROM build AS jenkins
+
+# Stage 2.1 - Set up the needed testing/development dependencies
+# install all the dependencies for GeoDjango
+RUN apk --no-cache add \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    libressl2.7-libcrypto
+
+RUN apk --no-cache add \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    gdal-dev \
+    geos \
+    proj4
 
 COPY --from=build /usr/local/lib/python3.6 /usr/local/lib/python3.6
 COPY --from=build /app/requirements /app/requirements
 
 RUN pip install -r requirements/jenkins.txt --exists-action=s
 
-COPY ./src/zrc/conf/jenkins.py /app/src/zrc/conf/jenkins.py
-
+# Stage 2.2 - Set up testing config
 COPY ./setup.cfg /app/setup.cfg
 COPY ./bin/runtests.sh /runtests.sh
-RUN mkdir /app/log && rm /app/src/zrc/conf/test.py
 
+# Stage 2.3 - Copy source code
+COPY ./src /app/src
+RUN mkdir /app/log && rm /app/src/zrc/conf/test.py
 CMD ["/runtests.sh"]
 
 
@@ -66,6 +79,7 @@ RUN apk --no-cache add \
     openjpeg \
     zlib
 
+# Stage 3.1 - Set up dependencies
 # install all the dependencies for GeoDjango
 RUN apk --no-cache add \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -79,10 +93,13 @@ RUN apk --no-cache add \
 
 COPY --from=build /usr/local/lib/python3.6 /usr/local/lib/python3.6
 COPY --from=build /usr/local/bin/uwsgi /usr/local/bin/uwsgi
-COPY --from=build /app/src /app/src
+
+# Stage 3.2 - Copy source code
+WORKDIR /app
 COPY ./bin/docker_start.sh /start.sh
 RUN mkdir /app/log
 
-WORKDIR /app
+COPY ./src /app/src
+
 EXPOSE 8000
 CMD ["/start.sh"]
