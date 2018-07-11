@@ -14,7 +14,13 @@
 
     <body class="{% block body-class %}{% endblock %}">
 
-        <main>
+        <main class="content">
+            <header class="page-header">
+                <img class="page-header__logo" src="{% static 'img/vng.svg' %}">
+                <h1 class="page-header__title">Zaakregistratiecomponent</h1>
+            </header>
+
+
             {% block content %}
                 Override <code>{% verbatim %}{% block content %}{% endverbatim %}</code>
                 to get some actual content.

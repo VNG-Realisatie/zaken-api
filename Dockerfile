@@ -1,4 +1,4 @@
-# Stage 1.1 - Compile needed python dependencies
+# Stage 1 - Compile needed python dependencies
 FROM python:3.6-alpine AS build
 RUN apk --no-cache add \
     gcc \
@@ -21,23 +21,26 @@ WORKDIR /app
 COPY ./requirements /app/requirements
 RUN pip install -r requirements/production.txt
 
-# Stage 1.2 - Compile needed frontend dependencies
-RUN apk --no-cache add \
-    # node.js
-    nodejs \
-    nodejs-npm
+
+# Stage 2 - build frontend
+FROM mhart/alpine-node AS frontend-build
+
+WORKDIR /app
 
 COPY ./*.json /app/
-
 RUN npm install
-# Don't copy source code here, as changes will bust the cache for everyting
-# below
+
+COPY ./Gulpfile.js /app/
+COPY ./build /app/build/
+
+COPY src/zrc/sass/ /app/src/zrc/sass/
+RUN npm run build
 
 
-# Stage 2 - Prepare jenkins tests image
+# Stage 3 - Prepare jenkins tests image
 FROM build AS jenkins
 
-# Stage 2.1 - Set up the needed testing/development dependencies
+# Stage 3.1 - Set up the needed testing/development dependencies
 # install all the dependencies for GeoDjango
 RUN apk --no-cache add \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -54,17 +57,19 @@ COPY --from=build /app/requirements /app/requirements
 
 RUN pip install -r requirements/jenkins.txt --exists-action=s
 
-# Stage 2.2 - Set up testing config
+# Stage 3.2 - Set up testing config
 COPY ./setup.cfg /app/setup.cfg
 COPY ./bin/runtests.sh /runtests.sh
 
-# Stage 2.3 - Copy source code
+# Stage 3.3 - Copy source code
+COPY --from=frontend-build /app/src/zrc/static/fonts /app/src/zrc/static/fonts
+COPY --from=frontend-build /app/src/zrc/static/css /app/src/zrc/static/css
 COPY ./src /app/src
 RUN mkdir /app/log && rm /app/src/zrc/conf/test.py
 CMD ["/runtests.sh"]
 
 
-# Stage 3 - Build docker image suitable for execution and deployment
+# Stage 4 - Build docker image suitable for execution and deployment
 FROM python:3.6-alpine AS production
 RUN apk --no-cache add \
     ca-certificates \
@@ -79,7 +84,7 @@ RUN apk --no-cache add \
     openjpeg \
     zlib
 
-# Stage 3.1 - Set up dependencies
+# Stage 4.1 - Set up dependencies
 # install all the dependencies for GeoDjango
 RUN apk --no-cache add \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -94,11 +99,13 @@ RUN apk --no-cache add \
 COPY --from=build /usr/local/lib/python3.6 /usr/local/lib/python3.6
 COPY --from=build /usr/local/bin/uwsgi /usr/local/bin/uwsgi
 
-# Stage 3.2 - Copy source code
+# Stage 4.2 - Copy source code
 WORKDIR /app
 COPY ./bin/docker_start.sh /start.sh
 RUN mkdir /app/log
 
+COPY --from=frontend-build /app/src/zrc/static/fonts /app/src/zrc/static/fonts
+COPY --from=frontend-build /app/src/zrc/static/css /app/src/zrc/static/css
 COPY ./src /app/src
 
 EXPOSE 8000
