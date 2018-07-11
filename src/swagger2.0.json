@@ -57,61 +57,6 @@
                 }
             ]
         },
-        "/domeindata": {
-            "post": {
-                "operationId": "domeindata_create",
-                "description": "Registreer DOMEINDATA bij een zaak.",
-                "parameters": [
-                    {
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/DomeinData"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/DomeinData"
-                        }
-                    }
-                },
-                "tags": [
-                    "domeindata"
-                ]
-            },
-            "parameters": []
-        },
-        "/domeindata/{id}": {
-            "get": {
-                "operationId": "domeindata_read",
-                "description": "Geef de details van DOMEINDATA voor een ZAAK.",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/DomeinData"
-                        }
-                    }
-                },
-                "tags": [
-                    "domeindata"
-                ]
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "description": "A unique integer value identifying this domeindatareferentie.",
-                    "required": true,
-                    "type": "integer"
-                }
-            ]
-        },
         "/klantcontacten": {
             "post": {
                 "operationId": "klantcontact_create",
@@ -277,6 +222,61 @@
                 }
             ]
         },
+        "/zaakeigenschappen": {
+            "post": {
+                "operationId": "zaakeigenschap_create",
+                "description": "Registreer een eigenschap van een zaak.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ZaakEigenschap"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakEigenschap"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaakeigenschappen"
+                ]
+            },
+            "parameters": []
+        },
+        "/zaakeigenschappen/{id}": {
+            "get": {
+                "operationId": "zaakeigenschap_read",
+                "description": "Geef de details van ZaakEigenschap voor een ZAAK.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakEigenschap"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaakeigenschappen"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "A unique integer value identifying this zaakeigenschap.",
+                    "required": true,
+                    "type": "integer"
+                }
+            ]
+        },
         "/zaakobjecten": {
             "post": {
                 "operationId": "zaakobject_create",
@@ -433,34 +433,6 @@
                 }
             }
         },
-        "DomeinData": {
-            "required": [
-                "zaak",
-                "domeinData"
-            ],
-            "type": "object",
-            "properties": {
-                "url": {
-                    "title": "Url",
-                    "type": "string",
-                    "format": "uri",
-                    "readOnly": true
-                },
-                "zaak": {
-                    "title": "Zaak",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "domeinData": {
-                    "title": "Domein data",
-                    "description": "URL naar de domein data resource",
-                    "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
-                    "minLength": 1
-                }
-            }
-        },
         "KlantContact": {
             "required": [
                 "zaak",
@@ -600,6 +572,40 @@
                     "description": "Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak.",
                     "type": "string",
                     "maxLength": 1000
+                }
+            }
+        },
+        "ZaakEigenschap": {
+            "required": [
+                "zaak",
+                "eigenschap",
+                "waarde"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
+                "zaak": {
+                    "title": "Zaak",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "eigenschap": {
+                    "title": "Eigenschap",
+                    "description": "URL naar de eigenschap in het ZTC",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "waarde": {
+                    "title": "Waarde",
+                    "type": "string",
+                    "minLength": 1
                 }
             }
         },

@@ -127,27 +127,31 @@ class ZaakObject(models.Model):
         verbose_name_plural = 'zaakobjecten'
 
 
-class DomeinData(models.Model):
+class ZaakEigenschap(models.Model):
     """
-    Modelleer domeindata die behoort tot een ZAAK.
+    Een relevant inhoudelijk gegeven waarvan waarden bij
+    ZAAKen van eenzelfde ZAAKTYPE geregistreerd moeten
+    kunnen worden en dat geen standaard kenmerk is van een
+    ZAAK.
 
-    Domeindata kan buiten het ZRC leven, zoals specifiek in een vakapplicatie.
-    Dit model staat niet beschreven in RGBZ 2.0, maar er blijkt wel een
-    noodzaak voor te zijn.
-
-    TODO/vraagstukken:
-
-    * hoe vendor locking voorkomen?
-    * hoe mogelijk maken dat deze data door verschillende componenten/applicaties
-     'begrepen' wordt?
-
+    Het RGBZ biedt generieke kenmerken van zaken. Bij zaken van een bepaald zaaktype kan de
+    behoefte bestaan om waarden uit te wisselen van gegevens die specifiek zijn voor die zaken. Met
+    dit groepattribuutsoort simuleren we de aanwezigheid van dergelijke eigenschappen. Aangezien
+    deze eigenschappen specifiek zijn per zaaktype, modelleren we deze eigenschappen hier niet
+    specifiek. De eigenschappen worden per zaaktype in een desbetreffende zaaktypecatalogus
+    gespecificeerd.
     """
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
-    domein_data = models.URLField(help_text="URL naar de domein data resource")
+    eigenschap = models.URLField(help_text="URL naar de eigenschap in het ZTC")
+    # TODO - validatie _zou kunnen_ de configuratie van ZTC uitlezen om input
+    # te valideren, en per eigenschap een specifiek datatype terug te geven.
+    # In eerste instantie laten we het aan de client over om validatie en
+    # type-conversie te doen.
+    waarde = models.TextField()
 
     class Meta:
-        verbose_name = 'domeindatareferentie'
-        verbose_name_plural = 'domeindatareferenties'
+        verbose_name = 'zaakeigenschap'
+        verbose_name_plural = 'zaakeigenschappen'
 
 
 class KlantContact(models.Model):
