@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 
-from rest_framework_nested import routers
+from zds_schema import routers
 
 from .schema import schema_view
 from .viewsets import (
@@ -8,19 +8,16 @@ from .viewsets import (
     ZaakEigenschapViewSet, ZaakObjectViewSet, ZaakViewSet
 )
 
-root_router = routers.DefaultRouter(trailing_slash=False)
-root_router.register('zaken', ZaakViewSet)
-root_router.register('statussen', StatusViewSet)
-root_router.register('zaakobjecten', ZaakObjectViewSet)
-root_router.register('klantcontacten', KlantContactViewSet)
-root_router.register('betrokkenen', BetrokkeneViewSet)
-root_router.register('rollen', RolViewSet)
 
-zaak_router = routers.NestedSimpleRouter(
-    root_router, r'zaken',
-    lookup='zaak', trailing_slash=False,
-)
-zaak_router.register('zaakeigenschappen', ZaakEigenschapViewSet)
+router = routers.DefaultRouter()
+router.register('zaken', ZaakViewSet, [
+    routers.nested('zaakeigenschappen', ZaakEigenschapViewSet),
+])
+router.register('statussen', StatusViewSet)
+router.register('zaakobjecten', ZaakObjectViewSet)
+router.register('klantcontacten', KlantContactViewSet)
+router.register('betrokkenen', BetrokkeneViewSet)
+router.register('rollen', RolViewSet)
 
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path
@@ -37,7 +34,6 @@ urlpatterns = [
             name='schema-redoc'),
 
         # actual API
-        url(r'^', include(root_router.urls)),
-        url(r'^', include(zaak_router.urls)),
+        url(r'^', include(router.urls)),
     ])),
 ]
