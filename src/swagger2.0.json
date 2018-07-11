@@ -222,61 +222,6 @@
                 }
             ]
         },
-        "/zaakeigenschappen": {
-            "post": {
-                "operationId": "zaakeigenschap_create",
-                "description": "Registreer een eigenschap van een zaak.",
-                "parameters": [
-                    {
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ZaakEigenschap"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/ZaakEigenschap"
-                        }
-                    }
-                },
-                "tags": [
-                    "zaakeigenschappen"
-                ]
-            },
-            "parameters": []
-        },
-        "/zaakeigenschappen/{id}": {
-            "get": {
-                "operationId": "zaakeigenschap_read",
-                "description": "Geef de details van ZaakEigenschap voor een ZAAK.",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/ZaakEigenschap"
-                        }
-                    }
-                },
-                "tags": [
-                    "zaakeigenschappen"
-                ]
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "description": "A unique integer value identifying this zaakeigenschap.",
-                    "required": true,
-                    "type": "integer"
-                }
-            ]
-        },
         "/zaakobjecten": {
             "post": {
                 "operationId": "zaakobject_create",
@@ -384,6 +329,93 @@
                     "description": "A unique integer value identifying this zaak.",
                     "required": true,
                     "type": "integer"
+                }
+            ]
+        },
+        "/zaken/{zaak_pk}/zaakeigenschappen": {
+            "get": {
+                "operationId": "zaakeigenschap_list",
+                "description": "Geef een collectie van eigenschappen behorend bij een ZAAK.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ZaakEigenschap"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "post": {
+                "operationId": "zaakeigenschap_create",
+                "description": "Registreer een eigenschap van een ZAAK.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ZaakEigenschap"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakEigenschap"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "zaak_pk",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/zaken/{zaak_pk}/zaakeigenschappen/{id}": {
+            "get": {
+                "operationId": "zaakeigenschap_read",
+                "description": "Geef de details van ZaakEigenschap voor een ZAAK.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakEigenschap"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "A unique integer value identifying this zaakeigenschap.",
+                    "required": true,
+                    "type": "integer"
+                },
+                {
+                    "name": "zaak_pk",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
                 }
             ]
         }
@@ -575,40 +607,6 @@
                 }
             }
         },
-        "ZaakEigenschap": {
-            "required": [
-                "zaak",
-                "eigenschap",
-                "waarde"
-            ],
-            "type": "object",
-            "properties": {
-                "url": {
-                    "title": "Url",
-                    "type": "string",
-                    "format": "uri",
-                    "readOnly": true
-                },
-                "zaak": {
-                    "title": "Zaak",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "eigenschap": {
-                    "title": "Eigenschap",
-                    "description": "URL naar de eigenschap in het ZTC",
-                    "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
-                    "minLength": 1
-                },
-                "waarde": {
-                    "title": "Waarde",
-                    "type": "string",
-                    "minLength": 1
-                }
-            }
-        },
         "ZaakObject": {
             "required": [
                 "zaak",
@@ -693,6 +691,40 @@
                     "type": "string",
                     "format": "uri",
                     "readOnly": true
+                }
+            }
+        },
+        "ZaakEigenschap": {
+            "required": [
+                "zaak",
+                "eigenschap",
+                "waarde"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
+                "zaak": {
+                    "title": "Zaak",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "eigenschap": {
+                    "title": "Eigenschap",
+                    "description": "URL naar de eigenschap in het ZTC",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "waarde": {
+                    "title": "Waarde",
+                    "type": "string",
+                    "minLength": 1
                 }
             }
         }

@@ -1,5 +1,6 @@
 from rest_framework import mixins, viewsets
 from zds_schema.decorators import action_description
+from zds_schema.viewsets import NestedViewSetMixin
 
 from zrc.datamodel.models import (
     KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak, ZaakEigenschap,
@@ -41,14 +42,19 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
     serializer_class = ZaakObjectSerializer
 
 
-class ZaakEigenschapViewSet(mixins.CreateModelMixin,
+class ZaakEigenschapViewSet(NestedViewSetMixin,
+                            mixins.CreateModelMixin,
+                            mixins.ListModelMixin,
                             mixins.RetrieveModelMixin,
                             viewsets.GenericViewSet):
     """
     Opvragen en bewerken van ZAAKEIGENSCHAPpen
 
     create:
-    Registreer een eigenschap van een zaak.
+    Registreer een eigenschap van een ZAAK.
+
+    list:
+    Geef een collectie van eigenschappen behorend bij een ZAAK.
 
     retrieve:
     Geef de details van ZaakEigenschap voor een ZAAK.

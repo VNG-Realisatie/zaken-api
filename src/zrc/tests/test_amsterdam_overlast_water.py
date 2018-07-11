@@ -82,7 +82,8 @@ class Application:
         })
 
     def registreer_domein_data(self):
-        url = get_operation_url('zaakeigenschap_create')
+        zaak_pk = self.references['zaak_url'].rsplit('/')[-1]
+        url = get_operation_url('zaakeigenschap_create', zaak_pk=zaak_pk)
         self.client.post(url, {
             'zaak': self.references['zaak_url'],
             'eigenschap': EIGENSCHAP_OBJECTTYPE,
@@ -141,4 +142,7 @@ class US39IntegrationTestCase(APITestCase):
             utcdatetime(2018, 5, 28, 7, 5, 8, 732587),
         )
 
-        import bpdb; bpdb.set_trace()
+        eigenschappen = zaak.zaakeigenschap_set.all()
+        self.assertEqual(eigenschappen.count(), 2)
+        naam_boot = eigenschappen.get(eigenschap=EIGENSCHAP_NAAM_BOOT)
+        self.assertEqual(naam_boot.waarde, 'De Amsterdam')

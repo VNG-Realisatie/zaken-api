@@ -156,46 +156,6 @@ paths:
         required: true
         schema:
           type: integer
-  /zaakeigenschappen:
-    post:
-      operationId: zaakeigenschap_create
-      description: Registreer een eigenschap van een zaak.
-      responses:
-        '201':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ZaakEigenschap'
-      tags:
-        - zaakeigenschappen
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ZaakEigenschap'
-        required: true
-    parameters: []
-  '/zaakeigenschappen/{id}':
-    get:
-      operationId: zaakeigenschap_read
-      description: Geef de details van ZaakEigenschap voor een ZAAK.
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ZaakEigenschap'
-      tags:
-        - zaakeigenschappen
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this zaakeigenschap.
-        required: true
-        schema:
-          type: integer
   /zaakobjecten:
     post:
       operationId: zaakobject_create
@@ -281,6 +241,70 @@ paths:
         required: true
         schema:
           type: integer
+  '/zaken/{zaak_pk}/zaakeigenschappen':
+    get:
+      operationId: zaakeigenschap_list
+      description: Geef een collectie van eigenschappen behorend bij een ZAAK.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ZaakEigenschap'
+      tags:
+        - zaken
+    post:
+      operationId: zaakeigenschap_create
+      description: Registreer een eigenschap van een ZAAK.
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakEigenschap'
+      tags:
+        - zaken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakEigenschap'
+        required: true
+    parameters:
+      - name: zaak_pk
+        in: path
+        required: true
+        schema:
+          type: string
+  '/zaken/{zaak_pk}/zaakeigenschappen/{id}':
+    get:
+      operationId: zaakeigenschap_read
+      description: Geef de details van ZaakEigenschap voor een ZAAK.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakEigenschap'
+      tags:
+        - zaken
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this zaakeigenschap.
+        required: true
+        schema:
+          type: integer
+      - name: zaak_pk
+        in: path
+        required: true
+        schema:
+          type: string
 servers:
   - url: /api/v1
 components:
@@ -444,33 +468,6 @@ components:
             status van een zaak.
           type: string
           maxLength: 1000
-    ZaakEigenschap:
-      required:
-        - zaak
-        - eigenschap
-        - waarde
-      type: object
-      properties:
-        url:
-          title: Url
-          type: string
-          format: uri
-          readOnly: true
-        zaak:
-          title: Zaak
-          type: string
-          format: uri
-        eigenschap:
-          title: Eigenschap
-          description: URL naar de eigenschap in het ZTC
-          type: string
-          format: uri
-          maxLength: 200
-          minLength: 1
-        waarde:
-          title: Waarde
-          type: string
-          minLength: 1
     ZaakObject:
       required:
         - zaak
@@ -545,3 +542,30 @@ components:
           type: string
           format: uri
           readOnly: true
+    ZaakEigenschap:
+      required:
+        - zaak
+        - eigenschap
+        - waarde
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+          format: uri
+          readOnly: true
+        zaak:
+          title: Zaak
+          type: string
+          format: uri
+        eigenschap:
+          title: Eigenschap
+          description: URL naar de eigenschap in het ZTC
+          type: string
+          format: uri
+          maxLength: 200
+          minLength: 1
+        waarde:
+          title: Waarde
+          type: string
+          minLength: 1

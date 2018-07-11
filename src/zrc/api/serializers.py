@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 
 from zrc.datamodel.models import (
     KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak, ZaakEigenschap,
@@ -56,7 +57,11 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class ZaakEigenschapSerializer(serializers.HyperlinkedModelSerializer):
+class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
+    parent_lookup_kwargs = {
+        'zaak_pk': 'zaak__pk'
+    }
+
     class Meta:
         model = ZaakEigenschap
         fields = (
