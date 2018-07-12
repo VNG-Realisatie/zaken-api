@@ -55,6 +55,7 @@ if subpath:
     MEDIA_URL = f"{FORCE_SCRIPT_NAME}{MEDIA_URL}"
 
 GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
+GEOS_LIBRARY_PATH = '/usr/lib/libgeos_c.so.1'
 
 # See: docker-compose.yml
 # Optional Docker container usage below:
