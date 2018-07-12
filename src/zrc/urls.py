@@ -12,7 +12,7 @@ urlpatterns = [
     path('api/', include('zrc.api.urls')),
 
     # Simply show the master template.
-    path('', TemplateView.as_view(template_name='demo.html')),
+    path('', TemplateView.as_view(template_name='index.html')),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run collectstatic). Both the static
