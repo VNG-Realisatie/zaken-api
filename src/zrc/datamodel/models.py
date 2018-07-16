@@ -4,6 +4,7 @@ from django.contrib.gis.db.models import GeometryField
 from django.db import models
 from django.utils.crypto import get_random_string
 
+from zds_schema.fields import RSINField
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
 from .constants import RolOmschrijving, RolOmschrijvingGeneriek
@@ -23,6 +24,8 @@ class Zaak(models.Model):
                   'verantwoordelijk is voor de behandeling van de ZAAK.',
         validators=[alphanumeric_excluding_diacritic]
     )
+    bronorganisatie = RSINField(help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de '
+                                          'organisatie die de zaak heeft gecreeerd.')
     zaaktype = models.URLField(help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
     registratiedatum = models.DateField(
         help_text='De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd'
@@ -39,6 +42,7 @@ class Zaak(models.Model):
     class Meta:
         verbose_name = 'zaak'
         verbose_name_plural = 'zaken'
+        unique_together = ('bronorganisatie', 'zaakidentificatie')
 
     def __str__(self):
         return self.zaakidentificatie

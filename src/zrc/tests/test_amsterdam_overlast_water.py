@@ -57,7 +57,8 @@ class Application:
 
         response = self.client.post(zaak_create_url, {
             'zaaktype': ZAAKTYPE,
-            'zaakidentificatie': f'AMS{intern_id}',
+            'bronorganisatie': '517439943',
+            'zaakidentificatie': f'WATER_{intern_id}',
             'registratiedatum': created.strftime('%Y-%m-%d'),
             'toelichting': self.data['text'],
             'zaakgeometrie': self.data['coordinates'],
@@ -114,7 +115,7 @@ class US39IntegrationTestCase(APITestCase):
 
         app.store_notification()
 
-        zaak = Zaak.objects.get(zaakidentificatie='AMS9966')
+        zaak = Zaak.objects.get(zaakidentificatie='WATER_9966')
         self.assertEqual(zaak.toelichting, 'test')
         self.assertEqual(zaak.zaakgeometrie.x, 4.910649523925713)
         self.assertEqual(zaak.zaakgeometrie.y, 52.37240093589432)
