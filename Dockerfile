@@ -40,6 +40,9 @@ RUN npm run build
 # Stage 3 - Prepare jenkins tests image
 FROM build AS jenkins
 
+RUN apk --no-cache add \
+    postgresql-client
+
 # Stage 3.1 - Set up the needed testing/development dependencies
 # install all the dependencies for GeoDjango
 RUN apk --no-cache add \
