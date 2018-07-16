@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   web:
-    image: nlxio/gemma-zrc
+    image: vngr/gemma-zrc
     environment:
       - DJANGO_SETTINGS_MODULE=zrc.conf.docker
       - SECRET_KEY=${SECRET_KEY}
