@@ -1,21 +1,24 @@
 from django.conf.urls import include, url
 
-from rest_framework.routers import DefaultRouter
+from zds_schema import routers
 
 from .schema import schema_view
 from .viewsets import (
-    BetrokkeneViewSet, DomeinDataViewSet, KlantContactViewSet, RolViewSet,
-    StatusViewSet, ZaakObjectViewSet, ZaakViewSet
+    BetrokkeneViewSet, KlantContactViewSet, RolViewSet, StatusViewSet,
+    ZaakEigenschapViewSet, ZaakObjectViewSet, ZaakViewSet
 )
 
-router = DefaultRouter(trailing_slash=False)
-router.register('zaken', ZaakViewSet)
+
+router = routers.DefaultRouter()
+router.register('zaken', ZaakViewSet, [
+    routers.nested('zaakeigenschappen', ZaakEigenschapViewSet),
+])
 router.register('statussen', StatusViewSet)
 router.register('zaakobjecten', ZaakObjectViewSet)
-router.register('domeindata', DomeinDataViewSet)
 router.register('klantcontacten', KlantContactViewSet)
 router.register('betrokkenen', BetrokkeneViewSet)
 router.register('rollen', RolViewSet)
+
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path
 

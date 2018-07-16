@@ -19,3 +19,12 @@ class OrganisatorischeEenheidFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'datamodel.OrganisatorischeEenheid'
+
+
+class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    eigenschap = factory.Faker('url')
+    waarde = factory.Faker('word')
+
+    class Meta:
+        model = 'datamodel.ZaakEigenschap'

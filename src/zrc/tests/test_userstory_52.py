@@ -1,0 +1,64 @@
+"""
+Als behandelaar wil ik locatie- en/of objectinformatie bij de melding
+ontvangen, zodat ik voldoende details weet om de melding op te volgen.
+
+ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/52
+"""
+from rest_framework import status
+from rest_framework.test import APITestCase
+from zds_schema.tests import TypeCheckMixin, get_operation_url
+
+from zrc.datamodel.models import ZaakEigenschap
+from zrc.datamodel.tests.factories import ZaakEigenschapFactory, ZaakFactory
+
+EIGENSCHAP_OBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/eigenschappen/1'
+EIGENSCHAP_NAAM_BOOT = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/eigenschappen/2'
+
+
+class US52TestCase(TypeCheckMixin, APITestCase):
+
+    def test_zet_eigenschappen(self):
+        zaak = ZaakFactory.create()
+        url = get_operation_url('zaakeigenschap_create', zaak_pk=zaak.id)
+        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        data = {
+            'zaak': zaak_url,
+            'eigenschap': EIGENSCHAP_OBJECTTYPE,
+            'waarde': 'overlast_water'
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = response.json()
+        zaakeigenschap = ZaakEigenschap.objects.get()
+        self.assertEqual(zaakeigenschap.zaak, zaak)
+        detail_url = get_operation_url('zaakeigenschap_read', zaak_pk=zaak.id, id=zaakeigenschap.id)
+        self.assertEqual(
+            response_data,
+            {
+                'url': f"http://testserver{detail_url}",
+                'zaak': f"http://testserver{zaak_url}",
+                'eigenschap': EIGENSCHAP_OBJECTTYPE,
+                'waarde': 'overlast_water'
+            }
+        )
+
+    def test_lees_eigenschappen(self):
+        zaak = ZaakFactory.create()
+        ZaakEigenschapFactory.create_batch(3, zaak=zaak)
+        url = get_operation_url('zaakeigenschap_list', zaak_pk=zaak.id)
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+
+        self.assertEqual(len(response_data), 3)
+        for obj in response_data:
+            with self.subTest(obj=obj):
+                self.assertResponseTypes(obj, (
+                    ('url', str),
+                    ('zaak', str),
+                    ('eigenschap', str),
+                    ('waarde', str),
+                ))

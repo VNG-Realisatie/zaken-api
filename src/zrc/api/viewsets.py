@@ -1,15 +1,16 @@
 from rest_framework import mixins, viewsets
 from zds_schema.decorators import action_description
+from zds_schema.viewsets import NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    DomeinData, KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak,
+    KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak, ZaakEigenschap,
     ZaakObject
 )
 
 from .serializers import (
-    DomeinDataSerializer, KlantContactSerializer,
-    OrganisatorischeEenheidSerializer, RolSerializer, StatusSerializer,
-    ZaakObjectSerializer, ZaakSerializer
+    KlantContactSerializer, OrganisatorischeEenheidSerializer, RolSerializer,
+    StatusSerializer, ZaakEigenschapSerializer, ZaakObjectSerializer,
+    ZaakSerializer
 )
 
 
@@ -41,13 +42,25 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
     serializer_class = ZaakObjectSerializer
 
 
-@action_description('create', "Registreer DOMEINDATA bij een zaak.")
-@action_description('retrieve', "Geef de details van DOMEINDATA voor een ZAAK.")
-class DomeinDataViewSet(mixins.CreateModelMixin,
-                        mixins.RetrieveModelMixin,
-                        viewsets.GenericViewSet):
-    queryset = DomeinData.objects.all()
-    serializer_class = DomeinDataSerializer
+class ZaakEigenschapViewSet(NestedViewSetMixin,
+                            mixins.CreateModelMixin,
+                            mixins.ListModelMixin,
+                            mixins.RetrieveModelMixin,
+                            viewsets.GenericViewSet):
+    """
+    Opvragen en bewerken van ZAAKEIGENSCHAPpen
+
+    create:
+    Registreer een eigenschap van een ZAAK.
+
+    list:
+    Geef een collectie van eigenschappen behorend bij een ZAAK.
+
+    retrieve:
+    Geef de details van ZaakEigenschap voor een ZAAK.
+    """
+    queryset = ZaakEigenschap.objects.all()
+    serializer_class = ZaakEigenschapSerializer
 
 
 @action_description('create', "Registreer een klantcontact bij een ZAAK.\n\nIndien geen identificatie "
