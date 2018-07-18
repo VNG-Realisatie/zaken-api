@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from zds_schema.decorators import action_description
 from zds_schema.viewsets import NestedViewSetMixin
+from zds_schema.search import SearchMixin
 
 from zrc.datamodel.models import (
     KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak, ZaakEigenschap,
@@ -16,7 +17,8 @@ from .serializers import (
 )
 
 
-class ZaakViewSet(mixins.CreateModelMixin,
+class ZaakViewSet(SearchMixin,
+                  mixins.CreateModelMixin,
                   mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
     """
@@ -30,30 +32,25 @@ class ZaakViewSet(mixins.CreateModelMixin,
     """
     queryset = Zaak.objects.all()
     serializer_class = ZaakSerializer
+    search_input_serializer_class = ZaakZoekSerializer
 
     @action(methods=('post',), detail=False)
     def _zoek(self, request, *args, **kwargs):
         """
         Voer een (geo)-zoekopdracht uit op ZAAKen.
         """
-        input_serializer = ZaakZoekSerializer(data=request.data)
-        input_serializer.is_valid(raise_exception=True)
+        search_input = self.get_search_input()
 
-        within = input_serializer.validated_data['zaakgeometrie']['within']
-
+        within = search_input['zaakgeometrie']['within']
         queryset = (
             self
             .filter_queryset(self.get_queryset())
             .filter(zaakgeometrie__within=within)
         )
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        output_data = self.get_search_output(queryset)
+        return Response(output_data)
+    _zoek.is_search_action = True
 
 
 class StatusViewSet(mixins.CreateModelMixin,

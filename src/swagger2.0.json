@@ -315,7 +315,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Zaak"
+                            "$ref": "#/definitions/ZaakZoek"
                         }
                     }
                 ],
@@ -323,7 +323,7 @@
                     "201": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/Zaak"
+                            "$ref": "#/definitions/ZaakZoek"
                         }
                     }
                 },
@@ -727,6 +727,27 @@
                     "type": "string",
                     "format": "uri",
                     "readOnly": true
+                }
+            }
+        },
+        "GeoWithin": {
+            "title": "Zaakgeometrie",
+            "type": "object",
+            "properties": {
+                "within": {
+                    "title": "Within",
+                    "type": "object"
+                }
+            }
+        },
+        "ZaakZoek": {
+            "required": [
+                "zaakgeometrie"
+            ],
+            "type": "object",
+            "properties": {
+                "zaakgeometrie": {
+                    "$ref": "#/definitions/GeoWithin"
                 }
             }
         },

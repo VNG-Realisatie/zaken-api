@@ -214,7 +214,11 @@ paths:
       tags:
         - zaken
       requestBody:
-        $ref: '#/components/requestBodies/Zaak'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaak'
+        required: true
     parameters: []
   /zaken/_zoek:
     post:
@@ -226,11 +230,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Zaak'
+                $ref: '#/components/schemas/ZaakZoek'
       tags:
         - zaken
       requestBody:
-        $ref: '#/components/requestBodies/Zaak'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakZoek'
+        required: true
     parameters: []
   '/zaken/{id}':
     get:
@@ -319,13 +327,6 @@ paths:
 servers:
   - url: /api/v1
 components:
-  requestBodies:
-    Zaak:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Zaak'
-      required: true
   securitySchemes:
     basic:
       type: http
@@ -569,6 +570,20 @@ components:
           type: string
           format: uri
           readOnly: true
+    GeoWithin:
+      title: Zaakgeometrie
+      type: object
+      properties:
+        within:
+          title: Within
+          type: object
+    ZaakZoek:
+      required:
+        - zaakgeometrie
+      type: object
+      properties:
+        zaakgeometrie:
+          $ref: '#/components/schemas/GeoWithin'
     ZaakEigenschap:
       required:
         - zaak
