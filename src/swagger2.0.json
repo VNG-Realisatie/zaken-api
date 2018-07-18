@@ -280,7 +280,35 @@
         "/zaken": {
             "post": {
                 "operationId": "zaak_create",
-                "description": "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, dan wordt deze automatisch gegenereerd.",
+                "description": "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, dan wordt deze automatisch\ngegenereerd.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Zaak"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Zaak"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": []
+        },
+        "/zaken/_zoek": {
+            "post": {
+                "operationId": "zaak__zoek",
+                "description": "Voer een (geo)-zoekopdracht uit op ZAAKen.",
                 "parameters": [
                     {
                         "name": "data",

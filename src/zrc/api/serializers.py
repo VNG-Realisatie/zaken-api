@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 
 from zrc.datamodel.models import (
@@ -34,6 +35,14 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
             }
         }
         validators = []  # Remove a default "unique together" constraint.
+
+
+class GeoWithinSerializer(serializers.Serializer):
+    within = GeometryField(required=False)
+
+
+class ZaakZoekSerializer(serializers.Serializer):
+    zaakgeometrie = GeoWithinSerializer(required=True)
 
 
 class StatusSerializer(serializers.HyperlinkedModelSerializer):

@@ -199,9 +199,8 @@ paths:
   /zaken:
     post:
       operationId: zaak_create
-      description: >-
+      description: |-
         Maak een ZAAK aan.
-
 
         Indien geen zaakidentificatie gegeven is, dan wordt deze automatisch
         gegenereerd.
@@ -215,11 +214,23 @@ paths:
       tags:
         - zaken
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Zaak'
-        required: true
+        $ref: '#/components/requestBodies/Zaak'
+    parameters: []
+  /zaken/_zoek:
+    post:
+      operationId: zaak__zoek
+      description: Voer een (geo)-zoekopdracht uit op ZAAKen.
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaak'
+      tags:
+        - zaken
+      requestBody:
+        $ref: '#/components/requestBodies/Zaak'
     parameters: []
   '/zaken/{id}':
     get:
@@ -308,6 +319,13 @@ paths:
 servers:
   - url: /api/v1
 components:
+  requestBodies:
+    Zaak:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Zaak'
+      required: true
   securitySchemes:
     basic:
       type: http

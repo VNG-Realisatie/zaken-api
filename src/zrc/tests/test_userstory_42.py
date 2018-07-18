@@ -28,7 +28,7 @@ class US52TestCase(TypeCheckMixin, APITestCase):
         # no geo set
         ZaakFactory.create()
 
-        url = '/api/v1/zaken/_zoek'
+        url = get_operation_url('zaak__zoek')
 
         response = self.client.post(url, {
             'zaakgeometrie': {
@@ -44,7 +44,7 @@ class US52TestCase(TypeCheckMixin, APITestCase):
         response_data = response.json()
         self.assertEqual(len(response_data), 1)
         detail_url = get_operation_url('zaak_read', id=zaak.id)
-        self.assertEqual(response_data[0]['url'], f"http://testserver/{detail_url}")
+        self.assertEqual(response_data[0]['url'], f"http://testserver{detail_url}")
 
     def test_filter_ook_zaaktype(self):
         raise NotImplementedError
