@@ -320,10 +320,13 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/ZaakZoek"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Zaak"
+                            }
                         }
                     }
                 },

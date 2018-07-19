@@ -225,12 +225,14 @@ paths:
       operationId: zaak__zoek
       description: Voer een (geo)-zoekopdracht uit op ZAAKen.
       responses:
-        '201':
+        '200':
           description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ZaakZoek'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zaak'
       tags:
         - zaken
       requestBody:
