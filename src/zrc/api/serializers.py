@@ -19,6 +19,7 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'url',
             'zaakidentificatie',
+            'bronorganisatie',
             'zaaktype',
             'registratiedatum',
             'toelichting',
@@ -32,6 +33,7 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
                 'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
             }
         }
+        validators = []  # Remove a default "unique together" constraint.
 
 
 class StatusSerializer(serializers.HyperlinkedModelSerializer):

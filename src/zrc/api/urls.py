@@ -8,7 +8,6 @@ from .viewsets import (
     ZaakEigenschapViewSet, ZaakObjectViewSet, ZaakViewSet
 )
 
-
 router = routers.DefaultRouter()
 router.register('zaken', ZaakViewSet, [
     routers.nested('zaakeigenschappen', ZaakEigenschapViewSet),

@@ -643,6 +643,7 @@
         },
         "Zaak": {
             "required": [
+                "bronorganisatie",
                 "zaaktype",
                 "registratiedatum"
             ],
@@ -659,6 +660,13 @@
                     "description": "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.",
                     "type": "string",
                     "maxLength": 40
+                },
+                "bronorganisatie": {
+                    "title": "Bronorganisatie",
+                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd.",
+                    "type": "string",
+                    "maxLength": 9,
+                    "minLength": 1
                 },
                 "zaaktype": {
                     "title": "Zaaktype",

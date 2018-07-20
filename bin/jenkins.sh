@@ -7,5 +7,16 @@ if [[ -z "$WORKSPACE" ]]; then
     export WORKSPACE=$(pwd)
 fi
 
-docker-compose -p zrc_tests -f ./docker-compose.yml build tests
-docker-compose -p zrc_tests -f ./docker-compose.yml run tests
+# use the Jenkins specific override
+cp bin/docker-compose.override.yml docker-compose.override.yml
+
+docker-compose \
+    -p zrc_tests \
+    build tests
+
+docker-compose \
+    -p zrc_tests \
+    run tests
+
+# cleanup
+git reset --hard

@@ -33,6 +33,7 @@ class US39TestCase(APITestCase):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'bronorganisatie': '517439943',
             'registratiedatum': '2018-06-11',
             'toelichting': 'Een stel dronken toeristen speelt versterkte '
                            'muziek af vanuit een gehuurde boot.',
@@ -66,6 +67,35 @@ class US39TestCase(APITestCase):
         )
         self.assertEqual(zaak.zaakgeometrie.x, 4.910649523925713)
         self.assertEqual(zaak.zaakgeometrie.y, 52.37240093589432)
+
+    def test_create_zaak_zonder_bronorganisatie(self):
+        url = get_operation_url('zaak_create')
+        data = {
+            'zaaktype': ZAAKTYPE,
+            'registratiedatum': '2018-06-11',
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('bronorganisatie', response.data)
+        error = response.data['bronorganisatie'][0]
+        self.assertEqual(error.code, 'required')
+
+    def test_create_zaak_invalide_rsin(self):
+        url = get_operation_url('zaak_create')
+        data = {
+            'zaaktype': ZAAKTYPE,
+            'bronorganisatie': '123456789',
+            'registratiedatum': '2018-06-11',
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('bronorganisatie', response.data)
+        error = response.data['bronorganisatie'][0]
+        self.assertEqual(error.code, 'invalid')
 
     def test_zet_zaakstatus(self):
         """
