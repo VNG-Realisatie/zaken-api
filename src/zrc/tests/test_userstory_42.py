@@ -15,7 +15,7 @@ from zrc.datamodel.tests.factories import ZaakFactory
 from .constants import POLYGON_AMSTERDAM_CENTRUM
 
 
-class US52TestCase(TypeCheckMixin, APITestCase):
+class US42TestCase(TypeCheckMixin, APITestCase):
 
     def test_anoniem_sqaure_rond_coordinaat(self):
         """
@@ -37,7 +37,7 @@ class US52TestCase(TypeCheckMixin, APITestCase):
                     'coordinates': [POLYGON_AMSTERDAM_CENTRUM]
                 }
             }
-        })
+        }, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -68,7 +68,7 @@ class US52TestCase(TypeCheckMixin, APITestCase):
                 }
             },
             'zaaktype': 'https://example.com/api/v1/zaaktype/1'
-        })
+        }, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

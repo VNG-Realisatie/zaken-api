@@ -2,6 +2,7 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from zds_schema.decorators import action_description
+from zds_schema.geojson import GeoMixin
 from zds_schema.search import SearchMixin
 from zds_schema.viewsets import NestedViewSetMixin
 
@@ -18,7 +19,8 @@ from .serializers import (
 )
 
 
-class ZaakViewSet(SearchMixin,
+class ZaakViewSet(GeoMixin,
+                  SearchMixin,
                   mixins.CreateModelMixin,
                   mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):

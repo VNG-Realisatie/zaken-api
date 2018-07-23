@@ -35,10 +35,10 @@ class ApiStrategyTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_412_PRECONDITION_FAILED)
 
-        response = self.client.get(url, headers={'Accept-Crs': 'dummy'})
+        response = self.client.get(url, HTTP_ACCEPT_CRS='dummy')
         self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
 
-        response = self.client.get(url, headers={'Accept-Crs': 'EPSG:4326'})
+        response = self.client.get(url, HTTP_ACCEPT_CRS='EPSG:4326')
         self.assertEqual(
             response['Content-Crs'],
             'EPSG:4326'
@@ -52,11 +52,11 @@ class ApiStrategyTests(APITestCase):
                 'zaaktype': 'https://example.com/foo/bar',
                 'bronorganisatie': '517439943',
                 'registratiedatum': '2018-06-11',
-            })
+            }, HTTP_ACCEPT_CRS='EPSG:4326')
 
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             self.assertEqual(response['Location'], response.data['url'])
 
         with self.subTest(crud='read'):
-            response_detail = self.client.get(response.data['url'])
+            response_detail = self.client.get(response.data['url'], HTTP_ACCEPT_CRS='EPSG:4326')
             self.assertEqual(response_detail.status_code, status.HTTP_200_OK)
