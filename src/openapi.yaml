@@ -204,6 +204,17 @@ paths:
 
         Indien geen zaakidentificatie gegeven is, dan wordt deze automatisch
         gegenereerd.
+      parameters:
+        - name: Accept-Crs
+          in: header
+          description: >-
+            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+            de GeoJSON spec is WGS84 de default.
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'EPSG:4326'
       responses:
         '201':
           description: ''
@@ -255,11 +266,28 @@ paths:
                   $ref: '#/components/schemas/Zaak'
       tags:
         - zaken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakZoek'
+        required: true
     parameters: []
   '/zaken/{id}':
     get:
       operationId: zaak_read
       description: Opvragen en bewerken van ZAAKen.
+      parameters:
+        - name: Accept-Crs
+          in: header
+          description: >-
+            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+            de GeoJSON spec is WGS84 de default.
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'EPSG:4326'
       responses:
         '200':
           description: ''

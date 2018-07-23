@@ -289,6 +289,16 @@
                         "schema": {
                             "$ref": "#/definitions/Zaak"
                         }
+                    },
+                    {
+                        "name": "Accept-Crs",
+                        "in": "header",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default.",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "EPSG:4326"
+                        ]
                     }
                 ],
                 "responses": {
@@ -310,6 +320,14 @@
                 "operationId": "zaak__zoek",
                 "description": "Voer een (geo)-zoekopdracht uit op ZAAKen.",
                 "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ZaakZoek"
+                        }
+                    },
                     {
                         "name": "Accept-Crs",
                         "in": "header",
@@ -351,7 +369,18 @@
             "get": {
                 "operationId": "zaak_read",
                 "description": "Opvragen en bewerken van ZAAKen.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "Accept-Crs",
+                        "in": "header",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default.",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "EPSG:4326"
+                        ]
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
