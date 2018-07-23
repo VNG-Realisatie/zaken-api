@@ -983,6 +983,21 @@
             "properties": {
                 "zaakgeometrie": {
                     "$ref": "#/definitions/GeoWithin"
+                },
+                "zaakidentificatie": {
+                    "title": "Zaakidentificatie",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "bronorganisatie": {
+                    "title": "Bronorganisatie",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "zaaktype": {
+                    "title": "Zaaktype",
+                    "type": "string",
+                    "minLength": 1
                 }
             }
         },

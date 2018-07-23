@@ -2,14 +2,15 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from zds_schema.decorators import action_description
-from zds_schema.viewsets import NestedViewSetMixin
 from zds_schema.search import SearchMixin
+from zds_schema.viewsets import NestedViewSetMixin
 
 from zrc.datamodel.models import (
     KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak, ZaakEigenschap,
     ZaakObject
 )
 
+from .filters import ZaakFilter
 from .serializers import (
     KlantContactSerializer, OrganisatorischeEenheidSerializer, RolSerializer,
     StatusSerializer, ZaakEigenschapSerializer, ZaakObjectSerializer,
@@ -33,6 +34,7 @@ class ZaakViewSet(SearchMixin,
     queryset = Zaak.objects.all()
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
+    filter_class = ZaakFilter
 
     @action(methods=('post',), detail=False)
     def _zoek(self, request, *args, **kwargs):

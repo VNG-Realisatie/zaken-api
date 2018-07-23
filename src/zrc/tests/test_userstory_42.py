@@ -47,4 +47,30 @@ class US52TestCase(TypeCheckMixin, APITestCase):
         self.assertEqual(response_data[0]['url'], f"http://testserver{detail_url}")
 
     def test_filter_ook_zaaktype(self):
-        raise NotImplementedError
+
+        # both in district
+        ZaakFactory.create(
+            zaakgeometrie=Point(4.887990, 52.377595),
+            zaaktype='https://example.com/api/v1/zaaktype/1'
+        )
+        ZaakFactory.create(
+            zaakgeometrie=Point(4.887990, 52.377595),
+            zaaktype='https://example.com/api/v1/zaaktype/2'
+        )
+
+        url = get_operation_url('zaak__zoek')
+
+        response = self.client.post(url, {
+            'zaakgeometrie': {
+                'within': {
+                    'type': 'Polygon',
+                    'coordinates': [POLYGON_AMSTERDAM_CENTRUM]
+                }
+            },
+            'zaaktype': 'https://example.com/api/v1/zaaktype/1'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response_data = response.json()
+        self.assertEqual(len(response_data), 1)
