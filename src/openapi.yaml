@@ -224,9 +224,29 @@ paths:
     post:
       operationId: zaak__zoek
       description: Voer een (geo)-zoekopdracht uit op ZAAKen.
+      parameters:
+        - name: Accept-Crs
+          in: header
+          description: >-
+            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+            de GeoJSON spec is WGS84 de default.
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'EPSG:4326'
       responses:
         '200':
           description: ''
+          headers:
+            Content-Crs:
+              description: >-
+                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default.
+              schema:
+                type: string
+                enum:
+                  - 'EPSG:4326'
           content:
             application/json:
               schema:
@@ -235,12 +255,6 @@ paths:
                   $ref: '#/components/schemas/Zaak'
       tags:
         - zaken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ZaakZoek'
-        required: true
     parameters: []
   '/zaken/{id}':
     get:
@@ -249,6 +263,15 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            Content-Crs:
+              description: >-
+                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default.
+              schema:
+                type: string
+                enum:
+                  - 'EPSG:4326'
           content:
             application/json:
               schema:
@@ -549,6 +572,8 @@ components:
       minItems: 2
     Point:
       description: GeoJSON point geometry
+      required:
+        - coordinates
       type: object
       allOf:
         - $ref: '#/components/schemas/Geometry'
@@ -560,6 +585,8 @@ components:
         url: 'https://tools.ietf.org/html/rfc7946#section-3.1.2'
     MultiPoint:
       description: GeoJSON multi-point geometry
+      required:
+        - coordinates
       type: object
       allOf:
         - $ref: '#/components/schemas/Geometry'
@@ -573,6 +600,8 @@ components:
         url: 'https://tools.ietf.org/html/rfc7946#section-3.1.3'
     LineString:
       description: GeoJSON line-string geometry
+      required:
+        - coordinates
       type: object
       allOf:
         - $ref: '#/components/schemas/Geometry'
@@ -587,6 +616,8 @@ components:
         url: 'https://tools.ietf.org/html/rfc7946#section-3.1.4'
     MultiLineString:
       description: GeoJSON multi-line-string geometry
+      required:
+        - coordinates
       type: object
       allOf:
         - $ref: '#/components/schemas/Geometry'
@@ -602,6 +633,8 @@ components:
         url: 'https://tools.ietf.org/html/rfc7946#section-3.1.5'
     Polygon:
       description: GeoJSON polygon geometry
+      required:
+        - coordinates
       type: object
       allOf:
         - $ref: '#/components/schemas/Geometry'
@@ -617,6 +650,8 @@ components:
         url: 'https://tools.ietf.org/html/rfc7946#section-3.1.6'
     MultiPolygon:
       description: GeoJSON multi-polygon geometry
+      required:
+        - coordinates
       type: object
       allOf:
         - $ref: '#/components/schemas/Geometry'
@@ -634,6 +669,8 @@ components:
         url: 'https://tools.ietf.org/html/rfc7946#section-3.1.7'
     GeometryCollection:
       description: GeoJSON multi-polygon geometry
+      required:
+        - geometries
       type: object
       allOf:
         - $ref: '#/components/schemas/Geometry'
