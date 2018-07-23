@@ -280,7 +280,7 @@
         "/zaken": {
             "post": {
                 "operationId": "zaak_create",
-                "description": "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, dan wordt deze automatisch gegenereerd.",
+                "description": "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, dan wordt deze automatisch\ngegenereerd.",
                 "parameters": [
                     {
                         "name": "data",
@@ -305,6 +305,48 @@
             },
             "parameters": []
         },
+        "/zaken/_zoek": {
+            "post": {
+                "operationId": "zaak__zoek",
+                "description": "Voer een (geo)-zoekopdracht uit op ZAAKen.",
+                "parameters": [
+                    {
+                        "name": "Accept-Crs",
+                        "in": "header",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default.",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "EPSG:4326"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Zaak"
+                            }
+                        },
+                        "headers": {
+                            "Content-Crs": {
+                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default.",
+                                "type": "string",
+                                "enum": [
+                                    "EPSG:4326"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": []
+        },
         "/zaken/{id}": {
             "get": {
                 "operationId": "zaak_read",
@@ -315,6 +357,15 @@
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Zaak"
+                        },
+                        "headers": {
+                            "Content-Crs": {
+                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default.",
+                                "type": "string",
+                                "enum": [
+                                    "EPSG:4326"
+                                ]
+                            }
                         }
                     }
                 },
@@ -641,6 +692,262 @@
                 }
             }
         },
+        "Geometry": {
+            "title": "Geometry",
+            "description": "GeoJSON geometry",
+            "required": "type",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "description": "The geometry type",
+                    "type": "string",
+                    "enum": [
+                        "Point",
+                        "MultiPoint",
+                        "LineString",
+                        "MultiLineString",
+                        "Polygon",
+                        "MultiPolygon",
+                        "Feature",
+                        "FeatureCollection",
+                        "GeometryCollection"
+                    ]
+                }
+            },
+            "discriminator": "type",
+            "externalDocs": {
+                "url": "https://tools.ietf.org/html/rfc7946#section-3.1"
+            }
+        },
+        "Point2D": {
+            "title": "Point2D",
+            "description": "A 2D point",
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2
+        },
+        "Point": {
+            "description": "GeoJSON point geometry",
+            "required": [
+                "coordinates"
+            ],
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Geometry"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "coordinates": {
+                            "$ref": "#/definitions/Point2D"
+                        }
+                    }
+                }
+            ],
+            "externalDocs": {
+                "url": "https://tools.ietf.org/html/rfc7946#section-3.1.2"
+            }
+        },
+        "MultiPoint": {
+            "description": "GeoJSON multi-point geometry",
+            "required": [
+                "coordinates"
+            ],
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Geometry"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "coordinates": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Point2D"
+                            }
+                        }
+                    }
+                }
+            ],
+            "externalDocs": {
+                "url": "https://tools.ietf.org/html/rfc7946#section-3.1.3"
+            }
+        },
+        "LineString": {
+            "description": "GeoJSON line-string geometry",
+            "required": [
+                "coordinates"
+            ],
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Geometry"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "coordinates": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Point2D"
+                            },
+                            "minItems": 2
+                        }
+                    }
+                }
+            ],
+            "externalDocs": {
+                "url": "https://tools.ietf.org/html/rfc7946#section-3.1.4"
+            }
+        },
+        "MultiLineString": {
+            "description": "GeoJSON multi-line-string geometry",
+            "required": [
+                "coordinates"
+            ],
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Geometry"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "coordinates": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/Point2D"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "externalDocs": {
+                "url": "https://tools.ietf.org/html/rfc7946#section-3.1.5"
+            }
+        },
+        "Polygon": {
+            "description": "GeoJSON polygon geometry",
+            "required": [
+                "coordinates"
+            ],
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Geometry"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "coordinates": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/Point2D"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "externalDocs": {
+                "url": "https://tools.ietf.org/html/rfc7946#section-3.1.6"
+            }
+        },
+        "MultiPolygon": {
+            "description": "GeoJSON multi-polygon geometry",
+            "required": [
+                "coordinates"
+            ],
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Geometry"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "coordinates": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Point2D"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "externalDocs": {
+                "url": "https://tools.ietf.org/html/rfc7946#section-3.1.7"
+            }
+        },
+        "GeometryCollection": {
+            "description": "GeoJSON multi-polygon geometry",
+            "required": [
+                "geometries"
+            ],
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Geometry"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "geometries": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Geometry"
+                            }
+                        }
+                    }
+                }
+            ],
+            "externalDocs": {
+                "url": "https://tools.ietf.org/html/rfc7946#section-3.1.8"
+            }
+        },
+        "GeoJSONGeometry": {
+            "title": "GeoJSONGeometry",
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/Point"
+                },
+                {
+                    "$ref": "#/definitions/MultiPoint"
+                },
+                {
+                    "$ref": "#/definitions/LineString"
+                },
+                {
+                    "$ref": "#/definitions/MultiLineString"
+                },
+                {
+                    "$ref": "#/definitions/Polygon"
+                },
+                {
+                    "$ref": "#/definitions/MultiPolygon"
+                },
+                {
+                    "$ref": "#/definitions/GeometryCollection"
+                }
+            ]
+        },
         "Zaak": {
             "required": [
                 "bronorganisatie",
@@ -689,9 +996,7 @@
                     "maxLength": 1000
                 },
                 "zaakgeometrie": {
-                    "title": "Zaakgeometrie",
-                    "description": "Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.",
-                    "type": "object"
+                    "$ref": "#/definitions/GeoJSONGeometry"
                 },
                 "status": {
                     "title": "Status",
@@ -699,6 +1004,41 @@
                     "type": "string",
                     "format": "uri",
                     "readOnly": true
+                }
+            }
+        },
+        "GeoWithin": {
+            "title": "Zaakgeometrie",
+            "type": "object",
+            "properties": {
+                "within": {
+                    "$ref": "#/definitions/GeoJSONGeometry"
+                }
+            }
+        },
+        "ZaakZoek": {
+            "required": [
+                "zaakgeometrie"
+            ],
+            "type": "object",
+            "properties": {
+                "zaakgeometrie": {
+                    "$ref": "#/definitions/GeoWithin"
+                },
+                "zaakidentificatie": {
+                    "title": "Zaakidentificatie",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "bronorganisatie": {
+                    "title": "Bronorganisatie",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "zaaktype": {
+                    "title": "Zaaktype",
+                    "type": "string",
+                    "minLength": 1
                 }
             }
         },

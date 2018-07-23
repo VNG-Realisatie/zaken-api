@@ -62,7 +62,7 @@ class Application:
             'registratiedatum': created.strftime('%Y-%m-%d'),
             'toelichting': self.data['text'],
             'zaakgeometrie': self.data['coordinates'],
-        })
+        }, HTTP_ACCEPT_CRS='EPSG:4326')
         self.references['zaak_url'] = response.json()['url']
 
     def zet_statussen(self):
