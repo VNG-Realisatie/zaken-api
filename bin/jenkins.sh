@@ -10,13 +10,8 @@ fi
 # use the Jenkins specific override
 cp bin/docker-compose.override.yml docker-compose.override.yml
 
-docker-compose \
-    -p zrc_tests \
-    build tests
-
-docker-compose \
-    -p zrc_tests \
-    run tests
+docker-compose build tests
+docker-compose run tests
 
 # cleanup
 git reset --hard
