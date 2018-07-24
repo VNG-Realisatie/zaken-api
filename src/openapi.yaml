@@ -209,7 +209,8 @@ paths:
           in: header
           description: >-
             Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default.
+            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
+            WGS84).
           required: true
           schema:
             type: string
@@ -240,7 +241,8 @@ paths:
           in: header
           description: >-
             Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default.
+            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
+            WGS84).
           required: true
           schema:
             type: string
@@ -253,7 +255,8 @@ paths:
             Content-Crs:
               description: >-
                 Het 'Coordinate Reference System' (CRS) van de antwoorddata.
-                Volgens de GeoJSON spec is WGS84 de default.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
+                hetzelfde als WGS84).
               schema:
                 type: string
                 enum:
@@ -282,7 +285,8 @@ paths:
           in: header
           description: >-
             Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default.
+            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
+            WGS84).
           required: true
           schema:
             type: string
@@ -295,7 +299,8 @@ paths:
             Content-Crs:
               description: >-
                 Het 'Coordinate Reference System' (CRS) van de antwoorddata.
-                Volgens de GeoJSON spec is WGS84 de default.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
+                hetzelfde als WGS84).
               schema:
                 type: string
                 enum:

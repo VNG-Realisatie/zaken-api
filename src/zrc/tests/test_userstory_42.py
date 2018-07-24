@@ -17,7 +17,7 @@ from .constants import POLYGON_AMSTERDAM_CENTRUM
 
 class US42TestCase(TypeCheckMixin, APITestCase):
 
-    def test_anoniem_sqaure_rond_coordinaat(self):
+    def test_anoniem_binnen_ams_centrum_district(self):
         """
         Test dat zaken binnen een bepaald gebied kunnen opgevraagd worden.
         """

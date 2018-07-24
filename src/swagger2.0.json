@@ -293,7 +293,7 @@
                     {
                         "name": "Accept-Crs",
                         "in": "header",
-                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default.",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
                         "required": true,
                         "type": "string",
                         "enum": [
@@ -331,7 +331,7 @@
                     {
                         "name": "Accept-Crs",
                         "in": "header",
-                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default.",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
                         "required": true,
                         "type": "string",
                         "enum": [
@@ -350,7 +350,7 @@
                         },
                         "headers": {
                             "Content-Crs": {
-                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default.",
+                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
                                 "type": "string",
                                 "enum": [
                                     "EPSG:4326"
@@ -373,7 +373,7 @@
                     {
                         "name": "Accept-Crs",
                         "in": "header",
-                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default.",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
                         "required": true,
                         "type": "string",
                         "enum": [
@@ -389,7 +389,7 @@
                         },
                         "headers": {
                             "Content-Crs": {
-                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default.",
+                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
                                 "type": "string",
                                 "enum": [
                                     "EPSG:4326"
