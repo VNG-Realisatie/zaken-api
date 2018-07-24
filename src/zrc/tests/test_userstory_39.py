@@ -104,7 +104,7 @@ class US39TestCase(APITestCase):
         """
         url = get_operation_url('status_create')
         zaak = ZaakFactory.create()
-        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
             'statusType': STATUS_TYPE,
@@ -117,7 +117,7 @@ class US39TestCase(APITestCase):
         response_data = response.json()
         status_ = Status.objects.get()
         self.assertEqual(status_.zaak, zaak)
-        detail_url = get_operation_url('status_read', id=status_.id)
+        detail_url = get_operation_url('status_read', uuid=status_.uuid)
         self.assertEqual(
             response_data,
             {
@@ -135,7 +135,7 @@ class US39TestCase(APITestCase):
         """
         url = get_operation_url('zaakobject_create')
         zaak = ZaakFactory.create()
-        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
             'object': OBJECT_MET_ADRES,
@@ -148,7 +148,7 @@ class US39TestCase(APITestCase):
         response_data = response.json()
         zaakobject = ZaakObject.objects.get()
         self.assertEqual(zaakobject.zaak, zaak)
-        detail_url = get_operation_url('zaakobject_read', id=zaakobject.id)
+        detail_url = get_operation_url('zaakobject_read', uuid=zaakobject.uuid)
         self.assertEqual(
             response_data,
             {
@@ -162,7 +162,7 @@ class US39TestCase(APITestCase):
     def test_create_klantcontact(self):
         url = get_operation_url('klantcontact_create')
         zaak = ZaakFactory.create()
-        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
             'datumtijd': isodatetime(2018, 6, 11, 13, 47, 55),
@@ -177,7 +177,7 @@ class US39TestCase(APITestCase):
         self.assertIsInstance(klantcontact.identificatie, str)
         self.assertNotEqual(klantcontact.identificatie, '')
         self.assertEqual(klantcontact.zaak, zaak)
-        detail_url = get_operation_url('klantcontact_read', id=klantcontact.id)
+        detail_url = get_operation_url('klantcontact_read', uuid=klantcontact.uuid)
         self.assertEqual(
             response_data,
             {
@@ -192,7 +192,7 @@ class US39TestCase(APITestCase):
     def test_zet_stadsdeel(self):
         url = get_operation_url('zaakobject_create')
         zaak = ZaakFactory.create()
-        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
             'object': STADSDEEL,
@@ -205,7 +205,7 @@ class US39TestCase(APITestCase):
         response_data = response.json()
         zaakobject = ZaakObject.objects.get()
         self.assertEqual(zaakobject.zaak, zaak)
-        detail_url = get_operation_url('zaakobject_read', id=zaakobject.id)
+        detail_url = get_operation_url('zaakobject_read', uuid=zaakobject.uuid)
         self.assertEqual(
             response_data,
             {
@@ -221,9 +221,9 @@ class US39TestCase(APITestCase):
         betrokkene = OrganisatorischeEenheidFactory.create(
             naam='Waternet', datum_ontstaan=date(2006, 1, 1)
         )
-        betrokkene_url = get_operation_url('organisatorischeeenheid_read', id=betrokkene.id)
+        betrokkene_url = get_operation_url('organisatorischeeenheid_read', uuid=betrokkene.uuid)
         zaak = ZaakFactory.create()
-        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
             'betrokkene': betrokkene_url,
@@ -239,7 +239,7 @@ class US39TestCase(APITestCase):
         rol = Rol.objects.get()
         self.assertEqual(rol.zaak, zaak)
         self.assertEqual(rol.betrokkene, betrokkene)
-        detail_url = get_operation_url('rol_read', id=rol.id)
+        detail_url = get_operation_url('rol_read', uuid=rol.uuid)
         self.assertEqual(
             response_data,
             {

@@ -40,6 +40,7 @@ class ZaakViewSet(GeoMixin,
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
     filter_class = ZaakFilter
+    lookup_field = 'uuid'
 
     @action(methods=('post',), detail=False)
     def _zoek(self, request, *args, **kwargs):
@@ -66,6 +67,7 @@ class StatusViewSet(mixins.CreateModelMixin,
                     viewsets.GenericViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
+    lookup_field = 'uuid'
 
 
 class ZaakObjectViewSet(mixins.CreateModelMixin,
@@ -86,6 +88,7 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
     """
     queryset = ZaakObject.objects.all()
     serializer_class = ZaakObjectSerializer
+    lookup_field = 'uuid'
 
 
 class ZaakEigenschapViewSet(NestedViewSetMixin,
@@ -107,6 +110,7 @@ class ZaakEigenschapViewSet(NestedViewSetMixin,
     """
     queryset = ZaakEigenschap.objects.all()
     serializer_class = ZaakEigenschapSerializer
+    lookup_field = 'uuid'
 
 
 class KlantContactViewSet(mixins.CreateModelMixin,
@@ -130,12 +134,14 @@ class KlantContactViewSet(mixins.CreateModelMixin,
     """
     queryset = KlantContact.objects.all()
     serializer_class = KlantContactSerializer
+    lookup_field = 'uuid'
 
 
 class BetrokkeneViewSet(mixins.RetrieveModelMixin,
                         viewsets.GenericViewSet):
     queryset = OrganisatorischeEenheid.objects.all()
     serializer_class = OrganisatorischeEenheidSerializer
+    lookup_field = 'uuid'
 
 
 class RolViewSet(mixins.CreateModelMixin,
@@ -150,3 +156,4 @@ class RolViewSet(mixins.CreateModelMixin,
     """
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
+    lookup_field = 'uuid'

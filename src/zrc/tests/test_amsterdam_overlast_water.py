@@ -83,8 +83,8 @@ class Application:
         })
 
     def registreer_domein_data(self):
-        zaak_pk = self.references['zaak_url'].rsplit('/')[-1]
-        url = get_operation_url('zaakeigenschap_create', zaak_pk=zaak_pk)
+        zaak_uuid = self.references['zaak_url'].rsplit('/')[-1]
+        url = get_operation_url('zaakeigenschap_create', zaak_uuid=zaak_uuid)
         self.client.post(url, {
             'zaak': self.references['zaak_url'],
             'eigenschap': EIGENSCHAP_OBJECTTYPE,

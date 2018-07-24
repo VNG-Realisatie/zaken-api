@@ -18,6 +18,10 @@ class Zaak(models.Model):
     en een welgedefinieerd eindresultaat, waarvan kwaliteit en doorlooptijd
     bewaakt moeten worden.
     """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     zaakidentificatie = models.CharField(
         max_length=40, unique=True, blank=True,
         help_text='De unieke identificatie van de ZAAK binnen de organisatie die '
@@ -53,9 +57,9 @@ class Zaak(models.Model):
         super().save(*args, **kwargs)
 
     @property
-    def current_status_pk(self):
+    def current_status_uuid(self):
         status = self.status_set.order_by('-datum_status_gezet').first()
-        return status.pk if status else None
+        return status.uuid if status else None
 
 
 class Status(models.Model):
@@ -65,6 +69,10 @@ class Status(models.Model):
     Een aanduiding van de stand van zaken van een ZAAK op basis van
     betekenisvol behaald resultaat voor de initiator van de ZAAK.
     """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     # relaties
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     status_type = models.URLField()
@@ -93,6 +101,10 @@ class Rol(models.Model):
 
     Een of meerdere BETROKKENEn hebben een of meerdere ROL(len) in een ZAAK.
     """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     # TODO: very naive and simple approach - for now
     betrokkene = models.ForeignKey('OrganisatorischeEenheid', on_delete=models.PROTECT)
@@ -119,6 +131,10 @@ class ZaakObject(models.Model):
     Het OBJECT in kwestie kan in verschillende andere componenten leven,
     zoals het RSGB.
     """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     object = models.URLField(help_text='URL naar de resource die het OBJECT beschrijft.')
     relatieomschrijving = models.CharField(
@@ -145,6 +161,10 @@ class ZaakEigenschap(models.Model):
     specifiek. De eigenschappen worden per zaaktype in een desbetreffende zaaktypecatalogus
     gespecificeerd.
     """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     eigenschap = models.URLField(help_text="URL naar de eigenschap in het ZTC")
     # TODO - validatie _zou kunnen_ de configuratie van ZTC uitlezen om input
@@ -166,6 +186,10 @@ class KlantContact(models.Model):
     een MEDEWERKER van de zaakbehandelende organisatie over een onderhanden of
     afgesloten ZAAK.
     """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     identificatie = models.CharField(
         max_length=14, unique=True,
@@ -202,6 +226,10 @@ class KlantContact(models.Model):
 # Relevant: https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
 #
 class OrganisatorischeEenheid(models.Model):
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     organisatie_eenheid_identificatie = models.CharField(
         max_length=24, validators=[alphanumeric_excluding_diacritic],
         help_text="Een korte identificatie van de organisatorische eenheid."

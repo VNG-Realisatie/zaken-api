@@ -30,7 +30,7 @@
         }
     ],
     "paths": {
-        "/betrokkenen/{id}": {
+        "/betrokkenen/{uuid}": {
             "get": {
                 "operationId": "organisatorischeeenheid_read",
                 "description": "",
@@ -49,11 +49,12 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this Organisatorische eenheid.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             ]
         },
@@ -104,7 +105,7 @@
             },
             "parameters": []
         },
-        "/klantcontacten/{id}": {
+        "/klantcontacten/{uuid}": {
             "get": {
                 "operationId": "klantcontact_read",
                 "description": "Opvragen en bewerken van KLANTCONTACTen.",
@@ -123,11 +124,12 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this klantcontact.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             ]
         },
@@ -178,7 +180,7 @@
             },
             "parameters": []
         },
-        "/rollen/{id}": {
+        "/rollen/{uuid}": {
             "get": {
                 "operationId": "rol_read",
                 "description": "Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.",
@@ -197,11 +199,12 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this Rol.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             ]
         },
@@ -252,7 +255,7 @@
             },
             "parameters": []
         },
-        "/statussen/{id}": {
+        "/statussen/{uuid}": {
             "get": {
                 "operationId": "status_read",
                 "description": "",
@@ -271,11 +274,12 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this status.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             ]
         },
@@ -326,7 +330,7 @@
             },
             "parameters": []
         },
-        "/zaakobjecten/{id}": {
+        "/zaakobjecten/{uuid}": {
             "get": {
                 "operationId": "zaakobject_read",
                 "description": "Geef de details van een ZAAKOBJECT relatie.",
@@ -345,11 +349,12 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this zaakobject.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             ]
         },
@@ -501,7 +506,7 @@
             },
             "parameters": []
         },
-        "/zaken/{id}": {
+        "/zaken/{uuid}": {
             "get": {
                 "operationId": "zaak_read",
                 "description": "Opvragen en bewerken van ZAAKen.",
@@ -540,15 +545,16 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this zaak.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             ]
         },
-        "/zaken/{zaak_pk}/zaakeigenschappen": {
+        "/zaken/{zaak_uuid}/zaakeigenschappen": {
             "get": {
                 "operationId": "zaakeigenschap_list",
                 "description": "Geef een collectie van eigenschappen behorend bij een ZAAK.",
@@ -595,14 +601,16 @@
             },
             "parameters": [
                 {
-                    "name": "zaak_pk",
+                    "name": "zaak_uuid",
                     "in": "path",
                     "required": true,
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
                 }
             ]
         },
-        "/zaken/{zaak_pk}/zaakeigenschappen/{id}": {
+        "/zaken/{zaak_uuid}/zaakeigenschappen/{uuid}": {
             "get": {
                 "operationId": "zaakeigenschap_read",
                 "description": "Geef de details van ZaakEigenschap voor een ZAAK.",
@@ -621,17 +629,20 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "uuid",
                     "in": "path",
-                    "description": "A unique integer value identifying this zaakeigenschap.",
+                    "description": "Unieke resource identifier (UUID4)",
                     "required": true,
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 },
                 {
-                    "name": "zaak_pk",
+                    "name": "zaak_uuid",
                     "in": "path",
                     "required": true,
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
                 }
             ]
         }

@@ -30,7 +30,7 @@ class ApiStrategyTests(APITestCase):
         # gebruikt te worden, en zien er vreemd uit t.o.v. wel courant gebruikte
         # opties.
         zaak = ZaakFactory.create(zaakgeometrie=Point(4.887990, 52.377595))  # LONG LAT
-        url = reverse('zaak-detail', kwargs={'pk': zaak.pk})
+        url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_412_PRECONDITION_FAILED)
