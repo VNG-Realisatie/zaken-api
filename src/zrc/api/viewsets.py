@@ -1,5 +1,9 @@
 from rest_framework import mixins, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from zds_schema.decorators import action_description
+from zds_schema.geojson import GeoMixin
+from zds_schema.search import SearchMixin
 from zds_schema.viewsets import NestedViewSetMixin
 
 from zrc.datamodel.models import (
@@ -7,23 +11,50 @@ from zrc.datamodel.models import (
     ZaakObject
 )
 
+from .filters import ZaakFilter
 from .serializers import (
     KlantContactSerializer, OrganisatorischeEenheidSerializer, RolSerializer,
     StatusSerializer, ZaakEigenschapSerializer, ZaakObjectSerializer,
-    ZaakSerializer
+    ZaakSerializer, ZaakZoekSerializer
 )
 
 
-@action_description('create', "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, "
-                              "dan wordt deze automatisch gegenereerd.")
-class ZaakViewSet(mixins.CreateModelMixin,
+class ZaakViewSet(GeoMixin,
+                  SearchMixin,
+                  mixins.CreateModelMixin,
                   mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
     """
     Opvragen en bewerken van ZAAKen.
+
+    create:
+    Maak een ZAAK aan.
+
+    Indien geen zaakidentificatie gegeven is, dan wordt deze automatisch
+    gegenereerd.
     """
     queryset = Zaak.objects.all()
     serializer_class = ZaakSerializer
+    search_input_serializer_class = ZaakZoekSerializer
+    filter_class = ZaakFilter
+
+    @action(methods=('post',), detail=False)
+    def _zoek(self, request, *args, **kwargs):
+        """
+        Voer een (geo)-zoekopdracht uit op ZAAKen.
+        """
+        search_input = self.get_search_input()
+
+        within = search_input['zaakgeometrie']['within']
+        queryset = (
+            self
+            .filter_queryset(self.get_queryset())
+            .filter(zaakgeometrie__within=within)
+        )
+
+        output_data = self.get_search_output(queryset)
+        return Response(output_data)
+    _zoek.is_search_action = True
 
 
 class StatusViewSet(mixins.CreateModelMixin,

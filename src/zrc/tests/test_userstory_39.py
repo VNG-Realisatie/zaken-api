@@ -46,7 +46,7 @@ class US39TestCase(APITestCase):
             }
         }
 
-        response = self.client.post(url, data)
+        response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         data = response.json()
@@ -75,7 +75,7 @@ class US39TestCase(APITestCase):
             'registratiedatum': '2018-06-11',
         }
 
-        response = self.client.post(url, data)
+        response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('bronorganisatie', response.data)
@@ -90,7 +90,7 @@ class US39TestCase(APITestCase):
             'registratiedatum': '2018-06-11',
         }
 
-        response = self.client.post(url, data)
+        response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('bronorganisatie', response.data)
