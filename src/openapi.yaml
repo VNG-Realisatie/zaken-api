@@ -32,11 +32,24 @@ paths:
         schema:
           type: integer
   /klantcontacten:
+    get:
+      operationId: klantcontact_list
+      description: Geef een lijst van KLANTCONTACTen.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KlantContact'
+      tags:
+        - klantcontacten
     post:
       operationId: klantcontact_create
-      description: >-
+      description: |-
         Registreer een klantcontact bij een ZAAK.
-
 
         Indien geen identificatie gegeven is, dan wordt deze automatisch
         gegenereerd.
@@ -59,7 +72,7 @@ paths:
   '/klantcontacten/{id}':
     get:
       operationId: klantcontact_read
-      description: Geef de details van een klantcontact voor een ZAAK.
+      description: Opvragen en bewerken van KLANTCONTACTen.
       responses:
         '200':
           description: ''
@@ -77,6 +90,20 @@ paths:
         schema:
           type: integer
   /rollen:
+    get:
+      operationId: rol_list
+      description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rol'
+      tags:
+        - rollen
     post:
       operationId: rol_create
       description: Koppel een BETROKKENE aan een ZAAK.
@@ -99,7 +126,7 @@ paths:
   '/rollen/{id}':
     get:
       operationId: rol_read
-      description: ''
+      description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
       responses:
         '200':
           description: ''
@@ -117,6 +144,20 @@ paths:
         schema:
           type: integer
   /statussen:
+    get:
+      operationId: status_list
+      description: ''
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+      tags:
+        - statussen
     post:
       operationId: status_create
       description: ''
@@ -157,6 +198,20 @@ paths:
         schema:
           type: integer
   /zaakobjecten:
+    get:
+      operationId: zaakobject_list
+      description: Geef een lijst van ZAAKOBJECTrelaties terug.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ZaakObject'
+      tags:
+        - zaakobjecten
     post:
       operationId: zaakobject_create
       description: Registreer een ZAAKOBJECT relatie.
@@ -197,6 +252,60 @@ paths:
         schema:
           type: integer
   /zaken:
+    get:
+      operationId: zaak_list
+      description: Geef een lijst van ZAAKen.
+      parameters:
+        - name: zaakidentificatie
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: bronorganisatie
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: zaaktype
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: Accept-Crs
+          in: header
+          description: >-
+            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
+            WGS84).
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'EPSG:4326'
+      responses:
+        '200':
+          description: ''
+          headers:
+            Content-Crs:
+              description: >-
+                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
+                hetzelfde als WGS84).
+              schema:
+                type: string
+                enum:
+                  - 'EPSG:4326'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zaak'
+      tags:
+        - zaken
     post:
       operationId: zaak_create
       description: |-
