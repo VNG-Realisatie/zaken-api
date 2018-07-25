@@ -1,4 +1,5 @@
 import uuid
+from datetime import date
 
 from django.contrib.gis.db.models import GeometryField
 from django.db import models
@@ -7,7 +8,9 @@ from django.utils.crypto import get_random_string
 from zds_schema.fields import RSINField
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from .constants import RolOmschrijving, RolOmschrijvingGeneriek
+from .constants import (
+    RolOmschrijving, RolOmschrijvingGeneriek, ZaakobjectTypes
+)
 
 
 class Zaak(models.Model):
@@ -32,8 +35,22 @@ class Zaak(models.Model):
                                           'organisatie die de zaak heeft gecreeerd.')
     zaaktype = models.URLField(help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
     registratiedatum = models.DateField(
-        help_text='De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd'
+        help_text='De datum waarop de zaakbehandelende organisatie de ZAAK heeft '
+                  'geregistreerd. Indien deze niet opgegeven wordt, wordt de '
+                  'datum van vandaag gebruikt.',
+        default=date.today
     )
+
+    startdatum = models.DateField(help_text='De datum waarop met de uitvoering van de zaak is gestart')
+    einddatum = models.DateField(
+        blank=True, null=True,
+        help_text='De datum waarop de uitvoering van de zaak afgerond is.',
+    )
+    einddatum_gepland = models.DateField(
+        blank=True, null=True,
+        help_text='De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.',
+    )
+
     toelichting = models.TextField(
         max_length=1000, blank=True,
         help_text='Een toelichting op de zaak.'
@@ -106,8 +123,7 @@ class Rol(models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
-    # TODO: very naive and simple approach - for now
-    betrokkene = models.ForeignKey('OrganisatorischeEenheid', on_delete=models.PROTECT)
+    betrokkene = models.URLField(help_text="Een betrokkene gerelateerd aan een zaak")
 
     rolomschrijving = models.CharField(
         max_length=80, choices=RolOmschrijving.choices,
@@ -140,6 +156,11 @@ class ZaakObject(models.Model):
     relatieomschrijving = models.CharField(
         max_length=80, blank=True,
         help_text='Omschrijving van de betrekking tussen de ZAAK en het OBJECT.'
+    )
+    object_type = models.CharField(
+        max_length=100,
+        choices=ZaakobjectTypes.choices,
+        help_text="Beschrijft het type object gerelateerd aan de zaak"
     )
 
     class Meta:

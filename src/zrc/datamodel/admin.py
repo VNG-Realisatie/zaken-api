@@ -24,7 +24,7 @@ class KlantContactInline(admin.TabularInline):
 
 class RolInline(admin.TabularInline):
     model = Rol
-    raw_id_fields = ['zaak', 'betrokkene']
+    raw_id_fields = ['zaak']
 
 
 @admin.register(Zaak)
@@ -73,4 +73,3 @@ class OrganisatorischeEenheidAdmin(admin.ModelAdmin):
         'naam', 'organisatie_eenheid_identificatie',
         'organisatie_identificatie', 'datum_ontstaan'
     ]
-    inlines = [RolInline]

@@ -12,9 +12,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 
-from zrc.datamodel.constants import ZaakobjectTypes, RolOmschrijvingGeneriek
+from zrc.datamodel.constants import RolOmschrijvingGeneriek, ZaakobjectTypes
 from zrc.datamodel.models import Zaak
-
 
 # MOR aangemaakt in melding-app, leeft buiten ZRC
 MOR = 'https://example.com/orc/api/v1/mor/37c60cda-689e-4e4a-969c-fa4ed56cb2c6'
@@ -53,10 +52,10 @@ class US169TestCase(APITestCase):
         # aanmaken zaak
         response = self.client.post(zaak_create_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()
         self.assertIn('zaakidentificatie', data)
-        self.assertEqual(data['registriedatum'], date.today().strftime('%Y-%m-%d'))
+        self.assertEqual(data['registratiedatum'], date.today().strftime('%Y-%m-%d'))
         self.assertEqual(data['einddatumGepland'], '2018-08-25')
 
         zaak_url = data['url']
@@ -67,9 +66,9 @@ class US169TestCase(APITestCase):
         response = self.client.post(zo_create_url, {
             'zaak': zaak_url,
             'object': MOR,
-            'type': 'MeldingOpenbareRuimte',
+            'type': 'meldingOpenbareRuimte',
         })
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak = Zaak.objects.get()
         melding = zaak.zaakobject_set.get()
@@ -87,7 +86,7 @@ class US169TestCase(APITestCase):
             'roltoelichting': 'initiele melder',
         })
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         initiator = zaak.rol_set.get(rolomschrijving_generiek=RolOmschrijvingGeneriek.initiator)
         self.assertEqual(initiator.betrokkene, INITIATOR)
@@ -97,10 +96,10 @@ class US169TestCase(APITestCase):
             'zaak': zaak_url,
             'betrokkene': BEHANDELAAR,
             'rolomschrijving': 'Behandelaar',
-            'RolOmschrijvingGeneriek': 'Behandelaar',
+            'rolomschrijvingGeneriek': 'Behandelaar',
             'roltoelichting': 'behandelaar',
         })
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         behandelaar = zaak.rol_set.get(rolomschrijving_generiek=RolOmschrijvingGeneriek.behandelaar)
         self.assertEqual(behandelaar.betrokkene, BEHANDELAAR)

@@ -25,6 +25,9 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
             'bronorganisatie',
             'zaaktype',
             'registratiedatum',
+            'startdatum',
+            'einddatum',
+            'einddatum_gepland',
             'toelichting',
             'zaakgeometrie',
 
@@ -77,7 +80,8 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'zaak',
             'object',
-            'relatieomschrijving'
+            'relatieomschrijving',
+            'type',
         )
         extra_kwargs = {
             'url': {
@@ -85,6 +89,9 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
             },
             'zaak': {
                 'lookup_field': 'uuid',
+            },
+            'type': {
+                'source': 'object_type',
             }
         }
 
@@ -170,7 +177,4 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             },
-            'betrokkene': {
-                'lookup_field': 'uuid',
-            }
         }
