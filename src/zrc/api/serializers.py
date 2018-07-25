@@ -10,8 +10,10 @@ from zrc.datamodel.models import (
 
 class ZaakSerializer(serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
-        source='current_status_pk', read_only=True,
+        source='current_status_uuid',
+        read_only=True,
         view_name='status-detail',
+        lookup_url_kwarg='uuid',
         help_text="Indien geen status bekend is, dan is de waarde 'null'"
     )
 
@@ -30,6 +32,9 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
             'status'
         )
         extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
             'zaakgeometrie': {
                 'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
             }
@@ -55,6 +60,14 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             'datum_status_gezet',
             'statustoelichting'
         )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'zaak': {
+                'lookup_field': 'uuid',
+            }
+        }
 
 
 class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -66,11 +79,19 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
             'object',
             'relatieomschrijving'
         )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'zaak': {
+                'lookup_field': 'uuid',
+            }
+        }
 
 
 class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
     parent_lookup_kwargs = {
-        'zaak_pk': 'zaak__pk'
+        'zaak_uuid': 'zaak__uuid'
     }
 
     class Meta:
@@ -81,6 +102,14 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
             'eigenschap',
             'waarde',
         )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'zaak': {
+                'lookup_field': 'uuid',
+            }
+        }
 
 
 class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
@@ -94,7 +123,15 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
             'kanaal',
         )
         extra_kwargs = {
-            'identificatie': {'required': False},
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'identificatie': {
+                'required': False
+            },
+            'zaak': {
+                'lookup_field': 'uuid',
+            }
         }
 
 
@@ -108,6 +145,11 @@ class OrganisatorischeEenheidSerializer(serializers.HyperlinkedModelSerializer):
             'datum_ontstaan',
             'naam',
         )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+        }
 
 
 class RolSerializer(serializers.HyperlinkedModelSerializer):
@@ -121,3 +163,14 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
             'rolomschrijving_generiek',
             'roltoelichting',
         )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'zaak': {
+                'lookup_field': 'uuid',
+            },
+            'betrokkene': {
+                'lookup_field': 'uuid',
+            }
+        }

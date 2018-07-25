@@ -19,8 +19,8 @@ class US52TestCase(TypeCheckMixin, APITestCase):
 
     def test_zet_eigenschappen(self):
         zaak = ZaakFactory.create()
-        url = get_operation_url('zaakeigenschap_create', zaak_pk=zaak.id)
-        zaak_url = get_operation_url('zaak_read', id=zaak.id)
+        url = get_operation_url('zaakeigenschap_create', zaak_uuid=zaak.uuid)
+        zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
             'eigenschap': EIGENSCHAP_OBJECTTYPE,
@@ -33,7 +33,7 @@ class US52TestCase(TypeCheckMixin, APITestCase):
         response_data = response.json()
         zaakeigenschap = ZaakEigenschap.objects.get()
         self.assertEqual(zaakeigenschap.zaak, zaak)
-        detail_url = get_operation_url('zaakeigenschap_read', zaak_pk=zaak.id, id=zaakeigenschap.id)
+        detail_url = get_operation_url('zaakeigenschap_read', zaak_uuid=zaak.uuid, uuid=zaakeigenschap.uuid)
         self.assertEqual(
             response_data,
             {
@@ -47,7 +47,7 @@ class US52TestCase(TypeCheckMixin, APITestCase):
     def test_lees_eigenschappen(self):
         zaak = ZaakFactory.create()
         ZaakEigenschapFactory.create_batch(3, zaak=zaak)
-        url = get_operation_url('zaakeigenschap_list', zaak_pk=zaak.id)
+        url = get_operation_url('zaakeigenschap_list', zaak_uuid=zaak.uuid)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

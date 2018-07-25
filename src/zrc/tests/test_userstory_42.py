@@ -43,7 +43,7 @@ class US42TestCase(TypeCheckMixin, APITestCase):
 
         response_data = response.json()
         self.assertEqual(len(response_data), 1)
-        detail_url = get_operation_url('zaak_read', id=zaak.id)
+        detail_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         self.assertEqual(response_data[0]['url'], f"http://testserver{detail_url}")
 
     def test_filter_ook_zaaktype(self):
