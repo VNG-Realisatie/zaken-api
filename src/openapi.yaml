@@ -11,27 +11,6 @@ info:
 security:
   - basic: []
 paths:
-  '/betrokkenen/{uuid}':
-    get:
-      operationId: organisatorischeeenheid_read
-      description: ''
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OrganisatorischeEenheid'
-      tags:
-        - betrokkenen
-    parameters:
-      - name: uuid
-        in: path
-        description: Unieke resource identifier (UUID4)
-        required: true
-        schema:
-          type: string
-          format: uuid
   /klantcontacten:
     get:
       operationId: klantcontact_list
@@ -510,44 +489,6 @@ components:
       type: http
       scheme: basic
   schemas:
-    OrganisatorischeEenheid:
-      required:
-        - organisatieEenheidIdentificatie
-        - organisatieIdentificatie
-        - datumOntstaan
-        - naam
-      type: object
-      properties:
-        url:
-          title: Url
-          type: string
-          format: uri
-          readOnly: true
-        organisatieEenheidIdentificatie:
-          title: Organisatie eenheid identificatie
-          description: Een korte identificatie van de organisatorische eenheid.
-          type: string
-          maxLength: 24
-          minLength: 1
-        organisatieIdentificatie:
-          title: Organisatie identificatie
-          description: >-
-            Het RSIN van de organisatie zijnde een Niet-natuurlijk persoon
-            waarvan de ORGANISATORISCHE EENHEID deel uit maakt.
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        datumOntstaan:
-          title: Datum ontstaan
-          description: De datum wrop de organisatorische eenheid is ontstaan.
-          type: string
-          format: date
-        naam:
-          title: Naam
-          description: De feitelijke naam van de organisatorische eenheid.
-          type: string
-          maxLength: 50
-          minLength: 1
     KlantContact:
       required:
         - zaak
@@ -583,6 +524,7 @@ components:
       required:
         - zaak
         - betrokkene
+        - betrokkeneType
         - rolomschrijving
         - rolomschrijvingGeneriek
         - roltoelichting
@@ -599,8 +541,20 @@ components:
           format: uri
         betrokkene:
           title: Betrokkene
+          description: Een betrokkene gerelateerd aan een zaak
           type: string
           format: uri
+          maxLength: 200
+          minLength: 1
+        betrokkeneType:
+          title: Betrokkene type
+          type: string
+          enum:
+            - Natuurlijk persoon
+            - Niet-natuurlijk persoon
+            - Vestiging
+            - Organisatorische eenheid
+            - Medewerker
         rolomschrijving:
           title: Rolomschrijving
           description: Algemeen gehanteerde benaming van de aard van de ROL
@@ -669,6 +623,7 @@ components:
       required:
         - zaak
         - object
+        - type
       type: object
       properties:
         url:
@@ -692,6 +647,13 @@ components:
           description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
           type: string
           maxLength: 80
+        type:
+          title: Type
+          description: Beschrijft het type object gerelateerd aan de zaak
+          type: string
+          enum:
+            - VerblijfsObject
+            - MeldingOpenbareRuimte
     Geometry:
       title: Geometry
       description: GeoJSON geometry
@@ -851,7 +813,7 @@ components:
       required:
         - bronorganisatie
         - zaaktype
-        - registratiedatum
+        - startdatum
       type: object
       properties:
         url:
@@ -885,7 +847,25 @@ components:
           title: Registratiedatum
           description: >-
             De datum waarop de zaakbehandelende organisatie de ZAAK heeft
-            geregistreerd
+            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van
+            vandaag gebruikt.
+          type: string
+          format: date
+        startdatum:
+          title: Startdatum
+          description: De datum waarop met de uitvoering van de zaak is gestart
+          type: string
+          format: date
+        einddatum:
+          title: Einddatum
+          description: De datum waarop de uitvoering van de zaak afgerond is.
+          type: string
+          format: date
+        einddatumGepland:
+          title: Einddatum gepland
+          description: >-
+            De datum waarop volgens de planning verwacht wordt dat de zaak
+            afgerond wordt.
           type: string
           format: date
         toelichting:
