@@ -13,3 +13,7 @@ class RolOmschrijving(DjangoChoices):
 
 class RolOmschrijvingGeneriek(RolOmschrijving):
     medeinitiator = ChoiceItem('Mede-initiator', 'Mede-initiator')
+
+
+class ZaakobjectTypes(DjangoChoices):
+    melding_openbare_ruimte = ChoiceItem('meldingOpenbareRuimte', "Melding openbare ruimte")
