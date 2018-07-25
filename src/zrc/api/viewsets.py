@@ -1,7 +1,6 @@
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from zds_schema.decorators import action_description
 from zds_schema.geojson import GeoMixin
 from zds_schema.search import SearchMixin
 from zds_schema.viewsets import NestedViewSetMixin
@@ -22,6 +21,7 @@ from .serializers import (
 class ZaakViewSet(GeoMixin,
                   SearchMixin,
                   mixins.CreateModelMixin,
+                  mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
     """
@@ -32,6 +32,9 @@ class ZaakViewSet(GeoMixin,
 
     Indien geen zaakidentificatie gegeven is, dan wordt deze automatisch
     gegenereerd.
+
+    list:
+    Geef een lijst van ZAAKen.
     """
     queryset = Zaak.objects.all()
     serializer_class = ZaakSerializer
@@ -58,17 +61,29 @@ class ZaakViewSet(GeoMixin,
 
 
 class StatusViewSet(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
                     mixins.RetrieveModelMixin,
                     viewsets.GenericViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
 
 
-@action_description('create', "Registreer een ZAAKOBJECT relatie.")
-@action_description('retrieve', "Geef de details van een ZAAKOBJECT relatie.")
 class ZaakObjectViewSet(mixins.CreateModelMixin,
+                        mixins.ListModelMixin,
                         mixins.RetrieveModelMixin,
                         viewsets.GenericViewSet):
+    """
+    Opvragen en bewerken van ZAAKOBJECTen.
+
+    create:
+    Registreer een ZAAKOBJECT relatie.
+
+    list:
+    Geef een lijst van ZAAKOBJECTrelaties terug.
+
+    retrieve:
+    Geef de details van een ZAAKOBJECT relatie.
+    """
     queryset = ZaakObject.objects.all()
     serializer_class = ZaakObjectSerializer
 
@@ -94,12 +109,25 @@ class ZaakEigenschapViewSet(NestedViewSetMixin,
     serializer_class = ZaakEigenschapSerializer
 
 
-@action_description('create', "Registreer een klantcontact bij een ZAAK.\n\nIndien geen identificatie "
-                              "gegeven is, dan wordt deze automatisch gegenereerd.")
-@action_description('retrieve', "Geef de details van een klantcontact voor een ZAAK.")
 class KlantContactViewSet(mixins.CreateModelMixin,
+                          mixins.ListModelMixin,
                           mixins.RetrieveModelMixin,
                           viewsets.GenericViewSet):
+    """
+    Opvragen en bewerken van KLANTCONTACTen.
+
+    create:
+    Registreer een klantcontact bij een ZAAK.
+
+    Indien geen identificatie gegeven is, dan wordt deze automatisch
+    gegenereerd.
+
+    list:
+    Geef een lijst van KLANTCONTACTen.
+
+    detail:
+    Geef de details van een klantcontact voor een ZAAK.
+    """
     queryset = KlantContact.objects.all()
     serializer_class = KlantContactSerializer
 
@@ -110,9 +138,15 @@ class BetrokkeneViewSet(mixins.RetrieveModelMixin,
     serializer_class = OrganisatorischeEenheidSerializer
 
 
-@action_description('create', "Koppel een BETROKKENE aan een ZAAK.")
 class RolViewSet(mixins.CreateModelMixin,
+                 mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
                  viewsets.GenericViewSet):
+    """
+    Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
+
+    create:
+    Koppel een BETROKKENE aan een ZAAK.
+    """
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
