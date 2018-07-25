@@ -24,4 +24,5 @@ class RolTypes(DjangoChoices):
 
 
 class ZaakobjectTypes(DjangoChoices):
-    melding_openbare_ruimte = ChoiceItem('meldingOpenbareRuimte', "Melding openbare ruimte")
+    verblijfs_object = ChoiceItem('VerblijfsObject', 'Verblijfsobject')
+    melding_openbare_ruimte = ChoiceItem('MeldingOpenbareRuimte', "Melding openbare ruimte")

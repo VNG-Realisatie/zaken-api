@@ -66,7 +66,7 @@ class US169TestCase(APITestCase):
         response = self.client.post(zo_create_url, {
             'zaak': zaak_url,
             'object': MOR,
-            'type': 'meldingOpenbareRuimte',
+            'type': 'MeldingOpenbareRuimte',
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 

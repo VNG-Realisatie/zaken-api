@@ -5,6 +5,7 @@ import factory.fuzzy
 class ZaakFactory(factory.django.DjangoModelFactory):
     zaaktype = factory.Faker('url')
     registratiedatum = factory.Faker('date_this_month', before_today=True)
+    startdatum = factory.Faker('date_this_month', before_today=True)
     bronorganisatie = factory.Faker('ssn', locale='nl_NL')
 
     class Meta:
