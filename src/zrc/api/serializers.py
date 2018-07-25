@@ -3,8 +3,7 @@ from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 
 from zrc.datamodel.models import (
-    KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakObject
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
 )
 
 
@@ -139,23 +138,6 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             }
-        }
-
-
-class OrganisatorischeEenheidSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = OrganisatorischeEenheid
-        fields = (
-            'url',
-            'organisatie_eenheid_identificatie',
-            'organisatie_identificatie',
-            'datum_ontstaan',
-            'naam',
-        )
-        extra_kwargs = {
-            'url': {
-                'lookup_field': 'uuid',
-            },
         }
 
 

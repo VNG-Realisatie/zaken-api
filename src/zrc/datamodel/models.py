@@ -239,31 +239,3 @@ class KlantContact(models.Model):
                 gen_id = self.__class__.objects.filter(identificatie=identificatie).exists()
             self.identificatie = identificatie
         super().save(*args, **kwargs)
-
-
-#
-# Betrokkenen
-#
-# Relevant: https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
-#
-class OrganisatorischeEenheid(models.Model):
-    uuid = models.UUIDField(
-        unique=True, default=uuid.uuid4,
-        help_text="Unieke resource identifier (UUID4)"
-    )
-    organisatie_eenheid_identificatie = models.CharField(
-        max_length=24, validators=[alphanumeric_excluding_diacritic],
-        help_text="Een korte identificatie van de organisatorische eenheid."
-    )
-    organisatie_identificatie = models.PositiveIntegerField(
-        help_text='Het RSIN van de organisatie zijnde een Niet-natuurlijk '
-                  'persoon waarvan de ORGANISATORISCHE EENHEID deel uit maakt.'
-    )
-    datum_ontstaan = models.DateField(help_text="De datum wrop de organisatorische eenheid is ontstaan.")
-    naam = models.CharField(
-        max_length=50, help_text='De feitelijke naam van de organisatorische eenheid.'
-    )
-
-    class Meta:
-        verbose_name = "Organisatorische eenheid"
-        verbose_name_plural = "Organisatorische eenheden"

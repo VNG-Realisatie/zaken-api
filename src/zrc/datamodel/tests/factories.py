@@ -11,17 +11,6 @@ class ZaakFactory(factory.django.DjangoModelFactory):
         model = 'datamodel.Zaak'
 
 
-class OrganisatorischeEenheidFactory(factory.django.DjangoModelFactory):
-    organisatie_eenheid_identificatie = factory.Faker('word')
-    # TODO: correct format, see VIPS / BSN validation
-    organisatie_identificatie = factory.fuzzy.FuzzyInteger(low=11111111, high=999999999)
-    datum_ontstaan = factory.Faker('date_this_decade')
-    naam = factory.Faker('bs')
-
-    class Meta:
-        model = 'datamodel.OrganisatorischeEenheid'
-
-
 class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     eigenschap = factory.Faker('url')
