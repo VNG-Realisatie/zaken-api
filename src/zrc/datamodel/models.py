@@ -9,7 +9,7 @@ from zds_schema.fields import RSINField
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
 from .constants import (
-    RolOmschrijving, RolOmschrijvingGeneriek, ZaakobjectTypes
+    RolOmschrijving, RolOmschrijvingGeneriek, RolTypes, ZaakobjectTypes
 )
 
 
@@ -124,6 +124,7 @@ class Rol(models.Model):
     )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     betrokkene = models.URLField(help_text="Een betrokkene gerelateerd aan een zaak")
+    betrokkene_type = models.CharField(max_length=100, choices=RolTypes.choices)
 
     rolomschrijving = models.CharField(
         max_length=80, choices=RolOmschrijving.choices,

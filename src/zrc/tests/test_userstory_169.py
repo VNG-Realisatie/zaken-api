@@ -81,6 +81,7 @@ class US169TestCase(APITestCase):
         response = self.client.post(rol_create_url, {
             'zaak': zaak_url,
             'betrokkene': INITIATOR,
+            'betrokkene_type': 'Natuurlijk persoon',
             'rolomschrijving': 'Initiator',
             'rolomschrijvingGeneriek': 'Initiator',
             'roltoelichting': 'initiele melder',
@@ -95,6 +96,7 @@ class US169TestCase(APITestCase):
         response = self.client.post(rol_create_url, {
             'zaak': zaak_url,
             'betrokkene': BEHANDELAAR,
+            'betrokkene_type': 'Vestiging',
             'rolomschrijving': 'Behandelaar',
             'rolomschrijvingGeneriek': 'Behandelaar',
             'roltoelichting': 'behandelaar',

@@ -15,5 +15,13 @@ class RolOmschrijvingGeneriek(RolOmschrijving):
     medeinitiator = ChoiceItem('Mede-initiator', 'Mede-initiator')
 
 
+class RolTypes(DjangoChoices):
+    natuurlijk_persoon = ChoiceItem('Natuurlijk persoon', "Natuurlijk persoon")
+    niet_natuurlijk_persoon = ChoiceItem('Niet-natuurlijk persoon', "Niet-natuurlijk persoon")
+    vestiging = ChoiceItem('Vestiging', "Vestiging")
+    organisatorische_eenheid = ChoiceItem('Organisatorische eenheid', "Organisatorische eenheid")
+    medewerker = ChoiceItem('Medewerker', "Medewerker")
+
+
 class ZaakobjectTypes(DjangoChoices):
     melding_openbare_ruimte = ChoiceItem('meldingOpenbareRuimte', "Melding openbare ruimte")

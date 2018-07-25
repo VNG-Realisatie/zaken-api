@@ -148,6 +148,7 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'zaak',
             'betrokkene',
+            'betrokkene_type',
             'rolomschrijving',
             'rolomschrijving_generiek',
             'roltoelichting',
