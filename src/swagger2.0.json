@@ -909,15 +909,15 @@
         },
         "Point": {
             "description": "GeoJSON point geometry",
-            "required": [
-                "coordinates"
-            ],
             "type": "object",
             "allOf": [
                 {
                     "$ref": "#/definitions/Geometry"
                 },
                 {
+                    "required": [
+                        "coordinates"
+                    ],
                     "type": "object",
                     "properties": {
                         "coordinates": {
@@ -932,15 +932,15 @@
         },
         "MultiPoint": {
             "description": "GeoJSON multi-point geometry",
-            "required": [
-                "coordinates"
-            ],
             "type": "object",
             "allOf": [
                 {
                     "$ref": "#/definitions/Geometry"
                 },
                 {
+                    "required": [
+                        "coordinates"
+                    ],
                     "type": "object",
                     "properties": {
                         "coordinates": {
@@ -958,15 +958,15 @@
         },
         "LineString": {
             "description": "GeoJSON line-string geometry",
-            "required": [
-                "coordinates"
-            ],
             "type": "object",
             "allOf": [
                 {
                     "$ref": "#/definitions/Geometry"
                 },
                 {
+                    "required": [
+                        "coordinates"
+                    ],
                     "type": "object",
                     "properties": {
                         "coordinates": {
@@ -985,15 +985,15 @@
         },
         "MultiLineString": {
             "description": "GeoJSON multi-line-string geometry",
-            "required": [
-                "coordinates"
-            ],
             "type": "object",
             "allOf": [
                 {
                     "$ref": "#/definitions/Geometry"
                 },
                 {
+                    "required": [
+                        "coordinates"
+                    ],
                     "type": "object",
                     "properties": {
                         "coordinates": {
@@ -1014,15 +1014,15 @@
         },
         "Polygon": {
             "description": "GeoJSON polygon geometry",
-            "required": [
-                "coordinates"
-            ],
             "type": "object",
             "allOf": [
                 {
                     "$ref": "#/definitions/Geometry"
                 },
                 {
+                    "required": [
+                        "coordinates"
+                    ],
                     "type": "object",
                     "properties": {
                         "coordinates": {
@@ -1043,15 +1043,15 @@
         },
         "MultiPolygon": {
             "description": "GeoJSON multi-polygon geometry",
-            "required": [
-                "coordinates"
-            ],
             "type": "object",
             "allOf": [
                 {
                     "$ref": "#/definitions/Geometry"
                 },
                 {
+                    "required": [
+                        "coordinates"
+                    ],
                     "type": "object",
                     "properties": {
                         "coordinates": {
@@ -1075,15 +1075,15 @@
         },
         "GeometryCollection": {
             "description": "GeoJSON multi-polygon geometry",
-            "required": [
-                "geometries"
-            ],
             "type": "object",
             "allOf": [
                 {
                     "$ref": "#/definitions/Geometry"
                 },
                 {
+                    "required": [
+                        "geometries"
+                    ],
                     "type": "object",
                     "properties": {
                         "geometries": {
