@@ -77,34 +77,59 @@ paths:
       parameters:
         - name: zaak
           in: query
-          description: ''
+          description: URL to the related resource
           required: false
           schema:
             type: string
+            format: uri
         - name: betrokkene
           in: query
           description: ''
           required: false
           schema:
             type: string
+            format: uri
         - name: betrokkene_type
           in: query
           description: ''
           required: false
           schema:
             type: string
+            enum:
+              - Natuurlijk persoon
+              - Niet-natuurlijk persoon
+              - Vestiging
+              - Organisatorische eenheid
+              - Medewerker
         - name: rolomschrijving
           in: query
           description: ''
           required: false
           schema:
             type: string
+            enum:
+              - Adviseur
+              - Behandelaar
+              - Belanghebbende
+              - Beslisser
+              - Initiator
+              - Klantcontacter
+              - Zaakcoördinator
         - name: rolomschrijving_generiek
           in: query
           description: ''
           required: false
           schema:
             type: string
+            enum:
+              - Adviseur
+              - Behandelaar
+              - Belanghebbende
+              - Beslisser
+              - Initiator
+              - Klantcontacter
+              - Zaakcoördinator
+              - Mede-initiator
       responses:
         '200':
           description: ''
@@ -289,6 +314,7 @@ paths:
           required: false
           schema:
             type: string
+            format: uri
         - name: Accept-Crs
           in: header
           description: >-

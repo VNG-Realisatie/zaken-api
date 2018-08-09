@@ -14,8 +14,7 @@ from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.constants import RolOmschrijvingGeneriek, ZaakobjectTypes
 from zrc.datamodel.models import Zaak
-
-from zrc.datamodel.tests.factories import ZaakFactory, RolFactory
+from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
 # MOR aangemaakt in melding-app, leeft buiten ZRC
 MOR = 'https://example.com/orc/api/v1/mor/37c60cda-689e-4e4a-969c-fa4ed56cb2c6'

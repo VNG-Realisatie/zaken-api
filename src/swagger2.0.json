@@ -113,37 +113,65 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "",
+                        "description": "URL to the related resource",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "format": "uri"
                     },
                     {
                         "name": "betrokkene",
                         "in": "query",
                         "description": "",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "format": "uri"
                     },
                     {
                         "name": "betrokkene_type",
                         "in": "query",
                         "description": "",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "Natuurlijk persoon",
+                            "Niet-natuurlijk persoon",
+                            "Vestiging",
+                            "Organisatorische eenheid",
+                            "Medewerker"
+                        ]
                     },
                     {
                         "name": "rolomschrijving",
                         "in": "query",
                         "description": "",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "Adviseur",
+                            "Behandelaar",
+                            "Belanghebbende",
+                            "Beslisser",
+                            "Initiator",
+                            "Klantcontacter",
+                            "Zaakco\u00f6rdinator"
+                        ]
                     },
                     {
                         "name": "rolomschrijving_generiek",
                         "in": "query",
                         "description": "",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "Adviseur",
+                            "Behandelaar",
+                            "Belanghebbende",
+                            "Beslisser",
+                            "Initiator",
+                            "Klantcontacter",
+                            "Zaakco\u00f6rdinator",
+                            "Mede-initiator"
+                        ]
                     }
                 ],
                 "responses": {
@@ -390,7 +418,8 @@
                         "in": "query",
                         "description": "",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "format": "uri"
                     },
                     {
                         "name": "Accept-Crs",

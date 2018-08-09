@@ -1,7 +1,7 @@
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from zds_schema.geojson import GeoMixin
+from zds_schema.geo import GeoMixin
 from zds_schema.search import SearchMixin
 from zds_schema.viewsets import NestedViewSetMixin
 
