@@ -15,6 +15,8 @@ from zds_schema.tests import get_operation_url
 from zrc.datamodel.constants import RolOmschrijvingGeneriek, ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 
+from zrc.datamodel.tests.factories import ZaakFactory, RolFactory
+
 # MOR aangemaakt in melding-app, leeft buiten ZRC
 MOR = 'https://example.com/orc/api/v1/mor/37c60cda-689e-4e4a-969c-fa4ed56cb2c6'
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
@@ -105,3 +107,23 @@ class US169TestCase(APITestCase):
 
         behandelaar = zaak.rol_set.get(rolomschrijving_generiek=RolOmschrijvingGeneriek.behandelaar)
         self.assertEqual(behandelaar.betrokkene, BEHANDELAAR)
+
+    def test_ophalen_alle_betrokkenen(self):
+        """
+        Test dat alle betrokkenen kunnen opgehaald worden, onafhankelijk van rol.
+
+        Zie https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/pull/9#issuecomment-407882637
+        """
+        zaak1 = ZaakFactory.create()
+        rollen1 = RolFactory.create_batch(3, zaak=zaak1)
+        rollen2 = [RolFactory.create()]
+        zaak_url = get_operation_url('zaak_read', uuid=zaak1.uuid)
+        rollen_list_url = get_operation_url('rol_list')
+
+        response = self.client.get(rollen_list_url, {'zaak': zaak_url})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+
+        self.assertEqual(len(response_data), 3)
+        import bpdb; bpdb.set_trace()
