@@ -116,14 +116,26 @@ class US169TestCase(APITestCase):
         """
         zaak1 = ZaakFactory.create()
         rollen1 = RolFactory.create_batch(3, zaak=zaak1)
-        rollen2 = [RolFactory.create()]
+        rol2 = RolFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak1.uuid)
         rollen_list_url = get_operation_url('rol_list')
 
-        response = self.client.get(rollen_list_url, {'zaak': zaak_url})
+        response = self.client.get(rollen_list_url, {
+            'zaak': f"http://testserver{zaak_url}",
+        })
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = response.json()
 
         self.assertEqual(len(response_data), 3)
-        import bpdb; bpdb.set_trace()
+
+        expected_urls = {
+            f"http://testserver{get_operation_url('rol_read', uuid=rol.uuid)}"
+            for rol in rollen1
+        }
+
+        received_urls = {rol['url'] for rol in response_data}
+        self.assertEqual(received_urls, expected_urls)
+
+        rol2_url = f"http://testserver{get_operation_url('rol_read', uuid=rol2.uuid)}"
+        self.assertNotIn(rol2_url, received_urls)

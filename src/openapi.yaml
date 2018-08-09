@@ -74,6 +74,37 @@ paths:
     get:
       operationId: rol_list
       description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
+      parameters:
+        - name: zaak
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: betrokkene
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: betrokkene_type
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: rolomschrijving
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: rolomschrijving_generiek
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: ''

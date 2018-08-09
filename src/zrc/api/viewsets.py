@@ -9,7 +9,7 @@ from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
 )
 
-from .filters import ZaakFilter
+from .filters import RolFilter, ZaakFilter
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
     ZaakEigenschapSerializer, ZaakObjectSerializer, ZaakSerializer,
@@ -148,4 +148,5 @@ class RolViewSet(mixins.CreateModelMixin,
     """
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
+    filter_class = RolFilter
     lookup_field = 'uuid'
