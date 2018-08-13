@@ -89,7 +89,7 @@ paths:
           schema:
             type: string
             format: uri
-        - name: betrokkene_type
+        - name: betrokkeneType
           in: query
           description: Soort betrokkene
           required: false
@@ -115,7 +115,7 @@ paths:
               - Initiator
               - Klantcontacter
               - Zaakcoördinator
-        - name: rolomschrijving_generiek
+        - name: rolomschrijvingGeneriek
           in: query
           description: Algemeen gehanteerde benaming van de aard van de ROL
           required: false
