@@ -84,14 +84,14 @@ paths:
             format: uri
         - name: betrokkene
           in: query
-          description: ''
+          description: Een betrokkene gerelateerd aan een zaak
           required: false
           schema:
             type: string
             format: uri
         - name: betrokkene_type
           in: query
-          description: ''
+          description: Soort betrokkene
           required: false
           schema:
             type: string
@@ -103,7 +103,7 @@ paths:
               - Medewerker
         - name: rolomschrijving
           in: query
-          description: ''
+          description: Algemeen gehanteerde benaming van de aard van de ROL
           required: false
           schema:
             type: string
@@ -117,7 +117,7 @@ paths:
               - Zaakcoördinator
         - name: rolomschrijving_generiek
           in: query
-          description: ''
+          description: Algemeen gehanteerde benaming van de aard van de ROL
           required: false
           schema:
             type: string
@@ -298,19 +298,23 @@ paths:
       parameters:
         - name: zaakidentificatie
           in: query
-          description: ''
+          description: >-
+            De unieke identificatie van de ZAAK binnen de organisatie die
+            verantwoordelijk is voor de behandeling van de ZAAK.
           required: false
           schema:
             type: string
         - name: bronorganisatie
           in: query
-          description: ''
+          description: >-
+            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de
+            zaak heeft gecreeerd.
           required: false
           schema:
             type: string
         - name: zaaktype
           in: query
-          description: ''
+          description: URL naar het zaaktype in de CATALOGUS waar deze voorkomt
           required: false
           schema:
             type: string
@@ -605,6 +609,7 @@ components:
           minLength: 1
         betrokkeneType:
           title: Betrokkene type
+          description: Soort betrokkene
           type: string
           enum:
             - Natuurlijk persoon
@@ -953,14 +958,21 @@ components:
           $ref: '#/components/schemas/GeoWithin'
         zaakidentificatie:
           title: Zaakidentificatie
+          description: >-
+            De unieke identificatie van de ZAAK binnen de organisatie die
+            verantwoordelijk is voor de behandeling van de ZAAK.
           type: string
           minLength: 1
         bronorganisatie:
           title: Bronorganisatie
+          description: >-
+            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de
+            zaak heeft gecreeerd.
           type: string
           minLength: 1
         zaaktype:
           title: Zaaktype
+          description: URL naar het zaaktype in de CATALOGUS waar deze voorkomt
           type: string
           minLength: 1
     ZaakEigenschap:

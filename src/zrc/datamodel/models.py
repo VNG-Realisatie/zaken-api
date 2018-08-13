@@ -125,7 +125,10 @@ class Rol(models.Model):
     )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     betrokkene = models.URLField(help_text="Een betrokkene gerelateerd aan een zaak")
-    betrokkene_type = models.CharField(max_length=100, choices=RolTypes.choices)
+    betrokkene_type = models.CharField(
+        max_length=100, choices=RolTypes.choices,
+        help_text='Soort betrokkene'
+    )
 
     rolomschrijving = models.CharField(
         max_length=80, choices=RolOmschrijving.choices,
