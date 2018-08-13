@@ -4,7 +4,6 @@
 #
 #    pip-compile --no-index --output-file requirements/jenkins.txt requirements/base.txt requirements/testing.in requirements/jenkins.in
 #
--e git+https://github.com/vng-Realisatie/gemma-zaken-common.git@master#egg=zds_schema-0.0.15
 astroid==1.6.5            # via pylint
 beautifulsoup4==4.6.0     # via webtest
 certifi==2018.4.16
@@ -16,7 +15,7 @@ coverage==4.5.1
 cssselect==1.0.3          # via pyquery
 django-appconf==1.0.2
 django-axes==4.4.0
-django-choices==1.6.0
+django-choices==1.6.1
 django-filter==1.1.0
 django-ipware==2.1.0
 django-jenkins==0.110.0
@@ -35,6 +34,8 @@ freezegun==0.3.10
 future==0.16.0
 idna==2.6
 inflection==0.3.1
+iso-639==0.4.5
+isodate==0.6.0
 isort==4.3.4
 itypes==1.1.0
 jinja2==2.10
@@ -67,3 +68,4 @@ waitress==1.1.0           # via webtest
 webob==1.8.2              # via webtest
 webtest==2.0.30
 wrapt==1.10.11            # via astroid
+zds-schema==0.0.22
