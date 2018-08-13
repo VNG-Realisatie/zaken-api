@@ -10,9 +10,10 @@ from datetime import date
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import RolOmschrijvingGeneriek
 from zds_schema.tests import get_operation_url
 
-from zrc.datamodel.constants import RolOmschrijvingGeneriek, ZaakobjectTypes
+from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 

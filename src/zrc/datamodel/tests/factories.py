@@ -1,7 +1,8 @@
 import factory
 import factory.fuzzy
-
-from ..constants import RolOmschrijving, RolOmschrijvingGeneriek, RolTypes
+from zds_schema.constants import (
+    RolOmschrijving, RolOmschrijvingGeneriek, RolTypes
+)
 
 
 class ZaakFactory(factory.django.DjangoModelFactory):
