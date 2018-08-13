@@ -10,7 +10,7 @@ from datetime import date
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import RolOmschrijvingGeneriek
+from zds_schema.constants import RolOmschrijvingGeneriek, RolTypes
 from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.constants import ZaakobjectTypes
@@ -83,7 +83,7 @@ class US169TestCase(APITestCase):
         response = self.client.post(rol_create_url, {
             'zaak': zaak_url,
             'betrokkene': INITIATOR,
-            'betrokkene_type': 'Natuurlijk persoon',
+            'betrokkene_type': RolTypes.natuurlijk_persoon,  # 'Natuurlijk persoon'
             'rolomschrijving': 'Initiator',
             'rolomschrijvingGeneriek': 'Initiator',
             'roltoelichting': 'initiele melder',
@@ -98,7 +98,7 @@ class US169TestCase(APITestCase):
         response = self.client.post(rol_create_url, {
             'zaak': zaak_url,
             'betrokkene': BEHANDELAAR,
-            'betrokkene_type': 'Vestiging',
+            'betrokkene_type': RolTypes.vestiging,  # 'Vestiging'
             'rolomschrijving': 'Behandelaar',
             'rolomschrijvingGeneriek': 'Behandelaar',
             'roltoelichting': 'behandelaar',
