@@ -8,9 +8,7 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.models import KlantContact, Rol, Status, Zaak, ZaakObject
-from zrc.datamodel.tests.factories import (
-    OrganisatorischeEenheidFactory, ZaakFactory
-)
+from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import isodatetime
 
@@ -35,6 +33,7 @@ class US39TestCase(APITestCase):
             'zaaktype': ZAAKTYPE,
             'bronorganisatie': '517439943',
             'registratiedatum': '2018-06-11',
+            'startdatum': '2018-06-11',
             'toelichting': 'Een stel dronken toeristen speelt versterkte '
                            'muziek af vanuit een gehuurde boot.',
             'zaakgeometrie': {
@@ -48,7 +47,7 @@ class US39TestCase(APITestCase):
 
         response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()
         self.assertIn('zaakidentificatie', data)
 
@@ -113,7 +112,7 @@ class US39TestCase(APITestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()
         status_ = Status.objects.get()
         self.assertEqual(status_.zaak, zaak)
@@ -139,12 +138,13 @@ class US39TestCase(APITestCase):
         data = {
             'zaak': zaak_url,
             'object': OBJECT_MET_ADRES,
+            'type': 'VerblijfsObject',
             'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
         }
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()
         zaakobject = ZaakObject.objects.get()
         self.assertEqual(zaakobject.zaak, zaak)
@@ -155,6 +155,7 @@ class US39TestCase(APITestCase):
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
                 'object': OBJECT_MET_ADRES,
+                'type': 'VerblijfsObject',
                 'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
             }
         )
@@ -196,12 +197,13 @@ class US39TestCase(APITestCase):
         data = {
             'zaak': zaak_url,
             'object': STADSDEEL,
+            'type': 'VerblijfsObject',
             'relatieomschrijving': 'Afgeleid gebied',
         }
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()
         zaakobject = ZaakObject.objects.get()
         self.assertEqual(zaakobject.zaak, zaak)
@@ -212,21 +214,20 @@ class US39TestCase(APITestCase):
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
                 'object': STADSDEEL,
+                'type': 'VerblijfsObject',
                 'relatieomschrijving': 'Afgeleid gebied',
             }
         )
 
     def test_zet_verantwoordelijk(self):
         url = get_operation_url('rol_create')
-        betrokkene = OrganisatorischeEenheidFactory.create(
-            naam='Waternet', datum_ontstaan=date(2006, 1, 1)
-        )
-        betrokkene_url = get_operation_url('organisatorischeeenheid_read', uuid=betrokkene.uuid)
+        betrokkene = 'https://example.com/orc/api/v1/vestigingen/waternet'
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
-            'betrokkene': betrokkene_url,
+            'betrokkene': betrokkene,
+            'betrokkeneType': 'Vestiging',
             'rolomschrijving': 'Behandelaar',
             'rolomschrijvingGeneriek': 'Behandelaar',
             'roltoelichting': 'Baggeren van gracht',
@@ -234,7 +235,7 @@ class US39TestCase(APITestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()
         rol = Rol.objects.get()
         self.assertEqual(rol.zaak, zaak)
@@ -245,7 +246,8 @@ class US39TestCase(APITestCase):
             {
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
-                'betrokkene': f"http://testserver{betrokkene_url}",
+                'betrokkene': betrokkene,
+                'betrokkeneType': 'Vestiging',
                 'rolomschrijving': 'Behandelaar',
                 'rolomschrijvingGeneriek': 'Behandelaar',
                 'roltoelichting': 'Baggeren van gracht',

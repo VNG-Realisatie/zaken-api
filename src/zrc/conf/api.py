@@ -59,7 +59,7 @@ SWAGGER_SETTINGS = {
     'DEFAULT_AUTO_SCHEMA_CLASS': 'zds_schema.schema.AutoSchema',
     'DEFAULT_INFO': 'zrc.api.schema.info',
     'DEFAULT_FIELD_INSPECTORS': (
-        'zds_schema.geojson.GeometryFieldInspector',
+        'zds_schema.inspectors.geojson.GeometryFieldInspector',
 
         'drf_yasg.inspectors.CamelCaseJSONFilter',
         'drf_yasg.inspectors.RecursiveFieldInspector',
@@ -71,5 +71,8 @@ SWAGGER_SETTINGS = {
         'drf_yasg.inspectors.RelatedFieldInspector',
         'drf_yasg.inspectors.SimpleFieldInspector',
         'drf_yasg.inspectors.StringDefaultFieldInspector',
+    ),
+    'DEFAULT_FILTER_INSPECTORS': (
+        'zds_schema.inspectors.query.FilterInspector',
     )
 }

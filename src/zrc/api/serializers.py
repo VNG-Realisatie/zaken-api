@@ -3,8 +3,7 @@ from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 
 from zrc.datamodel.models import (
-    KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakObject
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
 )
 
 
@@ -25,6 +24,9 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
             'bronorganisatie',
             'zaaktype',
             'registratiedatum',
+            'startdatum',
+            'einddatum',
+            'einddatum_gepland',
             'toelichting',
             'zaakgeometrie',
 
@@ -77,7 +79,8 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'zaak',
             'object',
-            'relatieomschrijving'
+            'relatieomschrijving',
+            'type',
         )
         extra_kwargs = {
             'url': {
@@ -85,6 +88,9 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
             },
             'zaak': {
                 'lookup_field': 'uuid',
+            },
+            'type': {
+                'source': 'object_type',
             }
         }
 
@@ -135,23 +141,6 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
-class OrganisatorischeEenheidSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = OrganisatorischeEenheid
-        fields = (
-            'url',
-            'organisatie_eenheid_identificatie',
-            'organisatie_identificatie',
-            'datum_ontstaan',
-            'naam',
-        )
-        extra_kwargs = {
-            'url': {
-                'lookup_field': 'uuid',
-            },
-        }
-
-
 class RolSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Rol
@@ -159,6 +148,7 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'zaak',
             'betrokkene',
+            'betrokkene_type',
             'rolomschrijving',
             'rolomschrijving_generiek',
             'roltoelichting',
@@ -170,7 +160,4 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             },
-            'betrokkene': {
-                'lookup_field': 'uuid',
-            }
         }
