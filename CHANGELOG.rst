@@ -2,6 +2,23 @@
 Wijzigingen
 ===========
 
+0.2.5 (2018-08-15)
+==================
+
+* Fixes in CI
+* README netjes gemaakt
+* Aanpassingen aan BETROKKENEn bij ZAAKen
+
+    * rol betrokkene is nu een referentie naar een andere resource via URL,
+      mogelijks in een externe registratie (zoals BRP)
+    * ``OrganisatorischeEenheid`` verwijderd door bovenstaande
+    * ``startdatum``, ``einddatum`` en ``einddatum_gepland`` velden
+      toegevoegd
+    * ``registratiedatum`` optioneel gemaakt, met een default van 'vandaag'
+      indien niet opgegeven
+    * Polymorfisme mechanischme toegevoegd voor betrokkenen en zaakobjecten
+    * Filter parameters toegevoegd
+
 0.2.5 (2018-07-30)
 ==================
 
