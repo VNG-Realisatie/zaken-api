@@ -20,7 +20,7 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
         model = Zaak
         fields = (
             'url',
-            'zaakidentificatie',
+            'identificatie',
             'bronorganisatie',
             'zaaktype',
             'registratiedatum',
