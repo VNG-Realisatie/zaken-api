@@ -52,6 +52,7 @@ class ApiStrategyTests(APITestCase):
                 'zaaktype': 'https://example.com/foo/bar',
                 'bronorganisatie': '517439943',
                 'registratiedatum': '2018-06-11',
+                'startdatum': '2018-06-11',
             }, HTTP_ACCEPT_CRS='EPSG:4326')
 
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)

@@ -1,46 +1,54 @@
-=======================================================
-ZaakRegistratieComponent API - referentie implementatie
-=======================================================
+========================
+Zaakregistratiecomponent
+========================
 
-:Version: 0.1.0
-:Source: https://TODO
-:Keywords: zaken, zaakgericht werken, GEMMA, RGBZ
+:Version: 0.2.6
+:Source: https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent
+:Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, ZRC
 :PythonVersion: 3.6
 
-|build-status| |requirements|
+|build-status|
 
-``<oneliner describing the project>``
+Referentieimplementatie van de zaakregistratiecomponent (ZRC).
 
-Developed by `Maykin Media B.V.`_ for ``<client>``
+Inleiding
+=========
+
+Binnen het Nederlandse gemeentelandschap wordt zaakgericht werken nagestreefd.
+Om dit mogelijk te maken is er gegevensuitwisseling nodig. De kerngegevens van
+zaken moeten ergens geregistreerd worden en opvraagbaar zijn.
+
+Deze referentieimplementatie toont aan dat de API specificatie voor de
+zaakregistratiecomponent (hierna ZRC) implementeerbaar is, en vormt een
+voorbeeld voor andere implementaties indien ergens twijfel bestaat.
+
+Deze component heeft ook een `testomgeving`_ waar leveranciers tegenaan kunnen
+testen.
 
 
-Introduction
+Documentatie
 ============
 
-``<describe the project in a few paragraphs and briefly mention the features>``
+Zie ``INSTALL.rst`` voor installatieinstructies, beschikbare instellingen en
+commando's.
+
+Indien je actief gaat ontwikkelen aan deze component raden we aan om niet van
+Docker gebruik te maken. Indien je deze component als black-box wil gebruiken,
+raden we aan om net wel van Docker gebruik te maken.
+
+Referenties
+===========
+
+* `Issues <https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/issues>`_
+* `Code <https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent>`_
 
 
-Documentation
-=============
-
-See ``INSTALL.rst`` for installation instructions, available settings and
-commands.
-
-
-References
-==========
-
-* `Issues <https://TODO>`_
-* `Code <https://TODO>`_
-
-
-.. |build-status| image:: http://jenkins.maykin.nl/buildStatus/icon?job=zrc
+.. |build-status| image:: http://jenkins.nlx.io/buildStatus/icon?job=gemma-zaakregistratiecomponent-stable
     :alt: Build status
-    :target: http://jenkins.maykin.nl/job/zrc
+    :target: http://jenkins.nlx.io/job/gemma-zaakregistratiecomponent-stable
 
-.. |requirements| image:: https://requires.io/bitbucket/maykinmedia/zrc/requirements.svg?branch=master
-     :target: https://requires.io/bitbucket/maykinmedia/zrc/requirements/?branch=master
+.. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements.svg?branch=master
+     :target: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements/?branch=master
      :alt: Requirements status
 
-
-.. _Maykin Media B.V.: https://www.maykinmedia.nl
+.. _testomgeving: https://ref.tst.vng.cloud/zrc/

@@ -4,7 +4,6 @@
 #
 #    pip-compile --no-index --output-file requirements/base.txt requirements/base.in
 #
--e git+https://github.com/vng-Realisatie/gemma-zaken-common.git@master#egg=zds_schema-0.0.15
 certifi==2018.4.16        # via requests
 chardet==3.0.4            # via requests
 click==6.7                # via pip-tools
@@ -12,7 +11,7 @@ coreapi==2.3.3            # via drf-yasg, openapi-codec
 coreschema==0.0.4         # via coreapi, drf-yasg
 django-appconf==1.0.2     # via django-axes
 django-axes==4.4.0
-django-choices==1.6.0
+django-choices==1.6.1
 django-filter==1.1.0
 django-ipware==2.1.0      # via django-axes
 django==2.0.6
@@ -20,12 +19,14 @@ djangorestframework-camel-case==0.2.0
 djangorestframework-filters==0.10.2
 djangorestframework-gis==0.13
 djangorestframework==3.8.2
-drf-nested-routers==0.90.2
+drf-nested-routers==0.90.2  # via zds-schema
 drf-yasg==1.8.0
 first==2.0.1              # via pip-tools
 future==0.16.0            # via drf-yasg
 idna==2.6                 # via requests
 inflection==0.3.1         # via drf-yasg
+iso-639==0.4.5            # via zds-schema
+isodate==0.6.0            # via zds-schema
 itypes==1.1.0             # via coreapi
 jinja2==2.10              # via coreschema
 markupsafe==1.0           # via jinja2
@@ -35,11 +36,12 @@ psycopg2-binary==2.7.4
 python-dateutil==2.7.3
 python-dotenv==0.8.2
 pytz==2018.4
-pyyaml==3.12
+pyyaml==3.12              # via zds-schema
 raven==6.9.0
 requests==2.18.4          # via coreapi
 ruamel.yaml==0.15.37      # via drf-yasg
-six==1.11.0               # via djangorestframework-gis, drf-yasg, pip-tools, python-dateutil
-unidecode==1.0.22
+six==1.11.0               # via djangorestframework-gis, drf-yasg, isodate, pip-tools, python-dateutil
+unidecode==1.0.22         # via zds-schema
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.22             # via requests
+zds-schema==0.0.25

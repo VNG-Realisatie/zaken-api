@@ -1,20 +1,19 @@
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from zds_schema.geojson import GeoMixin
+from zds_schema.geo import GeoMixin
 from zds_schema.search import SearchMixin
 from zds_schema.viewsets import NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    KlantContact, OrganisatorischeEenheid, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakObject
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
 )
 
-from .filters import ZaakFilter
+from .filters import RolFilter, ZaakFilter
 from .serializers import (
-    KlantContactSerializer, OrganisatorischeEenheidSerializer, RolSerializer,
-    StatusSerializer, ZaakEigenschapSerializer, ZaakObjectSerializer,
-    ZaakSerializer, ZaakZoekSerializer
+    KlantContactSerializer, RolSerializer, StatusSerializer,
+    ZaakEigenschapSerializer, ZaakObjectSerializer, ZaakSerializer,
+    ZaakZoekSerializer
 )
 
 
@@ -137,13 +136,6 @@ class KlantContactViewSet(mixins.CreateModelMixin,
     lookup_field = 'uuid'
 
 
-class BetrokkeneViewSet(mixins.RetrieveModelMixin,
-                        viewsets.GenericViewSet):
-    queryset = OrganisatorischeEenheid.objects.all()
-    serializer_class = OrganisatorischeEenheidSerializer
-    lookup_field = 'uuid'
-
-
 class RolViewSet(mixins.CreateModelMixin,
                  mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
@@ -156,4 +148,5 @@ class RolViewSet(mixins.CreateModelMixin,
     """
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
+    filter_class = RolFilter
     lookup_field = 'uuid'

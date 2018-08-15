@@ -60,6 +60,7 @@ class Application:
             'bronorganisatie': '517439943',
             'zaakidentificatie': f'WATER_{intern_id}',
             'registratiedatum': created.strftime('%Y-%m-%d'),
+            'startdatum': created.strftime('%Y-%m-%d'),
             'toelichting': self.data['text'],
             'zaakgeometrie': self.data['coordinates'],
         }, HTTP_ACCEPT_CRS='EPSG:4326')

@@ -1,25 +1,18 @@
 import factory
 import factory.fuzzy
+from zds_schema.constants import (
+    RolOmschrijving, RolOmschrijvingGeneriek, RolTypes
+)
 
 
 class ZaakFactory(factory.django.DjangoModelFactory):
     zaaktype = factory.Faker('url')
     registratiedatum = factory.Faker('date_this_month', before_today=True)
+    startdatum = factory.Faker('date_this_month', before_today=True)
     bronorganisatie = factory.Faker('ssn', locale='nl_NL')
 
     class Meta:
         model = 'datamodel.Zaak'
-
-
-class OrganisatorischeEenheidFactory(factory.django.DjangoModelFactory):
-    organisatie_eenheid_identificatie = factory.Faker('word')
-    # TODO: correct format, see VIPS / BSN validation
-    organisatie_identificatie = factory.fuzzy.FuzzyInteger(low=11111111, high=999999999)
-    datum_ontstaan = factory.Faker('date_this_decade')
-    naam = factory.Faker('bs')
-
-    class Meta:
-        model = 'datamodel.OrganisatorischeEenheid'
 
 
 class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
@@ -29,3 +22,14 @@ class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'datamodel.ZaakEigenschap'
+
+
+class RolFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    betrokkene = factory.Faker('url')
+    betrokkene_type = factory.fuzzy.FuzzyChoice(RolTypes.values)
+    rolomschrijving = factory.fuzzy.FuzzyChoice(RolOmschrijving.values)
+    rolomschrijving_generiek = factory.fuzzy.FuzzyChoice(RolOmschrijvingGeneriek.values)
+
+    class Meta:
+        model = 'datamodel.Rol'
