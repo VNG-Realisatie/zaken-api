@@ -49,11 +49,11 @@ class US39TestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()
-        self.assertIn('zaakidentificatie', data)
+        self.assertIn('identificatie', data)
 
         # verify that the identification has been generated
-        self.assertIsInstance(data['zaakidentificatie'], str)
-        self.assertNotEqual(data['zaakidentificatie'], '')
+        self.assertIsInstance(data['identificatie'], str)
+        self.assertNotEqual(data['identificatie'], '')
         self.assertIsInstance(data['zaakgeometrie'], dict)  # geojson object
 
         zaak = Zaak.objects.get()

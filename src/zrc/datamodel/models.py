@@ -26,7 +26,7 @@ class Zaak(models.Model):
         unique=True, default=uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
-    zaakidentificatie = models.CharField(
+    identificatie = models.CharField(
         max_length=40, unique=True, blank=True,
         help_text='De unieke identificatie van de ZAAK binnen de organisatie die '
                   'verantwoordelijk is voor de behandeling van de ZAAK.',
@@ -64,14 +64,14 @@ class Zaak(models.Model):
     class Meta:
         verbose_name = 'zaak'
         verbose_name_plural = 'zaken'
-        unique_together = ('bronorganisatie', 'zaakidentificatie')
+        unique_together = ('bronorganisatie', 'identificatie')
 
     def __str__(self):
-        return self.zaakidentificatie
+        return self.identificatie
 
     def save(self, *args, **kwargs):
-        if not self.zaakidentificatie:
-            self.zaakidentificatie = str(uuid.uuid4())
+        if not self.identificatie:
+            self.identificatie = str(uuid.uuid4())
         super().save(*args, **kwargs)
 
     @property
