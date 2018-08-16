@@ -43,3 +43,47 @@ class RolOccurenceValidator:
             raise serializers.ValidationError({
                 'rolomschrijving': message
             }, code='max-occurences')
+
+
+class UniekeIdentificatieValidator:
+    """
+    Valideer dat de combinatie van bronorganisatie en zaak uniek is.
+    """
+    message = _('Deze identificatie bestaat al voor deze bronorganisatie')
+
+    def set_context(self, serializer):
+        """
+        This hook is called by the serializer instance,
+        prior to the validation call being made.
+        """
+        # Determine the existing instance, if this is an update operation.
+        self.instance = getattr(serializer, 'instance', None)
+        self.model = serializer.Meta.model
+
+    def __call__(self, attrs: dict):
+        identificatie = attrs.get('identificatie')
+        if not identificatie:
+            # identification is being generated, and the generation checks for
+            # uniqueness
+            return
+
+        bronorganisatie = attrs.get('bronorganisatie')
+        pk = self.instance.pk if self.instance else None
+
+        # if we're updating an instance, setting the current values will not
+        # trigger an error because the instance-to-be-updated is excluded from
+        # the queryset. If either bronorganisatie or identificatie changes,
+        # and it already exists, it will raise a validation error
+        combination_exists = (
+            self.model.objects
+            # in case of an update, exclude the current object. for a create, this
+            # will be None
+            .exclude(pk=pk)
+            .filter(bronorganisatie=bronorganisatie, identificatie=identificatie)
+            .exists()
+        )
+
+        if combination_exists:
+            raise serializers.ValidationError({
+                'identificatie': self.message
+            }, code='identificatie-niet-uniek')

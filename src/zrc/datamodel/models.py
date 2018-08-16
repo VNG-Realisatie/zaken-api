@@ -25,7 +25,7 @@ class Zaak(models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     identificatie = models.CharField(
-        max_length=40, unique=True, blank=True,
+        max_length=40, blank=True,
         help_text='De unieke identificatie van de ZAAK binnen de organisatie die '
                   'verantwoordelijk is voor de behandeling van de ZAAK.',
         validators=[alphanumeric_excluding_diacritic]
