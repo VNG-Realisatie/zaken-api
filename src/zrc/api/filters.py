@@ -7,7 +7,7 @@ class ZaakFilter(FilterSet):
     class Meta:
         model = Zaak
         fields = (
-            'zaakidentificatie',
+            'identificatie',
             'bronorganisatie',
             'zaaktype',
         )

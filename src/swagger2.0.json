@@ -400,7 +400,7 @@
                 "description": "Geef een lijst van ZAAKen.",
                 "parameters": [
                     {
-                        "name": "zaakidentificatie",
+                        "name": "identificatie",
                         "in": "query",
                         "description": "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.",
                         "required": false,
@@ -458,7 +458,7 @@
             },
             "post": {
                 "operationId": "zaak_create",
-                "description": "Maak een ZAAK aan.\n\nIndien geen zaakidentificatie gegeven is, dan wordt deze automatisch\ngegenereerd.",
+                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd.",
                 "parameters": [
                     {
                         "name": "data",
@@ -1159,8 +1159,8 @@
                     "format": "uri",
                     "readOnly": true
                 },
-                "zaakidentificatie": {
-                    "title": "Zaakidentificatie",
+                "identificatie": {
+                    "title": "Identificatie",
                     "description": "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.",
                     "type": "string",
                     "maxLength": 40
@@ -1240,8 +1240,8 @@
                 "zaakgeometrie": {
                     "$ref": "#/definitions/GeoWithin"
                 },
-                "zaakidentificatie": {
-                    "title": "Zaakidentificatie",
+                "identificatie": {
+                    "title": "Identificatie",
                     "description": "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.",
                     "type": "string",
                     "minLength": 1

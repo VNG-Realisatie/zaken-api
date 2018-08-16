@@ -26,7 +26,7 @@ class RolInline(admin.TabularInline):
 
 @admin.register(Zaak)
 class ZaakAdmin(admin.ModelAdmin):
-    list_display = ['zaakidentificatie']
+    list_display = ['identificatie']
     inlines = [
         StatusInline,
         ZaakObjectInline,
