@@ -56,7 +56,7 @@ class US169TestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()
-        self.assertIn('zaakidentificatie', data)
+        self.assertIn('identificatie', data)
         self.assertEqual(data['registratiedatum'], date.today().strftime('%Y-%m-%d'))
         self.assertEqual(data['einddatumGepland'], '2018-08-25')
 

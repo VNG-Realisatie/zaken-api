@@ -29,7 +29,7 @@ class ZaakViewSet(GeoMixin,
     create:
     Maak een ZAAK aan.
 
-    Indien geen zaakidentificatie gegeven is, dan wordt deze automatisch
+    Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd.
 
     list:
