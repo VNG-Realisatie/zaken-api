@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
+from zds_schema.constants import RolOmschrijving
 
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
 )
+
+from .validators import RolOccurenceValidator
 
 
 class ZaakSerializer(serializers.HyperlinkedModelSerializer):
@@ -150,9 +153,12 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
             'betrokkene',
             'betrokkene_type',
             'rolomschrijving',
-            'rolomschrijving_generiek',
             'roltoelichting',
         )
+        validators = [
+            RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),
+            RolOccurenceValidator(RolOmschrijving.zaakcoordinator, max_amount=1),
+        ]
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',

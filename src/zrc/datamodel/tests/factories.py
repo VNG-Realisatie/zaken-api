@@ -1,8 +1,6 @@
 import factory
 import factory.fuzzy
-from zds_schema.constants import (
-    RolOmschrijving, RolOmschrijvingGeneriek, RolTypes
-)
+from zds_schema.constants import RolOmschrijving, RolTypes
 
 
 class ZaakFactory(factory.django.DjangoModelFactory):
@@ -29,7 +27,6 @@ class RolFactory(factory.django.DjangoModelFactory):
     betrokkene = factory.Faker('url')
     betrokkene_type = factory.fuzzy.FuzzyChoice(RolTypes.values)
     rolomschrijving = factory.fuzzy.FuzzyChoice(RolOmschrijving.values)
-    rolomschrijving_generiek = factory.fuzzy.FuzzyChoice(RolOmschrijvingGeneriek.values)
 
     class Meta:
         model = 'datamodel.Rol'

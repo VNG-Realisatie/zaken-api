@@ -10,7 +10,7 @@ from datetime import date
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import RolOmschrijvingGeneriek, RolTypes
+from zds_schema.constants import RolOmschrijving, RolTypes
 from zds_schema.tests import get_operation_url
 
 from zrc.datamodel.constants import ZaakobjectTypes
@@ -85,13 +85,12 @@ class US169TestCase(APITestCase):
             'betrokkene': INITIATOR,
             'betrokkene_type': RolTypes.natuurlijk_persoon,  # 'Natuurlijk persoon'
             'rolomschrijving': 'Initiator',
-            'rolomschrijvingGeneriek': 'Initiator',
             'roltoelichting': 'initiele melder',
         })
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
-        initiator = zaak.rol_set.get(rolomschrijving_generiek=RolOmschrijvingGeneriek.initiator)
+        initiator = zaak.rol_set.get(rolomschrijving=RolOmschrijving.initiator)
         self.assertEqual(initiator.betrokkene, INITIATOR)
 
         # toevoegen behandelaar
@@ -100,12 +99,11 @@ class US169TestCase(APITestCase):
             'betrokkene': BEHANDELAAR,
             'betrokkene_type': RolTypes.vestiging,  # 'Vestiging'
             'rolomschrijving': 'Behandelaar',
-            'rolomschrijvingGeneriek': 'Behandelaar',
             'roltoelichting': 'behandelaar',
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
-        behandelaar = zaak.rol_set.get(rolomschrijving_generiek=RolOmschrijvingGeneriek.behandelaar)
+        behandelaar = zaak.rol_set.get(rolomschrijving=RolOmschrijving.behandelaar)
         self.assertEqual(behandelaar.betrokkene, BEHANDELAAR)
 
     def test_ophalen_alle_betrokkenen(self):

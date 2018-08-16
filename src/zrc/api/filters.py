@@ -21,5 +21,4 @@ class RolFilter(FilterSet):
             'betrokkene',
             'betrokkene_type',
             'rolomschrijving',
-            'rolomschrijving_generiek',
         )
