@@ -2,6 +2,17 @@
 Wijzigingen
 ===========
 
+0.3.0 (2018-08-16)
+==================
+
+* Unit test toegevoegd voor vng-Realisatie/gemma-zaken#163
+
+Breaking changes
+----------------
+
+* Hernoem ``zaakidentificatie`` -> ``identificatie`` cfr. de design decisions
+
+
 0.2.5 (2018-08-15)
 ==================
 
