@@ -5,9 +5,7 @@ from django.contrib.gis.db.models import GeometryField
 from django.db import models
 from django.utils.crypto import get_random_string
 
-from zds_schema.constants import (
-    RolOmschrijving, RolOmschrijvingGeneriek, RolTypes
-)
+from zds_schema.constants import RolOmschrijving, RolTypes
 from zds_schema.fields import RSINField
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
@@ -132,10 +130,6 @@ class Rol(models.Model):
 
     rolomschrijving = models.CharField(
         max_length=80, choices=RolOmschrijving.choices,
-        help_text='Algemeen gehanteerde benaming van de aard van de ROL'
-    )
-    rolomschrijving_generiek = models.CharField(
-        max_length=40, choices=RolOmschrijvingGeneriek.choices,
         help_text='Algemeen gehanteerde benaming van de aard van de ROL'
     )
     roltoelichting = models.TextField(max_length=1000)

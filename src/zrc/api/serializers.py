@@ -153,7 +153,6 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
             'betrokkene',
             'betrokkene_type',
             'rolomschrijving',
-            'rolomschrijving_generiek',
             'roltoelichting',
         )
         validators = [

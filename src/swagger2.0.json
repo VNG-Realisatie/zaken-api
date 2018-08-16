@@ -153,22 +153,6 @@
                             "Beslisser",
                             "Initiator",
                             "Klantcontacter",
-                            "Zaakco\u00f6rdinator"
-                        ]
-                    },
-                    {
-                        "name": "rolomschrijvingGeneriek",
-                        "in": "query",
-                        "description": "Algemeen gehanteerde benaming van de aard van de ROL",
-                        "required": false,
-                        "type": "string",
-                        "enum": [
-                            "Adviseur",
-                            "Behandelaar",
-                            "Belanghebbende",
-                            "Beslisser",
-                            "Initiator",
-                            "Klantcontacter",
                             "Zaakco\u00f6rdinator",
                             "Mede-initiator"
                         ]
@@ -730,7 +714,6 @@
                 "betrokkene",
                 "betrokkeneType",
                 "rolomschrijving",
-                "rolomschrijvingGeneriek",
                 "roltoelichting"
             ],
             "type": "object",
@@ -768,20 +751,6 @@
                 },
                 "rolomschrijving": {
                     "title": "Rolomschrijving",
-                    "description": "Algemeen gehanteerde benaming van de aard van de ROL",
-                    "type": "string",
-                    "enum": [
-                        "Adviseur",
-                        "Behandelaar",
-                        "Belanghebbende",
-                        "Beslisser",
-                        "Initiator",
-                        "Klantcontacter",
-                        "Zaakco\u00f6rdinator"
-                    ]
-                },
-                "rolomschrijvingGeneriek": {
-                    "title": "Rolomschrijving generiek",
                     "description": "Algemeen gehanteerde benaming van de aard van de ROL",
                     "type": "string",
                     "enum": [

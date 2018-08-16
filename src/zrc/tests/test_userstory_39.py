@@ -229,7 +229,6 @@ class US39TestCase(APITestCase):
             'betrokkene': betrokkene,
             'betrokkeneType': 'Vestiging',
             'rolomschrijving': 'Behandelaar',
-            'rolomschrijvingGeneriek': 'Behandelaar',
             'roltoelichting': 'Baggeren van gracht',
         }
 
@@ -249,7 +248,6 @@ class US39TestCase(APITestCase):
                 'betrokkene': betrokkene,
                 'betrokkeneType': 'Vestiging',
                 'rolomschrijving': 'Behandelaar',
-                'rolomschrijvingGeneriek': 'Behandelaar',
                 'roltoelichting': 'Baggeren van gracht',
             }
         )
