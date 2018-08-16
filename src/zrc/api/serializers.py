@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
@@ -7,7 +9,7 @@ from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
 )
 
-from .validators import RolOccurenceValidator
+from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
 
 
 class ZaakSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,7 +46,8 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
                 'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
             }
         }
-        validators = []  # Remove a default "unique together" constraint.
+        # Replace a default "unique together" constraint.
+        validators = [UniekeIdentificatieValidator()]
 
 
 class GeoWithinSerializer(serializers.Serializer):
