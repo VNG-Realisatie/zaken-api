@@ -2,6 +2,13 @@
 Wijzigingen
 ===========
 
+0.3.1 (2018-08-20)
+==================
+
+* Validatie toegevoegd op aantal initiators/coordinatoren voor een zaak
+* ``rolomschrijvingGeneriek`` weggehaald
+* validatie op unieke ZAAK.``identificatie`` binnen een bronorganisatie
+
 0.3.0 (2018-08-16)
 ==================
 
