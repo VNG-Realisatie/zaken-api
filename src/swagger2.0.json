@@ -564,6 +564,94 @@
                     "zaken"
                 ]
             },
+            "put": {
+                "operationId": "zaak_update",
+                "description": "Opvragen en bewerken van ZAAKen.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Zaak"
+                        }
+                    },
+                    {
+                        "name": "Accept-Crs",
+                        "in": "header",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "EPSG:4326"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Zaak"
+                        },
+                        "headers": {
+                            "Content-Crs": {
+                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
+                                "type": "string",
+                                "enum": [
+                                    "EPSG:4326"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "patch": {
+                "operationId": "zaak_partial_update",
+                "description": "Opvragen en bewerken van ZAAKen.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Zaak"
+                        }
+                    },
+                    {
+                        "name": "Accept-Crs",
+                        "in": "header",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "EPSG:4326"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Zaak"
+                        },
+                        "headers": {
+                            "Content-Crs": {
+                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
+                                "type": "string",
+                                "enum": [
+                                    "EPSG:4326"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
             "parameters": [
                 {
                     "name": "uuid",
@@ -851,7 +939,8 @@
                     "type": "string",
                     "enum": [
                         "VerblijfsObject",
-                        "MeldingOpenbareRuimte"
+                        "MeldingOpenbareRuimte",
+                        "InzageVerzoek"
                     ]
                 }
             }
@@ -1114,10 +1203,35 @@
                 }
             ]
         },
+        "ZaakKenmerk": {
+            "description": "Lijst van kenmerken",
+            "required": [
+                "kenmerk",
+                "bron"
+            ],
+            "type": "object",
+            "properties": {
+                "kenmerk": {
+                    "title": "Kenmerk",
+                    "description": "Identificeert uniek de zaak in een andere administratie.",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 1
+                },
+                "bron": {
+                    "title": "Bron",
+                    "description": "De aanduiding van de administratie waar het kenmerk op slaat.",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 1
+                }
+            }
+        },
         "Zaak": {
             "required": [
                 "bronorganisatie",
                 "zaaktype",
+                "verantwoordelijkeOrganisatie",
                 "startdatum"
             ],
             "type": "object",
@@ -1141,6 +1255,12 @@
                     "maxLength": 9,
                     "minLength": 1
                 },
+                "omschrijving": {
+                    "title": "Omschrijving",
+                    "description": "Een korte omschrijving van de zaak.",
+                    "type": "string",
+                    "maxLength": 80
+                },
                 "zaaktype": {
                     "title": "Zaaktype",
                     "description": "URL naar het zaaktype in de CATALOGUS waar deze voorkomt",
@@ -1154,6 +1274,14 @@
                     "description": "De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt.",
                     "type": "string",
                     "format": "date"
+                },
+                "verantwoordelijkeOrganisatie": {
+                    "title": "Verantwoordelijke organisatie",
+                    "description": "URL naar de Niet-natuurlijk persoon zijnde de organisatie die eindverantwoordelijk is voor de behandeling van de zaak.",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1
                 },
                 "startdatum": {
                     "title": "Startdatum",
@@ -1173,6 +1301,12 @@
                     "type": "string",
                     "format": "date"
                 },
+                "uiterlijkeEinddatumAfdoening": {
+                    "title": "Uiterlijke einddatum afdoening",
+                    "description": "De laatste datum waarop volgens wet- en regelgeving de zaak afgerond dient te zijn.",
+                    "type": "string",
+                    "format": "date"
+                },
                 "toelichting": {
                     "title": "Toelichting",
                     "description": "Een toelichting op de zaak.",
@@ -1188,6 +1322,13 @@
                     "type": "string",
                     "format": "uri",
                     "readOnly": true
+                },
+                "kenmerken": {
+                    "description": "Lijst van kenmerken",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ZaakKenmerk"
+                    }
                 }
             }
         },

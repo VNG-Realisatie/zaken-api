@@ -7,7 +7,8 @@ from django.utils.crypto import get_random_string
 
 from zds_schema.constants import RolOmschrijving, RolTypes
 from zds_schema.fields import RSINField
-from zds_schema.validators import alphanumeric_excluding_diacritic
+from zds_schema.validators import alphanumeric_excluding_diacritic, \
+    validate_non_negative_string
 
 from .constants import ZaakobjectTypes
 
@@ -26,28 +27,44 @@ class Zaak(models.Model):
     )
     identificatie = models.CharField(
         max_length=40, blank=True,
-        help_text='De unieke identificatie van de ZAAK binnen de organisatie die '
-                  'verantwoordelijk is voor de behandeling van de ZAAK.',
+        help_text='De unieke identificatie van de ZAAK binnen de organisatie '
+                  'die verantwoordelijk is voor de behandeling van de ZAAK.',
         validators=[alphanumeric_excluding_diacritic]
     )
-    bronorganisatie = RSINField(help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de '
-                                          'organisatie die de zaak heeft gecreeerd.')
-    zaaktype = models.URLField(help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
+    bronorganisatie = RSINField(
+        help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de '
+                  'organisatie die de zaak heeft gecreeerd.')
+    omschrijving = models.CharField(
+        max_length=80, blank=True,
+        help_text='Een korte omschrijving van de zaak.')
+    zaaktype = models.URLField(
+        help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
     registratiedatum = models.DateField(
-        help_text='De datum waarop de zaakbehandelende organisatie de ZAAK heeft '
-                  'geregistreerd. Indien deze niet opgegeven wordt, wordt de '
-                  'datum van vandaag gebruikt.',
+        help_text='De datum waarop de zaakbehandelende organisatie de ZAAK '
+                  'heeft geregistreerd. Indien deze niet opgegeven wordt, '
+                  'wordt de datum van vandaag gebruikt.',
         default=date.today
     )
+    verantwoordelijke_organisatie = models.URLField(
+        help_text='URL naar de Niet-natuurlijk persoon zijnde de organisatie '
+                  'die eindverantwoordelijk is voor de behandeling van de '
+                  'zaak.')
 
-    startdatum = models.DateField(help_text='De datum waarop met de uitvoering van de zaak is gestart')
+    startdatum = models.DateField(
+        help_text='De datum waarop met de uitvoering van de zaak is gestart')
     einddatum = models.DateField(
         blank=True, null=True,
         help_text='De datum waarop de uitvoering van de zaak afgerond is.',
     )
     einddatum_gepland = models.DateField(
         blank=True, null=True,
-        help_text='De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.',
+        help_text='De datum waarop volgens de planning verwacht wordt dat de '
+                  'zaak afgerond wordt.',
+    )
+    uiterlijke_einddatum_afdoening = models.DateField(
+        blank=True, null=True,
+        help_text='De laatste datum waarop volgens wet- en regelgeving de zaak '
+                  'afgerond dient te zijn.'
     )
 
     toelichting = models.TextField(
@@ -196,6 +213,24 @@ class ZaakEigenschap(models.Model):
     class Meta:
         verbose_name = 'zaakeigenschap'
         verbose_name_plural = 'zaakeigenschappen'
+
+
+class ZaakKenmerk(models.Model):
+    """
+    Model representatie van de Groepattribuutsoort 'Kenmerk'
+    """
+    zaak = models.ForeignKey('datamodel.Zaak', on_delete=models.CASCADE)
+    kenmerk = models.CharField(
+        max_length=40,
+        help_text='Identificeert uniek de zaak in een andere administratie.')
+    bron = models.CharField(
+        max_length=40,
+        help_text='De aanduiding van de administratie waar het kenmerk op '
+                  'slaat.')
+
+    class Meta:
+        verbose_name = 'zaak kenmerk'
+        verbose_name_plural = 'zaak kenmerken'
 
 
 class KlantContact(models.Model):
