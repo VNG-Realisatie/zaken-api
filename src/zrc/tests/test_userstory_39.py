@@ -5,7 +5,7 @@ from datetime import date
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_operation_url
+from zds_schema.tests import get_operation_url, get_validation_errors
 
 from zrc.datamodel.models import KlantContact, Rol, Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
@@ -79,9 +79,8 @@ class US39TestCase(APITestCase):
         response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('bronorganisatie', response.data)
-        error = response.data['bronorganisatie'][0]
-        self.assertEqual(error.code, 'required')
+        error = get_validation_errors(response, 'bronorganisatie')
+        self.assertEqual(error, 'Dit veld is vereist.')
 
     def test_create_zaak_invalide_rsin(self):
         url = get_operation_url('zaak_create')
@@ -94,9 +93,8 @@ class US39TestCase(APITestCase):
         response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('bronorganisatie', response.data)
-        error = response.data['bronorganisatie'][0]
-        self.assertEqual(error.code, 'invalid')
+        error = get_validation_errors(response, 'bronorganisatie')
+        self.assertEqual(error, 'Onjuist RSIN nummer.')
 
     def test_zet_zaakstatus(self):
         """
