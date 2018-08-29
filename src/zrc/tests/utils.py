@@ -1,7 +1,8 @@
 from datetime import datetime
 
-import dateutil.parser
 from django.utils import timezone
+
+import dateutil.parser
 
 
 def utcdatetime(*args, **kwargs) -> datetime:

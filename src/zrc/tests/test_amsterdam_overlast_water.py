@@ -5,8 +5,8 @@ from zds_schema.tests import get_operation_url
 from zrc.datamodel.models import Zaak
 
 from .test_userstory_39 import (
-    STATUS_TYPE, STATUS_TYPE_OVERLAST_GECONSTATEERD, ZAAKTYPE,
-    VERANTWOORDELIJKE_ORGANISATIE
+    STATUS_TYPE, STATUS_TYPE_OVERLAST_GECONSTATEERD,
+    VERANTWOORDELIJKE_ORGANISATIE, ZAAKTYPE
 )
 from .test_userstory_52 import EIGENSCHAP_NAAM_BOOT, EIGENSCHAP_OBJECTTYPE
 from .utils import utcdatetime

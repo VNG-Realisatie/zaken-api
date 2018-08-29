@@ -5,11 +5,10 @@ from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
 
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject,
-    ZaakKenmerk)
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakKenmerk, ZaakObject
+)
 
 from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
-
 
 
 class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
