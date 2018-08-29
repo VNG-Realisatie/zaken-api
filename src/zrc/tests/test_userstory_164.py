@@ -13,6 +13,7 @@ from zrc.datamodel.tests.factories import ZaakFactory
 
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
+VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
 
 
 class US164TestCase(APITestCase):
@@ -25,6 +26,7 @@ class US164TestCase(APITestCase):
         data = {
             'zaaktype': ZAAKTYPE,
             'identificatie': 'strtmzk-0001',
+            'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'bronorganisatie': '517439943',
             'startdatum': '2018-06-11',
         }
@@ -44,6 +46,7 @@ class US164TestCase(APITestCase):
             'zaaktype': ZAAKTYPE,
             'identificatie': 'strtmzk-0001',
             'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'startdatum': '2018-06-11',
         }
 

@@ -5,7 +5,8 @@ from zds_schema.tests import get_operation_url
 from zrc.datamodel.models import Zaak
 
 from .test_userstory_39 import (
-    STATUS_TYPE, STATUS_TYPE_OVERLAST_GECONSTATEERD, ZAAKTYPE
+    STATUS_TYPE, STATUS_TYPE_OVERLAST_GECONSTATEERD,
+    VERANTWOORDELIJKE_ORGANISATIE, ZAAKTYPE
 )
 from .test_userstory_52 import EIGENSCHAP_NAAM_BOOT, EIGENSCHAP_OBJECTTYPE
 from .utils import utcdatetime
@@ -58,6 +59,7 @@ class Application:
         response = self.client.post(zaak_create_url, {
             'zaaktype': ZAAKTYPE,
             'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'identificatie': f'WATER_{intern_id}',
             'registratiedatum': created.strftime('%Y-%m-%d'),
             'startdatum': created.strftime('%Y-%m-%d'),

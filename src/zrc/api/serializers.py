@@ -1,18 +1,26 @@
-from collections import OrderedDict
-
+from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
 
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakKenmerk, ZaakObject
 )
 
 from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
 
 
-class ZaakSerializer(serializers.HyperlinkedModelSerializer):
+class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ZaakKenmerk
+        fields = (
+            'kenmerk',
+            'bron',
+        )
+
+
+class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
         source='current_status_uuid',
         read_only=True,
@@ -21,22 +29,36 @@ class ZaakSerializer(serializers.HyperlinkedModelSerializer):
         help_text="Indien geen status bekend is, dan is de waarde 'null'"
     )
 
+    kenmerken = ZaakKenmerkSerializer(
+        source='zaakkenmerk_set',
+        many=True,
+        required=False,
+        help_text="Lijst van kenmerken"
+    )
+
     class Meta:
         model = Zaak
         fields = (
             'url',
             'identificatie',
             'bronorganisatie',
+            'omschrijving',
             'zaaktype',
             'registratiedatum',
+            'verantwoordelijke_organisatie',
             'startdatum',
             'einddatum',
             'einddatum_gepland',
+            'uiterlijke_einddatum_afdoening',
             'toelichting',
             'zaakgeometrie',
 
             # read-only veld, on-the-fly opgevraagd
-            'status'
+            'status',
+
+            # Writable inline resource, as opposed to eigenschappen for demo
+            # purposes. Eventually, we need to choose one form.
+            'kenmerken'
         )
         extra_kwargs = {
             'url': {

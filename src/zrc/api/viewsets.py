@@ -22,6 +22,7 @@ class ZaakViewSet(GeoMixin,
                   mixins.CreateModelMixin,
                   mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
+                  mixins.UpdateModelMixin,
                   viewsets.GenericViewSet):
     """
     Opvragen en bewerken van ZAAKen.
