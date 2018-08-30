@@ -24,6 +24,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/KlantContact'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - klantcontacten
     post:
@@ -40,6 +76,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/KlantContact'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - klantcontacten
       requestBody:
@@ -60,6 +138,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/KlantContact'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - klantcontacten
     parameters:
@@ -125,6 +245,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Rol'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - rollen
     post:
@@ -137,6 +293,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Rol'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - rollen
       requestBody:
@@ -157,6 +355,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Rol'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - rollen
     parameters:
@@ -180,6 +420,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Status'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - statussen
     post:
@@ -192,6 +468,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - statussen
       requestBody:
@@ -212,6 +530,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - statussen
     parameters:
@@ -235,6 +595,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ZaakObject'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaakobjecten
     post:
@@ -247,6 +643,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ZaakObject'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaakobjecten
       requestBody:
@@ -267,6 +705,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ZaakObject'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaakobjecten
     parameters:
@@ -335,6 +815,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Zaak'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaken
     post:
@@ -363,6 +879,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Zaak'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaken
       requestBody:
@@ -445,6 +1003,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Zaak'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaken
     put:
@@ -479,6 +1079,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Zaak'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaken
       requestBody:
@@ -515,6 +1163,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Zaak'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaken
       requestBody:
@@ -540,6 +1236,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ZaakEigenschap'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaken
     post:
@@ -552,6 +1284,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ZaakEigenschap'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaken
       requestBody:
@@ -579,6 +1353,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ZaakEigenschap'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fout'
       tags:
         - zaken
     parameters:
@@ -642,6 +1458,111 @@ components:
           description: Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt
           type: string
           maxLength: 20
+    Fout:
+      required:
+        - code
+        - title
+        - status
+        - detail
+        - instance
+      type: object
+      properties:
+        type:
+          title: Type
+          description: 'URI referentie naar het type fout, bedoeld voor developers'
+          type: string
+        code:
+          title: Code
+          description: Systeemcode die het type fout aangeeft
+          type: string
+          minLength: 1
+        title:
+          title: Title
+          description: Generieke titel voor het type fout
+          type: string
+          minLength: 1
+        status:
+          title: Status
+          description: De HTTP status code
+          type: integer
+        detail:
+          title: Detail
+          description: 'Extra informatie bij de fout, indien beschikbaar'
+          type: string
+          minLength: 1
+        instance:
+          title: Instance
+          description: >-
+            URI met referentie naar dit specifiek voorkomen van de fout. Deze
+            kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
+          type: string
+          minLength: 1
+    FieldValidationError:
+      required:
+        - name
+        - code
+        - reason
+      type: object
+      properties:
+        name:
+          title: Name
+          description: Naam van het veld met ongeldige gegevens
+          type: string
+          minLength: 1
+        code:
+          title: Code
+          description: Systeemcode die het type fout aangeeft
+          type: string
+          minLength: 1
+        reason:
+          title: Reason
+          description: Uitleg wat er precies fout is met de gegevens
+          type: string
+          minLength: 1
+    ValidatieFout:
+      required:
+        - code
+        - title
+        - status
+        - detail
+        - instance
+        - invalid-params
+      type: object
+      properties:
+        type:
+          title: Type
+          description: 'URI referentie naar het type fout, bedoeld voor developers'
+          type: string
+        code:
+          title: Code
+          description: Systeemcode die het type fout aangeeft
+          type: string
+          minLength: 1
+        title:
+          title: Title
+          description: Generieke titel voor het type fout
+          type: string
+          minLength: 1
+        status:
+          title: Status
+          description: De HTTP status code
+          type: integer
+        detail:
+          title: Detail
+          description: 'Extra informatie bij de fout, indien beschikbaar'
+          type: string
+          minLength: 1
+        instance:
+          title: Instance
+          description: >-
+            URI met referentie naar dit specifiek voorkomen van de fout. Deze
+            kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
+          type: string
+          minLength: 1
+        invalid-params:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldValidationError'
     Rol:
       required:
         - zaak
