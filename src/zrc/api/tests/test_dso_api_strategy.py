@@ -45,7 +45,8 @@ class DSOApiStrategyTests(APITestCase):
         del response.data['instance']
 
         self.assertEqual(response.data, {
-            'type': "NotFound",
+            'type': "URI: http://testserver/ref/fouten/NotFound/",
+            'code': 'not_found',
             'title': "Niet gevonden.",
             'status': 404,
             'detail': "Some detail message",

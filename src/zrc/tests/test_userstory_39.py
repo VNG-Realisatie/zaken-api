@@ -80,7 +80,7 @@ class US39TestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'bronorganisatie')
-        self.assertEqual(error, 'Dit veld is vereist.')
+        self.assertEqual(error['code'], 'required')
 
     def test_create_zaak_invalide_rsin(self):
         url = get_operation_url('zaak_create')
@@ -94,7 +94,7 @@ class US39TestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'bronorganisatie')
-        self.assertEqual(error, 'Onjuist RSIN nummer.')
+        self.assertEqual(error['code'], 'invalid')
 
     def test_zet_zaakstatus(self):
         """

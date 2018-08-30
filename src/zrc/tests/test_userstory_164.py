@@ -6,7 +6,7 @@ Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/164
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_operation_url
+from zds_schema.tests import get_operation_url, get_validation_errors
 
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
@@ -53,5 +53,7 @@ class US164TestCase(APITestCase):
         response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('identificatie', response.data)
-        self.assertEqual(response.data['identificatie'][0].code, 'identificatie-niet-uniek')
+        self.assertEqual(response.data['code'], 'invalid')
+
+        error = get_validation_errors(response, 'identificatie')
+        self.assertEqual(error['code'], 'identificatie-niet-uniek')
