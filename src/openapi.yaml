@@ -1022,6 +1022,8 @@ paths:
 
         Indien geen identificatie gegeven is, dan wordt deze automatisch
         gegenereerd.
+
+        De URL naar het zaaktype wordt gevalideerd op geldigheid.
       parameters:
         - name: Accept-Crs
           in: header

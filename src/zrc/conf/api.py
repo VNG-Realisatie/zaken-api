@@ -7,3 +7,5 @@ SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
 SWAGGER_SETTINGS.update({
     'DEFAULT_INFO': 'zrc.api.schema.info',
 })
+
+LINK_FETCHER = 'requests.get'

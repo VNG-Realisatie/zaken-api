@@ -8,7 +8,9 @@ from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakKenmerk, ZaakObject
 )
 
-from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
+from .validators import (
+    RolOccurenceValidator, UniekeIdentificatieValidator, URLValidator
+)
 
 
 class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
@@ -66,6 +68,10 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             },
             'zaakgeometrie': {
                 'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
+            },
+            'zaaktype': {
+                # TODO: does order matter here with the default validators?
+                'validators': [URLValidator()],
             }
         }
         # Replace a default "unique together" constraint.

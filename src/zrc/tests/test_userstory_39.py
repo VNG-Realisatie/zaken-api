@@ -3,6 +3,8 @@ Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/
 """
 from datetime import date
 
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url, get_validation_errors
@@ -23,6 +25,7 @@ FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
 STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 
+@override_settings(LINK_FETCHER='zrc.api.tests.mocks.link_fetcher_200')
 class US39TestCase(APITestCase):
 
     def test_create_zaak(self):

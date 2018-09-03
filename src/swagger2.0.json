@@ -1120,7 +1120,7 @@
             },
             "post": {
                 "operationId": "zaak_create",
-                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd.",
+                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd.\n\nDe URL naar het zaaktype wordt gevalideerd op geldigheid.",
                 "parameters": [
                     {
                         "name": "data",

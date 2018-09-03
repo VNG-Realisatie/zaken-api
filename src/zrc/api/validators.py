@@ -1,6 +1,26 @@
+from django.conf import settings
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
+
+
+class URLValidator:
+    """
+    Validate that the URL actually resolves to a HTTP 200
+    """
+    message = _('The URL {url} responded with HTTP {status_code}. Please provide a valid URL.')
+    code = 'bad-url'
+
+    def __call__(self, value: str):
+        link_fetcher = import_string(settings.LINK_FETCHER)
+
+        response = link_fetcher(value)
+        if response.status_code != 200:
+            raise serializers.ValidationError(
+                self.message.format(status_code=response.status_code, url=value),
+                code=self.code
+            )
 
 
 class RolOccurenceValidator:
