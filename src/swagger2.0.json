@@ -63,6 +63,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -130,6 +142,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -186,6 +210,18 @@
                         }
                     },
                     "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Fout"
@@ -306,6 +342,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -373,6 +421,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -429,6 +489,18 @@
                         }
                     },
                     "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Fout"
@@ -501,6 +573,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -568,6 +652,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -624,6 +720,18 @@
                         }
                     },
                     "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Fout"
@@ -696,6 +804,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -763,6 +883,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -819,6 +951,18 @@
                         }
                     },
                     "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Fout"
@@ -933,6 +1077,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "412": {
                         "description": "",
                         "schema": {
@@ -1011,6 +1167,18 @@
                         }
                     },
                     "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Fout"
@@ -1153,6 +1321,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "412": {
                         "description": "",
                         "schema": {
@@ -1246,6 +1426,18 @@
                         }
                     },
                     "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Fout"
@@ -1349,6 +1541,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "412": {
                         "description": "",
                         "schema": {
@@ -1422,6 +1626,18 @@
                             "$ref": "#/definitions/Fout"
                         }
                     },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
                     "415": {
                         "description": "",
                         "schema": {
@@ -1484,6 +1700,18 @@
                         }
                     },
                     "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Fout"
@@ -1554,6 +1782,18 @@
                         }
                     },
                     "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
                         "description": "",
                         "schema": {
                             "$ref": "#/definitions/Fout"
