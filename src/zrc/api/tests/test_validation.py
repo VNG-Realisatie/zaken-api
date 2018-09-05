@@ -2,14 +2,14 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.validators import URLValidator
 
-from ..validators import URLValidator
 from .utils import reverse
 
 
 class ZaakValidationTests(APITestCase):
 
-    @override_settings(LINK_FETCHER='zrc.api.tests.mocks.link_fetcher_404')
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
     def test_validate_zaaktype_invalid(self):
         url = reverse('zaak-list')
 
@@ -27,7 +27,7 @@ class ZaakValidationTests(APITestCase):
         self.assertEqual(validation_error['code'], URLValidator.code)
         self.assertEqual(validation_error['name'], 'zaaktype')
 
-    @override_settings(LINK_FETCHER='zrc.api.tests.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
     def test_validate_zaaktype_valid(self):
         url = reverse('zaak-list')
 

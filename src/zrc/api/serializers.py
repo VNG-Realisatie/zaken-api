@@ -3,14 +3,13 @@ from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
+from zds_schema.validators import URLValidator
 
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakKenmerk, ZaakObject
 )
 
-from .validators import (
-    RolOccurenceValidator, UniekeIdentificatieValidator, URLValidator
-)
+from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
 
 
 class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):

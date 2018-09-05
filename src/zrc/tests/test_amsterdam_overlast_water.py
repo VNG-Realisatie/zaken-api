@@ -110,7 +110,7 @@ class Application:
         })
 
 
-@override_settings(LINK_FETCHER='zrc.api.tests.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US39IntegrationTestCase(APITestCase):
     """
     Simulate a full realistic flow.

@@ -30,7 +30,7 @@ AVG_INZAGE_VERZOEK = 'https://www.example.com/orc/api/v1/avg/inzageverzoeken/123
 BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
 
 
-@override_settings(LINK_FETCHER='zrc.api.tests.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US153TestCase(APITestCase):
 
     def test_create_zaak_with_kenmerken(self):

@@ -11,7 +11,7 @@ from zrc.datamodel.tests.factories import ZaakFactory
 from .utils import reverse
 
 
-@override_settings(LINK_FETCHER='zrc.api.tests.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class ApiStrategyTests(APITestCase):
 
     @unittest.expectedFailure

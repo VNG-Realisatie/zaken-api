@@ -1,4 +1,6 @@
-from zds_schema.conf.api import BASE_REST_FRAMEWORK, BASE_SWAGGER_SETTINGS
+from zds_schema.conf.api import (  # noqa
+    BASE_REST_FRAMEWORK, BASE_SWAGGER_SETTINGS, LINK_FETCHER
+)
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 
@@ -7,5 +9,3 @@ SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
 SWAGGER_SETTINGS.update({
     'DEFAULT_INFO': 'zrc.api.schema.info',
 })
-
-LINK_FETCHER = 'requests.get'

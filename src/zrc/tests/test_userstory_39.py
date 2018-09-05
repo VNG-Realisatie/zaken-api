@@ -25,7 +25,7 @@ FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
 STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 
-@override_settings(LINK_FETCHER='zrc.api.tests.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US39TestCase(APITestCase):
 
     def test_create_zaak(self):

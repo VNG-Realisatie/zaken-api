@@ -28,7 +28,7 @@ BEHANDELAAR = 'https://example.com/orc/api/v1/brp/organisatorische-eenheden/d6cb
 VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
 
 
-@override_settings(LINK_FETCHER='zrc.api.tests.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US169TestCase(APITestCase):
 
     def test_create_melding(self):
