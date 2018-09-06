@@ -22,6 +22,7 @@ class ZaakViewSet(GeoMixin,
                   mixins.CreateModelMixin,
                   mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
+                  mixins.UpdateModelMixin,
                   viewsets.GenericViewSet):
     """
     Opvragen en bewerken van ZAAKen.
@@ -31,6 +32,8 @@ class ZaakViewSet(GeoMixin,
 
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd.
+
+    De URL naar het zaaktype wordt gevalideerd op geldigheid.
 
     list:
     Geef een lijst van ZAAKen.

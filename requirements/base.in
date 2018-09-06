@@ -15,4 +15,5 @@ django-filter
 djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
-zds-schema
+drf-writable-nested
+zds-schema==0.1.0

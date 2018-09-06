@@ -8,6 +8,8 @@ Zie ook: test_userstory_39.py, test_userstory_169.py
 """
 from datetime import date
 
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
@@ -16,8 +18,10 @@ from zds_schema.tests import get_operation_url
 AANVRAAG = 'https://example.com/orc/api/v1/straatartiesten/37c60cda-689e-4e4a-969c-fa4ed56cb2c6'
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
+VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US169TestCase(APITestCase):
 
     def test_create_aanvraag(self):
@@ -28,6 +32,7 @@ class US169TestCase(APITestCase):
         data = {
             'zaaktype': ZAAKTYPE,
             'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'identificatie': 'HLM-straatartiest-42',
             'omschrijving': 'Dagontheffing - Station Haarlem',
             'toelichting': 'Het betreft een clown met grote trom, mondharmonica en cymbalen.',

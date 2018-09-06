@@ -8,6 +8,8 @@ Zie ook: test_userstory_39.py
 """
 from datetime import date
 
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import RolOmschrijving, RolTypes
@@ -23,8 +25,10 @@ CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-18
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 INITIATOR = 'https://example.com/orc/api/v1/brp/natuurlijkepersonen/4bfc45ae-c04e-4398-aa4c-671d35b42ac3'
 BEHANDELAAR = 'https://example.com/orc/api/v1/brp/organisatorische-eenheden/d6cbe447-0ff9-4df6-b3d2-68e093ddebbd'
+VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US169TestCase(APITestCase):
 
     def test_create_melding(self):
@@ -35,10 +39,10 @@ class US169TestCase(APITestCase):
         data = {
             'zaaktype': ZAAKTYPE,
             'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'startdatum': '2018-07-25',
             'einddatum': '2018-08-25',  # afhankelijk van ZTC configuratie (doorlooptijd)
             'einddatumGepland': '2018-08-25',  # afhankelijk van ZTC configuratie (servicenorm)
-            'verantwoordelijkeOrganisatie': '391654871',
             'toelichting': 'De struik aan de straatkant belemmert het uitzicht '
                            'vanaf mijn balkon.',
             'omschrijving': '',

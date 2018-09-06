@@ -2,6 +2,19 @@
 Wijzigingen
 ===========
 
+0.4.0 (2018-09-06)
+==================
+
+* nieuwe velden (waaronder ``Kenmerken``) toegevoegd aan de ZAAK-resource
+  (vng-Realisatie/gemma-zaken#153)
+* DSO API-50: implementatie formaat van error-responses & documentatie (
+  vng-Realisatie/gemma-zaken#130)
+* Validatie (business logic) toegevoegd:
+    * ``zaaktype`` URL referentie moet een geldige URL zijn
+    * strengere validatie wordt gradueel ingevoerd
+* Uniciteit validator (combinatie ``bronorganisatie`` en ``identificatie``)
+  bouwt op generieke validator uit ``gemma-zaken-common``.
+
 0.3.1 (2018-08-20)
 ==================
 
