@@ -3,9 +3,11 @@ Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/
 """
 from datetime import date
 
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_operation_url
+from zds_schema.tests import get_operation_url, get_validation_errors
 
 from zrc.datamodel.models import KlantContact, Rol, Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
@@ -23,6 +25,7 @@ FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
 STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US39TestCase(APITestCase):
 
     def test_create_zaak(self):
@@ -79,9 +82,8 @@ class US39TestCase(APITestCase):
         response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('bronorganisatie', response.data)
-        error = response.data['bronorganisatie'][0]
-        self.assertEqual(error.code, 'required')
+        error = get_validation_errors(response, 'bronorganisatie')
+        self.assertEqual(error['code'], 'required')
 
     def test_create_zaak_invalide_rsin(self):
         url = get_operation_url('zaak_create')
@@ -94,9 +96,8 @@ class US39TestCase(APITestCase):
         response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('bronorganisatie', response.data)
-        error = response.data['bronorganisatie'][0]
-        self.assertEqual(error.code, 'invalid')
+        error = get_validation_errors(response, 'bronorganisatie')
+        self.assertEqual(error['code'], 'invalid')
 
     def test_zet_zaakstatus(self):
         """

@@ -1,3 +1,5 @@
+from django.test import override_settings
+
 from dateutil import parser
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
@@ -108,6 +110,7 @@ class Application:
         })
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US39IntegrationTestCase(APITestCase):
     """
     Simulate a full realistic flow.

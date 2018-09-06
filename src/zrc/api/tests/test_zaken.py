@@ -1,6 +1,7 @@
 import unittest
 
 from django.contrib.gis.geos import Point
+from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -10,6 +11,7 @@ from zrc.datamodel.tests.factories import ZaakFactory
 from .utils import reverse
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class ApiStrategyTests(APITestCase):
 
     @unittest.expectedFailure

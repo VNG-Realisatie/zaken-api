@@ -8,6 +8,8 @@ Zie ook: test_userstory_39.py, test_userstory_169.py
 """
 from datetime import date
 
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url
@@ -19,6 +21,7 @@ ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US169TestCase(APITestCase):
 
     def test_create_aanvraag(self):

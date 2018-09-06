@@ -8,6 +8,8 @@ Zie ook: test_userstory_39.py, test_userstory_169.py
 """
 import datetime
 
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import RolOmschrijving, RolTypes
@@ -28,6 +30,7 @@ AVG_INZAGE_VERZOEK = 'https://www.example.com/orc/api/v1/avg/inzageverzoeken/123
 BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US153TestCase(APITestCase):
 
     def test_create_zaak_with_kenmerken(self):

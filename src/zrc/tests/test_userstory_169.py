@@ -8,6 +8,8 @@ Zie ook: test_userstory_39.py
 """
 from datetime import date
 
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import RolOmschrijving, RolTypes
@@ -26,6 +28,7 @@ BEHANDELAAR = 'https://example.com/orc/api/v1/brp/organisatorische-eenheden/d6cb
 VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
 
 
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US169TestCase(APITestCase):
 
     def test_create_melding(self):

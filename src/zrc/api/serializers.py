@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
+from zds_schema.validators import URLValidator
 
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakKenmerk, ZaakObject
@@ -66,6 +67,10 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             },
             'zaakgeometrie': {
                 'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
+            },
+            'zaaktype': {
+                # TODO: does order matter here with the default validators?
+                'validators': [URLValidator()],
             }
         }
         # Replace a default "unique together" constraint.
