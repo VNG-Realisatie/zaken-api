@@ -52,3 +52,8 @@ Referenties
      :alt: Requirements status
 
 .. _testomgeving: https://ref.tst.vng.cloud/zrc/
+
+## Licentie
+Copyright © VNG Realisatie 2018
+
+[Licensed under the EUPL](LICENCE.md)
