@@ -3,13 +3,13 @@ info:
   title: Zaakregistratiecomponent (ZRC) API
   description: Een API om een zaakregistratiecomponent te benaderen
   contact:
-    url: 'https://github.com/VNG-Realisatie/gemma-zaken'
+    url: https://github.com/VNG-Realisatie/gemma-zaken
     email: support@maykinmedia.nl
   license:
     name: EUPL 1.2
   version: '1'
 security:
-  - basic: []
+- basic: []
 paths:
   /klantcontacten:
     get:
@@ -27,60 +27,61 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - klantcontacten
+      - klantcontacten
     post:
       operationId: klantcontact_create
-      description: |-
-        Registreer een klantcontact bij een ZAAK.
+      description: 'Registreer een klantcontact bij een ZAAK.
+
 
         Indien geen identificatie gegeven is, dan wordt deze automatisch
-        gegenereerd.
+
+        gegenereerd.'
       responses:
         '201':
           description: ''
@@ -91,59 +92,59 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - klantcontacten
+      - klantcontacten
       requestBody:
         content:
           application/json:
@@ -151,7 +152,7 @@ paths:
               $ref: '#/components/schemas/KlantContact'
         required: true
     parameters: []
-  '/klantcontacten/{uuid}':
+  /klantcontacten/{uuid}:
     get:
       operationId: klantcontact_read
       description: Opvragen en bewerken van KLANTCONTACTen.
@@ -165,113 +166,113 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - klantcontacten
+      - klantcontacten
     parameters:
-      - name: uuid
-        in: path
-        description: Unieke resource identifier (UUID4)
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: uuid
+      in: path
+      description: Unieke resource identifier (UUID4)
+      required: true
+      schema:
+        type: string
+        format: uuid
   /rollen:
     get:
       operationId: rol_list
       description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
       parameters:
-        - name: zaak
-          in: query
-          description: URL to the related resource
-          required: false
-          schema:
-            type: string
-            format: uri
-        - name: betrokkene
-          in: query
-          description: Een betrokkene gerelateerd aan een zaak
-          required: false
-          schema:
-            type: string
-            format: uri
-        - name: betrokkeneType
-          in: query
-          description: Soort betrokkene
-          required: false
-          schema:
-            type: string
-            enum:
-              - Natuurlijk persoon
-              - Niet-natuurlijk persoon
-              - Vestiging
-              - Organisatorische eenheid
-              - Medewerker
-        - name: rolomschrijving
-          in: query
-          description: Algemeen gehanteerde benaming van de aard van de ROL
-          required: false
-          schema:
-            type: string
-            enum:
-              - Adviseur
-              - Behandelaar
-              - Belanghebbende
-              - Beslisser
-              - Initiator
-              - Klantcontacter
-              - Zaakcoördinator
-              - Mede-initiator
+      - name: zaak
+        in: query
+        description: URL to the related resource
+        required: false
+        schema:
+          type: string
+          format: uri
+      - name: betrokkene
+        in: query
+        description: Een betrokkene gerelateerd aan een zaak
+        required: false
+        schema:
+          type: string
+          format: uri
+      - name: betrokkeneType
+        in: query
+        description: Soort betrokkene
+        required: false
+        schema:
+          type: string
+          enum:
+          - Natuurlijk persoon
+          - Niet-natuurlijk persoon
+          - Vestiging
+          - Organisatorische eenheid
+          - Medewerker
+      - name: rolomschrijving
+        in: query
+        description: Algemeen gehanteerde benaming van de aard van de ROL
+        required: false
+        schema:
+          type: string
+          enum:
+          - Adviseur
+          - Behandelaar
+          - Belanghebbende
+          - Beslisser
+          - Initiator
+          - Klantcontacter
+          - "Zaakco\xF6rdinator"
+          - Mede-initiator
       responses:
         '200':
           description: ''
@@ -284,53 +285,53 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - rollen
+      - rollen
     post:
       operationId: rol_create
       description: Koppel een BETROKKENE aan een ZAAK.
@@ -344,59 +345,59 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - rollen
+      - rollen
       requestBody:
         content:
           application/json:
@@ -404,7 +405,7 @@ paths:
               $ref: '#/components/schemas/Rol'
         required: true
     parameters: []
-  '/rollen/{uuid}':
+  /rollen/{uuid}:
     get:
       operationId: rol_read
       description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
@@ -418,67 +419,67 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - rollen
+      - rollen
     parameters:
-      - name: uuid
-        in: path
-        description: Unieke resource identifier (UUID4)
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: uuid
+      in: path
+      description: Unieke resource identifier (UUID4)
+      required: true
+      schema:
+        type: string
+        format: uuid
   /statussen:
     get:
       operationId: status_list
@@ -495,53 +496,53 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - statussen
+      - statussen
     post:
       operationId: status_create
       description: ''
@@ -555,59 +556,59 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - statussen
+      - statussen
       requestBody:
         content:
           application/json:
@@ -615,7 +616,7 @@ paths:
               $ref: '#/components/schemas/Status'
         required: true
     parameters: []
-  '/statussen/{uuid}':
+  /statussen/{uuid}:
     get:
       operationId: status_read
       description: ''
@@ -629,67 +630,67 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - statussen
+      - statussen
     parameters:
-      - name: uuid
-        in: path
-        description: Unieke resource identifier (UUID4)
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: uuid
+      in: path
+      description: Unieke resource identifier (UUID4)
+      required: true
+      schema:
+        type: string
+        format: uuid
   /zaakobjecten:
     get:
       operationId: zaakobject_list
@@ -706,53 +707,53 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaakobjecten
+      - zaakobjecten
     post:
       operationId: zaakobject_create
       description: Registreer een ZAAKOBJECT relatie.
@@ -766,59 +767,59 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaakobjecten
+      - zaakobjecten
       requestBody:
         content:
           application/json:
@@ -826,7 +827,7 @@ paths:
               $ref: '#/components/schemas/ZaakObject'
         required: true
     parameters: []
-  '/zaakobjecten/{uuid}':
+  /zaakobjecten/{uuid}:
     get:
       operationId: zaakobject_read
       description: Geef de details van een ZAAKOBJECT relatie.
@@ -840,119 +841,114 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaakobjecten
+      - zaakobjecten
     parameters:
-      - name: uuid
-        in: path
-        description: Unieke resource identifier (UUID4)
-        required: true
-        schema:
-          type: string
-          format: uuid
+    - name: uuid
+      in: path
+      description: Unieke resource identifier (UUID4)
+      required: true
+      schema:
+        type: string
+        format: uuid
   /zaken:
     get:
       operationId: zaak_list
       description: Geef een lijst van ZAAKen.
       parameters:
-        - name: identificatie
-          in: query
-          description: >-
-            De unieke identificatie van de ZAAK binnen de organisatie die
-            verantwoordelijk is voor de behandeling van de ZAAK.
-          required: false
-          schema:
-            type: string
-        - name: bronorganisatie
-          in: query
-          description: >-
-            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de
-            zaak heeft gecreeerd.
-          required: false
-          schema:
-            type: string
-        - name: zaaktype
-          in: query
-          description: URL naar het zaaktype in de CATALOGUS waar deze voorkomt
-          required: false
-          schema:
-            type: string
-            format: uri
-        - name: Accept-Crs
-          in: header
-          description: >-
-            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
-            WGS84).
-          required: true
-          schema:
-            type: string
-            enum:
-              - 'EPSG:4326'
+      - name: identificatie
+        in: query
+        description: De unieke identificatie van de ZAAK binnen de organisatie die
+          verantwoordelijk is voor de behandeling van de ZAAK.
+        required: false
+        schema:
+          type: string
+      - name: bronorganisatie
+        in: query
+        description: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
+          die de zaak heeft gecreeerd.
+        required: false
+        schema:
+          type: string
+      - name: zaaktype
+        in: query
+        description: URL naar het zaaktype in de CATALOGUS waar deze voorkomt
+        required: false
+        schema:
+          type: string
+          format: uri
+      - name: Accept-Crs
+        in: header
+        description: Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+          de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
       responses:
         '200':
           description: ''
           headers:
             Content-Crs:
-              description: >-
-                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
-                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
-                hetzelfde als WGS84).
+              description: Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde
+                als WGS84).
               schema:
                 type: string
                 enum:
-                  - 'EPSG:4326'
+                - EPSG:4326
           content:
             application/json:
               schema:
@@ -962,80 +958,80 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '412':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
     post:
       operationId: zaak_create
-      description: |-
-        Maak een ZAAK aan.
+      description: 'Maak een ZAAK aan.
+
 
         Indien geen identificatie gegeven is, dan wordt deze automatisch
+
         gegenereerd.
 
-        De URL naar het zaaktype wordt gevalideerd op geldigheid.
+
+        De URL naar het zaaktype wordt gevalideerd op geldigheid.'
       parameters:
-        - name: Accept-Crs
-          in: header
-          description: >-
-            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
-            WGS84).
-          required: true
-          schema:
-            type: string
-            enum:
-              - 'EPSG:4326'
+      - name: Accept-Crs
+        in: header
+        description: Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+          de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
       responses:
         '201':
           description: ''
@@ -1046,65 +1042,65 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '412':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
       requestBody:
         $ref: '#/components/requestBodies/Zaak'
     parameters: []
@@ -1113,30 +1109,27 @@ paths:
       operationId: zaak__zoek
       description: Voer een (geo)-zoekopdracht uit op ZAAKen.
       parameters:
-        - name: Accept-Crs
-          in: header
-          description: >-
-            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
-            WGS84).
-          required: true
-          schema:
-            type: string
-            enum:
-              - 'EPSG:4326'
+      - name: Accept-Crs
+        in: header
+        description: Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+          de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
       responses:
         '200':
           description: ''
           headers:
             Content-Crs:
-              description: >-
-                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
-                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
-                hetzelfde als WGS84).
+              description: Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde
+                als WGS84).
               schema:
                 type: string
                 enum:
-                  - 'EPSG:4326'
+                - EPSG:4326
           content:
             application/json:
               schema:
@@ -1146,65 +1139,65 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '412':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
       requestBody:
         content:
           application/json:
@@ -1212,35 +1205,32 @@ paths:
               $ref: '#/components/schemas/ZaakZoek'
         required: true
     parameters: []
-  '/zaken/{uuid}':
+  /zaken/{uuid}:
     get:
       operationId: zaak_read
       description: Opvragen en bewerken van ZAAKen.
       parameters:
-        - name: Accept-Crs
-          in: header
-          description: >-
-            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
-            WGS84).
-          required: true
-          schema:
-            type: string
-            enum:
-              - 'EPSG:4326'
+      - name: Accept-Crs
+        in: header
+        description: Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+          de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
       responses:
         '200':
           description: ''
           headers:
             Content-Crs:
-              description: >-
-                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
-                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
-                hetzelfde als WGS84).
+              description: Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde
+                als WGS84).
               schema:
                 type: string
                 enum:
-                  - 'EPSG:4326'
+                - EPSG:4326
           content:
             application/json:
               schema:
@@ -1248,93 +1238,90 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '412':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
     put:
       operationId: zaak_update
       description: Opvragen en bewerken van ZAAKen.
       parameters:
-        - name: Accept-Crs
-          in: header
-          description: >-
-            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
-            WGS84).
-          required: true
-          schema:
-            type: string
-            enum:
-              - 'EPSG:4326'
+      - name: Accept-Crs
+        in: header
+        description: Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+          de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
       responses:
         '200':
           description: ''
           headers:
             Content-Crs:
-              description: >-
-                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
-                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
-                hetzelfde als WGS84).
+              description: Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde
+                als WGS84).
               schema:
                 type: string
                 enum:
-                  - 'EPSG:4326'
+                - EPSG:4326
           content:
             application/json:
               schema:
@@ -1342,101 +1329,98 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '412':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
       requestBody:
         $ref: '#/components/requestBodies/Zaak'
     patch:
       operationId: zaak_partial_update
       description: Opvragen en bewerken van ZAAKen.
       parameters:
-        - name: Accept-Crs
-          in: header
-          description: >-
-            Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
-            de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als
-            WGS84).
-          required: true
-          schema:
-            type: string
-            enum:
-              - 'EPSG:4326'
+      - name: Accept-Crs
+        in: header
+        description: Het 'Coordinate Reference System' (CRS) van de verzoekdata. Volgens
+          de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
       responses:
         '200':
           description: ''
           headers:
             Content-Crs:
-              description: >-
-                Het 'Coordinate Reference System' (CRS) van de antwoorddata.
-                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is
-                hetzelfde als WGS84).
+              description: Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde
+                als WGS84).
               schema:
                 type: string
                 enum:
-                  - 'EPSG:4326'
+                - EPSG:4326
           content:
             application/json:
               schema:
@@ -1444,82 +1428,82 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '412':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
       requestBody:
         $ref: '#/components/requestBodies/Zaak'
     parameters:
-      - name: uuid
-        in: path
-        description: Unieke resource identifier (UUID4)
-        required: true
-        schema:
-          type: string
-          format: uuid
-  '/zaken/{zaak_uuid}/zaakeigenschappen':
+    - name: uuid
+      in: path
+      description: Unieke resource identifier (UUID4)
+      required: true
+      schema:
+        type: string
+        format: uuid
+  /zaken/{zaak_uuid}/zaakeigenschappen:
     get:
       operationId: zaakeigenschap_list
       description: Geef een collectie van eigenschappen behorend bij een ZAAK.
@@ -1535,53 +1519,53 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
     post:
       operationId: zaakeigenschap_create
       description: Registreer een eigenschap van een ZAAK.
@@ -1595,59 +1579,59 @@ paths:
         '400':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
       requestBody:
         content:
           application/json:
@@ -1655,14 +1639,14 @@ paths:
               $ref: '#/components/schemas/ZaakEigenschap'
         required: true
     parameters:
-      - name: zaak_uuid
-        in: path
-        required: true
-        description: Unieke resource identifier (UUID4)
-        schema:
-          type: string
-          format: uuid
-  '/zaken/{zaak_uuid}/zaakeigenschappen/{uuid}':
+    - name: zaak_uuid
+      in: path
+      required: true
+      description: Unieke resource identifier (UUID4)
+      schema:
+        type: string
+        format: uuid
+  /zaken/{zaak_uuid}/zaakeigenschappen/{uuid}:
     get:
       operationId: zaakeigenschap_read
       description: Geef de details van ZaakEigenschap voor een ZAAK.
@@ -1676,76 +1660,76 @@ paths:
         '401':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '403':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '406':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '409':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '410':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '415':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '429':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
         '500':
           description: ''
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
       tags:
-        - zaken
+      - zaken
     parameters:
-      - name: uuid
-        in: path
-        description: Unieke resource identifier (UUID4)
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: zaak_uuid
-        in: path
-        required: true
-        description: Unieke resource identifier (UUID4)
-        schema:
-          type: string
-          format: uuid
+    - name: uuid
+      in: path
+      description: Unieke resource identifier (UUID4)
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: zaak_uuid
+      in: path
+      required: true
+      description: Unieke resource identifier (UUID4)
+      schema:
+        type: string
+        format: uuid
 servers:
-  - url: /api/v1
+- url: /api/v1
 components:
   requestBodies:
     Zaak:
@@ -1761,8 +1745,8 @@ components:
   schemas:
     KlantContact:
       required:
-        - zaak
-        - datumtijd
+      - zaak
+      - datumtijd
       type: object
       properties:
         url:
@@ -1792,16 +1776,16 @@ components:
           maxLength: 20
     Fout:
       required:
-        - code
-        - title
-        - status
-        - detail
-        - instance
+      - code
+      - title
+      - status
+      - detail
+      - instance
       type: object
       properties:
         type:
           title: Type
-          description: 'URI referentie naar het type fout, bedoeld voor developers'
+          description: URI referentie naar het type fout, bedoeld voor developers
           type: string
         code:
           title: Code
@@ -1819,21 +1803,20 @@ components:
           type: integer
         detail:
           title: Detail
-          description: 'Extra informatie bij de fout, indien beschikbaar'
+          description: Extra informatie bij de fout, indien beschikbaar
           type: string
           minLength: 1
         instance:
           title: Instance
-          description: >-
-            URI met referentie naar dit specifiek voorkomen van de fout. Deze
-            kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
+          description: URI met referentie naar dit specifiek voorkomen van de fout.
+            Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
           type: string
           minLength: 1
     FieldValidationError:
       required:
-        - name
-        - code
-        - reason
+      - name
+      - code
+      - reason
       type: object
       properties:
         name:
@@ -1853,17 +1836,17 @@ components:
           minLength: 1
     ValidatieFout:
       required:
-        - code
-        - title
-        - status
-        - detail
-        - instance
-        - invalid-params
+      - code
+      - title
+      - status
+      - detail
+      - instance
+      - invalid-params
       type: object
       properties:
         type:
           title: Type
-          description: 'URI referentie naar het type fout, bedoeld voor developers'
+          description: URI referentie naar het type fout, bedoeld voor developers
           type: string
         code:
           title: Code
@@ -1881,14 +1864,13 @@ components:
           type: integer
         detail:
           title: Detail
-          description: 'Extra informatie bij de fout, indien beschikbaar'
+          description: Extra informatie bij de fout, indien beschikbaar
           type: string
           minLength: 1
         instance:
           title: Instance
-          description: >-
-            URI met referentie naar dit specifiek voorkomen van de fout. Deze
-            kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
+          description: URI met referentie naar dit specifiek voorkomen van de fout.
+            Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
           type: string
           minLength: 1
         invalid-params:
@@ -1897,11 +1879,11 @@ components:
             $ref: '#/components/schemas/FieldValidationError'
     Rol:
       required:
-        - zaak
-        - betrokkene
-        - betrokkeneType
-        - rolomschrijving
-        - roltoelichting
+      - zaak
+      - betrokkene
+      - betrokkeneType
+      - rolomschrijving
+      - roltoelichting
       type: object
       properties:
         url:
@@ -1925,24 +1907,24 @@ components:
           description: Soort betrokkene
           type: string
           enum:
-            - Natuurlijk persoon
-            - Niet-natuurlijk persoon
-            - Vestiging
-            - Organisatorische eenheid
-            - Medewerker
+          - Natuurlijk persoon
+          - Niet-natuurlijk persoon
+          - Vestiging
+          - Organisatorische eenheid
+          - Medewerker
         rolomschrijving:
           title: Rolomschrijving
           description: Algemeen gehanteerde benaming van de aard van de ROL
           type: string
           enum:
-            - Adviseur
-            - Behandelaar
-            - Belanghebbende
-            - Beslisser
-            - Initiator
-            - Klantcontacter
-            - Zaakcoördinator
-            - Mede-initiator
+          - Adviseur
+          - Behandelaar
+          - Belanghebbende
+          - Beslisser
+          - Initiator
+          - Klantcontacter
+          - "Zaakco\xF6rdinator"
+          - Mede-initiator
         roltoelichting:
           title: Roltoelichting
           type: string
@@ -1950,9 +1932,9 @@ components:
           minLength: 1
     Status:
       required:
-        - zaak
-        - statusType
-        - datumStatusGezet
+      - zaak
+      - statusType
+      - datumStatusGezet
       type: object
       properties:
         url:
@@ -1977,16 +1959,15 @@ components:
           format: date-time
         statustoelichting:
           title: Statustoelichting
-          description: >-
-            Een, voor de initiator van de zaak relevante, toelichting op de
-            status van een zaak.
+          description: Een, voor de initiator van de zaak relevante, toelichting op
+            de status van een zaak.
           type: string
           maxLength: 1000
     ZaakObject:
       required:
-        - zaak
-        - object
-        - type
+      - zaak
+      - object
+      - type
       type: object
       properties:
         url:
@@ -2015,33 +1996,33 @@ components:
           description: Beschrijft het type object gerelateerd aan de zaak
           type: string
           enum:
-            - VerblijfsObject
-            - MeldingOpenbareRuimte
-            - InzageVerzoek
+          - VerblijfsObject
+          - MeldingOpenbareRuimte
+          - InzageVerzoek
     Geometry:
       title: Geometry
       description: GeoJSON geometry
       required:
-        - type
+      - type
       type: object
       properties:
         type:
           description: The geometry type
           type: string
           enum:
-            - Point
-            - MultiPoint
-            - LineString
-            - MultiLineString
-            - Polygon
-            - MultiPolygon
-            - Feature
-            - FeatureCollection
-            - GeometryCollection
+          - Point
+          - MultiPoint
+          - LineString
+          - MultiLineString
+          - Polygon
+          - MultiPolygon
+          - Feature
+          - FeatureCollection
+          - GeometryCollection
       discriminator:
         propertyName: type
       externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.1'
+        url: https://tools.ietf.org/html/rfc7946#section-3.1
     Point2D:
       title: Point2D
       description: A 2D point
@@ -2054,130 +2035,130 @@ components:
       description: GeoJSON point geometry
       type: object
       allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - required:
-            - coordinates
-          type: object
-          properties:
-            coordinates:
-              $ref: '#/components/schemas/Point2D'
+      - $ref: '#/components/schemas/Geometry'
+      - required:
+        - coordinates
+        type: object
+        properties:
+          coordinates:
+            $ref: '#/components/schemas/Point2D'
       externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.2'
+        url: https://tools.ietf.org/html/rfc7946#section-3.1.2
     MultiPoint:
       description: GeoJSON multi-point geometry
       type: object
       allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - required:
-            - coordinates
-          type: object
-          properties:
-            coordinates:
-              type: array
-              items:
-                $ref: '#/components/schemas/Point2D'
+      - $ref: '#/components/schemas/Geometry'
+      - required:
+        - coordinates
+        type: object
+        properties:
+          coordinates:
+            type: array
+            items:
+              $ref: '#/components/schemas/Point2D'
       externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.3'
+        url: https://tools.ietf.org/html/rfc7946#section-3.1.3
     LineString:
       description: GeoJSON line-string geometry
       type: object
       allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - required:
-            - coordinates
-          type: object
-          properties:
-            coordinates:
-              type: array
-              items:
-                $ref: '#/components/schemas/Point2D'
-              minItems: 2
+      - $ref: '#/components/schemas/Geometry'
+      - required:
+        - coordinates
+        type: object
+        properties:
+          coordinates:
+            type: array
+            items:
+              $ref: '#/components/schemas/Point2D'
+            minItems: 2
       externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.4'
+        url: https://tools.ietf.org/html/rfc7946#section-3.1.4
     MultiLineString:
       description: GeoJSON multi-line-string geometry
       type: object
       allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - required:
-            - coordinates
-          type: object
-          properties:
-            coordinates:
+      - $ref: '#/components/schemas/Geometry'
+      - required:
+        - coordinates
+        type: object
+        properties:
+          coordinates:
+            type: array
+            items:
               type: array
               items:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Point2D'
+                $ref: '#/components/schemas/Point2D'
       externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.5'
+        url: https://tools.ietf.org/html/rfc7946#section-3.1.5
     Polygon:
       description: GeoJSON polygon geometry
       type: object
       allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - required:
-            - coordinates
-          type: object
-          properties:
-            coordinates:
+      - $ref: '#/components/schemas/Geometry'
+      - required:
+        - coordinates
+        type: object
+        properties:
+          coordinates:
+            type: array
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Point2D'
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.1.6
+    MultiPolygon:
+      description: GeoJSON multi-polygon geometry
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Geometry'
+      - required:
+        - coordinates
+        type: object
+        properties:
+          coordinates:
+            type: array
+            items:
               type: array
               items:
                 type: array
                 items:
                   $ref: '#/components/schemas/Point2D'
       externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.6'
-    MultiPolygon:
-      description: GeoJSON multi-polygon geometry
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - required:
-            - coordinates
-          type: object
-          properties:
-            coordinates:
-              type: array
-              items:
-                type: array
-                items:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Point2D'
-      externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.7'
+        url: https://tools.ietf.org/html/rfc7946#section-3.1.7
     GeometryCollection:
       description: GeoJSON multi-polygon geometry
       type: object
       allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - required:
-            - geometries
-          type: object
-          properties:
-            geometries:
-              type: array
-              items:
-                $ref: '#/components/schemas/Geometry'
+      - $ref: '#/components/schemas/Geometry'
+      - required:
+        - geometries
+        type: object
+        properties:
+          geometries:
+            type: array
+            items:
+              $ref: '#/components/schemas/Geometry'
       externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.1.8'
+        url: https://tools.ietf.org/html/rfc7946#section-3.1.8
     GeoJSONGeometry:
       title: GeoJSONGeometry
       type: object
       oneOf:
-        - $ref: '#/components/schemas/Point'
-        - $ref: '#/components/schemas/MultiPoint'
-        - $ref: '#/components/schemas/LineString'
-        - $ref: '#/components/schemas/MultiLineString'
-        - $ref: '#/components/schemas/Polygon'
-        - $ref: '#/components/schemas/MultiPolygon'
-        - $ref: '#/components/schemas/GeometryCollection'
+      - $ref: '#/components/schemas/Point'
+      - $ref: '#/components/schemas/MultiPoint'
+      - $ref: '#/components/schemas/LineString'
+      - $ref: '#/components/schemas/MultiLineString'
+      - $ref: '#/components/schemas/Polygon'
+      - $ref: '#/components/schemas/MultiPolygon'
+      - $ref: '#/components/schemas/GeometryCollection'
     ZaakKenmerk:
       description: Lijst van kenmerken
       required:
-        - kenmerk
-        - bron
+      - kenmerk
+      - bron
       type: object
       properties:
         kenmerk:
@@ -2194,10 +2175,10 @@ components:
           minLength: 1
     Zaak:
       required:
-        - bronorganisatie
-        - zaaktype
-        - verantwoordelijkeOrganisatie
-        - startdatum
+      - bronorganisatie
+      - zaaktype
+      - verantwoordelijkeOrganisatie
+      - startdatum
       type: object
       properties:
         url:
@@ -2207,16 +2188,14 @@ components:
           readOnly: true
         identificatie:
           title: Identificatie
-          description: >-
-            De unieke identificatie van de ZAAK binnen de organisatie die
+          description: De unieke identificatie van de ZAAK binnen de organisatie die
             verantwoordelijk is voor de behandeling van de ZAAK.
           type: string
           maxLength: 40
         bronorganisatie:
           title: Bronorganisatie
-          description: >-
-            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de
-            zaak heeft gecreeerd.
+          description: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
+            die de zaak heeft gecreeerd.
           type: string
           maxLength: 9
           minLength: 1
@@ -2234,16 +2213,14 @@ components:
           minLength: 1
         registratiedatum:
           title: Registratiedatum
-          description: >-
-            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
-            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van
-            vandaag gebruikt.
+          description: De datum waarop de zaakbehandelende organisatie de ZAAK heeft
+            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
+            gebruikt.
           type: string
           format: date
         verantwoordelijkeOrganisatie:
           title: Verantwoordelijke organisatie
-          description: >-
-            URL naar de Niet-natuurlijk persoon zijnde de organisatie die
+          description: URL naar de Niet-natuurlijk persoon zijnde de organisatie die
             eindverantwoordelijk is voor de behandeling van de zaak.
           type: string
           format: uri
@@ -2261,16 +2238,14 @@ components:
           format: date
         einddatumGepland:
           title: Einddatum gepland
-          description: >-
-            De datum waarop volgens de planning verwacht wordt dat de zaak
+          description: De datum waarop volgens de planning verwacht wordt dat de zaak
             afgerond wordt.
           type: string
           format: date
         uiterlijkeEinddatumAfdoening:
           title: Uiterlijke einddatum afdoening
-          description: >-
-            De laatste datum waarop volgens wet- en regelgeving de zaak afgerond
-            dient te zijn.
+          description: De laatste datum waarop volgens wet- en regelgeving de zaak
+            afgerond dient te zijn.
           type: string
           format: date
         toelichting:
@@ -2282,7 +2257,7 @@ components:
           $ref: '#/components/schemas/GeoJSONGeometry'
         status:
           title: Status
-          description: 'Indien geen status bekend is, dan is de waarde ''null'''
+          description: Indien geen status bekend is, dan is de waarde 'null'
           type: string
           format: uri
           readOnly: true
@@ -2299,23 +2274,21 @@ components:
           $ref: '#/components/schemas/GeoJSONGeometry'
     ZaakZoek:
       required:
-        - zaakgeometrie
+      - zaakgeometrie
       type: object
       properties:
         zaakgeometrie:
           $ref: '#/components/schemas/GeoWithin'
         identificatie:
           title: Identificatie
-          description: >-
-            De unieke identificatie van de ZAAK binnen de organisatie die
+          description: De unieke identificatie van de ZAAK binnen de organisatie die
             verantwoordelijk is voor de behandeling van de ZAAK.
           type: string
           minLength: 1
         bronorganisatie:
           title: Bronorganisatie
-          description: >-
-            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de
-            zaak heeft gecreeerd.
+          description: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
+            die de zaak heeft gecreeerd.
           type: string
           minLength: 1
         zaaktype:
@@ -2325,9 +2298,9 @@ components:
           minLength: 1
     ZaakEigenschap:
       required:
-        - zaak
-        - eigenschap
-        - waarde
+      - zaak
+      - eigenschap
+      - waarde
       type: object
       properties:
         url:
