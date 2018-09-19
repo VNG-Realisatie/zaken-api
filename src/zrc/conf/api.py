@@ -1,6 +1,5 @@
 from zds_schema.conf.api import *  # noqa - imports white-listed
 
-
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 
 
