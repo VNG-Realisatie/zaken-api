@@ -1,12 +1,16 @@
+from django.shortcuts import get_object_or_404
+
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
+from zds_schema.utils import lookup_kwargs_to_filters
 from zds_schema.validators import URLValidator
 
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakKenmerk, ZaakObject
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
+    ZaakKenmerk, ZaakObject
 )
 
 from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
@@ -126,6 +130,30 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'source': 'object_type',
             }
         }
+
+
+class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
+    parent_lookup_kwargs = {
+        'zaak_uuid': 'zaak__uuid'
+    }
+    parent_retrieve_kwargs = {
+        'zaak_uuid': 'uuid',
+    }
+
+    class Meta:
+        model = ZaakInformatieObject
+        fields = ('url', 'informatieobject',)
+        extra_kwargs = {
+            'url': {'lookup_field': 'uuid'},
+            'zaak': {'lookup_field': 'uuid'},
+            'informatieobject': {'validators': [URLValidator()]}
+        }
+
+    def create(self, validated_data):
+        view_kwargs = self.context['view'].kwargs
+        filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, view_kwargs)
+        validated_data['zaak'] = get_object_or_404(Zaak, **filters)
+        return super().create(validated_data)
 
 
 class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):

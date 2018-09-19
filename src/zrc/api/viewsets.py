@@ -6,14 +6,15 @@ from zds_schema.search import SearchMixin
 from zds_schema.viewsets import NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
+    ZaakObject
 )
 
 from .filters import RolFilter, ZaakFilter
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
-    ZaakEigenschapSerializer, ZaakObjectSerializer, ZaakSerializer,
-    ZaakZoekSerializer
+    ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
+    ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
 
 
@@ -90,6 +91,16 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
     """
     queryset = ZaakObject.objects.all()
     serializer_class = ZaakObjectSerializer
+    lookup_field = 'uuid'
+
+
+class ZaakInformatieObjectViewSet(NestedViewSetMixin,
+                                  mixins.ListModelMixin,
+                                  mixins.CreateModelMixin,
+                                  mixins.DestroyModelMixin,
+                                  viewsets.GenericViewSet):
+    queryset = ZaakInformatieObject.objects.all()
+    serializer_class = ZaakInformatieObjectSerializer
     lookup_field = 'uuid'
 
 

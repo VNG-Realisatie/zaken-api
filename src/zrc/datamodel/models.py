@@ -236,6 +236,10 @@ class ZaakInformatieObject(models.Model):
     """
     Modelleer INFORMATIEOBJECTen die bij een ZAAK horen.
     """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
     zaak = models.ForeignKey(Zaak, on_delete=models.CASCADE)
     informatieobject = models.URLField(
         "informatieobject",
