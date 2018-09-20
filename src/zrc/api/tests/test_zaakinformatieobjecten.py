@@ -12,7 +12,10 @@ from .utils import reverse
 INFORMATIE_OBJECT = 'https://drc.nl/api/v1/enkelvoudiginformatieobjecten/1234'
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(
+    LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='zds_schema.mocks.ObjectInformatieObjectClient'
+)
 class ZaakInformatieObjectTests(APITestCase):
 
     def test_create(self):

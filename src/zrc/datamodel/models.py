@@ -7,12 +7,13 @@ from django.utils.crypto import get_random_string
 
 from zds_schema.constants import RolOmschrijving, RolTypes
 from zds_schema.fields import RSINField
+from zds_schema.models import APIMixin
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
 from .constants import ZaakobjectTypes
 
 
-class Zaak(models.Model):
+class Zaak(APIMixin, models.Model):
     """
     Modelleer de structuur van een ZAAK.
 

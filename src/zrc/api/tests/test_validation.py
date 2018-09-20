@@ -60,7 +60,10 @@ class ZaakValidationTests(APITestCase):
 
 class ZaakInformatieObjectValidationTests(APITestCase):
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
+    @override_settings(
+        LINK_FETCHER='zds_schema.mocks.link_fetcher_404',
+        ZDS_CLIENT_CLASS='zds_schema.mocks.ObjectInformatieObjectClient'
+    )
     def test_informatieobject_invalid(self):
         zaak = ZaakFactory.create()
         url = reverse('zaakinformatieobject-list', kwargs={'zaak_uuid': zaak.uuid})

@@ -6,7 +6,10 @@ from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
 from zds_schema.utils import lookup_kwargs_to_filters
-from zds_schema.validators import URLValidator
+from zds_schema.validators import (
+    InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
+    URLValidator
+)
 
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
@@ -136,9 +139,6 @@ class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
     parent_lookup_kwargs = {
         'zaak_uuid': 'zaak__uuid'
     }
-    parent_retrieve_kwargs = {
-        'zaak_uuid': 'uuid',
-    }
 
     class Meta:
         model = ZaakInformatieObject
@@ -146,13 +146,17 @@ class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'},
             'zaak': {'lookup_field': 'uuid'},
-            'informatieobject': {'validators': [URLValidator()]}
+            'informatieobject': {
+                'validators': [
+                    URLValidator(),
+                    InformatieObjectUniqueValidator('zaak', 'informatieobject'),
+                    ObjectInformatieObjectValidator(),
+                ]
+            }
         }
 
     def create(self, validated_data):
-        view_kwargs = self.context['view'].kwargs
-        filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, view_kwargs)
-        validated_data['zaak'] = get_object_or_404(Zaak, **filters)
+        validated_data['zaak'] = self.context['parent_object']
         return super().create(validated_data)
 
 

@@ -1656,7 +1656,7 @@
         "/zaken/{zaak_uuid}/informatieobjecten": {
             "get": {
                 "operationId": "zaakinformatieobject_list",
-                "description": "",
+                "description": "Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -1723,7 +1723,7 @@
             },
             "post": {
                 "operationId": "zaakinformatieobject_create",
-                "description": "",
+                "description": "Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobject URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT\n- bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het\n  informatieobject leeft",
                 "parameters": [
                     {
                         "name": "data",
@@ -1814,7 +1814,7 @@
         "/zaken/{zaak_uuid}/informatieobjecten/{uuid}": {
             "delete": {
                 "operationId": "zaakinformatieobject_delete",
-                "description": "",
+                "description": "Ontkoppel een ZAAK en INFORMATIEOBJECT-relatie.",
                 "parameters": [],
                 "responses": {
                     "204": {
