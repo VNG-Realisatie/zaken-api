@@ -7,14 +7,13 @@ from django.utils.crypto import get_random_string
 
 from zds_schema.constants import RolOmschrijving, RolTypes
 from zds_schema.fields import RSINField
-from zds_schema.validators import (
-    alphanumeric_excluding_diacritic, validate_non_negative_string
-)
+from zds_schema.models import APIMixin
+from zds_schema.validators import alphanumeric_excluding_diacritic
 
 from .constants import ZaakobjectTypes
 
 
-class Zaak(models.Model):
+class Zaak(APIMixin, models.Model):
     """
     Modelleer de structuur van een ZAAK.
 
@@ -232,6 +231,30 @@ class ZaakKenmerk(models.Model):
     class Meta:
         verbose_name = 'zaak kenmerk'
         verbose_name_plural = 'zaak kenmerken'
+
+
+class ZaakInformatieObject(models.Model):
+    """
+    Modelleer INFORMATIEOBJECTen die bij een ZAAK horen.
+    """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
+    zaak = models.ForeignKey(Zaak, on_delete=models.CASCADE)
+    informatieobject = models.URLField(
+        "informatieobject",
+        help_text="URL-referentie naar het informatieobject in het DRC, waar "
+                  "ook de relatieinformatie opgevraagd kan worden."
+    )
+
+    class Meta:
+        verbose_name = "zaakinformatieobject"
+        verbose_name_plural = "zaakinformatieobjecten"
+        unique_together = ('zaak', 'informatieobject')
+
+    def __str__(self) -> str:
+        return f"{self.zaak} - {self.informatieobject}"
 
 
 class KlantContact(models.Model):

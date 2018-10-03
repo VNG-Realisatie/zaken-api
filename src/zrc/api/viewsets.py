@@ -1,19 +1,23 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from zds_schema.geo import GeoMixin
 from zds_schema.search import SearchMixin
+from zds_schema.utils import lookup_kwargs_to_filters
 from zds_schema.viewsets import NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakObject
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
+    ZaakObject
 )
 
 from .filters import RolFilter, ZaakFilter
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
-    ZaakEigenschapSerializer, ZaakObjectSerializer, ZaakSerializer,
-    ZaakZoekSerializer
+    ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
+    ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
 
 
@@ -91,6 +95,66 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
     queryset = ZaakObject.objects.all()
     serializer_class = ZaakObjectSerializer
     lookup_field = 'uuid'
+
+
+class ZaakInformatieObjectViewSet(NestedViewSetMixin,
+                                  mixins.ListModelMixin,
+                                  mixins.CreateModelMixin,
+                                  mixins.DestroyModelMixin,
+                                  viewsets.GenericViewSet):
+    """
+    Opvragen en bwerken van Zaak-Informatieobject relaties.
+
+    create:
+    Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
+
+    Er wordt gevalideerd op:
+    - geldigheid informatieobject URL
+    - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
+    - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
+      informatieobject leeft
+
+    list:
+    Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.
+
+    update:
+    Werk de relatie tussen een ZAAK en INFORMATIEOBJECT bij.
+
+    Er wordt gevalideerd op:
+    - geldigheid informatieobject URL
+    - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
+    - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
+      informatieobject leeft
+
+    partial_update:
+    Werk de relatie tussen een ZAAK en INFORMATIEOBJECT bij.
+
+    Er wordt gevalideerd op:
+    - geldigheid informatieobject URL
+    - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
+    - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
+      informatieobject leeft
+
+    destroy:
+    Ontkoppel een ZAAK en INFORMATIEOBJECT-relatie.
+    """
+    queryset = ZaakInformatieObject.objects.all()
+    serializer_class = ZaakInformatieObjectSerializer
+    lookup_field = 'uuid'
+
+    parent_retrieve_kwargs = {
+        'zaak_uuid': 'uuid',
+    }
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # DRF introspection
+        if not self.kwargs:
+            return context
+
+        filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
+        context['parent_object'] = get_object_or_404(Zaak, **filters)
+        return context
 
 
 class ZaakEigenschapViewSet(NestedViewSetMixin,

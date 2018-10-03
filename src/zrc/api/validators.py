@@ -1,7 +1,9 @@
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
-from zds_schema.validators import UniekeIdentificatieValidator as _UniekeIdentificatieValidator
+from zds_schema.validators import (
+    UniekeIdentificatieValidator as _UniekeIdentificatieValidator
+)
 
 
 class RolOccurenceValidator:

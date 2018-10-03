@@ -1,12 +1,19 @@
+from django.shortcuts import get_object_or_404
+
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
-from zds_schema.validators import URLValidator
+from zds_schema.utils import lookup_kwargs_to_filters
+from zds_schema.validators import (
+    InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
+    URLValidator
+)
 
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakKenmerk, ZaakObject
+    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
+    ZaakKenmerk, ZaakObject
 )
 
 from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
@@ -126,6 +133,31 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'source': 'object_type',
             }
         }
+
+
+class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
+    parent_lookup_kwargs = {
+        'zaak_uuid': 'zaak__uuid'
+    }
+
+    class Meta:
+        model = ZaakInformatieObject
+        fields = ('url', 'informatieobject',)
+        extra_kwargs = {
+            'url': {'lookup_field': 'uuid'},
+            'zaak': {'lookup_field': 'uuid'},
+            'informatieobject': {
+                'validators': [
+                    URLValidator(),
+                    InformatieObjectUniqueValidator('zaak', 'informatieobject'),
+                    ObjectInformatieObjectValidator(),
+                ]
+            }
+        }
+
+    def create(self, validated_data):
+        validated_data['zaak'] = self.context['parent_object']
+        return super().create(validated_data)
 
 
 class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
