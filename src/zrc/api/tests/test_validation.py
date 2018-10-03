@@ -5,6 +5,8 @@ from rest_framework.test import APITestCase
 from zds_schema.tests import get_validation_errors
 from zds_schema.validators import URLValidator
 
+from zrc.datamodel.tests.factories import ZaakFactory
+
 from .utils import reverse
 
 
@@ -54,3 +56,22 @@ class ZaakValidationTests(APITestCase):
 
         good_casing = get_validation_errors(response, 'verantwoordelijkeOrganisatie')
         self.assertIsNotNone(good_casing)
+
+
+class ZaakInformatieObjectValidationTests(APITestCase):
+
+    @override_settings(
+        LINK_FETCHER='zds_schema.mocks.link_fetcher_404',
+        ZDS_CLIENT_CLASS='zds_schema.mocks.ObjectInformatieObjectClient'
+    )
+    def test_informatieobject_invalid(self):
+        zaak = ZaakFactory.create()
+        url = reverse('zaakinformatieobject-list', kwargs={'zaak_uuid': zaak.uuid})
+
+        response = self.client.post(url, {'informatieobject': 'https://drc.nl/api/v1'})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'informatieobject')
+        self.assertEqual(validation_error['code'], URLValidator.code)
+        self.assertEqual(validation_error['name'], 'informatieobject')

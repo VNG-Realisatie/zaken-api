@@ -1653,6 +1653,251 @@
                 }
             ]
         },
+        "/zaken/{zaak_uuid}/informatieobjecten": {
+            "get": {
+                "operationId": "zaakinformatieobject_list",
+                "description": "Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ZaakInformatieObject"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "post": {
+                "operationId": "zaakinformatieobject_create",
+                "description": "Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobject URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT\n- bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het\n  informatieobject leeft",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ZaakInformatieObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakInformatieObject"
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "zaak_uuid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
+                }
+            ]
+        },
+        "/zaken/{zaak_uuid}/informatieobjecten/{uuid}": {
+            "delete": {
+                "operationId": "zaakinformatieobject_delete",
+                "description": "Ontkoppel een ZAAK en INFORMATIEOBJECT-relatie.",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                },
+                {
+                    "name": "zaak_uuid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
+                }
+            ]
+        },
         "/zaken/{zaak_uuid}/zaakeigenschappen": {
             "get": {
                 "operationId": "zaakeigenschap_list",
@@ -2639,6 +2884,28 @@
                     "title": "Zaaktype",
                     "description": "URL naar het zaaktype in de CATALOGUS waar deze voorkomt",
                     "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "ZaakInformatieObject": {
+            "required": [
+                "informatieobject"
+            ],
+            "type": "object",
+            "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
+                "informatieobject": {
+                    "title": "Informatieobject",
+                    "description": "URL-referentie naar het informatieobject in het DRC, waar ook de relatieinformatie opgevraagd kan worden.",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
                     "minLength": 1
                 }
             }

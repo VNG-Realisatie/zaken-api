@@ -14,6 +14,14 @@ class ZaakFactory(factory.django.DjangoModelFactory):
         model = 'datamodel.Zaak'
 
 
+class ZaakInformatieObjectFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    informatieobject = factory.Faker('url')
+
+    class Meta:
+        model = 'datamodel.ZaakInformatieObject'
+
+
 class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     eigenschap = factory.Faker('url')
