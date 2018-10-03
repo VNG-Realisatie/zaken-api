@@ -2,6 +2,18 @@
 Wijzigingen
 ===========
 
+0.5.0 (2018-10-03)
+==================
+
+Deze release heeft backwards incompatible wijzigingen op gebied van
+zaakinformatieobjecten.
+
+* licentiebestand toegevoegd (Boris van Hoytema <boris@publiccode.net>)
+* toevoeging API resources documentatie (markdown uit API spec)
+* correctie op error-response MIME-types
+* #166 - expliciet zaak-informatieobject relatieresource toegevoegd, met
+  validatie-implementaties
+
 0.4.0 (2018-09-06)
 ==================
 
