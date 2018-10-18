@@ -2447,11 +2447,6 @@ components:
       - informatieobject
       type: object
       properties:
-        url:
-          title: Url
-          type: string
-          format: uri
-          readOnly: true
         informatieobject:
           title: Informatieobject
           description: URL-referentie naar het informatieobject in het DRC, waar ook
