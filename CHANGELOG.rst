@@ -2,6 +2,19 @@
 Wijzigingen
 ===========
 
+0.5.1 (2018-10-19)
+==================
+
+Bugfix release i.v.m. zaakinformatieobjecten
+
+* ``zaakinformatieobject_destroy`` operatie verwijderd. Deze bestaat ook niet in
+  het DRC namelijk.
+* ``zds-schema`` versiebump - DNS errors worden nu HTTP 400 in plaats van
+  HTTP 500 bij url-validatie.
+* Fix in ``ZaakInformatieObject`` serializer door het ontbreken van een detail
+  URL.
+* Docker image fixed: ontbrekende ``swagger2openapi`` zit nu in image.
+
 0.5.0 (2018-10-03)
 ==================
 
