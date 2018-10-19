@@ -1,3 +1,5 @@
+from unittest import skip
+
 from django.test import override_settings
 
 from rest_framework import status
@@ -31,6 +33,7 @@ class ZaakInformatieObjectTests(APITestCase):
         zio = zaak.zaakinformatieobject_set.get()
         self.assertEqual(zio.informatieobject, INFORMATIE_OBJECT)
 
+    @skip('HTTP DELETE is currently not supported')
     def test_delete(self):
         zio = ZaakInformatieObjectFactory.create()
         zaak = zio.zaak

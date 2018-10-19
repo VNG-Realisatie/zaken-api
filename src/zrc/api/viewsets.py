@@ -100,7 +100,6 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
 class ZaakInformatieObjectViewSet(NestedViewSetMixin,
                                   mixins.ListModelMixin,
                                   mixins.CreateModelMixin,
-                                  mixins.DestroyModelMixin,
                                   viewsets.GenericViewSet):
     """
     Opvragen en bwerken van Zaak-Informatieobject relaties.
@@ -134,9 +133,6 @@ class ZaakInformatieObjectViewSet(NestedViewSetMixin,
     - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
     - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
       informatieobject leeft
-
-    destroy:
-    Ontkoppel een ZAAK en INFORMATIEOBJECT-relatie.
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
