@@ -2,6 +2,14 @@
 Wijzigingen
 ===========
 
+0.5.2 (2018-10-22)
+==================
+
+Bugfix in bugfix release
+
+* Commit vergeten te pushen voor: Docker image fixed: ontbrekende
+  ``swagger2openapi`` zit nu in image.
+
 0.5.1 (2018-10-19)
 ==================
 
