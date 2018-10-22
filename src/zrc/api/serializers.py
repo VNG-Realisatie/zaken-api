@@ -75,6 +75,9 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
                 'validators': [URLValidator()],
+            },
+            'einddatum': {
+                'read_only': True
             }
         }
         # Replace a default "unique together" constraint.
@@ -107,6 +110,32 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'uuid',
             }
         }
+
+    def create(self, validated_data):
+        from django.conf import settings
+        from django.utils.module_loading import import_string
+
+        import requests
+
+        status_type_url = validated_data['zaak_type']
+
+        # dynamic so that it can be mocked in tests easily
+        Client = import_string(settings.ZDS_CLIENT_CLASS)
+        client = Client.from_url(status_type_url, settings.BASE_DIR)
+        try:
+            status_type = client.request(status_type_url, 'statustype')
+        except requests.HTTPError as exc:
+            raise serializers.ValidationError(
+                exc.args[0],
+                code='relation-validation-error'
+            ) from exc
+
+        obj = super().create(**validated_data)
+
+        # Save updated information on the ZAAK
+        zaak = obj.zaak
+        if status_type['isEindstatus']:
+            zaak.einddatum = validated_data['datum_status_gezet']
 
 
 class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
