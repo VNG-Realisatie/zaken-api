@@ -85,7 +85,8 @@ RUN apk --no-cache add \
     # pillow dependencies
     jpeg \
     openjpeg \
-    zlib
+    zlib \
+    nodejs
 
 # Stage 4.1 - Set up dependencies
 # install all the dependencies for GeoDjango
@@ -102,6 +103,8 @@ RUN apk --no-cache add \
 
 COPY --from=build /usr/local/lib/python3.6 /usr/local/lib/python3.6
 COPY --from=build /usr/local/bin/uwsgi /usr/local/bin/uwsgi
+# required for swagger2openapi conversion
+COPY --from=frontend-build /app/node_modules /app/node_modules
 
 # Stage 4.2 - Copy source code
 WORKDIR /app

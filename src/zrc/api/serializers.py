@@ -1,11 +1,8 @@
-from django.shortcuts import get_object_or_404
-
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
-from zds_schema.utils import lookup_kwargs_to_filters
 from zds_schema.validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
     URLValidator
