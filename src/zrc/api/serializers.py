@@ -1,3 +1,7 @@
+from django.conf import settings
+from django.utils.module_loading import import_string
+
+import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
@@ -112,30 +116,34 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         }
 
     def create(self, validated_data):
-        from django.conf import settings
-        from django.utils.module_loading import import_string
-
-        import requests
-
-        status_type_url = validated_data['zaak_type']
+        status_type_url = validated_data['status_type']
 
         # dynamic so that it can be mocked in tests easily
         Client = import_string(settings.ZDS_CLIENT_CLASS)
         client = Client.from_url(status_type_url, settings.BASE_DIR)
         try:
             status_type = client.request(status_type_url, 'statustype')
+            is_eindstatus = status_type['isEindstatus']
         except requests.HTTPError as exc:
             raise serializers.ValidationError(
                 exc.args[0],
                 code='relation-validation-error'
             ) from exc
+        except KeyError as exc:
+            raise serializers.ValidationError(
+                exc.args[0],
+                code='relation-validation-error'
+            ) from exc
 
-        obj = super().create(**validated_data)
+        obj = super().create(validated_data)
 
         # Save updated information on the ZAAK
         zaak = obj.zaak
-        if status_type['isEindstatus']:
+        if is_eindstatus:
             zaak.einddatum = validated_data['datum_status_gezet']
+            zaak.save()
+
+        return obj
 
 
 class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
