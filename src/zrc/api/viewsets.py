@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from zds_schema.geo import GeoMixin
 from zds_schema.permissions import ActionScopesRequired
@@ -64,6 +65,8 @@ class ZaakViewSet(GeoMixin,
 
     list:
     Geef een lijst van ZAAKen.
+
+    Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.
 
     Optioneel kan je de queryparameters gebruiken om zaken te filteren.
 
@@ -136,11 +139,12 @@ class ZaakViewSet(GeoMixin,
       https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
     - `klantcontact` - alle klantcontacten bij een zaak
     """
-    queryset = Zaak.objects.prefetch_related('deelzaken')
+    queryset = Zaak.objects.prefetch_related('deelzaken').order_by('-pk')
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
     filterset_class = ZaakFilter
     lookup_field = 'uuid'
+    pagination_class = PageNumberPagination
 
     permission_classes = (ActionScopesRequired, ZaaktypePermission)
     required_scopes = {
@@ -185,8 +189,7 @@ class ZaakViewSet(GeoMixin,
             .filter(zaakgeometrie__within=within)
         )
 
-        output_data = self.get_search_output(queryset)
-        return Response(output_data)
+        return self.get_search_output(queryset)
     _zoek.is_search_action = True
 
 

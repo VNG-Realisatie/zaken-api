@@ -51,8 +51,9 @@ class ZakenReadTests(AuthCheckMixin, APITestCase):
         response = self.client.get(url, HTTP_ACCEPT_CRS='EPSG:4326')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['zaaktype'], 'https://zaaktype.nl/ok')
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]['zaaktype'], 'https://zaaktype.nl/ok')
 
     def test_zaaktypes_claim_detail(self):
         """
@@ -84,4 +85,4 @@ class ZakenReadTests(AuthCheckMixin, APITestCase):
 
         self.assertEqual(list_response.status_code, status.HTTP_200_OK)
         self.assertEqual(detail_response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(list_response.data), 1)
+        self.assertEqual(len(list_response.data['results']), 1)

@@ -47,7 +47,7 @@ class US42TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response_data = response.json()
+        response_data = response.json()['results']
         self.assertEqual(len(response_data), 1)
         detail_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         self.assertEqual(response_data[0]['url'], f"http://testserver{detail_url}")
@@ -78,5 +78,5 @@ class US42TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response_data = response.json()
+        response_data = response.json()['results']
         self.assertEqual(len(response_data), 1)

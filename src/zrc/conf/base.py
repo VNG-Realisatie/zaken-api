@@ -287,6 +287,13 @@ AUTHENTICATION_BACKENDS = [
 SESSION_COOKIE_NAME = 'zrc_sessionid'
 
 #
+# Silenced checks
+#
+SILENCED_SYSTEM_CHECKS = [
+    'rest_framework.W001',
+]
+
+#
 # Custom settings
 #
 PROJECT_NAME = 'zrc'

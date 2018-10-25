@@ -45,6 +45,6 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         response = self.client.get(f'{zaak_list_url}?{query_params}', **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
-        data = response.json()
+        data = response.json()['results']
         self.assertEqual(len(data), 1)
         self.assertTrue(data[0]['url'].endswith(str(zaak_1.uuid)))
