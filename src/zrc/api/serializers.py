@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import transaction
 from django.utils.module_loading import import_string
 
 import requests
@@ -115,15 +116,16 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             }
         }
 
-    def create(self, validated_data):
-        status_type_url = validated_data['status_type']
+    def validate(self, attrs):
+        validated_attrs = super().validate(attrs)
+        status_type_url = validated_attrs['status_type']
 
         # dynamic so that it can be mocked in tests easily
         Client = import_string(settings.ZDS_CLIENT_CLASS)
         client = Client.from_url(status_type_url, settings.BASE_DIR)
         try:
             status_type = client.request(status_type_url, 'statustype')
-            is_eindstatus = status_type['isEindstatus']
+            validated_attrs['__is_eindstatus'] = status_type['isEindstatus']
         except requests.HTTPError as exc:
             raise serializers.ValidationError(
                 exc.args[0],
@@ -135,13 +137,20 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 code='relation-validation-error'
             ) from exc
 
-        obj = super().create(validated_data)
+        return validated_attrs
 
-        # Save updated information on the ZAAK
-        zaak = obj.zaak
-        if is_eindstatus:
-            zaak.einddatum = validated_data['datum_status_gezet']
-            zaak.save()
+    def create(self, validated_data):
+        is_eindstatus = validated_data.pop('__is_eindstatus')
+
+        with transaction.atomic():
+            obj = super().create(validated_data)
+
+            # Save updated information on the ZAAK
+            zaak = obj.zaak
+            if is_eindstatus:
+                # Implicit conversion from datetime to date
+                zaak.einddatum = validated_data['datum_status_gezet']
+                zaak.save()
 
         return obj
 
