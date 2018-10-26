@@ -76,7 +76,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | registratiedatum | De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt. | string | nee | C​R​U​D |
 | verantwoordelijkeOrganisatie | URL naar de Niet-natuurlijk persoon zijnde de organisatie die eindverantwoordelijk is voor de behandeling van de zaak. | string | ja | C​R​U​D |
 | startdatum | De datum waarop met de uitvoering van de zaak is gestart | string | ja | C​R​U​D |
-| einddatum | De datum waarop de uitvoering van de zaak afgerond is. | string | nee | C​R​U​D |
+| einddatum | De datum waarop de uitvoering van de zaak afgerond is. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | einddatumGepland | De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt. | string | nee | C​R​U​D |
 | uiterlijkeEinddatumAfdoening | De laatste datum waarop volgens wet- en regelgeving de zaak afgerond dient te zijn. | string | nee | C​R​U​D |
 | toelichting | Een toelichting op de zaak. | string | nee | C​R​U​D |

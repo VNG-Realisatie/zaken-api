@@ -1,3 +1,8 @@
+from django.conf import settings
+from django.db import transaction
+from django.utils.module_loading import import_string
+
+import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
@@ -75,6 +80,9 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
                 'validators': [URLValidator()],
+            },
+            'einddatum': {
+                'read_only': True
             }
         }
         # Replace a default "unique together" constraint.
@@ -107,6 +115,44 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'uuid',
             }
         }
+
+    def validate(self, attrs):
+        validated_attrs = super().validate(attrs)
+        status_type_url = validated_attrs['status_type']
+
+        # dynamic so that it can be mocked in tests easily
+        Client = import_string(settings.ZDS_CLIENT_CLASS)
+        client = Client.from_url(status_type_url, settings.BASE_DIR)
+        try:
+            status_type = client.request(status_type_url, 'statustype')
+            validated_attrs['__is_eindstatus'] = status_type['isEindstatus']
+        except requests.HTTPError as exc:
+            raise serializers.ValidationError(
+                exc.args[0],
+                code='relation-validation-error'
+            ) from exc
+        except KeyError as exc:
+            raise serializers.ValidationError(
+                exc.args[0],
+                code='relation-validation-error'
+            ) from exc
+
+        return validated_attrs
+
+    def create(self, validated_data):
+        is_eindstatus = validated_data.pop('__is_eindstatus')
+
+        with transaction.atomic():
+            obj = super().create(validated_data)
+
+            # Save updated information on the ZAAK
+            zaak = obj.zaak
+            if is_eindstatus:
+                # Implicit conversion from datetime to date
+                zaak.einddatum = validated_data['datum_status_gezet']
+                zaak.save()
+
+        return obj
 
 
 class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):

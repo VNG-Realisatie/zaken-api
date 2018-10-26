@@ -2724,7 +2724,8 @@
                     "title": "Einddatum",
                     "description": "De datum waarop de uitvoering van de zaak afgerond is.",
                     "type": "string",
-                    "format": "date"
+                    "format": "date",
+                    "readOnly": true
                 },
                 "einddatumGepland": {
                     "title": "Einddatum gepland",
