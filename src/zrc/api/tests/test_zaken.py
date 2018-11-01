@@ -5,8 +5,10 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.mocks import ZTCMockClient
 
 from zrc.datamodel.tests.factories import ZaakFactory
+from zrc.tests.utils import isodatetime, utcdatetime
 
 from .utils import reverse
 
@@ -64,3 +66,46 @@ class ApiStrategyTests(APITestCase):
         with self.subTest(crud='read'):
             response_detail = self.client.get(response.data['url'], HTTP_ACCEPT_CRS='EPSG:4326')
             self.assertEqual(response_detail.status_code, status.HTTP_200_OK)
+
+
+class ZakenTests(APITestCase):
+    @override_settings(
+        LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
+        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+    )
+    def test_zaak_afsluiten(self):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+        status_list_url = reverse('status-list')
+
+        # Validate StatusTypes from Mock client
+        ztc_mock_client = ZTCMockClient()
+
+        status_type_1 = ztc_mock_client.retrieve('statustype', uuid=1)
+        self.assertFalse(status_type_1['isEindstatus'])
+
+        status_type_2 = ztc_mock_client.retrieve('statustype', uuid=2)
+        self.assertTrue(status_type_2['isEindstatus'])
+
+        # Set initial status
+        response = self.client.post(status_list_url, {
+            'zaak': zaak_url,
+            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
+            'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+        })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
+
+        zaak.refresh_from_db()
+        self.assertIsNone(zaak.einddatum)
+
+        # Set eindstatus
+        datum_status_gezet = utcdatetime(2018, 10, 22, 10, 00, 00)
+        response = self.client.post(status_list_url, {
+            'zaak': zaak_url,
+            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/2',
+            'datumStatusGezet': datum_status_gezet.isoformat(),
+        })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.einddatum, datum_status_gezet.date())

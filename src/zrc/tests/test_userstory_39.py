@@ -99,6 +99,9 @@ class US39TestCase(APITestCase):
         error = get_validation_errors(response, 'bronorganisatie')
         self.assertEqual(error['code'], 'invalid')
 
+    @override_settings(
+        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+    )
     def test_zet_zaakstatus(self):
         """
         De actuele status van een zaak moet gezet worden bij het aanmaken

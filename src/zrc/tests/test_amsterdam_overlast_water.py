@@ -70,6 +70,9 @@ class Application:
         }, HTTP_ACCEPT_CRS='EPSG:4326')
         self.references['zaak_url'] = response.json()['url']
 
+    @override_settings(
+        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+    )
     def zet_statussen(self):
         status_create_url = get_operation_url('status_create')
 
@@ -110,7 +113,10 @@ class Application:
         })
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(
+    LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+)
 class US39IntegrationTestCase(APITestCase):
     """
     Simulate a full realistic flow.

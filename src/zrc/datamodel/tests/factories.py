@@ -39,3 +39,12 @@ class RolFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'datamodel.Rol'
+
+
+class StatusFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    status_type = factory.Faker('url')
+    datum_status_gezet = factory.Faker('date_this_month')
+
+    class Meta:
+        model = 'datamodel.Status'

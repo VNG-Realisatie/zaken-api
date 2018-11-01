@@ -544,7 +544,24 @@
             "get": {
                 "operationId": "status_list",
                 "description": "",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "zaak",
+                        "in": "query",
+                        "description": "URL to the related resource",
+                        "required": false,
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    {
+                        "name": "statusType",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string",
+                        "format": "uri"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -2724,7 +2741,8 @@
                     "title": "Einddatum",
                     "description": "De datum waarop de uitvoering van de zaak afgerond is.",
                     "type": "string",
-                    "format": "date"
+                    "format": "date",
+                    "readOnly": true
                 },
                 "einddatumGepland": {
                     "title": "Einddatum gepland",

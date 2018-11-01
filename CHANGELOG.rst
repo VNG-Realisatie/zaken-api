@@ -2,6 +2,15 @@
 Wijzigingen
 ===========
 
+0.6.0 (2018-11-01)
+==================
+
+Feature release: zaak afsluiten & status filteren
+
+* ``Zaak.einddatum`` is alleen-lezen geworden
+* ``Zaak.einddatum`` wordt gezet indien de gezette status de eindstatus is
+* ``Status`` list endpoint accepteert filters op ``zaak`` en ``statusType``
+
 0.5.2 (2018-10-22)
 ==================
 

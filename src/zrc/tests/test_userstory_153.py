@@ -105,6 +105,9 @@ class US153TestCase(APITestCase):
         # All objects are deleted, and (re)created.
         self.assertFalse(kenmerk_1.pk in zaak.zaakkenmerk_set.values_list('pk', flat=True))
 
+    @override_settings(
+        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+    )
     def test_full_flow(self):
         zaak_create_url = get_operation_url('zaak_create')
         zaakobject_create_url = get_operation_url('zaakobject_create')
