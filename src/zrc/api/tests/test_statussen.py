@@ -29,9 +29,9 @@ class StatusTests(APITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(
             response.data[0]['url'],
-            status1_url
+            f"http://testserver{status1_url}"
         )
         self.assertNotEqual(
             response.data[0]['url'],
-            status2_url
+            f"http://testserver{status2_url}"
         )
