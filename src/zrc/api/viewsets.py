@@ -13,7 +13,7 @@ from zrc.datamodel.models import (
     ZaakObject
 )
 
-from .filters import RolFilter, ZaakFilter
+from .filters import RolFilter, StatusFilter, ZaakFilter
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
     ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
@@ -73,6 +73,7 @@ class StatusViewSet(mixins.CreateModelMixin,
                     viewsets.GenericViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
+    filter_class = StatusFilter
     lookup_field = 'uuid'
 
 

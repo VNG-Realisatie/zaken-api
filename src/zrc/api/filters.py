@@ -1,6 +1,6 @@
 from zds_schema.filtersets import FilterSet
 
-from zrc.datamodel.models import Rol, Zaak
+from zrc.datamodel.models import Rol, Status, Zaak
 
 
 class ZaakFilter(FilterSet):
@@ -21,4 +21,13 @@ class RolFilter(FilterSet):
             'betrokkene',
             'betrokkene_type',
             'rolomschrijving',
+        )
+
+
+class StatusFilter(FilterSet):
+    class Meta:
+        model = Status
+        fields = (
+            'zaak',
+            'status_type',
         )
