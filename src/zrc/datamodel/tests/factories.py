@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 import factory
 import factory.fuzzy
 from zds_schema.constants import RolOmschrijving, RolTypes
@@ -44,7 +46,7 @@ class RolFactory(factory.django.DjangoModelFactory):
 class StatusFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     status_type = factory.Faker('url')
-    datum_status_gezet = factory.Faker('date_this_month')
+    datum_status_gezet = factory.Faker('date_time_this_month', tzinfo=timezone.utc)
 
     class Meta:
         model = 'datamodel.Status'

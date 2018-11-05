@@ -1,4 +1,5 @@
 import os
+import warnings
 
 os.environ.setdefault('SECRET_KEY', '8u9chcd4g1%i5z)u@s6#c#0u%s_gggx*915w(yzrf#awezmu^i')
 os.environ.setdefault('DB_NAME', 'zrc')
@@ -95,6 +96,12 @@ REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += (
 
 # keep this safe
 JWT_SECRET = 'sadflkasdjfaliuwl;awlzlzsjdfajalj'
+
+warnings.filterwarnings(
+    'error', r"DateTimeField .* received a naive datetime",
+    RuntimeWarning, r'django\.db\.models\.fields',
+)
+
 
 # Override settings with local settings.
 try:
