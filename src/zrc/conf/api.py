@@ -2,13 +2,14 @@ from zds_schema.conf.api import *  # noqa - imports white-listed
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 
+SECURITY_DEFINITION_NAME = 'JWT-Claims'
 
 SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
 SWAGGER_SETTINGS.update({
     'DEFAULT_INFO': 'zrc.api.schema.info',
 
     'SECURITY_DEFINITIONS': {
-        'JWT Claims': {
+        SECURITY_DEFINITION_NAME: {
             # OAS 3.0
             'type': 'http',
             'scheme': 'bearer',

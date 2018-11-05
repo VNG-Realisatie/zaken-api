@@ -20,7 +20,7 @@
         "application/json"
     ],
     "securityDefinitions": {
-        "JWT Claims": {
+        "JWT-Claims": {
             "bearerFormat": "JWT",
             "scheme": "bearer",
             "type": "http"
@@ -28,7 +28,7 @@
     },
     "security": [
         {
-            "JWT Claims": []
+            "JWT-Claims": []
         }
     ],
     "paths": {
@@ -1230,6 +1230,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []

@@ -9,7 +9,7 @@ info:
     name: EUPL 1.2
   version: '1'
 security:
-- JWT_Claims: []
+- JWT-Claims: []
 paths:
   /klantcontacten:
     get:
@@ -1116,6 +1116,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaken
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.aanmaken
       requestBody:
         $ref: '#/components/requestBodies/Zaak'
     parameters: []
@@ -1900,7 +1903,7 @@ components:
             $ref: '#/components/schemas/Zaak'
       required: true
   securitySchemes:
-    JWT_Claims:
+    JWT-Claims:
       bearerFormat: JWT
       scheme: bearer
       type: http

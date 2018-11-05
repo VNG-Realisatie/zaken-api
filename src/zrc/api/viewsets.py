@@ -4,6 +4,7 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from zds_schema.geo import GeoMixin
+from zds_schema.permissions import ActionScopesRequired
 from zds_schema.search import SearchMixin
 from zds_schema.utils import lookup_kwargs_to_filters
 from zds_schema.viewsets import NestedViewSetMixin
@@ -14,7 +15,6 @@ from zrc.datamodel.models import (
 )
 
 from .filters import RolFilter, StatusFilter, ZaakFilter
-from .permissions import ActionScopesRequired
 from .scopes import SCOPE_ZAKEN_CREATE
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
