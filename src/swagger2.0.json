@@ -20,13 +20,15 @@
         "application/json"
     ],
     "securityDefinitions": {
-        "basic": {
-            "type": "basic"
+        "JWT Claims": {
+            "bearerFormat": "JWT",
+            "scheme": "bearer",
+            "type": "http"
         }
     },
     "security": [
         {
-            "basic": []
+            "JWT Claims": []
         }
     ],
     "paths": {
