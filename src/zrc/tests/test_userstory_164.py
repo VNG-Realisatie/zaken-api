@@ -8,13 +8,13 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_operation_url, get_validation_errors
+from zds_schema.tests import (
+    JWTScopesMixin, get_operation_url, get_validation_errors
+)
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
-
-from .utils import generate_jwt
 
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
@@ -22,12 +22,9 @@ VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnat
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
-class US164TestCase(APITestCase):
+class US164TestCase(JWTScopesMixin, APITestCase):
 
-    def setUp(self):
-        super().setUp()
-
-        self.client.credentials(HTTP_AUTHORIZATION=generate_jwt([SCOPE_ZAKEN_CREATE]))
+    scopes = [SCOPE_ZAKEN_CREATE]
 
     def test_geef_zelf_identificatie(self):
         """

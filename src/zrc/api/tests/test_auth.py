@@ -3,8 +3,7 @@ Guarantee that the proper authorization amchinery is in place.
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
-
-from zrc.tests.utils import generate_jwt
+from zds_schema.tests import generate_jwt
 
 from .utils import reverse
 

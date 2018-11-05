@@ -6,24 +6,19 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.mocks import ZTCMockClient
+from zds_schema.tests import JWTScopesMixin
 
 from zrc.datamodel.tests.factories import ZaakFactory
-from zrc.tests.utils import generate_jwt, isodatetime, utcdatetime
+from zrc.tests.utils import isodatetime, utcdatetime
 
 from ..scopes import SCOPE_ZAKEN_CREATE
 from .utils import reverse
 
 
-class AuthMixin:
-
-    def setUp(self):
-        super().setUp()
-
-        self.client.credentials(HTTP_AUTHORIZATION=generate_jwt([SCOPE_ZAKEN_CREATE]))
-
-
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
-class ApiStrategyTests(AuthMixin, APITestCase):
+class ApiStrategyTests(JWTScopesMixin, APITestCase):
+
+    scopes = [SCOPE_ZAKEN_CREATE]
 
     @unittest.expectedFailure
     def test_api_10_lazy_eager_loading(self):
@@ -77,7 +72,10 @@ class ApiStrategyTests(AuthMixin, APITestCase):
             self.assertEqual(response_detail.status_code, status.HTTP_200_OK)
 
 
-class ZakenTests(AuthMixin, APITestCase):
+class ZakenTests(JWTScopesMixin, APITestCase):
+
+    scopes = [SCOPE_ZAKEN_CREATE]
+
     @override_settings(
         LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
         ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'

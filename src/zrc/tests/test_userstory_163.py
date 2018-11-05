@@ -12,11 +12,9 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_operation_url
+from zds_schema.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
-
-from .utils import generate_jwt
 
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
 AANVRAAG = 'https://example.com/orc/api/v1/straatartiesten/37c60cda-689e-4e4a-969c-fa4ed56cb2c6'
@@ -26,12 +24,9 @@ VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnat
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
-class US169TestCase(APITestCase):
+class US169TestCase(JWTScopesMixin, APITestCase):
 
-    def setUp(self):
-        super().setUp()
-
-        self.client.credentials(HTTP_AUTHORIZATION=generate_jwt([SCOPE_ZAKEN_CREATE]))
+    scopes = [SCOPE_ZAKEN_CREATE]
 
     def test_create_aanvraag(self):
         """
