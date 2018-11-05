@@ -83,6 +83,12 @@ class StatusViewSet(mixins.CreateModelMixin,
     filter_class = StatusFilter
     lookup_field = 'uuid'
 
+    permission_classes = (ActionScopesRequired,)
+    # TODO: only allow create if there's no status yet
+    required_scopes = {
+        'create': [SCOPE_ZAKEN_CREATE]
+    }
+
 
 class ZaakObjectViewSet(mixins.CreateModelMixin,
                         mixins.ListModelMixin,
@@ -103,6 +109,11 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
     queryset = ZaakObject.objects.all()
     serializer_class = ZaakObjectSerializer
     lookup_field = 'uuid'
+
+    permission_classes = (ActionScopesRequired,)
+    required_scopes = {
+        'create': [SCOPE_ZAKEN_CREATE]
+    }
 
 
 class ZaakInformatieObjectViewSet(NestedViewSetMixin,
@@ -221,3 +232,8 @@ class RolViewSet(mixins.CreateModelMixin,
     serializer_class = RolSerializer
     filter_class = RolFilter
     lookup_field = 'uuid'
+
+    permission_classes = (ActionScopesRequired,)
+    required_scopes = {
+        'create': [SCOPE_ZAKEN_CREATE]
+    }
