@@ -116,3 +116,32 @@ class ZakenTests(JWTScopesMixin, APITestCase):
 
         zaak.refresh_from_db()
         self.assertEqual(zaak.einddatum, datum_status_gezet.date())
+
+    @override_settings(
+        LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
+        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+    )
+    def test_enkel_initiele_status_met_scope_aanmaken(self):
+        """
+        Met de scope zaken.aanmaken mag je enkel een status aanmaken als er
+        nog geen status was.
+        """
+        zaak = ZaakFactory.create()
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+        status_list_url = reverse('status-list')
+
+        # initiele status
+        response = self.client.post(status_list_url, {
+            'zaak': zaak_url,
+            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
+            'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+        })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # extra status - mag niet, onafhankelijk van de data
+        response = self.client.post(status_list_url, {
+            'zaak': zaak_url,
+            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
+            'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+        })
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
