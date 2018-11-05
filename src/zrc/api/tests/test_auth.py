@@ -3,6 +3,7 @@ Guarantee that the proper authorization amchinery is in place.
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.scopes import Scope
 from zds_schema.tests import generate_jwt
 
 from .utils import reverse
@@ -22,7 +23,7 @@ class ZakenCreateTests(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         with self.subTest(case='Correct scope missing'):
-            jwt = generate_jwt(['invalid.scope'])
+            jwt = generate_jwt([Scope('invalid.scope')])
             self.client.credentials(HTTP_AUTHORIZATION=jwt)
 
             response = self.client.post(url)

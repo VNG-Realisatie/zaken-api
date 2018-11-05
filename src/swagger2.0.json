@@ -456,6 +456,13 @@
                 },
                 "tags": [
                     "rollen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -704,6 +711,13 @@
                 },
                 "tags": [
                     "statussen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "(zds.scopes.zaken.aanmaken | zds.scopes.statussen.toevoegen)"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -935,6 +949,13 @@
                 },
                 "tags": [
                     "zaakobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []

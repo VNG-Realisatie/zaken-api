@@ -14,6 +14,9 @@ SWAGGER_SETTINGS.update({
             'type': 'http',
             'scheme': 'bearer',
             'bearerFormat': 'JWT',
+            # not official...
+            # 'scopes': {},  # TODO: set up registry that's filled in later...
+
             # Swagger 2.0
             # 'name': 'Authorization',
             # 'in': 'header'

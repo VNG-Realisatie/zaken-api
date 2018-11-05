@@ -398,6 +398,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - rollen
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.aanmaken
       requestBody:
         content:
           application/json:
@@ -624,6 +627,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - statussen
+      security:
+      - JWT-Claims:
+        - (zds.scopes.zaken.aanmaken | zds.scopes.statussen.toevoegen)
       requestBody:
         content:
           application/json:
@@ -835,6 +841,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaakobjecten
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.aanmaken
       requestBody:
         content:
           application/json:

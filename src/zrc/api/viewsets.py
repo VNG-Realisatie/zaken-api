@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from zds_schema.geo import GeoMixin
 from zds_schema.permissions import ActionScopesRequired
@@ -15,7 +16,7 @@ from zrc.datamodel.models import (
 )
 
 from .filters import RolFilter, StatusFilter, ZaakFilter
-from .scopes import SCOPE_ZAKEN_CREATE
+from .scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
     ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
@@ -52,7 +53,7 @@ class ZaakViewSet(GeoMixin,
 
     permission_classes = (ActionScopesRequired,)
     required_scopes = {
-        'create': [SCOPE_ZAKEN_CREATE]
+        'create': SCOPE_ZAKEN_CREATE
     }
 
     @action(methods=('post',), detail=False)
@@ -84,10 +85,32 @@ class StatusViewSet(mixins.CreateModelMixin,
     lookup_field = 'uuid'
 
     permission_classes = (ActionScopesRequired,)
-    # TODO: only allow create if there's no status yet
     required_scopes = {
-        'create': [SCOPE_ZAKEN_CREATE]
+        'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN
     }
+
+    def perform_create(self, serializer):
+        """
+        Perform the create of the Status.
+
+        After input validation and before DB persistance we need to check
+        scope-related permissions. Two scopes are allowed to create new
+        Status objects, however one is more limited in that only the
+        initial status may be created.
+
+        :raises: PermissionDenied if attempting to create another Status with
+          insufficient permissions
+        """
+        zaak = serializer.validated_data['zaak']
+        if not self.request.jwt_payload.has_scopes(SCOPE_STATUSSEN_TOEVOEGEN):
+            if zaak.status_set.exists():
+                msg = f"Met de '{SCOPE_ZAKEN_CREATE}' scope mag je slechts 1 status zetten"
+                raise PermissionDenied(detail=msg)
+        else:
+            # TODO: require scope 'edit'?
+            pass
+
+        super().perform_create(serializer)
 
 
 class ZaakObjectViewSet(mixins.CreateModelMixin,
@@ -112,7 +135,7 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
 
     permission_classes = (ActionScopesRequired,)
     required_scopes = {
-        'create': [SCOPE_ZAKEN_CREATE]
+        'create': SCOPE_ZAKEN_CREATE
     }
 
 
@@ -235,5 +258,5 @@ class RolViewSet(mixins.CreateModelMixin,
 
     permission_classes = (ActionScopesRequired,)
     required_scopes = {
-        'create': [SCOPE_ZAKEN_CREATE]
+        'create': SCOPE_ZAKEN_CREATE
     }

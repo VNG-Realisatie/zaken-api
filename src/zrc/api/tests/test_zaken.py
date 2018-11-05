@@ -6,12 +6,12 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.mocks import ZTCMockClient
-from zds_schema.tests import JWTScopesMixin
+from zds_schema.tests import JWTScopesMixin, generate_jwt
 
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import isodatetime, utcdatetime
 
-from ..scopes import SCOPE_ZAKEN_CREATE
+from ..scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
 from .utils import reverse
 
 
@@ -84,6 +84,8 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         zaak = ZaakFactory.create()
         zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
         status_list_url = reverse('status-list')
+        token = generate_jwt([SCOPE_STATUSSEN_TOEVOEGEN])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
 
         # Validate StatusTypes from Mock client
         ztc_mock_client = ZTCMockClient()
@@ -145,3 +147,5 @@ class ZakenTests(JWTScopesMixin, APITestCase):
             'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
         })
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.assertEqual(zaak.status_set.count(), 1)
