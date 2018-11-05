@@ -94,9 +94,6 @@ REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += (
     'rest_framework.renderers.BrowsableAPIRenderer',
 )
 
-# keep this safe
-JWT_SECRET = 'sadflkasdjfaliuwl;awlzlzsjdfajalj'
-
 warnings.filterwarnings(
     'error', r"DateTimeField .* received a naive datetime",
     RuntimeWarning, r'django\.db\.models\.fields',

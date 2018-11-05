@@ -333,7 +333,3 @@ if SENTRY_DSN:
             'dsn': RAVEN_CONFIG['dsn']
         },
     })
-
-
-# keep this safe
-JWT_SECRET = os.getenv('JWT_SECRET')
