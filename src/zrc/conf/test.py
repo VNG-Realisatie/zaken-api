@@ -106,3 +106,6 @@ LOGGING['handlers'].update({
         'dsn': RAVEN_CONFIG['dsn']
     },
 })
+
+# keep this safe
+JWT_SECRET = 'sadflkasdjfaliuwl;awlzlzsjdfajalj'

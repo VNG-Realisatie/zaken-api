@@ -6,11 +6,18 @@ from zds_schema.tests import get_validation_errors
 from zds_schema.validators import URLValidator
 
 from zrc.datamodel.tests.factories import ZaakFactory
+from zrc.tests.utils import generate_jwt
 
+from ..scopes import SCOPE_ZAKEN_CREATE
 from .utils import reverse
 
 
 class ZaakValidationTests(APITestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        self.client.credentials(HTTP_AUTHORIZATION=generate_jwt([SCOPE_ZAKEN_CREATE]))
 
     @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
     def test_validate_zaaktype_invalid(self):
@@ -59,6 +66,11 @@ class ZaakValidationTests(APITestCase):
 
 
 class ZaakInformatieObjectValidationTests(APITestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        self.client.credentials(HTTP_AUTHORIZATION=generate_jwt([SCOPE_ZAKEN_CREATE]))
 
     @override_settings(
         LINK_FETCHER='zds_schema.mocks.link_fetcher_404',

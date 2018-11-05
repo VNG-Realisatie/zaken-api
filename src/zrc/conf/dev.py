@@ -93,6 +93,9 @@ REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += (
     'rest_framework.renderers.BrowsableAPIRenderer',
 )
 
+# keep this safe
+JWT_SECRET = 'sadflkasdjfaliuwl;awlzlzsjdfajalj'
+
 # Override settings with local settings.
 try:
     from .local import *  # noqa

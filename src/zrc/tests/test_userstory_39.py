@@ -9,10 +9,11 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.tests import get_operation_url, get_validation_errors
 
+from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import KlantContact, Rol, Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
 
-from .utils import isodatetime
+from .utils import generate_jwt, isodatetime
 
 ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1'
 STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1'
@@ -27,6 +28,11 @@ STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US39TestCase(APITestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        self.client.credentials(HTTP_AUTHORIZATION=generate_jwt([SCOPE_ZAKEN_CREATE]))
 
     def test_create_zaak(self):
         """

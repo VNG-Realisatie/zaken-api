@@ -14,6 +14,8 @@ from zrc.datamodel.models import (
 )
 
 from .filters import RolFilter, StatusFilter, ZaakFilter
+from .permissions import ActionScopesRequired
+from .scopes import SCOPE_ZAKEN_CREATE
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
     ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
@@ -47,6 +49,11 @@ class ZaakViewSet(GeoMixin,
     search_input_serializer_class = ZaakZoekSerializer
     filter_class = ZaakFilter
     lookup_field = 'uuid'
+
+    permission_classes = (ActionScopesRequired,)
+    required_scopes = {
+        'create': [SCOPE_ZAKEN_CREATE]
+    }
 
     @action(methods=('post',), detail=False)
     def _zoek(self, request, *args, **kwargs):
