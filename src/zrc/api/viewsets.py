@@ -61,6 +61,19 @@ class ZaakViewSet(GeoMixin,
         'create': SCOPE_ZAKEN_CREATE,
     }
 
+    def get_queryset(self):
+        base = super().get_queryset()
+
+        # drf-yasg introspection
+        if not hasattr(self.request, 'jwt_payload'):
+            return base
+
+        if self.action == 'list':
+            zt_whitelist = self.request.jwt_payload.get('zaaktypes', [])
+            return base.filter(zaaktype__in=zt_whitelist)
+
+        return base
+
     @action(methods=('post',), detail=False)
     def _zoek(self, request, *args, **kwargs):
         """
