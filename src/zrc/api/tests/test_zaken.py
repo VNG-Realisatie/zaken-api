@@ -24,6 +24,7 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_ALLES_LEZEN,
     ]
+    zaaktypes = ['https://example.com/foo/bar']
 
     @unittest.expectedFailure
     def test_api_10_lazy_eager_loading(self):
@@ -73,7 +74,10 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
             self.assertEqual(response['Location'], response.data['url'])
 
         with self.subTest(crud='read'):
-            response_detail = self.client.get(response.data['url'], HTTP_ACCEPT_CRS='EPSG:4326')
+            response_detail = self.client.get(
+                response.data['url'],
+                HTTP_ACCEPT_CRS='EPSG:4326'
+            )
             self.assertEqual(response_detail.status_code, status.HTTP_200_OK)
 
 

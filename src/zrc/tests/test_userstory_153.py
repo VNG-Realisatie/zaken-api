@@ -39,6 +39,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_ALLES_LEZEN,
     ]
+    zaaktypes = [ZAAKTYPE]
 
     def test_create_zaak_with_kenmerken(self):
         zaak_create_url = get_operation_url('zaak_create')
@@ -66,7 +67,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(zaak.zaakkenmerk_set.count(), 2)
 
     def test_read_zaak_with_kenmerken(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak.zaakkenmerk_set.create(kenmerk='kenmerk 1', bron='bron 1')
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
 
@@ -88,7 +89,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         )
 
     def test_update_zaak_with_kenmerken(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         kenmerk_1 = zaak.zaakkenmerk_set.create(kenmerk='kenmerk 1', bron='bron 1')
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
 

@@ -16,6 +16,7 @@ from zrc.datamodel.models import (
 )
 
 from .filters import RolFilter, StatusFilter, ZaakFilter
+from .permissions import ZaaktypePermission
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
 )
@@ -53,7 +54,7 @@ class ZaakViewSet(GeoMixin,
     filter_class = ZaakFilter
     lookup_field = 'uuid'
 
-    permission_classes = (ActionScopesRequired,)
+    permission_classes = (ActionScopesRequired, ZaaktypePermission)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
