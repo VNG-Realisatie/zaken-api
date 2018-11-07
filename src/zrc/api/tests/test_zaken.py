@@ -11,14 +11,19 @@ from zds_schema.tests import JWTScopesMixin, generate_jwt
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import isodatetime, utcdatetime
 
-from ..scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
+from ..scopes import (
+    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
+)
 from .utils import reverse
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class ApiStrategyTests(JWTScopesMixin, APITestCase):
 
-    scopes = [SCOPE_ZAKEN_CREATE]
+    scopes = [
+        SCOPE_ZAKEN_CREATE,
+        SCOPE_ZAKEN_ALLES_LEZEN,
+    ]
 
     @unittest.expectedFailure
     def test_api_10_lazy_eager_loading(self):
@@ -74,7 +79,10 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
 
 class ZakenTests(JWTScopesMixin, APITestCase):
 
-    scopes = [SCOPE_ZAKEN_CREATE]
+    scopes = [
+        SCOPE_ZAKEN_CREATE,
+        SCOPE_ZAKEN_ALLES_LEZEN,
+    ]
 
     @override_settings(
         LINK_FETCHER='zds_schema.mocks.link_fetcher_200',

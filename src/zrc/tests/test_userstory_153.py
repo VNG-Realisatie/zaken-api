@@ -15,7 +15,7 @@ from rest_framework.test import APITestCase
 from zds_schema.constants import RolOmschrijving, RolTypes
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
-from zrc.api.scopes import SCOPE_ZAKEN_CREATE
+from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
 from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
@@ -35,7 +35,10 @@ BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class US153TestCase(JWTScopesMixin, APITestCase):
 
-    scopes = [SCOPE_ZAKEN_CREATE]
+    scopes = [
+        SCOPE_ZAKEN_CREATE,
+        SCOPE_ZAKEN_ALLES_LEZEN,
+    ]
 
     def test_create_zaak_with_kenmerken(self):
         zaak_create_url = get_operation_url('zaak_create')

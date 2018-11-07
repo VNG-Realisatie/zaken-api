@@ -16,7 +16,9 @@ from zrc.datamodel.models import (
 )
 
 from .filters import RolFilter, StatusFilter, ZaakFilter
-from .scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
+from .scopes import (
+    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
+)
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
     ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
@@ -53,7 +55,10 @@ class ZaakViewSet(GeoMixin,
 
     permission_classes = (ActionScopesRequired,)
     required_scopes = {
-        'create': SCOPE_ZAKEN_CREATE
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        '_zoek': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_CREATE,
     }
 
     @action(methods=('post',), detail=False)
@@ -86,7 +91,9 @@ class StatusViewSet(mixins.CreateModelMixin,
 
     permission_classes = (ActionScopesRequired,)
     required_scopes = {
-        'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN,
     }
 
     def perform_create(self, serializer):
@@ -106,9 +113,6 @@ class StatusViewSet(mixins.CreateModelMixin,
             if zaak.status_set.exists():
                 msg = f"Met de '{SCOPE_ZAKEN_CREATE}' scope mag je slechts 1 status zetten"
                 raise PermissionDenied(detail=msg)
-        else:
-            # TODO: require scope 'edit'?
-            pass
 
         super().perform_create(serializer)
 
@@ -135,7 +139,9 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
 
     permission_classes = (ActionScopesRequired,)
     required_scopes = {
-        'create': SCOPE_ZAKEN_CREATE
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_CREATE,
     }
 
 

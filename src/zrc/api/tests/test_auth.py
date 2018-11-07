@@ -9,16 +9,16 @@ from zds_schema.tests import generate_jwt
 from .utils import reverse
 
 
-class ZakenCreateTests(APITestCase):
+class AuthCheckMixin:
 
-    def test_cannot_create_zaak_without_correct_scope(self):
+    def assertForbidden(self, url, method='get'):
         """
-        Asser that the zrc.api.scopes.SCOPE_ZAKEN_CREATE scope is required.
+        Assert that an appropriate scope is required.
         """
-        url = reverse('zaak-list')
+        do_request = getattr(self.client, method)
 
         with self.subTest(case='JWT missing'):
-            response = self.client.post(url)
+            response = do_request(url)
 
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -26,6 +26,31 @@ class ZakenCreateTests(APITestCase):
             jwt = generate_jwt([Scope('invalid.scope')])
             self.client.credentials(HTTP_AUTHORIZATION=jwt)
 
-            response = self.client.post(url)
+            response = do_request(url)
 
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class ZakenCreateTests(AuthCheckMixin, APITestCase):
+
+    def test_cannot_create_zaak_without_correct_scope(self):
+        url = reverse('zaak-list')
+
+        self.assertForbidden(url, method='post')
+
+
+class ZakenReadTests(AuthCheckMixin, APITestCase):
+
+    def test_cannot_read_without_correct_scope(self):
+        urls = [
+            reverse('zaak-list'),
+            reverse('zaak-detail', kwargs={'uuid': 'dummy'}),
+            reverse('status-list'),
+            reverse('status-detail', kwargs={'uuid': 'dummy'}),
+            reverse('zaakobject-list'),
+            reverse('zaakobject-detail', kwargs={'uuid': 'dummy'}),
+        ]
+
+        for url in urls:
+            with self.subTest(url=url):
+                self.assertForbidden(url, method='get')

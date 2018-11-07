@@ -2,7 +2,7 @@ from django.utils import timezone
 
 import factory
 import factory.fuzzy
-from zds_schema.constants import RolOmschrijving, RolTypes
+from zds_schema.constants import ObjectTypes, RolOmschrijving, RolTypes
 
 
 class ZaakFactory(factory.django.DjangoModelFactory):
@@ -31,6 +31,15 @@ class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'datamodel.ZaakEigenschap'
+
+
+class ZaakObjectFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    object = factory.Faker('url')
+    object_type = factory.fuzzy.FuzzyChoice(choices=ObjectTypes.values)
+
+    class Meta:
+        model = 'datamodel.ZaakObject'
 
 
 class RolFactory(factory.django.DjangoModelFactory):
