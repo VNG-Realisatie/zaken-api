@@ -36,12 +36,26 @@ class AuthCheckMixin:
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         with self.subTest(case='Correct scope missing'):
-            jwt = generate_jwt([Scope('invalid.scope')])
+            jwt = generate_jwt(scopes=[Scope('invalid.scope')])
             self.client.credentials(HTTP_AUTHORIZATION=jwt)
 
             response = do_request(url)
 
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def assertForbiddenWithCorrectScope(
+            self, url: str, scopes: list, method='get',
+            request_kwargs=None, **extra_claims):
+
+        do_request = getattr(self.client, method)
+        request_kwargs = request_kwargs or {}
+
+        jwt = generate_jwt(scopes=scopes, **extra_claims)
+        self.client.credentials(HTTP_AUTHORIZATION=jwt)
+
+        response = do_request(url, **request_kwargs)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class ZakenCreateTests(AuthCheckMixin, APITestCase):
@@ -86,3 +100,16 @@ class ZakenReadTests(AuthCheckMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['zaaktype'], 'https://zaaktype.nl/ok')
+
+    def test_zaaktypes_claim_detail(self):
+        """
+        Assert you can only read ZAAKen of the zaaktypes in the claim.
+        """
+        zaak = ZaakFactory.create(zaaktype='https://zaaktype.nl/not_ok')
+        url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        self.assertForbiddenWithCorrectScope(
+            url, [SCOPE_ZAKEN_ALLES_LEZEN],
+            zaaktypes=['https://zaaktype.nl/ok'],
+            request_kwargs={'HTTP_ACCEPT_CRS': 'EPSG:4326'}
+        )
