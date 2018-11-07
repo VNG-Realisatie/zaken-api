@@ -71,6 +71,8 @@ class ZaakViewSet(GeoMixin,
 
         if self.action == 'list':
             zt_whitelist = self.request.jwt_payload.get('zaaktypes', [])
+            if zt_whitelist == ['*']:
+                return base  # no filtering, wildcard applies
             return base.filter(zaaktype__in=zt_whitelist)
 
         return base

@@ -12,4 +12,7 @@ class ZaaktypePermission(permissions.BasePermission):
         Return `True` if permission is granted, `False` otherwise.
         """
         zaaktypes = request.jwt_payload.get('zaaktypes', [])
+        if zaaktypes == ['*']:
+            return True
+
         return obj.zaaktype in zaaktypes

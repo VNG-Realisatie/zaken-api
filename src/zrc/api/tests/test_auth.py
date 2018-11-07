@@ -113,3 +113,22 @@ class ZakenReadTests(AuthCheckMixin, APITestCase):
             zaaktypes=['https://zaaktype.nl/ok'],
             request_kwargs={'HTTP_ACCEPT_CRS': 'EPSG:4326'}
         )
+
+    def test_zaaktypes_wildcard(self):
+        zaak = ZaakFactory.create()
+
+        list_url = reverse('zaak-list')
+        detail_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        jwt = generate_jwt(
+            scopes=[SCOPE_ZAKEN_ALLES_LEZEN],
+            zaaktypes=['*'],
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=jwt)
+
+        list_response = self.client.get(list_url, HTTP_ACCEPT_CRS='EPSG:4326')
+        detail_response = self.client.get(detail_url, HTTP_ACCEPT_CRS='EPSG:4326')
+
+        self.assertEqual(list_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(detail_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(list_response.data), 1)
