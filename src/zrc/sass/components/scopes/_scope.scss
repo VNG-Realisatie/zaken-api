@@ -1,0 +1,18 @@
+.scope {
+
+  &__label {
+    color: $color-code;
+
+    .fa-link {
+      font-size: 50%;
+      color: $color-black;
+      opacity: 0;
+    }
+
+    &:hover {
+      .fa-link {
+        opacity: 0.8;
+      }
+    }
+  }
+}
