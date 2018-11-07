@@ -4,11 +4,13 @@ python-dotenv
 python-dateutil
 pytz
 raven
+markdown
 
 Django
 django-axes
 django-choices
 django-cors-middleware
+django-markup
 gemma-zds-client==0.6.2
 
 djangorestframework
@@ -18,4 +20,4 @@ djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
 drf-writable-nested
-zds-schema==0.10.1
+zds-schema==0.10.2

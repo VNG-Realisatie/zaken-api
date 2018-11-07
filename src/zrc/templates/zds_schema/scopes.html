@@ -1,5 +1,5 @@
 {% extends "master.html" %}
-{% load staticfiles %}
+{% load staticfiles markup_tags %}
 
 
 {% block content %}
@@ -13,7 +13,9 @@
                 <code>{{ scope.label }}</code>
                 <a href="#{{ scope.label }}"><i class="fa fa-link"></i></a>
             </h1>
-            <p class="scope__description">{{ scope.description|default:"" }}</p>
+            <div class="scope__description">
+                {{ scope.description|default:""|apply_markup:"markdown" }}
+            </div>
         </article>
     {% endfor %}
 
