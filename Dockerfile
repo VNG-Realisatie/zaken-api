@@ -19,6 +19,7 @@ RUN apk --no-cache add \
 WORKDIR /app
 
 COPY ./requirements /app/requirements
+RUN pip install pip setuptools -U
 RUN pip install -r requirements/production.txt
 
 
@@ -47,7 +48,7 @@ RUN apk --no-cache add \
 # install all the dependencies for GeoDjango
 RUN apk --no-cache add \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    libressl2.7-libcrypto
+    libcrypto1.1
 
 RUN apk --no-cache add \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
@@ -92,7 +93,7 @@ RUN apk --no-cache add \
 # install all the dependencies for GeoDjango
 RUN apk --no-cache add \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    libressl2.7-libcrypto
+    libcrypto1.1
 
 RUN apk --no-cache add \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
