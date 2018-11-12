@@ -1,4 +1,12 @@
+"""
+Defines the scopes used in the ZRC component.
+
+The Exxellence authorisation model is taken into consideration as well, see
+https://wiki.exxellence.nl/display/KPORT/2.+Zaaktype+autorisaties
+"""
+
 from zds_schema.scopes import Scope
+
 
 SCOPE_ZAKEN_CREATE = Scope(
     'zds.scopes.zaken.aanmaken',
