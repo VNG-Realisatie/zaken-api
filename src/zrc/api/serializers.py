@@ -18,6 +18,7 @@ from zrc.datamodel.models import (
     ZaakKenmerk, ZaakObject
 )
 
+from .auth import ztc_auth
 from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
 
 
@@ -79,7 +80,7 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             },
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
-                'validators': [URLValidator()],
+                'validators': [URLValidator(headers=ztc_auth.credentials)],
             },
             'einddatum': {
                 'read_only': True
