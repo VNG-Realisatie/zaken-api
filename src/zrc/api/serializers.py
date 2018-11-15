@@ -127,9 +127,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         client.auth = ztc_auth
 
         try:
-            response = client.request(status_type_url, 'statustype')
-            response.raise_for_status()
-            status_type = response.json()
+            status_type = client.request(status_type_url, 'statustype')
             validated_attrs['__is_eindstatus'] = status_type['isEindstatus']
         except requests.HTTPError as exc:
             raise serializers.ValidationError(
