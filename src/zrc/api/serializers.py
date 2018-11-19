@@ -8,6 +8,7 @@ from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
+from zds_schema.models import APICredential
 from zds_schema.validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
     URLValidator
@@ -18,7 +19,7 @@ from zrc.datamodel.models import (
     ZaakKenmerk, ZaakObject
 )
 
-from .auth import ztc_auth
+from .auth import get_ztc_auth
 from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
 
 
@@ -80,7 +81,7 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             },
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
-                'validators': [URLValidator(headers=ztc_auth.credentials)],
+                'validators': [URLValidator(get_auth=get_ztc_auth)],
             },
             'einddatum': {
                 'read_only': True
@@ -124,7 +125,10 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         # dynamic so that it can be mocked in tests easily
         Client = import_string(settings.ZDS_CLIENT_CLASS)
         client = Client.from_url(status_type_url, settings.BASE_DIR)
-        client.auth = ztc_auth
+        client.auth = APICredential.get_auth(
+            status_type_url,
+            scopes=['zds.scopes.zaaktypes.lezen']
+        )
 
         try:
             status_type = client.request(status_type_url, 'statustype')
