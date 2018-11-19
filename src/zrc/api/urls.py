@@ -3,7 +3,7 @@ from django.urls import include, path
 
 from zds_schema import routers
 
-from .schema import schema_view
+from .schema import SchemaView
 from .viewsets import (
     KlantContactViewSet, RolViewSet, StatusViewSet, ZaakEigenschapViewSet,
     ZaakInformatieObjectViewSet, ZaakObjectViewSet, ZaakViewSet
@@ -27,10 +27,10 @@ urlpatterns = [
 
         # API documentation
         url(r'^schema/openapi(?P<format>\.json|\.yaml)$',
-            schema_view.without_ui(cache_timeout=None),
+            SchemaView.without_ui(cache_timeout=None),
             name='schema-json'),
         url(r'^schema/$',
-            schema_view.with_ui('redoc', cache_timeout=None),
+            SchemaView.with_ui('redoc', cache_timeout=None),
             name='schema-redoc'),
 
         # actual API
