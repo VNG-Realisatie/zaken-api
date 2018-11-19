@@ -2,8 +2,8 @@ from django.conf.urls import url
 from django.urls import include, path
 
 from zds_schema import routers
+from zds_schema.schema import SchemaView
 
-from .schema import SchemaView
 from .viewsets import (
     KlantContactViewSet, RolViewSet, StatusViewSet, ZaakEigenschapViewSet,
     ZaakInformatieObjectViewSet, ZaakObjectViewSet, ZaakViewSet
