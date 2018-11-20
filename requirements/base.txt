@@ -25,7 +25,7 @@ drf-writable-nested==0.4.3
 drf-yasg==1.8.0
 first==2.0.1              # via pip-tools
 future==0.16.0            # via drf-yasg
-gemma-zds-client==0.3.2   # via zds-schema
+gemma-zds-client==0.6.2
 idna==2.6                 # via requests
 inflection==0.3.1         # via drf-yasg
 iso-639==0.4.5            # via zds-schema
