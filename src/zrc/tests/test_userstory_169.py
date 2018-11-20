@@ -13,8 +13,9 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import RolOmschrijving, RolTypes
-from zds_schema.tests import get_operation_url
+from zds_schema.tests import JWTScopesMixin, get_operation_url
 
+from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
@@ -29,7 +30,9 @@ VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnat
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
-class US169TestCase(APITestCase):
+class US169TestCase(JWTScopesMixin, APITestCase):
+
+    scopes = [SCOPE_ZAKEN_CREATE]
 
     def test_create_melding(self):
         """

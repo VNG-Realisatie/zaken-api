@@ -20,13 +20,15 @@
         "application/json"
     ],
     "securityDefinitions": {
-        "basic": {
-            "type": "basic"
+        "JWT-Claims": {
+            "bearerFormat": "JWT",
+            "scheme": "bearer",
+            "type": "http"
         }
     },
     "security": [
         {
-            "basic": []
+            "JWT-Claims": []
         }
     ],
     "paths": {
@@ -454,6 +456,13 @@
                 },
                 "tags": [
                     "rollen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -623,6 +632,13 @@
                 },
                 "tags": [
                     "statussen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -702,6 +718,13 @@
                 },
                 "tags": [
                     "statussen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "(zds.scopes.zaken.aanmaken | zds.scopes.statussen.toevoegen)"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -775,6 +798,13 @@
                 },
                 "tags": [
                     "statussen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -854,6 +884,13 @@
                 },
                 "tags": [
                     "zaakobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -933,6 +970,13 @@
                 },
                 "tags": [
                     "zaakobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -1006,6 +1050,13 @@
                 },
                 "tags": [
                     "zaakobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -1133,6 +1184,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -1228,6 +1286,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.aanmaken"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -1338,6 +1403,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -1437,6 +1509,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "put": {

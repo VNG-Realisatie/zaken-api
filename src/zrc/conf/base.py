@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_gis',
     'rest_framework_filters',
+    'django_markup',
 
     # Project applications.
     'zrc.accounts',
@@ -74,6 +75,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'zds_schema.middleware.AuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -163,6 +165,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Additional locations of static files
 STATICFILES_DIRS = (
     os.path.join(DJANGO_PROJECT_DIR, 'static'),
+    os.path.join(BASE_DIR, 'node_modules', 'font-awesome'),
 )
 
 # List of finder classes that know how to find static files in
