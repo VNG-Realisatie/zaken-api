@@ -7,14 +7,17 @@ Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/45
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import RolOmschrijving, RolTypes
-from zds_schema.tests import TypeCheckMixin, get_operation_url
+from zds_schema.tests import JWTScopesMixin, TypeCheckMixin, get_operation_url
 
+from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
 WATERNET = 'https://waternet.nl/api/organisatorische-eenheid/1234'
 
 
-class US45TestCase(TypeCheckMixin, APITestCase):
+class US45TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
+
+    scopes = [SCOPE_ZAKEN_CREATE]
 
     def test_zet_behandelaar(self):
         zaak = ZaakFactory.create()

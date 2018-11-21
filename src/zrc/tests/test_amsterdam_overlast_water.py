@@ -2,8 +2,9 @@ from django.test import override_settings
 
 from dateutil import parser
 from rest_framework.test import APITestCase
-from zds_schema.tests import get_operation_url
+from zds_schema.tests import JWTScopesMixin, get_operation_url
 
+from zrc.api.scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import Zaak
 
 from .test_userstory_39 import (
@@ -117,10 +118,14 @@ class Application:
     LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
 )
-class US39IntegrationTestCase(APITestCase):
+class US39IntegrationTestCase(JWTScopesMixin, APITestCase):
     """
     Simulate a full realistic flow.
     """
+    scopes = [
+        SCOPE_ZAKEN_CREATE,
+        SCOPE_STATUSSEN_TOEVOEGEN
+    ]
 
     def test_full_flow(self):
         app = Application(self.client, TEST_DATA)

@@ -13,13 +13,15 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import RolOmschrijving, RolTypes
-from zds_schema.tests import get_operation_url
+from zds_schema.tests import JWTScopesMixin, get_operation_url
 
+from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
 from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
-from zrc.tests.utils import parse_isodatetime
+
+from .utils import parse_isodatetime
 
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
@@ -31,7 +33,13 @@ BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
-class US153TestCase(APITestCase):
+class US153TestCase(JWTScopesMixin, APITestCase):
+
+    scopes = [
+        SCOPE_ZAKEN_CREATE,
+        SCOPE_ZAKEN_ALLES_LEZEN,
+    ]
+    zaaktypes = [ZAAKTYPE]
 
     def test_create_zaak_with_kenmerken(self):
         zaak_create_url = get_operation_url('zaak_create')
@@ -59,7 +67,7 @@ class US153TestCase(APITestCase):
         self.assertEqual(zaak.zaakkenmerk_set.count(), 2)
 
     def test_read_zaak_with_kenmerken(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak.zaakkenmerk_set.create(kenmerk='kenmerk 1', bron='bron 1')
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
 
@@ -81,7 +89,7 @@ class US153TestCase(APITestCase):
         )
 
     def test_update_zaak_with_kenmerken(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         kenmerk_1 = zaak.zaakkenmerk_set.create(kenmerk='kenmerk 1', bron='bron 1')
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
 

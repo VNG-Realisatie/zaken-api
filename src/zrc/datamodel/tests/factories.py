@@ -1,6 +1,8 @@
+from django.utils import timezone
+
 import factory
 import factory.fuzzy
-from zds_schema.constants import RolOmschrijving, RolTypes
+from zds_schema.constants import ObjectTypes, RolOmschrijving, RolTypes
 
 
 class ZaakFactory(factory.django.DjangoModelFactory):
@@ -31,6 +33,15 @@ class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
         model = 'datamodel.ZaakEigenschap'
 
 
+class ZaakObjectFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    object = factory.Faker('url')
+    object_type = factory.fuzzy.FuzzyChoice(choices=ObjectTypes.values)
+
+    class Meta:
+        model = 'datamodel.ZaakObject'
+
+
 class RolFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     betrokkene = factory.Faker('url')
@@ -44,7 +55,7 @@ class RolFactory(factory.django.DjangoModelFactory):
 class StatusFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     status_type = factory.Faker('url')
-    datum_status_gezet = factory.Faker('date_this_month')
+    datum_status_gezet = factory.Faker('date_time_this_month', tzinfo=timezone.utc)
 
     class Meta:
         model = 'datamodel.Status'

@@ -2,6 +2,34 @@
 Wijzigingen
 ===========
 
+0.7.0 (2018-11-21)
+==================
+
+Autorisatie-feature release
+
+* Scopes toegevoegd: ``ZAKEN_CREATE``, ``STATUSSEN_TOEVOEGEN``, ``ZAKEN_ALLES_LEZEN``
+* Autorisatie-informatie toegevoegd aan API spec
+* Auth/Autz via middleware en JWT toegevoegd
+* Documentatie van scopes toegevoegd op ``http://localhost:8000/ref/scopes/``
+* Maak authenticated calls naar ZTC
+* JWT client/secret management toegevoegd
+
+Breaking changes
+----------------
+
+Door autorisatie toe te voegen zijn bestaande endpoints niet langer functioneel
+zonder een geldige ``Authentication`` header. Je kan de `token issuer`_ gebruiken
+om geldige credentials te verkrijgen.
+
+Kleine wijzigingen
+------------------
+
+* dwing gebruik van timeze-aware datetimes af (hard error in dev)
+* OAS 3.0 versie wordt nu geserveerd vanaf ``/api/v1/schema/openapi.yaml?v=3``.
+  Zonder ``?v=3`` querystring krijg je nog steeds Swagger 2.0.
+
+.. _token issuer: https://ref.tst.vng.cloud/tokens/
+
 0.6.1 (2018-11-16)
 ==================
 
