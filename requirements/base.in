@@ -12,8 +12,6 @@ django-choices
 django-cors-middleware
 django-markup
 
-gemma-zds-client==0.6.2
-
 djangorestframework
 djangorestframework-gis
 django-filter
@@ -21,4 +19,4 @@ djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
 drf-writable-nested
-zds-schema==0.13.0
+zds-schema==0.13.2
