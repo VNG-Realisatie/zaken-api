@@ -95,6 +95,7 @@ class FilterValidationTests(JWTScopesMixin, APITestCase):
         invalid_filters = {
             'zaaktype': '123',
             'bronorganisatie': '123',
+            'foo': 'bar',
         }
 
         for key, value in invalid_filters.items():
@@ -108,8 +109,9 @@ class FilterValidationTests(JWTScopesMixin, APITestCase):
         invalid_filters = {
             'zaak': '123',  # must be a url
             'betrokkene': '123',  # must be a url
-            'betrokkeneType': 'not-a-valid-choice',  # must be a pre-defined choie
-            'rolomschrijving': 'not-a-valid-choice',  # must be a pre-defined choie
+            'betrokkeneType': 'not-a-valid-choice',  # must be a pre-defined choice
+            'rolomschrijving': 'not-a-valid-choice',  # must be a pre-defined choice
+            'foo': 'bar',
         }
 
         for key, value in invalid_filters.items():
@@ -123,6 +125,7 @@ class FilterValidationTests(JWTScopesMixin, APITestCase):
         invalid_filters = {
             'zaak': '123',  # must be a url
             'statusType': '123',  # must be a url
+            'foo': 'bar',
         }
 
         for key, value in invalid_filters.items():
