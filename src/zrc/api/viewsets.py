@@ -8,7 +8,7 @@ from zds_schema.geo import GeoMixin
 from zds_schema.permissions import ActionScopesRequired
 from zds_schema.search import SearchMixin
 from zds_schema.utils import lookup_kwargs_to_filters
-from zds_schema.viewsets import NestedViewSetMixin
+from zds_schema.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
@@ -29,6 +29,7 @@ from .serializers import (
 
 class ZaakViewSet(GeoMixin,
                   SearchMixin,
+                  CheckQueryParamsMixin,
                   mixins.CreateModelMixin,
                   mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
@@ -96,7 +97,8 @@ class ZaakViewSet(GeoMixin,
     _zoek.is_search_action = True
 
 
-class StatusViewSet(mixins.CreateModelMixin,
+class StatusViewSet(CheckQueryParamsMixin,
+                    mixins.CreateModelMixin,
                     mixins.ListModelMixin,
                     mixins.RetrieveModelMixin,
                     viewsets.GenericViewSet):
@@ -263,7 +265,8 @@ class KlantContactViewSet(mixins.CreateModelMixin,
     lookup_field = 'uuid'
 
 
-class RolViewSet(mixins.CreateModelMixin,
+class RolViewSet(CheckQueryParamsMixin,
+                 mixins.CreateModelMixin,
                  mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
                  viewsets.GenericViewSet):
