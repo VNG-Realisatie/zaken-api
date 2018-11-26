@@ -51,7 +51,7 @@ class ZaakViewSet(GeoMixin,
     queryset = Zaak.objects.all()
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
-    filter_class = ZaakFilter
+    filterset_class = ZaakFilter
     lookup_field = 'uuid'
 
     permission_classes = (ActionScopesRequired, ZaaktypePermission)
@@ -102,7 +102,7 @@ class StatusViewSet(mixins.CreateModelMixin,
                     viewsets.GenericViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
-    filter_class = StatusFilter
+    filterset_class = StatusFilter
     lookup_field = 'uuid'
 
     permission_classes = (ActionScopesRequired,)
@@ -275,7 +275,7 @@ class RolViewSet(mixins.CreateModelMixin,
     """
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
-    filter_class = RolFilter
+    filterset_class = RolFilter
     lookup_field = 'uuid'
 
     permission_classes = (ActionScopesRequired,)

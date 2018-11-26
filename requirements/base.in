@@ -19,4 +19,4 @@ djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
 drf-writable-nested
-zds-schema==0.14.0
+zds-schema==0.15.0
