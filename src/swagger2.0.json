@@ -326,6 +326,12 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
+                        }
+                    },
                     "401": {
                         "description": "",
                         "schema": {
@@ -579,6 +585,12 @@
                             "items": {
                                 "$ref": "#/definitions/Status"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
                         }
                     },
                     "401": {
@@ -1125,6 +1137,12 @@
                                     "EPSG:4326"
                                 ]
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
                         }
                     },
                     "401": {
