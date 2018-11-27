@@ -2,6 +2,21 @@
 Wijzigingen
 ===========
 
+0.8.0 (2018-11-27)
+==================
+
+Stap naar volwassenere API
+
+* Update naar recente zds-schema versie
+* HTTP 400 errors op onbekende/invalide filter-parameters
+* Docker container beter te customizen via environment variables
+
+Breaking change
+---------------
+
+De ``Authorization`` headers is veranderd van formaat. In plaats van ``<jwt>``
+is het nu ``Bearer <jwt>`` geworden.
+
 0.7.1 (2018-11-22)
 ==================
 
