@@ -8,6 +8,7 @@ CONTAINER_REPO=vngr/gemma-zrc
 git_tag=$(git tag --points-at HEAD) &>/dev/null
 git_branch=$(git rev-parse --abbrev-ref HEAD)
 
+ls -al ${HOME}/.docker/config.json
 
 build_image() {
     tag=$1
