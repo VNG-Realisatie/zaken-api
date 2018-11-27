@@ -8,7 +8,7 @@ from zds_schema.geo import GeoMixin
 from zds_schema.permissions import ActionScopesRequired
 from zds_schema.search import SearchMixin
 from zds_schema.utils import lookup_kwargs_to_filters
-from zds_schema.viewsets import NestedViewSetMixin
+from zds_schema.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
@@ -29,6 +29,7 @@ from .serializers import (
 
 class ZaakViewSet(GeoMixin,
                   SearchMixin,
+                  CheckQueryParamsMixin,
                   mixins.CreateModelMixin,
                   mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
@@ -51,7 +52,7 @@ class ZaakViewSet(GeoMixin,
     queryset = Zaak.objects.all()
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
-    filter_class = ZaakFilter
+    filterset_class = ZaakFilter
     lookup_field = 'uuid'
 
     permission_classes = (ActionScopesRequired, ZaaktypePermission)
@@ -96,13 +97,14 @@ class ZaakViewSet(GeoMixin,
     _zoek.is_search_action = True
 
 
-class StatusViewSet(mixins.CreateModelMixin,
+class StatusViewSet(CheckQueryParamsMixin,
+                    mixins.CreateModelMixin,
                     mixins.ListModelMixin,
                     mixins.RetrieveModelMixin,
                     viewsets.GenericViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
-    filter_class = StatusFilter
+    filterset_class = StatusFilter
     lookup_field = 'uuid'
 
     permission_classes = (ActionScopesRequired,)
@@ -263,7 +265,8 @@ class KlantContactViewSet(mixins.CreateModelMixin,
     lookup_field = 'uuid'
 
 
-class RolViewSet(mixins.CreateModelMixin,
+class RolViewSet(CheckQueryParamsMixin,
+                 mixins.CreateModelMixin,
                  mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
                  viewsets.GenericViewSet):
@@ -275,7 +278,7 @@ class RolViewSet(mixins.CreateModelMixin,
     """
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
-    filter_class = RolFilter
+    filterset_class = RolFilter
     lookup_field = 'uuid'
 
     permission_classes = (ActionScopesRequired,)
