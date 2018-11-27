@@ -116,5 +116,12 @@ COPY --from=frontend-build /app/src/zrc/static/fonts /app/src/zrc/static/fonts
 COPY --from=frontend-build /app/src/zrc/static/css /app/src/zrc/static/css
 COPY ./src /app/src
 
+ENV DJANGO_SETTINGS_MODULE=zrc.conf.docker
+
+ARG SECRET_KEY=dummy
+
+# Run collectstatic, so the result is already included in the image
+RUN python src/manage.py collectstatic --noinput
+
 EXPOSE 8000
 CMD ["/start.sh"]
