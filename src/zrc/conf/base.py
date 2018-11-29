@@ -80,6 +80,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'corsheaders.middleware.CorsMiddleware',
+    'zds_schema.middleware.APIVersionHeaderMiddleware',
 ]
 
 ROOT_URLCONF = 'zrc.urls'
