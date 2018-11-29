@@ -85,6 +85,12 @@ paths:
       responses:
         '201':
           description: ''
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
@@ -344,6 +350,12 @@ paths:
       responses:
         '201':
           description: ''
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
@@ -582,6 +594,12 @@ paths:
       responses:
         '201':
           description: ''
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
@@ -802,6 +820,12 @@ paths:
       responses:
         '201':
           description: ''
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
@@ -1092,6 +1116,12 @@ paths:
       responses:
         '201':
           description: ''
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
@@ -1641,6 +1671,12 @@ paths:
       responses:
         '201':
           description: ''
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
@@ -1784,6 +1820,12 @@ paths:
       responses:
         '201':
           description: ''
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
           content:
             application/json:
               schema:
