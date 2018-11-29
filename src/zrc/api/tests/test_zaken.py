@@ -65,7 +65,7 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
             response = self.client.post(url, {
                 'zaaktype': 'https://example.com/foo/bar',
                 'bronorganisatie': '517439943',
-                'verantwoordelijkeOrganisatie': 'https://example.com/foo/bar',
+                'verantwoordelijkeOrganisatie': '517439943',
                 'registratiedatum': '2018-06-11',
                 'startdatum': '2018-06-11',
             }, HTTP_ACCEPT_CRS='EPSG:4326')
