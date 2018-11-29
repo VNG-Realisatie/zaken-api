@@ -1,5 +1,7 @@
 from zds_schema.conf.api import *  # noqa - imports white-listed
 
+API_VERSION = '1.0.0-alpha'  # semantic version
+
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 
 SECURITY_DEFINITION_NAME = 'JWT-Claims'
