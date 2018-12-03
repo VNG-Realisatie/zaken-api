@@ -20,7 +20,7 @@ from .utils import isodatetime
 ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1'
 STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1'
 STATUS_TYPE_OVERLAST_GECONSTATEERD = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/2'
-VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
+VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 OBJECT_MET_ADRES = 'https://example.com/orc/api/v1/objecten/1'
 FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
 # file:///home/bbt/Downloads/2a.aansluitspecificatieskennisgevingen-gegevenswoordenboek-entiteitenv1.0.6.pdf

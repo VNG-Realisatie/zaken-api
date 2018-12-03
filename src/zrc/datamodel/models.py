@@ -45,7 +45,7 @@ class Zaak(APIMixin, models.Model):
                   'wordt de datum van vandaag gebruikt.',
         default=date.today
     )
-    verantwoordelijke_organisatie = models.URLField(
+    verantwoordelijke_organisatie = RSINField(
         help_text='URL naar de Niet-natuurlijk persoon zijnde de organisatie '
                   'die eindverantwoordelijk is voor de behandeling van de '
                   'zaak.')

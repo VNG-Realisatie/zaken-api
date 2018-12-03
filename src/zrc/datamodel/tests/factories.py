@@ -10,7 +10,7 @@ class ZaakFactory(factory.django.DjangoModelFactory):
     registratiedatum = factory.Faker('date_this_month', before_today=True)
     startdatum = factory.Faker('date_this_month', before_today=True)
     bronorganisatie = factory.Faker('ssn', locale='nl_NL')
-    verantwoordelijke_organisatie = factory.Faker('url')
+    verantwoordelijke_organisatie = factory.Faker('ssn', locale='nl_NL')
 
     class Meta:
         model = 'datamodel.Zaak'
