@@ -27,7 +27,7 @@ CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-18
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 STATUS_TYPE = f'{ZAAKTYPE}/statustypen/1'
 
-VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
+VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 AVG_INZAGE_VERZOEK = 'https://www.example.com/orc/api/v1/avg/inzageverzoeken/1234'
 BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
 

@@ -26,7 +26,7 @@ CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-18
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 INITIATOR = 'https://example.com/orc/api/v1/brp/natuurlijkepersonen/4bfc45ae-c04e-4398-aa4c-671d35b42ac3'
 BEHANDELAAR = 'https://example.com/orc/api/v1/brp/organisatorische-eenheden/d6cbe447-0ff9-4df6-b3d2-68e093ddebbd'
-VERANTWOORDELIJKE_ORGANISATIE = 'https://www.example.com/orc/api/v1/rsgb/nietnatuurlijkepersonen/1234'
+VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
