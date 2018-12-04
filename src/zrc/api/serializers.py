@@ -124,7 +124,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
 
         # dynamic so that it can be mocked in tests easily
         Client = import_string(settings.ZDS_CLIENT_CLASS)
-        client = Client.from_url(status_type_url, settings.BASE_DIR)
+        client = Client.from_url(status_type_url)
         client.auth = APICredential.get_auth(
             status_type_url,
             scopes=['zds.scopes.zaaktypes.lezen']
