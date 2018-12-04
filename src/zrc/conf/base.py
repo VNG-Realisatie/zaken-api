@@ -315,6 +315,20 @@ HIJACK_ALLOW_GET_REQUESTS = True
 
 # Django-CORS-middleware
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken',
+    'user-agent',
+    'accept-encoding',
+
+    'accept-crs',
+    'content-crs',
+)
+
 
 # Raven
 SENTRY_DSN = os.getenv('SENTRY_DSN')
