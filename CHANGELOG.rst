@@ -2,6 +2,18 @@
 Wijzigingen
 ===========
 
+0.8.5 (2018-12-11)
+==================
+
+Small bugfixes
+
+* Fixed validator using newer gemma-zds-client
+* Added a name for the session cookie to preserve sessions on the same domain
+  between components.
+* Added missing Api-Version header
+* Added missing Location header to OAS
+
+
 0.8.2 (2018-12-04)
 ==================
 
