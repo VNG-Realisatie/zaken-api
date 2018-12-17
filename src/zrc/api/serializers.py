@@ -144,6 +144,24 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 code='relation-validation-error'
             ) from exc
 
+        # validate that all InformationObjects have indicatieGebruiksrecht set
+        if validated_attrs['__is_eindstatus']:
+            zios = validated_attrs['zaak'].zaakinformatieobject_set.all()
+            for zio in zios:
+                io_url = zio.informatieobject
+                client = Client.from_url(io_url)
+                client.auth = APICredential.get_auth(
+                    io_url,
+                    scopes=['zds.scopes.zaaktypes.lezen']
+                )
+                informatieobject = client.request(io_url, 'enkelvoudiginformatieobject')
+                if informatieobject['indicatieGebruiksrecht'] is None:
+                    raise serializers.ValidationError(
+                        "Er zijn gerelateerde informatieobjecten waarvoor `indicatieGebruiksrecht` nog niet "
+                        "gespecifieerd is. Je moet deze zetten voor je de zaak kan afsluiten.",
+                        code='indicatiegebruiksrecht-unset'
+                    )
+
         return validated_attrs
 
     def create(self, validated_data):
