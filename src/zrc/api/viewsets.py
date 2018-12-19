@@ -68,6 +68,7 @@ class ZaakViewSet(GeoMixin,
     }
 
     def create(self, request, *args, **kwargs):
+        logger.warning("Create request headers: %s", request.META)
         logger.warning("Create request: %s", request.body)
         return super().create(request, *args, **kwargs)
 
