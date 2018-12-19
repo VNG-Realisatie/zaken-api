@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
@@ -25,6 +27,8 @@ from .serializers import (
     ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
     ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
+
+logger = logging.getLogger(__name__)
 
 
 class ZaakViewSet(GeoMixin,
@@ -62,6 +66,10 @@ class ZaakViewSet(GeoMixin,
         '_zoek': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE,
     }
+
+    def create(self, request, *args, **kwargs):
+        logger.warning("Create request: %s", request.body)
+        return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
         base = super().get_queryset()
