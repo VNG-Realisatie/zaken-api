@@ -33,7 +33,10 @@ class Zaak(APIMixin, models.Model):
     )
     bronorganisatie = RSINField(
         help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de '
-                  'organisatie die de zaak heeft gecreeerd.')
+                  'organisatie die de zaak heeft gecreeerd. Dit moet een geldig '
+                  'RSIN zijn van 9 nummers en voldoen aan '
+                  'https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef'
+    )
     omschrijving = models.CharField(
         max_length=80, blank=True,
         help_text='Een korte omschrijving van de zaak.')
@@ -46,9 +49,11 @@ class Zaak(APIMixin, models.Model):
         default=date.today
     )
     verantwoordelijke_organisatie = RSINField(
-        help_text='URL naar de Niet-natuurlijk persoon zijnde de organisatie '
+        help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie '
                   'die eindverantwoordelijk is voor de behandeling van de '
-                  'zaak.')
+                  'zaak. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan '
+                  'https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef'
+    )
 
     startdatum = models.DateField(
         help_text='De datum waarop met de uitvoering van de zaak is gestart')

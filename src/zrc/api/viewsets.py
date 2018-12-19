@@ -46,12 +46,40 @@ class ZaakViewSet(GeoMixin,
     Maak een ZAAK aan.
 
     Indien geen identificatie gegeven is, dan wordt deze automatisch
-    gegenereerd.
+    gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
 
     De URL naar het zaaktype wordt gevalideerd op geldigheid.
 
     list:
     Geef een lijst van ZAAKen.
+
+    Optioneel kan je de queryparameters gebruiken om zaken te filteren.
+
+    Opmerkingen:
+    - je krijgt enkel zaken terug van de zaaktypes die in het
+      autorisatie-JWT vervat zitten.
+
+    update:
+    Werk een zaak bij.
+
+    Er wordt gevalideerd op:
+    - geldigheid URL naar zaaktype
+
+    Opmerkingen:
+    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
+      vervat zitten
+    - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
+
+    partial_update:
+    Werk een zaak bij.
+
+    Er wordt gevalideerd op:
+    - geldigheid URL naar zaaktype
+
+    Opmerkingen:
+    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
+      vervat zitten
+    - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     """
     queryset = Zaak.objects.all()
     serializer_class = ZaakSerializer
@@ -175,6 +203,12 @@ class ZaakInformatieObjectViewSet(NestedViewSetMixin,
     Opvragen en bwerken van Zaak-Informatieobject relaties.
 
     create:
+    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
+
+    DRCs gebruiken deze endpoint bij het synchroniseren van relaties. De
+    endpoint dient dus bij ZRC providers geimplementeerd te worden, maar voor
+    clients is die niet relevant.
+
     Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
 
     Er wordt gevalideerd op:
@@ -185,24 +219,6 @@ class ZaakInformatieObjectViewSet(NestedViewSetMixin,
 
     list:
     Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.
-
-    update:
-    Werk de relatie tussen een ZAAK en INFORMATIEOBJECT bij.
-
-    Er wordt gevalideerd op:
-    - geldigheid informatieobject URL
-    - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
-    - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
-      informatieobject leeft
-
-    partial_update:
-    Werk de relatie tussen een ZAAK en INFORMATIEOBJECT bij.
-
-    Er wordt gevalideerd op:
-    - geldigheid informatieobject URL
-    - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
-    - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
-      informatieobject leeft
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer

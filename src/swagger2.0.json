@@ -2057,7 +2057,7 @@
         "/zaken": {
             "get": {
                 "operationId": "zaak_list",
-                "description": "Geef een lijst van ZAAKen.",
+                "description": "Geef een lijst van ZAAKen.\n\nOptioneel kan je de queryparameters gebruiken om zaken te filteren.",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -2069,7 +2069,7 @@
                     {
                         "name": "bronorganisatie",
                         "in": "query",
-                        "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd.",
+                        "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef",
                         "required": false,
                         "type": "string"
                     },
@@ -2271,7 +2271,7 @@
             },
             "post": {
                 "operationId": "zaak_create",
-                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd.\n\nDe URL naar het zaaktype wordt gevalideerd op geldigheid.",
+                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\nDe URL naar het zaaktype wordt gevalideerd op geldigheid.",
                 "parameters": [
                     {
                         "name": "data",
@@ -2863,7 +2863,7 @@
             },
             "put": {
                 "operationId": "zaak_update",
-                "description": "Opvragen en bewerken van ZAAKen.",
+                "description": "Werk een zaak bij.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype",
                 "parameters": [
                     {
                         "name": "data",
@@ -3067,7 +3067,7 @@
             },
             "patch": {
                 "operationId": "zaak_partial_update",
-                "description": "Opvragen en bewerken van ZAAKen.",
+                "description": "Werk een zaak bij.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype",
                 "parameters": [
                     {
                         "name": "data",
@@ -3422,7 +3422,7 @@
             },
             "post": {
                 "operationId": "zaakinformatieobject_create",
-                "description": "Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\nEr wordt gevalideerd op:\n- geldigheid informatieobject URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT\n- bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het\n  informatieobject leeft",
+                "description": "",
                 "parameters": [
                     {
                         "name": "data",
@@ -4706,7 +4706,7 @@
                 },
                 "bronorganisatie": {
                     "title": "Bronorganisatie",
-                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd.",
+                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef",
                     "type": "string",
                     "maxLength": 9,
                     "minLength": 1
@@ -4733,7 +4733,7 @@
                 },
                 "verantwoordelijkeOrganisatie": {
                     "title": "Verantwoordelijke organisatie",
-                    "description": "URL naar de Niet-natuurlijk persoon zijnde de organisatie die eindverantwoordelijk is voor de behandeling van de zaak.",
+                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die eindverantwoordelijk is voor de behandeling van de zaak. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef",
                     "type": "string",
                     "maxLength": 9,
                     "minLength": 1
@@ -4814,7 +4814,7 @@
                 },
                 "bronorganisatie": {
                     "title": "Bronorganisatie",
-                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd.",
+                    "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef",
                     "type": "string",
                     "minLength": 1
                 },
