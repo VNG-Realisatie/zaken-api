@@ -15,7 +15,9 @@ from rest_framework.test import APITestCase
 from zds_schema.constants import RolOmschrijving, RolTypes
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
-from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
+from zrc.api.scopes import (
+    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+)
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
 from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
@@ -38,6 +40,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
     scopes = [
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_ALLES_LEZEN,
+        SCOPE_ZAKEN_BIJWERKEN
     ]
     zaaktypes = [ZAAKTYPE]
 

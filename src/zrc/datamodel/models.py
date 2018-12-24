@@ -4,6 +4,7 @@ from datetime import date
 from django.contrib.gis.db.models import GeometryField
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import RolOmschrijving, RolTypes
 from zds_schema.fields import RSINField
@@ -71,6 +72,10 @@ class Zaak(APIMixin, models.Model):
         help_text='De laatste datum waarop volgens wet- en regelgeving de zaak '
                   'afgerond dient te zijn.'
     )
+    publicatiedatum = models.DateField(
+        _("publicatiedatum"), null=True, blank=True,
+        help_text=_("Datum waarop (het starten van) de zaak gepubliceerd is of wordt.")
+    )
 
     toelichting = models.TextField(
         max_length=1000, blank=True,
@@ -98,6 +103,21 @@ class Zaak(APIMixin, models.Model):
     def current_status_uuid(self):
         status = self.status_set.order_by('-datum_status_gezet').first()
         return status.uuid if status else None
+
+
+class ZaakProductOfDienst(models.Model):
+    zaak = models.ForeignKey('Zaak', help_text=_("hoort bij"), on_delete=models.CASCADE)
+    product_of_dienst = models.URLField(
+        _("product of dienst"),
+        help_text=_("Het product of de dienst die door de zaak wordt voortgebracht.")
+    )
+
+    class Meta:
+        verbose_name = _("product of dienst")
+        verbose_name_plural = _("producten of diensten")
+
+    def __str__(self):
+        return _("{zaak}: {product_of_dienst}").format(zaak=self.zaak, product_of_dienst=self.product_of_dienst)
 
 
 class Status(models.Model):

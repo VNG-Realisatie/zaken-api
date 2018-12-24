@@ -20,7 +20,8 @@ from zrc.datamodel.models import (
 from .filters import RolFilter, StatusFilter, ZaakFilter
 from .permissions import ZaaktypePermission
 from .scopes import (
-    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
+    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
+    SCOPE_ZAKEN_CREATE
 )
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
@@ -93,6 +94,8 @@ class ZaakViewSet(GeoMixin,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
         '_zoek': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE,
+        'update': SCOPE_ZAKEN_BIJWERKEN,
+        'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }
 
     def get_queryset(self):

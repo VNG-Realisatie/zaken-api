@@ -53,6 +53,14 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | relatieomschrijving | Omschrijving van de betrekking tussen de ZAAK en het OBJECT. | string | nee | C​R​U​D |
 | type | Beschrijft het type object gerelateerd aan de zaak | string | ja | C​R​U​D |
 
+## ZaakProductOfDienst
+
+Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/zaakproductofdienst)
+
+| Attribuut | Omschrijving | Type | Verplicht | CRUD* |
+| --- | --- | --- | --- | --- |
+| productOfDienst | Het product of de dienst die door de zaak wordt voortgebracht. | string | ja | C​R​U​D |
+
 ## ZaakKenmerk
 
 Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/zaakkenmerk)
@@ -79,6 +87,8 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | einddatum | De datum waarop de uitvoering van de zaak afgerond is. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | einddatumGepland | De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt. | string | nee | C​R​U​D |
 | uiterlijkeEinddatumAfdoening | De laatste datum waarop volgens wet- en regelgeving de zaak afgerond dient te zijn. | string | nee | C​R​U​D |
+| publicatiedatum | Datum waarop (het starten van) de zaak gepubliceerd is of wordt. | string | nee | C​R​U​D |
+| productenEnDiensten | De producten en/of diensten die door de zaak worden voortgebracht. De producten/diensten moeten bij het zaaktype vermeld zijn. | array | nee | C​R​U​D |
 | toelichting | Een toelichting op de zaak. | string | nee | C​R​U​D |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | kenmerken | Lijst van kenmerken | array | nee | C​R​U​D |

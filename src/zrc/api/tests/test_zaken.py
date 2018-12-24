@@ -8,11 +8,13 @@ from rest_framework.test import APITestCase
 from zds_schema.mocks import ZTCMockClient
 from zds_schema.tests import JWTScopesMixin, generate_jwt
 
+from zrc.datamodel.models import ZaakProductOfDienst
 from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
 from zrc.tests.utils import isodatetime, utcdatetime
 
 from ..scopes import (
-    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
+    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
+    SCOPE_ZAKEN_CREATE
 )
 from .utils import reverse
 
@@ -81,6 +83,10 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
             self.assertEqual(response_detail.status_code, status.HTTP_200_OK)
 
 
+@override_settings(
+    LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+)
 class ZakenTests(JWTScopesMixin, APITestCase):
 
     scopes = [
@@ -88,10 +94,6 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         SCOPE_ZAKEN_ALLES_LEZEN,
     ]
 
-    @override_settings(
-        LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
-    )
     def test_zaak_afsluiten(self):
         zaak = ZaakFactory.create()
         zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
@@ -135,34 +137,6 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
         ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
     )
-    def test_zaak_heropen_reset_einddatum(self):
-        token = generate_jwt([SCOPE_STATUSSEN_TOEVOEGEN])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
-        zaak = ZaakFactory.create(einddatum='2019-01-07')
-        StatusFactory.create(
-            zaak=zaak,
-            status_type='http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/2',
-            datum_status_gezet='2019-01-07T12:51:41+0000',
-        )
-        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
-        status_list_url = reverse('status-list')
-
-        # Set status other than eindstatus
-        datum_status_gezet = utcdatetime(2019, 1, 7, 12, 53, 25)
-        response = self.client.post(status_list_url, {
-            'zaak': zaak_url,
-            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
-            'datumStatusGezet': datum_status_gezet.isoformat(),
-        })
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
-
-        zaak.refresh_from_db()
-        self.assertIsNone(zaak.einddatum)
-
-    @override_settings(
-        LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
-    )
     def test_enkel_initiele_status_met_scope_aanmaken(self):
         """
         Met de scope zaken.aanmaken mag je enkel een status aanmaken als er
@@ -189,3 +163,65 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         self.assertEqual(zaak.status_set.count(), 1)
+
+    @override_settings(
+        LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
+        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+    )
+    def test_zaak_heropen_reset_einddatum(self):
+        token = generate_jwt([SCOPE_STATUSSEN_TOEVOEGEN])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+        zaak = ZaakFactory.create(einddatum='2019-01-07')
+        StatusFactory.create(
+            zaak=zaak,
+            status_type='http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/2',
+            datum_status_gezet='2019-01-07T12:51:41+0000',
+        )
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+        status_list_url = reverse('status-list')
+
+        # Set status other than eindstatus
+        datum_status_gezet = utcdatetime(2019, 1, 7, 12, 53, 25)
+        response = self.client.post(status_list_url, {
+            'zaak': zaak_url,
+            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
+            'datumStatusGezet': datum_status_gezet.isoformat(),
+        })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
+
+        zaak.refresh_from_db()
+        self.assertIsNone(zaak.einddatum)
+
+    def test_zaak_met_producten(self):
+        url = reverse('zaak-list')
+        token = generate_jwt(
+            scopes=self.scopes + [SCOPE_ZAKEN_BIJWERKEN],
+            zaaktypes=['https://example.com/zaaktpe/123']
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
+        response = self.client.post(url, {
+            'zaaktype': 'https://example.com/zaaktpe/123',
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-12-24',
+            'startdatum': '2018-12-24',
+            'producten_en_diensten': [{
+                'productOfDienst': 'https://example.com/product/123'
+            }]
+        }, HTTP_ACCEPT_CRS='EPSG:4326')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ZaakProductOfDienst.objects.count(), 1)
+
+        # update
+        response2 = self.client.patch(response.data['url'], {
+            'producten_en_diensten': [{
+                'productOfDienst': 'https://example.com/product/123'
+            }, {
+                'productOfDienst': 'https://example.com/dienst/123'
+            }]
+        }, HTTP_ACCEPT_CRS='EPSG:4326')
+
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+        self.assertEqual(ZaakProductOfDienst.objects.count(), 2)

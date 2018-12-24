@@ -3657,6 +3657,20 @@ components:
           - VerblijfsObject
           - MeldingOpenbareRuimte
           - InzageVerzoek
+    ZaakProductOfDienst:
+      description: De producten en/of diensten die door de zaak worden voortgebracht.
+        De producten/diensten moeten bij het zaaktype vermeld zijn.
+      required:
+      - productOfDienst
+      type: object
+      properties:
+        productOfDienst:
+          title: Product of dienst
+          description: Het product of de dienst die door de zaak wordt voortgebracht.
+          type: string
+          format: uri
+          maxLength: 200
+          minLength: 1
     Geometry:
       title: Geometry
       description: GeoJSON geometry
@@ -3908,6 +3922,17 @@ components:
             afgerond dient te zijn.
           type: string
           format: date
+        publicatiedatum:
+          title: Publicatiedatum
+          description: Datum waarop (het starten van) de zaak gepubliceerd is of wordt.
+          type: string
+          format: date
+        productenEnDiensten:
+          description: De producten en/of diensten die door de zaak worden voortgebracht.
+            De producten/diensten moeten bij het zaaktype vermeld zijn.
+          type: array
+          items:
+            $ref: '#/components/schemas/ZaakProductOfDienst'
         toelichting:
           title: Toelichting
           description: Een toelichting op de zaak.

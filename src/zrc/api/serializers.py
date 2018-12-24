@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import transaction
 from django.utils.module_loading import import_string
+from django.utils.translation import ugettext_lazy as _
 
 import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
@@ -16,7 +17,7 @@ from zds_schema.validators import (
 
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakKenmerk, ZaakObject
+    ZaakKenmerk, ZaakObject, ZaakProductOfDienst
 )
 
 from .auth import get_ztc_auth
@@ -30,6 +31,12 @@ class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
             'kenmerk',
             'bron',
         )
+
+
+class ZaakProductOfDienstSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ZaakProductOfDienst
+        fields = ('product_of_dienst',)
 
 
 class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.HyperlinkedModelSerializer):
@@ -48,6 +55,14 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
         help_text="Lijst van kenmerken"
     )
 
+    producten_en_diensten = ZaakProductOfDienstSerializer(
+        source='zaakproductofdienst_set',
+        many=True,
+        required=False,
+        help_text=_("De producten en/of diensten die door de zaak worden voortgebracht. "
+                    "De producten/diensten moeten bij het zaaktype vermeld zijn.")
+    )
+
     class Meta:
         model = Zaak
         fields = (
@@ -62,6 +77,8 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'einddatum',
             'einddatum_gepland',
             'uiterlijke_einddatum_afdoening',
+            'publicatiedatum',
+            'producten_en_diensten',
             'toelichting',
             'zaakgeometrie',
 
