@@ -12,7 +12,9 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import RolOmschrijving, RolTypes
+from zds_schema.constants import (
+    RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding
+)
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
@@ -41,6 +43,7 @@ class US169TestCase(JWTScopesMixin, APITestCase):
         zaak_create_url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'startdatum': '2018-07-25',

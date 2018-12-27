@@ -4,6 +4,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import JWTScopesMixin, get_validation_errors, reverse
 from zds_schema.validators import ResourceValidator, URLValidator
 
@@ -40,6 +41,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         response = self.client.post(url, {
             'zaaktype': 'https://example.com/foo/bar',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': '517439943',
             'registratiedatum': '2018-06-11',

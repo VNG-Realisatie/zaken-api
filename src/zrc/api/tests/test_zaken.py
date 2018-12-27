@@ -67,6 +67,7 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
 
             response = self.client.post(url, {
                 'zaaktype': 'https://example.com/foo/bar',
+                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
                 'bronorganisatie': '517439943',
                 'verantwoordelijkeOrganisatie': '517439943',
                 'registratiedatum': '2018-06-11',
@@ -203,6 +204,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
 
         response = self.client.post(url, {
             'zaaktype': 'https://example.com/zaaktpe/123',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': '517439943',
             'registratiedatum': '2018-12-24',

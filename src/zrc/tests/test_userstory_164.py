@@ -8,6 +8,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import (
     JWTScopesMixin, get_operation_url, get_validation_errors
 )
@@ -33,6 +34,7 @@ class US164TestCase(JWTScopesMixin, APITestCase):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'identificatie': 'strtmzk-0001',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'bronorganisatie': '517439943',
@@ -52,6 +54,7 @@ class US164TestCase(JWTScopesMixin, APITestCase):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'identificatie': 'strtmzk-0001',
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,

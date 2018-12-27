@@ -2,11 +2,14 @@ from django.utils import timezone
 
 import factory
 import factory.fuzzy
-from zds_schema.constants import ObjectTypes, RolOmschrijving, RolTypes
+from zds_schema.constants import (
+    ObjectTypes, RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding
+)
 
 
 class ZaakFactory(factory.django.DjangoModelFactory):
     zaaktype = factory.Faker('url')
+    vertrouwelijkheidaanduiding = factory.fuzzy.FuzzyChoice(choices=VertrouwelijkheidsAanduiding.values)
     registratiedatum = factory.Faker('date_this_month', before_today=True)
     startdatum = factory.Faker('date_this_month', before_today=True)
     bronorganisatie = factory.Faker('ssn', locale='nl_NL')

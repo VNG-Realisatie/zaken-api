@@ -2,6 +2,7 @@ from django.test import override_settings
 
 from dateutil import parser
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
@@ -61,6 +62,7 @@ class Application:
 
         response = self.client.post(zaak_create_url, {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'identificatie': f'WATER_{intern_id}',
