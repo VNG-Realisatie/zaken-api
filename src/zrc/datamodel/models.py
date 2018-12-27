@@ -7,7 +7,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import RolOmschrijving, RolTypes
-from zds_schema.fields import RSINField
+from zds_schema.fields import RSINField, VertrouwelijkheidsAanduidingField
 from zds_schema.models import APIMixin
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
@@ -81,6 +81,11 @@ class Zaak(APIMixin, models.Model):
         _("communicatiekanaal"), blank=True,
         help_text=_("Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. "
                     "URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen.")
+    )
+
+    vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduidingField(
+        _("vertrouwlijkheidaanduiding"),
+        help_text=_("Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.")
     )
 
     toelichting = models.TextField(

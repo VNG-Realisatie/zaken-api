@@ -79,6 +79,7 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'uiterlijke_einddatum_afdoening',
             'publicatiedatum',
             'communicatiekanaal',
+            'vertrouwelijkheidaanduiding',
             'producten_en_diensten',
             'toelichting',
             'zaakgeometrie',
@@ -108,10 +109,37 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
                 'validators': [
                     ResourceValidator('CommunicatieKanaal', settings.REFERENTIELIJSTEN_API_SPEC)
                 ]
+            },
+            'vertrouwelijkheidaanduiding': {
+                'required': False,
+                'help_text': _("Aanduiding van de mate waarin het zaakdossier van de "
+                               "ZAAK voor de openbaarheid bestemd is. Optioneel - indien "
+                               "geen waarde gekozen wordt, dan wordt de waarde van het "
+                               "ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een "
+                               "waarde teruggeeft.")
             }
         }
         # Replace a default "unique together" constraint.
         validators = [UniekeIdentificatieValidator()]
+
+    def create(self, validated_data: dict):
+        # set the derived value from ZTC
+        if 'vertrouwelijkheidaanduiding' not in validated_data:
+            zaaktype_url = validated_data['zaaktype']
+
+            # dynamic so that it can be mocked in tests easily
+            Client = import_string(settings.ZDS_CLIENT_CLASS)
+            client = Client.from_url(zaaktype_url)
+            client.auth = APICredential.get_auth(
+                zaaktype_url,
+                scopes=['zds.scopes.zaaktypes.lezen']
+            )
+
+            zaaktype = client.request(zaaktype_url, 'zaaktype')
+
+            validated_data['vertrouwelijkheidaanduiding'] = zaaktype['vertrouwelijkheidaanduiding']
+
+        return super().create(validated_data)
 
 
 class GeoWithinSerializer(serializers.Serializer):

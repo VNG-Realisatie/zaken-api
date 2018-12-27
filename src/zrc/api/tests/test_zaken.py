@@ -5,6 +5,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.mocks import ZTCMockClient
 from zds_schema.tests import JWTScopesMixin, generate_jwt
 
@@ -225,3 +226,46 @@ class ZakenTests(JWTScopesMixin, APITestCase):
 
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
         self.assertEqual(ZaakProductOfDienst.objects.count(), 2)
+
+    @override_settings(ZDS_CLIENT_CLASS='zrc.api.tests.mocks.VertrouwelijkheidAanduidingZTCMockClient')
+    def test_zaak_vertrouwelijkheidaanduiding_afgeleid(self):
+        """
+        Assert that the default vertrouwelijkheidaanduiding is set.
+        """
+        url = reverse('zaak-list')
+
+        response = self.client.post(url, {
+            'zaaktype': 'https://ztc.nl/zaaktype/1',
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-12-24',
+            'startdatum': '2018-12-24',
+        }, HTTP_ACCEPT_CRS='EPSG:4326')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.data['vertrouwelijkheidaanduiding'],
+            VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
+        )
+
+    @override_settings(ZDS_CLIENT_CLASS='zrc.api.tests.mocks.VertrouwelijkheidAanduidingZTCMockClient')
+    def test_zaak_vertrouwelijkheidaanduiding_expliciet(self):
+        """
+        Assert that the default vertrouwelijkheidaanduiding is set.
+        """
+        url = reverse('zaak-list')
+
+        response = self.client.post(url, {
+            'zaaktype': 'https://ztc.nl/zaaktype/1',
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-12-24',
+            'startdatum': '2018-12-24',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+        }, HTTP_ACCEPT_CRS='EPSG:4326')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.data['vertrouwelijkheidaanduiding'],
+            VertrouwelijkheidsAanduiding.openbaar,
+        )
