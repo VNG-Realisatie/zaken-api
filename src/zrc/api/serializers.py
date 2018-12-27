@@ -12,7 +12,7 @@ from zds_schema.constants import RolOmschrijving
 from zds_schema.models import APICredential
 from zds_schema.validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
-    URLValidator
+    ResourceValidator, URLValidator
 )
 
 from zrc.datamodel.models import (
@@ -78,6 +78,7 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'einddatum_gepland',
             'uiterlijke_einddatum_afdoening',
             'publicatiedatum',
+            'communicatiekanaal',
             'producten_en_diensten',
             'toelichting',
             'zaakgeometrie',
@@ -102,6 +103,11 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             },
             'einddatum': {
                 'read_only': True
+            },
+            'communicatiekanaal': {
+                'validators': [
+                    ResourceValidator('CommunicatieKanaal', settings.REFERENTIELIJSTEN_API_SPEC)
+                ]
             }
         }
         # Replace a default "unique together" constraint.

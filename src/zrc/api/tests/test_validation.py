@@ -1,14 +1,15 @@
+from unittest.mock import patch
+
 from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import JWTScopesMixin, get_validation_errors
-from zds_schema.validators import URLValidator
+from zds_schema.tests import JWTScopesMixin, get_validation_errors, reverse
+from zds_schema.validators import ResourceValidator, URLValidator
 
 from zrc.datamodel.tests.factories import ZaakFactory
 
 from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
-from .utils import reverse
 
 
 class ZaakValidationTests(JWTScopesMixin, APITestCase):
@@ -59,6 +60,32 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         good_casing = get_validation_errors(response, 'verantwoordelijkeOrganisatie')
         self.assertIsNotNone(good_casing)
+
+    @patch('zds_schema.validators.fetcher')
+    @patch('zds_schema.validators.obj_has_shape', return_value=False)
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    def test_validate_communicatiekanaal_invalid(self, mock_has_shape, mock_fetcher):
+        url = reverse('zaak-list')
+        body = {'communicatiekanaal': 'https://ref.tst.vng.cloud/referentielijsten/api/v1/'}
+
+        response = self.client.post(url, body, HTTP_ACCEPT_CRS='EPSG:4326')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'communicatiekanaal')
+        self.assertEqual(error['code'], ResourceValidator.code)
+
+    @patch('zds_schema.validators.fetcher')
+    def test_validate_communicatiekanaal_valid(self, mock_fetcher):
+        url = reverse('zaak-list')
+        body = {'communicatiekanaal': 'https://example.com/dummy'}
+
+        with override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200'):
+            with patch('zds_schema.validators.obj_has_shape', return_value=True):
+                response = self.client.post(url, body, HTTP_ACCEPT_CRS='EPSG:4326')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'communicatiekanaal')
+        self.assertIsNone(error)
 
 
 class ZaakInformatieObjectValidationTests(JWTScopesMixin, APITestCase):

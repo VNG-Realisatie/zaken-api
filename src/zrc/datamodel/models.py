@@ -77,6 +77,12 @@ class Zaak(APIMixin, models.Model):
         help_text=_("Datum waarop (het starten van) de zaak gepubliceerd is of wordt.")
     )
 
+    communicatiekanaal = models.URLField(
+        _("communicatiekanaal"), blank=True,
+        help_text=_("Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. "
+                    "URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen.")
+    )
+
     toelichting = models.TextField(
         max_length=1000, blank=True,
         help_text='Een toelichting op de zaak.'

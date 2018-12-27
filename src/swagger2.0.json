@@ -3063,6 +3063,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.bijwerken"
+                        ]
+                    }
                 ]
             },
             "patch": {
@@ -3267,6 +3274,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.bijwerken"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -4785,6 +4799,13 @@
                     "description": "Datum waarop (het starten van) de zaak gepubliceerd is of wordt.",
                     "type": "string",
                     "format": "date"
+                },
+                "communicatiekanaal": {
+                    "title": "Communicatiekanaal",
+                    "description": "Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen.",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200
                 },
                 "productenEnDiensten": {
                     "description": "De producten en/of diensten die door de zaak worden voortgebracht. De producten/diensten moeten bij het zaaktype vermeld zijn.",
