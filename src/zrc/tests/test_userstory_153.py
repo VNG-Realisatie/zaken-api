@@ -109,6 +109,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
             'kenmerk': 'kenmerk 2',
             'bron': 'bron 2',
         })
+        data['verlenging'] = None
 
         response = self.client.put(zaak_update_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
@@ -198,6 +199,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
             end_date_planned = datetime.datetime.now()
 
         data = zaak.copy()
+        data['verlenging'] = None
         data['einddatumGepland'] = (end_date_planned + datetime.timedelta(days=14)).strftime('%Y-%m-%d')
 
         response = self.client.put(zaak_update_url, data, HTTP_ACCEPT_CRS='EPSG:4326')

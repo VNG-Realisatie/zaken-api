@@ -4690,6 +4690,29 @@
                 }
             ]
         },
+        "Verlenging": {
+            "title": "Verlenging",
+            "description": "Gegevens omtrent het verlengen van de doorlooptijd van de behandeling van de ZAAK",
+            "required": [
+                "reden",
+                "duur"
+            ],
+            "type": "object",
+            "properties": {
+                "reden": {
+                    "title": "Reden",
+                    "description": "Omschrijving van de reden voor het verlengen van de behandeling van de zaak.",
+                    "type": "string",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "duur": {
+                    "title": "Duur",
+                    "description": "Het aantal werkbare dagen waarmee de doorlooptijd van de behandeling van de ZAAK is verlengd (of verkort) ten opzichte van de eerder gecommuniceerde doorlooptijd. Specifieer de duur als 'DD 00:00'",
+                    "type": "string"
+                }
+            }
+        },
         "ZaakKenmerk": {
             "description": "Lijst van kenmerken",
             "required": [
@@ -4865,6 +4888,9 @@
                 },
                 "zaakgeometrie": {
                     "$ref": "#/definitions/GeoJSONGeometry"
+                },
+                "verlenging": {
+                    "$ref": "#/definitions/Verlenging"
                 },
                 "status": {
                     "title": "Status",

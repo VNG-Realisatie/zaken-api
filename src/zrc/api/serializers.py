@@ -10,7 +10,10 @@ from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
 from zds_schema.models import APICredential
-from zds_schema.serializers import add_choice_values_help_text
+from zds_schema.serializers import (
+    GegevensGroepSerializer, NestedGegevensGroepMixin,
+    add_choice_values_help_text
+)
 from zds_schema.validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
     ResourceValidator, URLValidator
@@ -41,7 +44,22 @@ class ZaakProductOfDienstSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('product_of_dienst',)
 
 
-class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.HyperlinkedModelSerializer):
+class VerlengingSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = Zaak
+        gegevensgroep = 'verlenging'
+        extra_kwargs = {
+            'reden': {
+                'label': _("Reden"),
+            },
+            'duur': {
+                'label': _("Duur"),
+            }
+        }
+
+
+class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMixin,
+                     serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
         source='current_status_uuid',
         read_only=True,
@@ -67,6 +85,11 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
 
     betalingsindicatie_weergave = serializers.CharField(source='get_betalingsindicatie_display', read_only=True)
 
+    verlenging = VerlengingSerializer(
+        required=False, allow_null=True,
+        help_text=_("Gegevens omtrent het verlengen van de doorlooptijd van de behandeling van de ZAAK")
+    )
+
     class Meta:
         model = Zaak
         fields = (
@@ -91,6 +114,7 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'betalingsindicatie_weergave',
             'laatste_betaaldatum',
             'zaakgeometrie',
+            'verlenging',
 
             # read-only veld, on-the-fly opgevraagd
             'status',

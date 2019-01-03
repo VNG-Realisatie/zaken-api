@@ -7,7 +7,10 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import RolOmschrijving, RolTypes
-from zds_schema.fields import RSINField, VertrouwelijkheidsAanduidingField
+from zds_schema.descriptors import GegevensGroepType
+from zds_schema.fields import (
+    DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
+)
 from zds_schema.models import APIMixin
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
@@ -113,6 +116,22 @@ class Zaak(APIMixin, models.Model):
         blank=True, null=True,
         help_text="Punt, lijn of (multi-)vlak geometrie-informatie."
     )
+
+    verlenging_reden = models.CharField(
+        _("reden verlenging"), max_length=200, blank=True,
+        help_text=_("Omschrijving van de reden voor het verlengen van de behandeling van de zaak.")
+    )
+    verlenging_duur = DaysDurationField(
+        _("duur verlenging"), blank=True, null=True,
+        help_text=_("Het aantal werkbare dagen waarmee de doorlooptijd van de "
+                    "behandeling van de ZAAK is verlengd (of verkort) ten opzichte "
+                    "van de eerder gecommuniceerde doorlooptijd.")
+    )
+
+    verlenging = GegevensGroepType({
+        'reden': verlenging_reden,
+        'duur': verlenging_duur,
+    })
 
     class Meta:
         verbose_name = 'zaak'
