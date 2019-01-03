@@ -11,7 +11,7 @@ from zds_schema.fields import RSINField, VertrouwelijkheidsAanduidingField
 from zds_schema.models import APIMixin
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from .constants import ZaakobjectTypes
+from .constants import BetalingsIndicatie, ZaakobjectTypes
 
 
 class Zaak(APIMixin, models.Model):
@@ -41,6 +41,10 @@ class Zaak(APIMixin, models.Model):
     omschrijving = models.CharField(
         max_length=80, blank=True,
         help_text='Een korte omschrijving van de zaak.')
+    toelichting = models.TextField(
+        max_length=1000, blank=True,
+        help_text='Een toelichting op de zaak.'
+    )
     zaaktype = models.URLField(
         help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
     registratiedatum = models.DateField(
@@ -93,10 +97,13 @@ class Zaak(APIMixin, models.Model):
         help_text=_("Een toelichting op wat het resultaat van de zaak inhoudt.")
     )
 
-    toelichting = models.TextField(
-        max_length=1000, blank=True,
-        help_text='Een toelichting op de zaak.'
+    betalingsindicatie = models.CharField(
+        _("betalingsindicatie"), max_length=20, blank=True,
+        choices=BetalingsIndicatie.choices,
+        help_text=_("Indicatie of de, met behandeling van de zaak gemoeide, "
+                    "kosten betaald zijn door de desbetreffende betrokkene.")
     )
+
     zaakgeometrie = GeometryField(
         blank=True, null=True,
         help_text="Punt, lijn of (multi-)vlak geometrie-informatie."

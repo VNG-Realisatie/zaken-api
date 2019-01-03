@@ -3883,6 +3883,11 @@ components:
           description: Een korte omschrijving van de zaak.
           type: string
           maxLength: 80
+        toelichting:
+          title: Toelichting
+          description: Een toelichting op de zaak.
+          type: string
+          maxLength: 1000
         zaaktype:
           title: Zaaktype
           description: URL naar het zaaktype in de CATALOGUS waar deze voorkomt
@@ -3967,11 +3972,33 @@ components:
           title: Resultaattoelichting
           description: Een toelichting op wat het resultaat van de zaak inhoudt.
           type: string
-        toelichting:
-          title: Toelichting
-          description: Een toelichting op de zaak.
+        betalingsindicatie:
+          title: Betalingsindicatie
+          description: 'Indicatie of de, met behandeling van de zaak gemoeide, kosten
+            betaald zijn door de desbetreffende betrokkene.
+
+
+            De mapping van waarden naar weergave is als volgt:
+
+
+            * `nvt` - Er is geen sprake van te betalen, met de zaak gemoeide, kosten.
+
+            * `nog_niet` - De met de zaak gemoeide kosten zijn (nog) niet betaald.
+
+            * `gedeeltelijk` - De met de zaak gemoeide kosten zijn gedeeltelijk betaald.
+
+            * `geheel` - De met de zaak gemoeide kosten zijn geheel betaald.'
           type: string
-          maxLength: 1000
+          enum:
+          - nvt
+          - nog_niet
+          - gedeeltelijk
+          - geheel
+        betalingsindicatieWeergave:
+          title: Betalingsindicatie weergave
+          type: string
+          readOnly: true
+          minLength: 1
         zaakgeometrie:
           $ref: '#/components/schemas/GeoJSONGeometry'
         status:

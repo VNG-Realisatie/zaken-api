@@ -10,11 +10,13 @@ from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
 from zds_schema.models import APICredential
+from zds_schema.serializers import add_choice_values_help_text
 from zds_schema.validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
     ResourceValidator, URLValidator
 )
 
+from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
     ZaakKenmerk, ZaakObject, ZaakProductOfDienst
@@ -63,6 +65,8 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
                     "De producten/diensten moeten bij het zaaktype vermeld zijn.")
     )
 
+    betalingsindicatie_weergave = serializers.CharField(source='get_betalingsindicatie_display', read_only=True)
+
     class Meta:
         model = Zaak
         fields = (
@@ -70,6 +74,7 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'identificatie',
             'bronorganisatie',
             'omschrijving',
+            'toelichting',
             'zaaktype',
             'registratiedatum',
             'verantwoordelijke_organisatie',
@@ -82,7 +87,8 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'producten_en_diensten',
             'vertrouwelijkheidaanduiding',
             'resultaattoelichting',
-            'toelichting',
+            'betalingsindicatie',
+            'betalingsindicatie_weergave',
             'zaakgeometrie',
 
             # read-only veld, on-the-fly opgevraagd
@@ -122,6 +128,12 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
         }
         # Replace a default "unique together" constraint.
         validators = [UniekeIdentificatieValidator()]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
+        self.fields['betalingsindicatie'].help_text += f"\n\n{value_display_mapping}"
 
     def create(self, validated_data: dict):
         # set the derived value from ZTC
