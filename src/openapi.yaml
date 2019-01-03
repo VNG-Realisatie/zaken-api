@@ -3941,6 +3941,12 @@ components:
           type: string
           format: uri
           maxLength: 200
+        productenEnDiensten:
+          description: De producten en/of diensten die door de zaak worden voortgebracht.
+            De producten/diensten moeten bij het zaaktype vermeld zijn.
+          type: array
+          items:
+            $ref: '#/components/schemas/ZaakProductOfDienst'
         vertrouwelijkheidaanduiding:
           title: Vertrouwlijkheidaanduiding
           description: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor
@@ -3957,12 +3963,10 @@ components:
           - confidentieel
           - geheim
           - zeer geheim
-        productenEnDiensten:
-          description: De producten en/of diensten die door de zaak worden voortgebracht.
-            De producten/diensten moeten bij het zaaktype vermeld zijn.
-          type: array
-          items:
-            $ref: '#/components/schemas/ZaakProductOfDienst'
+        resultaattoelichting:
+          title: Resultaattoelichting
+          description: Een toelichting op wat het resultaat van de zaak inhoudt.
+          type: string
         toelichting:
           title: Toelichting
           description: Een toelichting op de zaak.

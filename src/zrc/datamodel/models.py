@@ -88,6 +88,11 @@ class Zaak(APIMixin, models.Model):
         help_text=_("Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.")
     )
 
+    resultaattoelichting = models.TextField(
+        _("resultaattoelichting"), blank=True,
+        help_text=_("Een toelichting op wat het resultaat van de zaak inhoudt.")
+    )
+
     toelichting = models.TextField(
         max_length=1000, blank=True,
         help_text='Een toelichting op de zaak.'

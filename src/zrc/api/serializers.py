@@ -79,8 +79,9 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'uiterlijke_einddatum_afdoening',
             'publicatiedatum',
             'communicatiekanaal',
-            'vertrouwelijkheidaanduiding',
             'producten_en_diensten',
+            'vertrouwelijkheidaanduiding',
+            'resultaattoelichting',
             'toelichting',
             'zaakgeometrie',
 

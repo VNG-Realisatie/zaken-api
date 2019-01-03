@@ -89,8 +89,9 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | uiterlijkeEinddatumAfdoening | De laatste datum waarop volgens wet- en regelgeving de zaak afgerond dient te zijn. | string | nee | C​R​U​D |
 | publicatiedatum | Datum waarop (het starten van) de zaak gepubliceerd is of wordt. | string | nee | C​R​U​D |
 | communicatiekanaal | Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen. | string | nee | C​R​U​D |
-| vertrouwelijkheidaanduiding | Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is. Optioneel - indien geen waarde gekozen wordt, dan wordt de waarde van het ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een waarde teruggeeft. | string | nee | C​R​U​D |
 | productenEnDiensten | De producten en/of diensten die door de zaak worden voortgebracht. De producten/diensten moeten bij het zaaktype vermeld zijn. | array | nee | C​R​U​D |
+| vertrouwelijkheidaanduiding | Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is. Optioneel - indien geen waarde gekozen wordt, dan wordt de waarde van het ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een waarde teruggeeft. | string | nee | C​R​U​D |
+| resultaattoelichting | Een toelichting op wat het resultaat van de zaak inhoudt. | string | nee | C​R​U​D |
 | toelichting | Een toelichting op de zaak. | string | nee | C​R​U​D |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | kenmerken | Lijst van kenmerken | array | nee | C​R​U​D |
