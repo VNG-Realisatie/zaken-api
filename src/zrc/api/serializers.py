@@ -89,6 +89,7 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'resultaattoelichting',
             'betalingsindicatie',
             'betalingsindicatie_weergave',
+            'laatste_betaaldatum',
             'zaakgeometrie',
 
             # read-only veld, on-the-fly opgevraagd

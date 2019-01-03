@@ -103,6 +103,11 @@ class Zaak(APIMixin, models.Model):
         help_text=_("Indicatie of de, met behandeling van de zaak gemoeide, "
                     "kosten betaald zijn door de desbetreffende betrokkene.")
     )
+    laatste_betaaldatum = models.DateTimeField(
+        _("laatste betaaldatum"), blank=True, null=True,
+        help_text=_("De datum waarop de meest recente betaling is verwerkt "
+                    "van kosten die gemoeid zijn met behandeling van de zaak.")
+    )
 
     zaakgeometrie = GeometryField(
         blank=True, null=True,

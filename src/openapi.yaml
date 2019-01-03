@@ -3999,6 +3999,12 @@ components:
           type: string
           readOnly: true
           minLength: 1
+        laatsteBetaaldatum:
+          title: Laatste betaaldatum
+          description: De datum waarop de meest recente betaling is verwerkt van kosten
+            die gemoeid zijn met behandeling van de zaak.
+          type: string
+          format: date-time
         zaakgeometrie:
           $ref: '#/components/schemas/GeoJSONGeometry'
         status:
