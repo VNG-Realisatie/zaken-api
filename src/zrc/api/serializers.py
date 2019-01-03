@@ -58,6 +58,21 @@ class VerlengingSerializer(GegevensGroepSerializer):
         }
 
 
+class OpschortingSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = Zaak
+        gegevensgroep = 'opschorting'
+        extra_kwargs = {
+            'indicatie': {
+                'label': _("Indicatie"),
+            },
+            'reden': {
+                'label': _("Reden"),
+                'allow_blank': True,
+            }
+        }
+
+
 class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMixin,
                      serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
@@ -90,6 +105,11 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         help_text=_("Gegevens omtrent het verlengen van de doorlooptijd van de behandeling van de ZAAK")
     )
 
+    opschorting = OpschortingSerializer(
+        required=False, allow_null=True,
+        help_text=_("Gegevens omtrent het tijdelijk opschorten van de behandeling van de ZAAK")
+    )
+
     class Meta:
         model = Zaak
         fields = (
@@ -115,6 +135,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             'laatste_betaaldatum',
             'zaakgeometrie',
             'verlenging',
+            'opschorting',
 
             # read-only veld, on-the-fly opgevraagd
             'status',

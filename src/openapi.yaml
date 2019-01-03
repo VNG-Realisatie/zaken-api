@@ -3854,6 +3854,25 @@ components:
             van de ZAAK is verlengd (of verkort) ten opzichte van de eerder gecommuniceerde
             doorlooptijd. Specifieer de duur als 'DD 00:00'
           type: string
+    Opschorting:
+      title: Opschorting
+      description: Gegevens omtrent het tijdelijk opschorten van de behandeling van
+        de ZAAK
+      required:
+      - indicatie
+      - reden
+      type: object
+      properties:
+        indicatie:
+          title: Indicatie
+          description: Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.
+          type: boolean
+        reden:
+          title: Reden
+          description: Omschrijving van de reden voor het opschorten van de 306behandeling
+            van de zaak.
+          type: string
+          maxLength: 200
     ZaakKenmerk:
       description: Lijst van kenmerken
       required:
@@ -4031,6 +4050,8 @@ components:
           $ref: '#/components/schemas/GeoJSONGeometry'
         verlenging:
           $ref: '#/components/schemas/Verlenging'
+        opschorting:
+          $ref: '#/components/schemas/Opschorting'
         status:
           title: Status
           description: Indien geen status bekend is, dan is de waarde 'null'

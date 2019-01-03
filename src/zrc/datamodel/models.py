@@ -127,10 +127,22 @@ class Zaak(APIMixin, models.Model):
                     "behandeling van de ZAAK is verlengd (of verkort) ten opzichte "
                     "van de eerder gecommuniceerde doorlooptijd.")
     )
-
     verlenging = GegevensGroepType({
         'reden': verlenging_reden,
         'duur': verlenging_duur,
+    })
+
+    opschorting_indicatie = models.BooleanField(
+        _("indicatie opschorting"), default=False,
+        help_text=_("Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.")
+    )
+    opschorting_reden = models.CharField(
+        _("reden opschorting"), max_length=200, blank=True,
+        help_text=_("Omschrijving van de reden voor het opschorten van de 306behandeling van de zaak.")
+    )
+    opschorting = GegevensGroepType({
+        'indicatie': opschorting_indicatie,
+        'reden': opschorting_reden,
     })
 
     class Meta:

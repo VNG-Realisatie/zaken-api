@@ -4713,6 +4713,28 @@
                 }
             }
         },
+        "Opschorting": {
+            "title": "Opschorting",
+            "description": "Gegevens omtrent het tijdelijk opschorten van de behandeling van de ZAAK",
+            "required": [
+                "indicatie",
+                "reden"
+            ],
+            "type": "object",
+            "properties": {
+                "indicatie": {
+                    "title": "Indicatie",
+                    "description": "Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.",
+                    "type": "boolean"
+                },
+                "reden": {
+                    "title": "Reden",
+                    "description": "Omschrijving van de reden voor het opschorten van de 306behandeling van de zaak.",
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
         "ZaakKenmerk": {
             "description": "Lijst van kenmerken",
             "required": [
@@ -4891,6 +4913,9 @@
                 },
                 "verlenging": {
                     "$ref": "#/definitions/Verlenging"
+                },
+                "opschorting": {
+                    "$ref": "#/definitions/Opschorting"
                 },
                 "status": {
                     "title": "Status",
