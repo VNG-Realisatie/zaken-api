@@ -22,6 +22,8 @@ from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
+from .utils import ZAAK_WRITE_KWARGS
+
 # MOR aangemaakt in melding-app, leeft buiten ZRC
 MOR = 'https://example.com/orc/api/v1/mor/37c60cda-689e-4e4a-969c-fa4ed56cb2c6'
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
@@ -62,7 +64,7 @@ class US169TestCase(JWTScopesMixin, APITestCase):
         }
 
         # aanmaken zaak
-        response = self.client.post(zaak_create_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(zaak_create_url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()

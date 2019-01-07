@@ -25,7 +25,7 @@ from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
 
-from .utils import parse_isodatetime
+from .utils import ZAAK_WRITE_KWARGS, parse_isodatetime
 
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
@@ -66,7 +66,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
             }]
         }
 
-        response = self.client.post(zaak_create_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(zaak_create_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak = Zaak.objects.get(identificatie=data['identificatie'])
@@ -79,7 +79,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
 
         zaak_read_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
-        response = self.client.get(zaak_read_url, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.get(zaak_read_url, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
         data = response.json()
@@ -100,7 +100,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
 
         zaak_read_url = get_operation_url('zaak_read', uuid=zaak.uuid)
-        response = self.client.get(zaak_read_url, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.get(zaak_read_url, **ZAAK_WRITE_KWARGS)
 
         data = response.json()
 
@@ -112,7 +112,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         data['verlenging'] = None
         data['opschorting'] = None
 
-        response = self.client.put(zaak_update_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.put(zaak_update_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
         zaak = Zaak.objects.get(identificatie=zaak.identificatie)
@@ -151,7 +151,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
                 'bron': 'bron 2',
             }]
         }
-        response = self.client.post(zaak_create_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(zaak_create_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak = response.json()
@@ -204,7 +204,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         data['opschorting'] = None
         data['einddatumGepland'] = (end_date_planned + datetime.timedelta(days=14)).strftime('%Y-%m-%d')
 
-        response = self.client.put(zaak_update_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.put(zaak_update_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
         # Voeg documenten toe...

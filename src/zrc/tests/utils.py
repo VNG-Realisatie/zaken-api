@@ -4,6 +4,11 @@ from django.utils import timezone
 
 import dateutil.parser
 
+ZAAK_WRITE_KWARGS = {
+    'HTTP_ACCEPT_CRS': 'EPSG:4326',
+    'HTTP_CONTENT_CRS': 'EPSG:4326',
+}
+
 
 def utcdatetime(*args, **kwargs) -> datetime:
     return datetime(*args, **kwargs).replace(tzinfo=timezone.utc)

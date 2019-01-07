@@ -12,7 +12,7 @@ from zds_schema.tests import JWTScopesMixin, generate_jwt
 
 from zrc.datamodel.models import ZaakProductOfDienst
 from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
-from zrc.tests.utils import isodatetime, utcdatetime
+from zrc.tests.utils import ZAAK_WRITE_KWARGS, isodatetime, utcdatetime
 
 from ..scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
@@ -73,7 +73,7 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
                 'verantwoordelijkeOrganisatie': '517439943',
                 'registratiedatum': '2018-06-11',
                 'startdatum': '2018-06-11',
-            }, HTTP_ACCEPT_CRS='EPSG:4326')
+            }, **ZAAK_WRITE_KWARGS)
 
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             self.assertEqual(response['Location'], response.data['url'])
@@ -81,7 +81,7 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
         with self.subTest(crud='read'):
             response_detail = self.client.get(
                 response.data['url'],
-                HTTP_ACCEPT_CRS='EPSG:4326'
+                **ZAAK_WRITE_KWARGS
             )
             self.assertEqual(response_detail.status_code, status.HTTP_200_OK)
 
@@ -213,7 +213,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
             'producten_en_diensten': [{
                 'productOfDienst': 'https://example.com/product/123'
             }]
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ZaakProductOfDienst.objects.count(), 1)
@@ -225,7 +225,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
             }, {
                 'productOfDienst': 'https://example.com/dienst/123'
             }]
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
         self.assertEqual(ZaakProductOfDienst.objects.count(), 2)
@@ -250,7 +250,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
                 'verantwoordelijkeOrganisatie': '517439943',
                 'registratiedatum': '2018-12-24',
                 'startdatum': '2018-12-24',
-            }, HTTP_ACCEPT_CRS='EPSG:4326')
+            }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
@@ -279,7 +279,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
                 'registratiedatum': '2018-12-24',
                 'startdatum': '2018-12-24',
                 'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
-            }, HTTP_ACCEPT_CRS='EPSG:4326')
+            }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(

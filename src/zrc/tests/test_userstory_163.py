@@ -17,6 +17,8 @@ from zds_schema.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 
+from .utils import ZAAK_WRITE_KWARGS
+
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
 AANVRAAG = 'https://example.com/orc/api/v1/straatartiesten/37c60cda-689e-4e4a-969c-fa4ed56cb2c6'
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
@@ -46,7 +48,7 @@ class US169TestCase(JWTScopesMixin, APITestCase):
         }
 
         # aanmaken zaak
-        response = self.client.post(zaak_create_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(zaak_create_url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()

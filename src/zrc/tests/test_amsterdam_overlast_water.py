@@ -13,7 +13,7 @@ from .test_userstory_39 import (
     VERANTWOORDELIJKE_ORGANISATIE, ZAAKTYPE
 )
 from .test_userstory_52 import EIGENSCHAP_NAAM_BOOT, EIGENSCHAP_OBJECTTYPE
-from .utils import utcdatetime
+from .utils import ZAAK_WRITE_KWARGS, utcdatetime
 
 TEST_DATA = {
     "id": 9966,
@@ -70,7 +70,7 @@ class Application:
             'startdatum': created.strftime('%Y-%m-%d'),
             'toelichting': self.data['text'],
             'zaakgeometrie': self.data['coordinates'],
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
         self.references['zaak_url'] = response.json()['url']
 
     @override_settings(

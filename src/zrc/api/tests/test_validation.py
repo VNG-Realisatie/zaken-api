@@ -9,6 +9,7 @@ from zds_schema.tests import JWTScopesMixin, get_validation_errors, reverse
 from zds_schema.validators import ResourceValidator, URLValidator
 
 from zrc.datamodel.tests.factories import ZaakFactory
+from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
 from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
 
@@ -27,7 +28,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
             'verantwoordelijkeOrganisatie': '517439943',
             'registratiedatum': '2018-06-11',
             'startdatum': '2018-06-11',
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -46,14 +47,14 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
             'verantwoordelijkeOrganisatie': '517439943',
             'registratiedatum': '2018-06-11',
             'startdatum': '2018-06-11',
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_validation_camelcase(self):
         url = reverse('zaak-list')
 
-        response = self.client.post(url, {}, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(url, {}, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -70,7 +71,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         url = reverse('zaak-list')
         body = {'communicatiekanaal': 'https://ref.tst.vng.cloud/referentielijsten/api/v1/'}
 
-        response = self.client.post(url, body, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(url, body, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'communicatiekanaal')
@@ -83,7 +84,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         with override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200'):
             with patch('zds_schema.validators.obj_has_shape', return_value=True):
-                response = self.client.post(url, body, HTTP_ACCEPT_CRS='EPSG:4326')
+                response = self.client.post(url, body, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'communicatiekanaal')
@@ -129,7 +130,7 @@ class FilterValidationTests(JWTScopesMixin, APITestCase):
 
         for key, value in invalid_filters.items():
             with self.subTest(query_param=key, value=value):
-                response = self.client.get(url, {key: value}, HTTP_ACCEPT_CRS='EPSG:4326')
+                response = self.client.get(url, {key: value}, **ZAAK_WRITE_KWARGS)
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_rol_invalid_filters(self):

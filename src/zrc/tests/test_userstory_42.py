@@ -14,6 +14,7 @@ from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN
 from zrc.datamodel.tests.factories import ZaakFactory
 
 from .constants import POLYGON_AMSTERDAM_CENTRUM
+from .utils import ZAAK_WRITE_KWARGS
 
 
 class US42TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
@@ -42,7 +43,7 @@ class US42TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
                     'coordinates': [POLYGON_AMSTERDAM_CENTRUM]
                 }
             }
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -73,7 +74,7 @@ class US42TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
                 }
             },
             'zaaktype': 'https://example.com/api/v1/zaaktype/1'
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
