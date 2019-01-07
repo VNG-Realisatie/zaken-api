@@ -145,6 +145,14 @@ class Zaak(APIMixin, models.Model):
         'reden': opschorting_reden,
     })
 
+    selectielijstklasse = models.URLField(
+        _("selectielijstklasse"), blank=True,
+        help_text=_("URL-referentie naar de categorie in de gehanteerde "
+                    "'Selectielijst Archiefbescheiden' die, gezien het zaaktype "
+                    "en het resultaattype van de zaak, bepalend is voor het "
+                    "archiefregime van de zaak.")
+    )
+
     class Meta:
         verbose_name = 'zaak'
         verbose_name_plural = 'zaken'

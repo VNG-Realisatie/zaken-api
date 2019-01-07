@@ -136,6 +136,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             'zaakgeometrie',
             'verlenging',
             'opschorting',
+            'selectielijstklasse',
 
             # read-only veld, on-the-fly opgevraagd
             'status',

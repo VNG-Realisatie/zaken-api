@@ -4977,6 +4977,13 @@
                 "opschorting": {
                     "$ref": "#/definitions/Opschorting"
                 },
+                "selectielijstklasse": {
+                    "title": "Selectielijstklasse",
+                    "description": "URL-referentie naar de categorie in de gehanteerde 'Selectielijst Archiefbescheiden' die, gezien het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak.",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200
+                },
                 "status": {
                     "title": "Status",
                     "description": "Indien geen status bekend is, dan is de waarde 'null'",

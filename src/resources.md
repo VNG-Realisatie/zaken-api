@@ -103,6 +103,7 @@ De mapping van waarden naar weergave is als volgt:
 * `geheel` - De met de zaak gemoeide kosten zijn geheel betaald. | string | nee | C​R​U​D |
 | betalingsindicatieWeergave |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | laatsteBetaaldatum | De datum waarop de meest recente betaling is verwerkt van kosten die gemoeid zijn met behandeling van de zaak. | string | nee | C​R​U​D |
+| selectielijstklasse | URL-referentie naar de categorie in de gehanteerde &#39;Selectielijst Archiefbescheiden&#39; die, gezien het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak. | string | nee | C​R​U​D |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | kenmerken | Lijst van kenmerken | array | nee | C​R​U​D |
 
