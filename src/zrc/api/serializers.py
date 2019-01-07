@@ -154,10 +154,9 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
 
             # Save updated information on the ZAAK
             zaak = obj.zaak
-            if is_eindstatus:
-                # Implicit conversion from datetime to date
-                zaak.einddatum = validated_data['datum_status_gezet']
-                zaak.save()
+            # Implicit conversion from datetime to date
+            zaak.einddatum = validated_data['datum_status_gezet'] if is_eindstatus else None
+            zaak.save(update_fields=['einddatum'])
 
         return obj
 
