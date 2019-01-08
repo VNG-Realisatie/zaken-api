@@ -25,7 +25,7 @@ from zrc.datamodel.models import (
     ZaakKenmerk, ZaakObject, ZaakProductOfDienst
 )
 
-from .auth import get_ztc_auth
+from .auth import get_zrc_auth, get_ztc_auth
 from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
@@ -150,6 +150,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             'selectielijstklasse',
             'hoofdzaak',
             'deelzaken',
+            'relevante_andere_zaken',
 
             # read-only veld, on-the-fly opgevraagd
             'status',
@@ -188,6 +189,13 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             'hoofdzaak': {
                 'lookup_field': 'uuid',
                 'validators': [NotSelfValidator(), HoofdzaakValidator()],
+            },
+            'relevante_andere_zaken': {
+                'child': serializers.URLField(
+                    label=_("URL naar andere zaak"),
+                    max_length=255,
+                    validators=[URLValidator(get_auth=get_zrc_auth)]
+                )
             }
         }
         # Replace a default "unique together" constraint.

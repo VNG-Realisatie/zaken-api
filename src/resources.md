@@ -106,6 +106,7 @@ De mapping van waarden naar weergave is als volgt:
 | selectielijstklasse | URL-referentie naar de categorie in de gehanteerde &#39;Selectielijst Archiefbescheiden&#39; die, gezien het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak. | string | nee | C​R​U​D |
 | hoofdzaak | De verwijzing naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er één is. | string | nee | C​R​U​D |
 | deelzaken |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
+| relevanteAndereZaken |  | array | nee | C​R​U​D |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | kenmerken | Lijst van kenmerken | array | nee | C​R​U​D |
 

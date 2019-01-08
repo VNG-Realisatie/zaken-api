@@ -4999,6 +4999,16 @@
                     "readOnly": true,
                     "uniqueItems": true
                 },
+                "relevanteAndereZaken": {
+                    "type": "array",
+                    "items": {
+                        "title": "URL naar andere zaak",
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 255,
+                        "minLength": 1
+                    }
+                },
                 "status": {
                     "title": "Status",
                     "description": "Indien geen status bekend is, dan is de waarde 'null'",

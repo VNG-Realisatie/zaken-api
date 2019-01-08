@@ -2,6 +2,7 @@ import uuid
 from datetime import date
 
 from django.contrib.gis.db.models import GeometryField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
@@ -167,6 +168,11 @@ class Zaak(APIMixin, models.Model):
                     "'Selectielijst Archiefbescheiden' die, gezien het zaaktype "
                     "en het resultaattype van de zaak, bepalend is voor het "
                     "archiefregime van de zaak.")
+    )
+
+    relevante_andere_zaken = ArrayField(
+        models.URLField(_("URL naar andere zaak"), max_length=255),
+        blank=True, default=list
     )
 
     class Meta:

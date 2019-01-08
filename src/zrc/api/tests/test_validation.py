@@ -93,6 +93,26 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         error = get_validation_errors(response, 'communicatiekanaal')
         self.assertIsNone(error)
 
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
+    def test_relevante_andere_zaken(self):
+        url = reverse('zaak-list')
+
+        response = self.client.post(url, {
+            'zaaktype': 'https://example.com/foo/bar',
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-06-11',
+            'startdatum': '2018-06-11',
+            'relevanteAndereZaken': [
+                'https://example.com/andereZaak'
+            ]
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'relevanteAndereZaken.0')
+        self.assertEqual(validation_error['code'], URLValidator.code)
+
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
 class DeelZaakValidationTests(JWTScopesMixin, APITestCase):
