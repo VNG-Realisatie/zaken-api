@@ -11,7 +11,7 @@ from zds_schema.validators import ResourceValidator, URLValidator
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
+from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 
 
 class ZaakValidationTests(JWTScopesMixin, APITestCase):
@@ -89,6 +89,51 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'communicatiekanaal')
         self.assertIsNone(error)
+
+
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+class DeelZaakValidationTests(JWTScopesMixin, APITestCase):
+    scopes = [
+        SCOPE_ZAKEN_BIJWERKEN,
+        SCOPE_ZAKEN_CREATE
+    ]
+    zaaktypes = ['*']
+
+    def test_cannot_use_self_as_hoofdzaak(self):
+        """
+        Hoofdzaak moet een andere zaak zijn dan de deelzaak zelf.
+        """
+        zaak = ZaakFactory.create()
+        detail_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        response = self.client.patch(
+            detail_url,
+            {'hoofdzaak': detail_url},
+            **ZAAK_WRITE_KWARGS
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'hoofdzaak')
+        self.assertEqual(error['code'], 'self-forbidden')
+
+    def test_cannot_have_multiple_levels(self):
+        """
+        Deelzaak kan enkel deelzaak zijn van hoofdzaak en niet andere deelzaken.
+        """
+        url = reverse('zaak-list')
+        hoofdzaak = ZaakFactory.create()
+        deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak)
+        deelzaak_url = reverse('zaak-detail', kwargs={'uuid': deelzaak.uuid})
+
+        response = self.client.post(
+            url,
+            {'hoofdzaak': deelzaak_url},
+            **ZAAK_WRITE_KWARGS
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'hoofdzaak')
+        self.assertEqual(error['code'], 'deelzaak-als-hoofdzaak')
 
 
 class ZaakInformatieObjectValidationTests(JWTScopesMixin, APITestCase):
