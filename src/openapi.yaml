@@ -4126,6 +4126,20 @@ components:
           type: string
           format: uri
           maxLength: 200
+        hoofdzaak:
+          title: Is deelzaak van
+          description: "De verwijzing naar de ZAAK, waarom verzocht is door de initiator\
+            \ daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan\
+            \ de onderhavige ZAAK er \xE9\xE9n is."
+          type: string
+          format: uri
+        deelzaken:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          uniqueItems: true
         status:
           title: Status
           description: Indien geen status bekend is, dan is de waarde 'null'

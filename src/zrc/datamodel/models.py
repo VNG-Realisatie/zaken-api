@@ -29,6 +29,22 @@ class Zaak(APIMixin, models.Model):
         unique=True, default=uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
+
+    # Relate 'is_deelzaak_van'
+    # De relatie vanuit een zaak mag niet verwijzen naar
+    # dezelfde zaak d.w.z. moet verwijzen naar een andere
+    # zaak. Die andere zaak mag geen relatie ?is deelzaak
+    # van? hebben (d.w.z. deelzaken van deelzaken worden
+    # niet ondersteund).
+    hoofdzaak = models.ForeignKey(
+        'self', limit_choices_to={'hoofdzaak__isnull': True},
+        null=True, blank=True, on_delete=models.PROTECT,
+        related_name='deelzaken', verbose_name='is deelzaak van',
+        help_text=_("De verwijzing naar de ZAAK, waarom verzocht is door de "
+                    "initiator daarvan, die behandeld wordt in twee of meer "
+                    "separate ZAAKen waarvan de onderhavige ZAAK er één is.")
+    )
+
     identificatie = models.CharField(
         max_length=40, blank=True,
         help_text='De unieke identificatie van de ZAAK binnen de organisatie '

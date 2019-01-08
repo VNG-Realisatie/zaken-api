@@ -1,3 +1,4 @@
+import uuid
 from unittest.mock import patch
 
 from django.test import override_settings
@@ -11,7 +12,9 @@ from zds_schema.validators import ResourceValidator, URLValidator
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+from ..scopes import (
+    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+)
 
 
 class ZaakValidationTests(JWTScopesMixin, APITestCase):

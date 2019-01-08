@@ -26,7 +26,10 @@ from zrc.datamodel.models import (
 )
 
 from .auth import get_ztc_auth
-from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
+from .validators import (
+    HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
+    UniekeIdentificatieValidator
+)
 
 
 class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
@@ -110,6 +113,14 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         help_text=_("Gegevens omtrent het tijdelijk opschorten van de behandeling van de ZAAK")
     )
 
+    deelzaken = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        many=True,
+        view_name='zaak-detail',
+        lookup_url_kwarg='uuid',
+        lookup_field='uuid'
+    )
+
     class Meta:
         model = Zaak
         fields = (
@@ -137,6 +148,8 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             'verlenging',
             'opschorting',
             'selectielijstklasse',
+            'hoofdzaak',
+            'deelzaken',
 
             # read-only veld, on-the-fly opgevraagd
             'status',
@@ -171,6 +184,10 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                                "geen waarde gekozen wordt, dan wordt de waarde van het "
                                "ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een "
                                "waarde teruggeeft.")
+            },
+            'hoofdzaak': {
+                'lookup_field': 'uuid',
+                'validators': [NotSelfValidator(), HoofdzaakValidator()],
             }
         }
         # Replace a default "unique together" constraint.

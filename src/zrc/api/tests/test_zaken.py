@@ -8,17 +8,18 @@ from rest_framework.test import APITestCase
 from zds_client.tests.mocks import mock_client
 from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.mocks import ZTCMockClient
-from zds_schema.tests import JWTScopesMixin, generate_jwt
+from zds_schema.tests import JWTScopesMixin, generate_jwt, reverse
 
 from zrc.datamodel.models import ZaakProductOfDienst
 from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
-from zrc.tests.utils import ZAAK_WRITE_KWARGS, isodatetime, utcdatetime
+from zrc.tests.utils import (
+    ZAAK_READ_KWARGS, ZAAK_WRITE_KWARGS, isodatetime, utcdatetime
+)
 
 from ..scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
     SCOPE_ZAKEN_CREATE
 )
-from .utils import reverse
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
@@ -81,7 +82,7 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
         with self.subTest(crud='read'):
             response_detail = self.client.get(
                 response.data['url'],
-                **ZAAK_WRITE_KWARGS
+                **ZAAK_READ_KWARGS
             )
             self.assertEqual(response_detail.status_code, status.HTTP_200_OK)
 
@@ -93,6 +94,7 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
 class ZakenTests(JWTScopesMixin, APITestCase):
 
     scopes = [
+        SCOPE_ZAKEN_ALLES_LEZEN,
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_ALLES_LEZEN,
     ]
@@ -285,4 +287,21 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertEqual(
             response.data['vertrouwelijkheidaanduiding'],
             VertrouwelijkheidsAanduiding.openbaar,
+        )
+
+    def test_deelzaken(self):
+        hoofdzaak = ZaakFactory.create()
+        deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak)
+        detail_url = reverse(hoofdzaak)
+        deelzaak_url = reverse(deelzaak)
+
+        token = generate_jwt(scopes=self.scopes, zaaktypes=[hoofdzaak.zaaktype])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
+        response = self.client.get(detail_url, **ZAAK_READ_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json()['deelzaken'],
+            [f"http://testserver{deelzaak_url}"]
         )

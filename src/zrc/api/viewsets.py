@@ -82,7 +82,7 @@ class ZaakViewSet(GeoMixin,
       vervat zitten
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     """
-    queryset = Zaak.objects.all()
+    queryset = Zaak.objects.prefetch_related('deelzaken')
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
     filterset_class = ZaakFilter

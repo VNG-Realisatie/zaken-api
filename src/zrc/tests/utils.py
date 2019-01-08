@@ -4,6 +4,10 @@ from django.utils import timezone
 
 import dateutil.parser
 
+ZAAK_READ_KWARGS = {
+    'HTTP_ACCEPT_CRS': 'EPSG:4326',
+}
+
 ZAAK_WRITE_KWARGS = {
     'HTTP_ACCEPT_CRS': 'EPSG:4326',
     'HTTP_CONTENT_CRS': 'EPSG:4326',
