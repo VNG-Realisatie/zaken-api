@@ -108,7 +108,7 @@ De mapping van waarden naar weergave is als volgt:
 | deelzaken |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 | relevanteAndereZaken |  | array | nee | C​R​U​D |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| kenmerken | Lijst van kenmerken | array | nee | C​R​U​D |
+| kenmerken | Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`. | array | nee | C​R​U​D |
 
 ## ZaakInformatieObject
 

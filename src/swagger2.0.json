@@ -4796,7 +4796,7 @@
             }
         },
         "ZaakKenmerk": {
-            "description": "Lijst van kenmerken",
+            "description": "Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`.",
             "required": [
                 "kenmerk",
                 "bron"
@@ -5017,7 +5017,7 @@
                     "readOnly": true
                 },
                 "kenmerken": {
-                    "description": "Lijst van kenmerken",
+                    "description": "Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`.",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/ZaakKenmerk"

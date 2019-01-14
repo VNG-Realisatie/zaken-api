@@ -90,7 +90,8 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         source='zaakkenmerk_set',
         many=True,
         required=False,
-        help_text="Lijst van kenmerken"
+        help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
+                  "beter kan via `ZaakObject`."
     )
 
     producten_en_diensten = ZaakProductOfDienstSerializer(
