@@ -1,4 +1,3 @@
-import uuid
 from unittest.mock import patch
 
 from django.test import override_settings
@@ -9,6 +8,7 @@ from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import JWTScopesMixin, get_validation_errors, reverse
 from zds_schema.validators import ResourceValidator, URLValidator
 
+from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
@@ -112,6 +112,49 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         validation_error = get_validation_errors(response, 'relevanteAndereZaken.0')
         self.assertEqual(validation_error['code'], URLValidator.code)
+
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    def test_laatste_betaaldatum_betaalindicatie_nvt(self):
+        """
+        Assert that the field laatsteBetaaldatum may not be set for the NVT
+        indication.
+        """
+        url = reverse('zaak-list')
+
+        # all valid values
+        for value in BetalingsIndicatie.values:
+            if value == BetalingsIndicatie.nvt:
+                continue
+            with self.subTest(betalingsindicatie=value):
+                response = self.client.post(url, {
+                    'zaaktype': 'https://example.com/foo/bar',
+                    'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                    'bronorganisatie': '517439943',
+                    'verantwoordelijkeOrganisatie': '517439943',
+                    'registratiedatum': '2018-06-11',
+                    'startdatum': '2018-06-11',
+                    'betalingsindicatie': value,
+                    'laatsteBetaaldatum': '2019-01-01T14:03:00Z',
+                }, **ZAAK_WRITE_KWARGS)
+
+                self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # invalid value
+        with self.subTest(betalingsindicatie=BetalingsIndicatie.nvt):
+            response = self.client.post(url, {
+                'zaaktype': 'https://example.com/foo/bar',
+                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-06-11',
+                'startdatum': '2018-06-11',
+                'betalingsindicatie': BetalingsIndicatie.nvt,
+                'laatsteBetaaldatum': '2019-01-01T14:03:00Z',
+            }, **ZAAK_WRITE_KWARGS)
+
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            validation_error = get_validation_errors(response, 'laatsteBetaaldatum')
+            self.assertEqual(validation_error['code'], 'betaling-nvt')
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')

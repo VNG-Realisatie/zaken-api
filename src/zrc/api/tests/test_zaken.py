@@ -2,6 +2,7 @@ import unittest
 
 from django.contrib.gis.geos import Point
 from django.test import override_settings, tag
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -10,6 +11,7 @@ from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.mocks import ZTCMockClient
 from zds_schema.tests import JWTScopesMixin, generate_jwt, reverse
 
+from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import ZaakProductOfDienst
 from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
 from zrc.tests.utils import (
@@ -305,3 +307,21 @@ class ZakenTests(JWTScopesMixin, APITestCase):
             response.json()['deelzaken'],
             [f"http://testserver{deelzaak_url}"]
         )
+
+    def test_zaak_betalingsindicatie_nvt(self):
+        zaak = ZaakFactory.create(
+            betalingsindicatie=BetalingsIndicatie.gedeeltelijk,
+            laatste_betaaldatum=timezone.now()
+        )
+        url = reverse(zaak)
+        token = generate_jwt(scopes=[SCOPE_ZAKEN_BIJWERKEN], zaaktypes=[zaak.zaaktype])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
+        response = self.client.patch(url, {
+            'betalingsindicatie': BetalingsIndicatie.nvt,
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['laatsteBetaaldatum'], None)
+        zaak.refresh_from_db()
+        self.assertIsNone(zaak.laatste_betaaldatum)

@@ -16,7 +16,7 @@ from zds_schema.serializers import (
 )
 from zds_schema.validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
-    ResourceValidator, URLValidator
+    ResourceValidator, UntilNowValidator, URLValidator
 )
 
 from zrc.datamodel.constants import BetalingsIndicatie
@@ -197,6 +197,9 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                     max_length=255,
                     validators=[URLValidator(get_auth=get_zrc_auth)]
                 )
+            },
+            'laatste_betaaldatum': {
+                'validators': [UntilNowValidator()]
             }
         }
         # Replace a default "unique together" constraint.
