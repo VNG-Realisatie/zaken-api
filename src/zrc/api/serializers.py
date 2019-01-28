@@ -211,6 +211,18 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
         self.fields['betalingsindicatie'].help_text += f"\n\n{value_display_mapping}"
 
+    def validate(self, attrs):
+        super().validate(attrs)
+
+        default_betalingsindicatie = self.instance.betalingsindicatie if self.instance else None
+        betalingsindicatie = attrs.get('betalingsindicatie', default_betalingsindicatie)
+        if betalingsindicatie == BetalingsIndicatie.nvt and attrs.get('laatste_betaaldatum'):
+            raise serializers.ValidationError({'laatste_betaaldatum': _(
+                "Laatste betaaldatum kan niet gezet worden als de betalingsindicatie \"nvt\" is"
+            )}, code='betaling-nvt')
+
+        return attrs
+
     def create(self, validated_data: dict):
         # set the derived value from ZTC
         if 'vertrouwelijkheidaanduiding' not in validated_data:
