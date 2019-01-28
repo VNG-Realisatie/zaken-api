@@ -2281,7 +2281,7 @@
             },
             "post": {
                 "operationId": "zaak_create",
-                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\nDe URL naar het zaaktype wordt gevalideerd op geldigheid.",
+                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype\n- laatsteBetaaldatum mag niet in de toekomst liggen\n- laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie \"nvt\" is",
                 "parameters": [
                     {
                         "name": "data",
@@ -2903,7 +2903,7 @@
             },
             "put": {
                 "operationId": "zaak_update",
-                "description": "Werk een zaak bij.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype",
+                "description": "Werk een zaak bij.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype\n- laatsteBetaaldatum mag niet in de toekomst liggen\n- laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie \"nvt\" is",
                 "parameters": [
                     {
                         "name": "data",
@@ -3124,7 +3124,7 @@
             },
             "patch": {
                 "operationId": "zaak_partial_update",
-                "description": "Werk een zaak bij.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype",
+                "description": "Werk een zaak bij.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype\n- laatsteBetaaldatum mag niet in de toekomst liggen\n- laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie \"nvt\" is",
                 "parameters": [
                     {
                         "name": "data",

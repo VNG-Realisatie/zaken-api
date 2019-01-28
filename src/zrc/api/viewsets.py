@@ -49,7 +49,10 @@ class ZaakViewSet(GeoMixin,
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
 
-    De URL naar het zaaktype wordt gevalideerd op geldigheid.
+    Er wordt gevalideerd op:
+    - geldigheid URL naar zaaktype
+    - laatsteBetaaldatum mag niet in de toekomst liggen
+    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
 
     list:
     Geef een lijst van ZAAKen.
@@ -65,6 +68,8 @@ class ZaakViewSet(GeoMixin,
 
     Er wordt gevalideerd op:
     - geldigheid URL naar zaaktype
+    - laatsteBetaaldatum mag niet in de toekomst liggen
+    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
 
     Opmerkingen:
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
@@ -76,6 +81,8 @@ class ZaakViewSet(GeoMixin,
 
     Er wordt gevalideerd op:
     - geldigheid URL naar zaaktype
+    - laatsteBetaaldatum mag niet in de toekomst liggen
+    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
 
     Opmerkingen:
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
