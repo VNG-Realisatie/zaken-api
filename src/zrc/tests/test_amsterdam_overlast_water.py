@@ -2,6 +2,7 @@ from django.test import override_settings
 
 from dateutil import parser
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
@@ -12,7 +13,7 @@ from .test_userstory_39 import (
     VERANTWOORDELIJKE_ORGANISATIE, ZAAKTYPE
 )
 from .test_userstory_52 import EIGENSCHAP_NAAM_BOOT, EIGENSCHAP_OBJECTTYPE
-from .utils import utcdatetime
+from .utils import ZAAK_WRITE_KWARGS, utcdatetime
 
 TEST_DATA = {
     "id": 9966,
@@ -61,6 +62,7 @@ class Application:
 
         response = self.client.post(zaak_create_url, {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'identificatie': f'WATER_{intern_id}',
@@ -68,7 +70,7 @@ class Application:
             'startdatum': created.strftime('%Y-%m-%d'),
             'toelichting': self.data['text'],
             'zaakgeometrie': self.data['coordinates'],
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
         self.references['zaak_url'] = response.json()['url']
 
     @override_settings(

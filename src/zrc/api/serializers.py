@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import transaction
 from django.utils.module_loading import import_string
+from django.utils.translation import ugettext_lazy as _
 
 import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
@@ -9,18 +10,26 @@ from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from zds_schema.constants import RolOmschrijving
 from zds_schema.models import APICredential
+from zds_schema.serializers import (
+    GegevensGroepSerializer, NestedGegevensGroepMixin,
+    add_choice_values_help_text
+)
 from zds_schema.validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
-    URLValidator
+    ResourceValidator, UntilNowValidator, URLValidator
 )
 
+from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakKenmerk, ZaakObject
+    ZaakKenmerk, ZaakObject, ZaakProductOfDienst
 )
 
-from .auth import get_ztc_auth
-from .validators import RolOccurenceValidator, UniekeIdentificatieValidator
+from .auth import get_zrc_auth, get_ztc_auth
+from .validators import (
+    HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
+    UniekeIdentificatieValidator
+)
 
 
 class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
@@ -32,7 +41,43 @@ class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.HyperlinkedModelSerializer):
+class ZaakProductOfDienstSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ZaakProductOfDienst
+        fields = ('product_of_dienst',)
+
+
+class VerlengingSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = Zaak
+        gegevensgroep = 'verlenging'
+        extra_kwargs = {
+            'reden': {
+                'label': _("Reden"),
+            },
+            'duur': {
+                'label': _("Duur"),
+            }
+        }
+
+
+class OpschortingSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = Zaak
+        gegevensgroep = 'opschorting'
+        extra_kwargs = {
+            'indicatie': {
+                'label': _("Indicatie"),
+            },
+            'reden': {
+                'label': _("Reden"),
+                'allow_blank': True,
+            }
+        }
+
+
+class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMixin,
+                     serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
         source='current_status_uuid',
         read_only=True,
@@ -45,7 +90,36 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
         source='zaakkenmerk_set',
         many=True,
         required=False,
-        help_text="Lijst van kenmerken"
+        help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
+                  "beter kan via `ZaakObject`."
+    )
+
+    producten_en_diensten = ZaakProductOfDienstSerializer(
+        source='zaakproductofdienst_set',
+        many=True,
+        required=False,
+        help_text=_("De producten en/of diensten die door de zaak worden voortgebracht. "
+                    "De producten/diensten moeten bij het zaaktype vermeld zijn.")
+    )
+
+    betalingsindicatie_weergave = serializers.CharField(source='get_betalingsindicatie_display', read_only=True)
+
+    verlenging = VerlengingSerializer(
+        required=False, allow_null=True,
+        help_text=_("Gegevens omtrent het verlengen van de doorlooptijd van de behandeling van de ZAAK")
+    )
+
+    opschorting = OpschortingSerializer(
+        required=False, allow_null=True,
+        help_text=_("Gegevens omtrent het tijdelijk opschorten van de behandeling van de ZAAK")
+    )
+
+    deelzaken = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        many=True,
+        view_name='zaak-detail',
+        lookup_url_kwarg='uuid',
+        lookup_field='uuid'
     )
 
     class Meta:
@@ -55,6 +129,7 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'identificatie',
             'bronorganisatie',
             'omschrijving',
+            'toelichting',
             'zaaktype',
             'registratiedatum',
             'verantwoordelijke_organisatie',
@@ -62,8 +137,21 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             'einddatum',
             'einddatum_gepland',
             'uiterlijke_einddatum_afdoening',
-            'toelichting',
+            'publicatiedatum',
+            'communicatiekanaal',
+            'producten_en_diensten',
+            'vertrouwelijkheidaanduiding',
+            'resultaattoelichting',
+            'betalingsindicatie',
+            'betalingsindicatie_weergave',
+            'laatste_betaaldatum',
             'zaakgeometrie',
+            'verlenging',
+            'opschorting',
+            'selectielijstklasse',
+            'hoofdzaak',
+            'deelzaken',
+            'relevante_andere_zaken',
 
             # read-only veld, on-the-fly opgevraagd
             'status',
@@ -85,10 +173,74 @@ class ZaakSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.Hyperlink
             },
             'einddatum': {
                 'read_only': True
+            },
+            'communicatiekanaal': {
+                'validators': [
+                    ResourceValidator('CommunicatieKanaal', settings.REFERENTIELIJSTEN_API_SPEC)
+                ]
+            },
+            'vertrouwelijkheidaanduiding': {
+                'required': False,
+                'help_text': _("Aanduiding van de mate waarin het zaakdossier van de "
+                               "ZAAK voor de openbaarheid bestemd is. Optioneel - indien "
+                               "geen waarde gekozen wordt, dan wordt de waarde van het "
+                               "ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een "
+                               "waarde teruggeeft.")
+            },
+            'hoofdzaak': {
+                'lookup_field': 'uuid',
+                'validators': [NotSelfValidator(), HoofdzaakValidator()],
+            },
+            'relevante_andere_zaken': {
+                'child': serializers.URLField(
+                    label=_("URL naar andere zaak"),
+                    max_length=255,
+                    validators=[URLValidator(get_auth=get_zrc_auth)]
+                )
+            },
+            'laatste_betaaldatum': {
+                'validators': [UntilNowValidator()]
             }
         }
         # Replace a default "unique together" constraint.
         validators = [UniekeIdentificatieValidator()]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
+        self.fields['betalingsindicatie'].help_text += f"\n\n{value_display_mapping}"
+
+    def validate(self, attrs):
+        super().validate(attrs)
+
+        default_betalingsindicatie = self.instance.betalingsindicatie if self.instance else None
+        betalingsindicatie = attrs.get('betalingsindicatie', default_betalingsindicatie)
+        if betalingsindicatie == BetalingsIndicatie.nvt and attrs.get('laatste_betaaldatum'):
+            raise serializers.ValidationError({'laatste_betaaldatum': _(
+                "Laatste betaaldatum kan niet gezet worden als de betalingsindicatie \"nvt\" is"
+            )}, code='betaling-nvt')
+
+        return attrs
+
+    def create(self, validated_data: dict):
+        # set the derived value from ZTC
+        if 'vertrouwelijkheidaanduiding' not in validated_data:
+            zaaktype_url = validated_data['zaaktype']
+
+            # dynamic so that it can be mocked in tests easily
+            Client = import_string(settings.ZDS_CLIENT_CLASS)
+            client = Client.from_url(zaaktype_url)
+            client.auth = APICredential.get_auth(
+                zaaktype_url,
+                scopes=['zds.scopes.zaaktypes.lezen']
+            )
+
+            zaaktype = client.request(zaaktype_url, 'zaaktype')
+
+            validated_data['vertrouwelijkheidaanduiding'] = zaaktype['vertrouwelijkheidaanduiding']
+
+        return super().create(validated_data)
 
 
 class GeoWithinSerializer(serializers.Serializer):
@@ -143,6 +295,24 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 exc.args[0],
                 code='relation-validation-error'
             ) from exc
+
+        # validate that all InformationObjects have indicatieGebruiksrecht set
+        if validated_attrs['__is_eindstatus']:
+            zios = validated_attrs['zaak'].zaakinformatieobject_set.all()
+            for zio in zios:
+                io_url = zio.informatieobject
+                client = Client.from_url(io_url)
+                client.auth = APICredential.get_auth(
+                    io_url,
+                    scopes=['zds.scopes.zaaktypes.lezen']
+                )
+                informatieobject = client.request(io_url, 'enkelvoudiginformatieobject')
+                if informatieobject['indicatieGebruiksrecht'] is None:
+                    raise serializers.ValidationError(
+                        "Er zijn gerelateerde informatieobjecten waarvoor `indicatieGebruiksrecht` nog niet "
+                        "gespecifieerd is. Je moet deze zetten voor je de zaak kan afsluiten.",
+                        code='indicatiegebruiksrecht-unset'
+                    )
 
         return validated_attrs
 

@@ -12,3 +12,16 @@ def get_ztc_auth(url: str) -> dict:
         logger.warning("Could not authenticate for %s", url)
         return {}
     return auth.credentials()
+
+
+def get_zrc_auth(url: str) -> dict:
+    logger.info("Authenticating for %s", url)
+    auth = APICredential.get_auth(
+        url,
+        scopes=['zds.scopes.zaken.lezen'],
+        zaaktypes=['*']
+    )
+    if auth is None:
+        logger.warning("Could not authenticate for %s", url)
+        return {}
+    return auth.credentials()

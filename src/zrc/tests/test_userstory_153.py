@@ -12,16 +12,20 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import RolOmschrijving, RolTypes
+from zds_schema.constants import (
+    RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding
+)
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
-from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
+from zrc.api.scopes import (
+    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+)
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
 from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
 
-from .utils import parse_isodatetime
+from .utils import ZAAK_WRITE_KWARGS, parse_isodatetime
 
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
@@ -38,6 +42,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
     scopes = [
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_ALLES_LEZEN,
+        SCOPE_ZAKEN_BIJWERKEN
     ]
     zaaktypes = [ZAAKTYPE]
 
@@ -45,6 +50,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         zaak_create_url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'identificatie': 'AVG-inzageverzoek-1',
@@ -60,7 +66,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
             }]
         }
 
-        response = self.client.post(zaak_create_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(zaak_create_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak = Zaak.objects.get(identificatie=data['identificatie'])
@@ -73,7 +79,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
 
         zaak_read_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
-        response = self.client.get(zaak_read_url, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.get(zaak_read_url, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
         data = response.json()
@@ -94,7 +100,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
 
         zaak_read_url = get_operation_url('zaak_read', uuid=zaak.uuid)
-        response = self.client.get(zaak_read_url, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.get(zaak_read_url, **ZAAK_WRITE_KWARGS)
 
         data = response.json()
 
@@ -103,8 +109,10 @@ class US153TestCase(JWTScopesMixin, APITestCase):
             'kenmerk': 'kenmerk 2',
             'bron': 'bron 2',
         })
+        data['verlenging'] = None
+        data['opschorting'] = None
 
-        response = self.client.put(zaak_update_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.put(zaak_update_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
         zaak = Zaak.objects.get(identificatie=zaak.identificatie)
@@ -128,6 +136,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         # Creeer Zaak
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'identificatie': 'AVG-inzageverzoek-1',
@@ -142,7 +151,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
                 'bron': 'bron 2',
             }]
         }
-        response = self.client.post(zaak_create_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(zaak_create_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak = response.json()
@@ -191,9 +200,11 @@ class US153TestCase(JWTScopesMixin, APITestCase):
             end_date_planned = datetime.datetime.now()
 
         data = zaak.copy()
+        data['verlenging'] = None
+        data['opschorting'] = None
         data['einddatumGepland'] = (end_date_planned + datetime.timedelta(days=14)).strftime('%Y-%m-%d')
 
-        response = self.client.put(zaak_update_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.put(zaak_update_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
         # Voeg documenten toe...

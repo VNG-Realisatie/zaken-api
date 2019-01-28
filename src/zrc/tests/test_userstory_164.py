@@ -8,6 +8,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import (
     JWTScopesMixin, get_operation_url, get_validation_errors
 )
@@ -15,6 +16,8 @@ from zds_schema.tests import (
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
+
+from .utils import ZAAK_WRITE_KWARGS
 
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
@@ -33,13 +36,14 @@ class US164TestCase(JWTScopesMixin, APITestCase):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'identificatie': 'strtmzk-0001',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'bronorganisatie': '517439943',
             'startdatum': '2018-06-11',
         }
 
-        response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -52,13 +56,14 @@ class US164TestCase(JWTScopesMixin, APITestCase):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'identificatie': 'strtmzk-0001',
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'startdatum': '2018-06-11',
         }
 
-        response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['code'], 'invalid')

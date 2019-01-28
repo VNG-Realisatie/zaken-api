@@ -1,14 +1,20 @@
+from unittest.mock import patch
+
 from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import JWTScopesMixin, get_validation_errors
-from zds_schema.validators import URLValidator
+from zds_schema.constants import VertrouwelijkheidsAanduiding
+from zds_schema.tests import JWTScopesMixin, get_validation_errors, reverse
+from zds_schema.validators import ResourceValidator, URLValidator
 
+from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.tests.factories import ZaakFactory
+from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
-from .utils import reverse
+from ..scopes import (
+    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+)
 
 
 class ZaakValidationTests(JWTScopesMixin, APITestCase):
@@ -25,7 +31,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
             'verantwoordelijkeOrganisatie': '517439943',
             'registratiedatum': '2018-06-11',
             'startdatum': '2018-06-11',
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -39,18 +45,19 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         response = self.client.post(url, {
             'zaaktype': 'https://example.com/foo/bar',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': '517439943',
             'registratiedatum': '2018-06-11',
             'startdatum': '2018-06-11',
-        }, HTTP_ACCEPT_CRS='EPSG:4326')
+        }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_validation_camelcase(self):
         url = reverse('zaak-list')
 
-        response = self.client.post(url, {}, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(url, {}, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -59,6 +66,140 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         good_casing = get_validation_errors(response, 'verantwoordelijkeOrganisatie')
         self.assertIsNotNone(good_casing)
+
+    @patch('zds_schema.validators.fetcher')
+    @patch('zds_schema.validators.obj_has_shape', return_value=False)
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    def test_validate_communicatiekanaal_invalid(self, mock_has_shape, mock_fetcher):
+        url = reverse('zaak-list')
+        body = {'communicatiekanaal': 'https://ref.tst.vng.cloud/referentielijsten/api/v1/'}
+
+        response = self.client.post(url, body, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'communicatiekanaal')
+        self.assertEqual(error['code'], ResourceValidator.code)
+
+    @patch('zds_schema.validators.fetcher')
+    def test_validate_communicatiekanaal_valid(self, mock_fetcher):
+        url = reverse('zaak-list')
+        body = {'communicatiekanaal': 'https://example.com/dummy'}
+
+        with override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200'):
+            with patch('zds_schema.validators.obj_has_shape', return_value=True):
+                response = self.client.post(url, body, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'communicatiekanaal')
+        self.assertIsNone(error)
+
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
+    def test_relevante_andere_zaken(self):
+        url = reverse('zaak-list')
+
+        response = self.client.post(url, {
+            'zaaktype': 'https://example.com/foo/bar',
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-06-11',
+            'startdatum': '2018-06-11',
+            'relevanteAndereZaken': [
+                'https://example.com/andereZaak'
+            ]
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'relevanteAndereZaken.0')
+        self.assertEqual(validation_error['code'], URLValidator.code)
+
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    def test_laatste_betaaldatum_betaalindicatie_nvt(self):
+        """
+        Assert that the field laatsteBetaaldatum may not be set for the NVT
+        indication.
+        """
+        url = reverse('zaak-list')
+
+        # all valid values
+        for value in BetalingsIndicatie.values:
+            if value == BetalingsIndicatie.nvt:
+                continue
+            with self.subTest(betalingsindicatie=value):
+                response = self.client.post(url, {
+                    'zaaktype': 'https://example.com/foo/bar',
+                    'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                    'bronorganisatie': '517439943',
+                    'verantwoordelijkeOrganisatie': '517439943',
+                    'registratiedatum': '2018-06-11',
+                    'startdatum': '2018-06-11',
+                    'betalingsindicatie': value,
+                    'laatsteBetaaldatum': '2019-01-01T14:03:00Z',
+                }, **ZAAK_WRITE_KWARGS)
+
+                self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # invalid value
+        with self.subTest(betalingsindicatie=BetalingsIndicatie.nvt):
+            response = self.client.post(url, {
+                'zaaktype': 'https://example.com/foo/bar',
+                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-06-11',
+                'startdatum': '2018-06-11',
+                'betalingsindicatie': BetalingsIndicatie.nvt,
+                'laatsteBetaaldatum': '2019-01-01T14:03:00Z',
+            }, **ZAAK_WRITE_KWARGS)
+
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            validation_error = get_validation_errors(response, 'laatsteBetaaldatum')
+            self.assertEqual(validation_error['code'], 'betaling-nvt')
+
+
+@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+class DeelZaakValidationTests(JWTScopesMixin, APITestCase):
+    scopes = [
+        SCOPE_ZAKEN_BIJWERKEN,
+        SCOPE_ZAKEN_CREATE
+    ]
+    zaaktypes = ['*']
+
+    def test_cannot_use_self_as_hoofdzaak(self):
+        """
+        Hoofdzaak moet een andere zaak zijn dan de deelzaak zelf.
+        """
+        zaak = ZaakFactory.create()
+        detail_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        response = self.client.patch(
+            detail_url,
+            {'hoofdzaak': detail_url},
+            **ZAAK_WRITE_KWARGS
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'hoofdzaak')
+        self.assertEqual(error['code'], 'self-forbidden')
+
+    def test_cannot_have_multiple_levels(self):
+        """
+        Deelzaak kan enkel deelzaak zijn van hoofdzaak en niet andere deelzaken.
+        """
+        url = reverse('zaak-list')
+        hoofdzaak = ZaakFactory.create()
+        deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak)
+        deelzaak_url = reverse('zaak-detail', kwargs={'uuid': deelzaak.uuid})
+
+        response = self.client.post(
+            url,
+            {'hoofdzaak': deelzaak_url},
+            **ZAAK_WRITE_KWARGS
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'hoofdzaak')
+        self.assertEqual(error['code'], 'deelzaak-als-hoofdzaak')
 
 
 class ZaakInformatieObjectValidationTests(JWTScopesMixin, APITestCase):
@@ -100,7 +241,7 @@ class FilterValidationTests(JWTScopesMixin, APITestCase):
 
         for key, value in invalid_filters.items():
             with self.subTest(query_param=key, value=value):
-                response = self.client.get(url, {key: value}, HTTP_ACCEPT_CRS='EPSG:4326')
+                response = self.client.get(url, {key: value}, **ZAAK_WRITE_KWARGS)
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_rol_invalid_filters(self):

@@ -20,7 +20,8 @@ from zrc.datamodel.models import (
 from .filters import RolFilter, StatusFilter, ZaakFilter
 from .permissions import ZaaktypePermission
 from .scopes import (
-    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE
+    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
+    SCOPE_ZAKEN_CREATE
 )
 from .serializers import (
     KlantContactSerializer, RolSerializer, StatusSerializer,
@@ -48,7 +49,10 @@ class ZaakViewSet(GeoMixin,
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
 
-    De URL naar het zaaktype wordt gevalideerd op geldigheid.
+    Er wordt gevalideerd op:
+    - geldigheid URL naar zaaktype
+    - laatsteBetaaldatum mag niet in de toekomst liggen
+    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
 
     list:
     Geef een lijst van ZAAKen.
@@ -64,6 +68,8 @@ class ZaakViewSet(GeoMixin,
 
     Er wordt gevalideerd op:
     - geldigheid URL naar zaaktype
+    - laatsteBetaaldatum mag niet in de toekomst liggen
+    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
 
     Opmerkingen:
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
@@ -75,13 +81,15 @@ class ZaakViewSet(GeoMixin,
 
     Er wordt gevalideerd op:
     - geldigheid URL naar zaaktype
+    - laatsteBetaaldatum mag niet in de toekomst liggen
+    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
 
     Opmerkingen:
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
       vervat zitten
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     """
-    queryset = Zaak.objects.all()
+    queryset = Zaak.objects.prefetch_related('deelzaken')
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
     filterset_class = ZaakFilter
@@ -93,6 +101,8 @@ class ZaakViewSet(GeoMixin,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
         '_zoek': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE,
+        'update': SCOPE_ZAKEN_BIJWERKEN,
+        'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }
 
     def get_queryset(self):

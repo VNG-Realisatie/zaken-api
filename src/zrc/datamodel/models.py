@@ -2,15 +2,20 @@ import uuid
 from datetime import date
 
 from django.contrib.gis.db.models import GeometryField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.translation import ugettext_lazy as _
 
 from zds_schema.constants import RolOmschrijving, RolTypes
-from zds_schema.fields import RSINField
+from zds_schema.descriptors import GegevensGroepType
+from zds_schema.fields import (
+    DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
+)
 from zds_schema.models import APIMixin
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from .constants import ZaakobjectTypes
+from .constants import BetalingsIndicatie, ZaakobjectTypes
 
 
 class Zaak(APIMixin, models.Model):
@@ -25,6 +30,22 @@ class Zaak(APIMixin, models.Model):
         unique=True, default=uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
+
+    # Relate 'is_deelzaak_van'
+    # De relatie vanuit een zaak mag niet verwijzen naar
+    # dezelfde zaak d.w.z. moet verwijzen naar een andere
+    # zaak. Die andere zaak mag geen relatie ?is deelzaak
+    # van? hebben (d.w.z. deelzaken van deelzaken worden
+    # niet ondersteund).
+    hoofdzaak = models.ForeignKey(
+        'self', limit_choices_to={'hoofdzaak__isnull': True},
+        null=True, blank=True, on_delete=models.PROTECT,
+        related_name='deelzaken', verbose_name='is deelzaak van',
+        help_text=_("De verwijzing naar de ZAAK, waarom verzocht is door de "
+                    "initiator daarvan, die behandeld wordt in twee of meer "
+                    "separate ZAAKen waarvan de onderhavige ZAAK er één is.")
+    )
+
     identificatie = models.CharField(
         max_length=40, blank=True,
         help_text='De unieke identificatie van de ZAAK binnen de organisatie '
@@ -40,6 +61,10 @@ class Zaak(APIMixin, models.Model):
     omschrijving = models.CharField(
         max_length=80, blank=True,
         help_text='Een korte omschrijving van de zaak.')
+    toelichting = models.TextField(
+        max_length=1000, blank=True,
+        help_text='Een toelichting op de zaak.'
+    )
     zaaktype = models.URLField(
         help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
     registratiedatum = models.DateField(
@@ -71,14 +96,83 @@ class Zaak(APIMixin, models.Model):
         help_text='De laatste datum waarop volgens wet- en regelgeving de zaak '
                   'afgerond dient te zijn.'
     )
-
-    toelichting = models.TextField(
-        max_length=1000, blank=True,
-        help_text='Een toelichting op de zaak.'
+    publicatiedatum = models.DateField(
+        _("publicatiedatum"), null=True, blank=True,
+        help_text=_("Datum waarop (het starten van) de zaak gepubliceerd is of wordt.")
     )
+
+    communicatiekanaal = models.URLField(
+        _("communicatiekanaal"), blank=True,
+        help_text=_("Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. "
+                    "URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen.")
+    )
+
+    vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduidingField(
+        _("vertrouwlijkheidaanduiding"),
+        help_text=_("Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.")
+    )
+
+    resultaattoelichting = models.TextField(
+        _("resultaattoelichting"), blank=True,
+        help_text=_("Een toelichting op wat het resultaat van de zaak inhoudt.")
+    )
+
+    betalingsindicatie = models.CharField(
+        _("betalingsindicatie"), max_length=20, blank=True,
+        choices=BetalingsIndicatie.choices,
+        help_text=_("Indicatie of de, met behandeling van de zaak gemoeide, "
+                    "kosten betaald zijn door de desbetreffende betrokkene.")
+    )
+    laatste_betaaldatum = models.DateTimeField(
+        _("laatste betaaldatum"), blank=True, null=True,
+        help_text=_("De datum waarop de meest recente betaling is verwerkt "
+                    "van kosten die gemoeid zijn met behandeling van de zaak.")
+    )
+
     zaakgeometrie = GeometryField(
         blank=True, null=True,
         help_text="Punt, lijn of (multi-)vlak geometrie-informatie."
+    )
+
+    verlenging_reden = models.CharField(
+        _("reden verlenging"), max_length=200, blank=True,
+        help_text=_("Omschrijving van de reden voor het verlengen van de behandeling van de zaak.")
+    )
+    verlenging_duur = DaysDurationField(
+        _("duur verlenging"), blank=True, null=True,
+        help_text=_("Het aantal werkbare dagen waarmee de doorlooptijd van de "
+                    "behandeling van de ZAAK is verlengd (of verkort) ten opzichte "
+                    "van de eerder gecommuniceerde doorlooptijd.")
+    )
+    verlenging = GegevensGroepType({
+        'reden': verlenging_reden,
+        'duur': verlenging_duur,
+    })
+
+    opschorting_indicatie = models.BooleanField(
+        _("indicatie opschorting"), default=False,
+        help_text=_("Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.")
+    )
+    opschorting_reden = models.CharField(
+        _("reden opschorting"), max_length=200, blank=True,
+        help_text=_("Omschrijving van de reden voor het opschorten van de 306behandeling van de zaak.")
+    )
+    opschorting = GegevensGroepType({
+        'indicatie': opschorting_indicatie,
+        'reden': opschorting_reden,
+    })
+
+    selectielijstklasse = models.URLField(
+        _("selectielijstklasse"), blank=True,
+        help_text=_("URL-referentie naar de categorie in de gehanteerde "
+                    "'Selectielijst Archiefbescheiden' die, gezien het zaaktype "
+                    "en het resultaattype van de zaak, bepalend is voor het "
+                    "archiefregime van de zaak.")
+    )
+
+    relevante_andere_zaken = ArrayField(
+        models.URLField(_("URL naar andere zaak"), max_length=255),
+        blank=True, default=list
     )
 
     class Meta:
@@ -92,12 +186,33 @@ class Zaak(APIMixin, models.Model):
     def save(self, *args, **kwargs):
         if not self.identificatie:
             self.identificatie = str(uuid.uuid4())
+
+        if self.betalingsindicatie == BetalingsIndicatie.nvt and self.laatste_betaaldatum:
+            self.laatste_betaaldatum = None
+
         super().save(*args, **kwargs)
 
     @property
     def current_status_uuid(self):
         status = self.status_set.order_by('-datum_status_gezet').first()
         return status.uuid if status else None
+
+
+class ZaakProductOfDienst(models.Model):
+    zaak = models.ForeignKey('Zaak', help_text=_("hoort bij"), on_delete=models.CASCADE)
+    product_of_dienst = models.URLField(
+        _("product of dienst"),
+        help_text=_("Het product of de dienst die door de zaak wordt voortgebracht. "
+                    "Dit is de URL naar de resource zoals die door de producten- "
+                    "en dienstencatalogus-API wordt ontsloten.")
+    )
+
+    class Meta:
+        verbose_name = _("product of dienst")
+        verbose_name_plural = _("producten of diensten")
+
+    def __str__(self):
+        return _("{zaak}: {product_of_dienst}").format(zaak=self.zaak, product_of_dienst=self.product_of_dienst)
 
 
 class Status(models.Model):

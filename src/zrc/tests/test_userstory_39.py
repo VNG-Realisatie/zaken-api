@@ -7,6 +7,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import (
     JWTScopesMixin, get_operation_url, get_validation_errors
 )
@@ -15,7 +16,7 @@ from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import KlantContact, Rol, Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
 
-from .utils import isodatetime
+from .utils import ZAAK_WRITE_KWARGS, isodatetime
 
 ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1'
 STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1'
@@ -40,6 +41,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'registratiedatum': '2018-06-11',
@@ -55,7 +57,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
             }
         }
 
-        response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()
@@ -84,7 +86,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
             'registratiedatum': '2018-06-11',
         }
 
-        response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'bronorganisatie')
@@ -98,7 +100,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
             'registratiedatum': '2018-06-11',
         }
 
-        response = self.client.post(url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'bronorganisatie')

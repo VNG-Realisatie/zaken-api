@@ -19,6 +19,15 @@ SCOPE_ZAKEN_CREATE = Scope(
 """
 )
 
+SCOPE_ZAKEN_BIJWERKEN = Scope(
+    'zds.scopes.zaken.bijwerken',
+    description="""
+**Laat toe om**:
+
+* attributen van een zaak te wijzingen
+"""
+)
+
 SCOPE_STATUSSEN_TOEVOEGEN = Scope(
     'zds.scopes.statussen.toevoegen',
     description="""

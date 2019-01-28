@@ -12,9 +12,12 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
+
+from .utils import ZAAK_WRITE_KWARGS
 
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
 AANVRAAG = 'https://example.com/orc/api/v1/straatartiesten/37c60cda-689e-4e4a-969c-fa4ed56cb2c6'
@@ -35,6 +38,7 @@ class US169TestCase(JWTScopesMixin, APITestCase):
         zaak_create_url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
             'identificatie': 'HLM-straatartiest-42',
@@ -44,7 +48,7 @@ class US169TestCase(JWTScopesMixin, APITestCase):
         }
 
         # aanmaken zaak
-        response = self.client.post(zaak_create_url, data, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.post(zaak_create_url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         data = response.json()
