@@ -4484,7 +4484,7 @@
             "properties": {
                 "productOfDienst": {
                     "title": "Product of dienst",
-                    "description": "Het product of de dienst die door de zaak wordt voortgebracht.",
+                    "description": "Het product of de dienst die door de zaak wordt voortgebracht. Dit is de URL naar de resource zoals die door de producten- en dienstencatalogus-API wordt ontsloten.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 200,

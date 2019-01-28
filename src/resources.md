@@ -59,7 +59,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| productOfDienst | Het product of de dienst die door de zaak wordt voortgebracht. | string | ja | C​R​U​D |
+| productOfDienst | Het product of de dienst die door de zaak wordt voortgebracht. Dit is de URL naar de resource zoals die door de producten- en dienstencatalogus-API wordt ontsloten. | string | ja | C​R​U​D |
 
 ## ZaakKenmerk
 

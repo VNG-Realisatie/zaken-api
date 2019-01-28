@@ -198,7 +198,9 @@ class ZaakProductOfDienst(models.Model):
     zaak = models.ForeignKey('Zaak', help_text=_("hoort bij"), on_delete=models.CASCADE)
     product_of_dienst = models.URLField(
         _("product of dienst"),
-        help_text=_("Het product of de dienst die door de zaak wordt voortgebracht.")
+        help_text=_("Het product of de dienst die door de zaak wordt voortgebracht. "
+                    "Dit is de URL naar de resource zoals die door de producten- "
+                    "en dienstencatalogus-API wordt ontsloten.")
     )
 
     class Meta:
