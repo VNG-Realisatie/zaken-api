@@ -186,6 +186,10 @@ class Zaak(APIMixin, models.Model):
     def save(self, *args, **kwargs):
         if not self.identificatie:
             self.identificatie = str(uuid.uuid4())
+
+        if self.betalingsindicatie == BetalingsIndicatie.nvt and self.laatste_betaaldatum:
+            self.laatste_betaaldatum = None
+
         super().save(*args, **kwargs)
 
     @property
