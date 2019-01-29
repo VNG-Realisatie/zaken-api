@@ -198,6 +198,18 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
         self.fields['betalingsindicatie'].help_text += f"\n\n{value_display_mapping}"
 
+    def _get_zaaktype(self, zaaktype_url: str) -> dict:
+        if not hasattr(self, '_zaaktype'):
+            # dynamic so that it can be mocked in tests easily
+            Client = import_string(settings.ZDS_CLIENT_CLASS)
+            client = Client.from_url(zaaktype_url)
+            client.auth = APICredential.get_auth(
+                zaaktype_url,
+                scopes=['zds.scopes.zaaktypes.lezen']
+            )
+            self._zaaktype = client.request(zaaktype_url, 'zaaktype')
+        return self._zaaktype
+
     def validate(self, attrs):
         super().validate(attrs)
 
@@ -208,23 +220,23 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                 "Laatste betaaldatum kan niet gezet worden als de betalingsindicatie \"nvt\" is"
             )}, code='betaling-nvt')
 
+        # check that productenOfDiensten are part of the ones on the zaaktype
+        zaaktype = attrs.get('zaaktype', self.instance.zaaktype if self.instance else None)
+        assert zaaktype, "Should not have passed validation - a zaaktype is needed"
+        producten_of_diensten = attrs.get('producten_of_diensten')
+        if producten_of_diensten:
+            zaaktype = self._get_zaaktype(zaaktype)
+            if not set(producten_of_diensten).issubset(set(zaaktype['productenOfDiensten'])):
+                raise serializers.ValidationError({
+                    'producten_of_diensten': _("Niet alle producten/diensten komen voor in "
+                                               "de producten/diensten op het zaaktype")
+                }, code='invalid-products-services')
         return attrs
 
     def create(self, validated_data: dict):
         # set the derived value from ZTC
         if 'vertrouwelijkheidaanduiding' not in validated_data:
-            zaaktype_url = validated_data['zaaktype']
-
-            # dynamic so that it can be mocked in tests easily
-            Client = import_string(settings.ZDS_CLIENT_CLASS)
-            client = Client.from_url(zaaktype_url)
-            client.auth = APICredential.get_auth(
-                zaaktype_url,
-                scopes=['zds.scopes.zaaktypes.lezen']
-            )
-
-            zaaktype = client.request(zaaktype_url, 'zaaktype')
-
+            zaaktype = self._get_zaaktype(validated_data['zaaktype'])
             validated_data['vertrouwelijkheidaanduiding'] = zaaktype['vertrouwelijkheidaanduiding']
 
         return super().create(validated_data)

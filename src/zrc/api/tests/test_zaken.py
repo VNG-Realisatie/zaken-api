@@ -203,31 +203,43 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         url = reverse('zaak-list')
         token = generate_jwt(
             scopes=self.scopes + [SCOPE_ZAKEN_BIJWERKEN],
-            zaaktypes=['https://example.com/zaaktpe/123']
+            zaaktypes=['https://example.com/zaaktype/123']
         )
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
-        response = self.client.post(url, {
-            'zaaktype': 'https://example.com/zaaktpe/123',
-            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
-            'bronorganisatie': '517439943',
-            'verantwoordelijkeOrganisatie': '517439943',
-            'registratiedatum': '2018-12-24',
-            'startdatum': '2018-12-24',
-            'productenOfDiensten': ['https://example.com/product/123'],
-        }, **ZAAK_WRITE_KWARGS)
+        responses = {
+            'https://example.com/zaaktype/123': {
+                'url': 'https://example.com/zaaktype/123',
+                'productenOfDiensten': [
+                    'https://example.com/product/123',
+                    'https://example.com/dienst/123',
+                ]
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(url, {
+                'zaaktype': 'https://example.com/zaaktype/123',
+                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-12-24',
+                'startdatum': '2018-12-24',
+                'productenOfDiensten': ['https://example.com/product/123'],
+            }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         zaak = Zaak.objects.get()
         self.assertEqual(len(zaak.producten_of_diensten), 1)
 
         # update
-        response2 = self.client.patch(response.data['url'], {
-            'productenOfDiensten': [
-                'https://example.com/product/123',
-                'https://example.com/dienst/123',
-            ]
-        }, **ZAAK_WRITE_KWARGS)
+        with mock_client(responses):
+            response2 = self.client.patch(response.data['url'], {
+                'productenOfDiensten': [
+                    'https://example.com/product/123',
+                    'https://example.com/dienst/123',
+                ]
+            }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
         zaak.refresh_from_db()

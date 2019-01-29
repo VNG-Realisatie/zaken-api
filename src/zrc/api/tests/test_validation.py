@@ -4,6 +4,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_client.tests.mocks import mock_client
 from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import JWTScopesMixin, get_validation_errors, reverse
 from zds_schema.validators import ResourceValidator, URLValidator
@@ -155,6 +156,34 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
             validation_error = get_validation_errors(response, 'laatsteBetaaldatum')
             self.assertEqual(validation_error['code'], 'betaling-nvt')
+
+    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    def test_invalide_product_of_dienst(self):
+        url = reverse('zaak-list')
+
+        responses = {
+            'https://example.com/zaaktype/123': {
+                'url': 'https://example.com/zaaktype/123',
+                'productenOfDiensten': [
+                    'https://example.com/product/123',
+                ]
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(url, {
+                'zaaktype': 'https://example.com/zaaktype/123',
+                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-12-24',
+                'startdatum': '2018-12-24',
+                'productenOfDiensten': ['https://example.com/product/999'],
+            }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        validation_error = get_validation_errors(response, 'productenOfDiensten')
+        self.assertEqual(validation_error['code'], 'invalid-products-services')
 
 
 @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
