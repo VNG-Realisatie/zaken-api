@@ -101,6 +101,14 @@ class Zaak(APIMixin, models.Model):
         help_text=_("Datum waarop (het starten van) de zaak gepubliceerd is of wordt.")
     )
 
+    producten_of_diensten = ArrayField(
+        models.URLField(_("URL naar product/dienst"), max_length=1000), default=list,
+        help_text=_("De producten en/of diensten die door de zaak worden voortgebracht. "
+                    "Dit zijn URLs naar de resources zoals die door de producten- "
+                    "en dienstencatalogus-API wordt ontsloten. "
+                    "De producten/diensten moeten bij het zaaktype vermeld zijn.")
+    )
+
     communicatiekanaal = models.URLField(
         _("communicatiekanaal"), blank=True,
         help_text=_("Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. "
@@ -196,23 +204,6 @@ class Zaak(APIMixin, models.Model):
     def current_status_uuid(self):
         status = self.status_set.order_by('-datum_status_gezet').first()
         return status.uuid if status else None
-
-
-class ZaakProductOfDienst(models.Model):
-    zaak = models.ForeignKey('Zaak', help_text=_("hoort bij"), on_delete=models.CASCADE)
-    product_of_dienst = models.URLField(
-        _("product of dienst"),
-        help_text=_("Het product of de dienst die door de zaak wordt voortgebracht. "
-                    "Dit is de URL naar de resource zoals die door de producten- "
-                    "en dienstencatalogus-API wordt ontsloten.")
-    )
-
-    class Meta:
-        verbose_name = _("product of dienst")
-        verbose_name_plural = _("producten of diensten")
-
-    def __str__(self):
-        return _("{zaak}: {product_of_dienst}").format(zaak=self.zaak, product_of_dienst=self.product_of_dienst)
 
 
 class Status(models.Model):

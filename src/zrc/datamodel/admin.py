@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakObject, ZaakProductOfDienst
+    ZaakObject
 )
 
 
@@ -31,10 +31,6 @@ class RolInline(admin.TabularInline):
     raw_id_fields = ['zaak']
 
 
-class ZaakProductOfDienstInline(admin.TabularInline):
-    model = ZaakProductOfDienst
-
-
 @admin.register(Zaak)
 class ZaakAdmin(admin.ModelAdmin):
     list_display = ['identificatie']
@@ -44,8 +40,7 @@ class ZaakAdmin(admin.ModelAdmin):
         ZaakInformatieObjectInline,
         KlantContactInline,
         ZaakEigenschapInline,
-        RolInline,
-        ZaakProductOfDienstInline
+        RolInline
     ]
 
 

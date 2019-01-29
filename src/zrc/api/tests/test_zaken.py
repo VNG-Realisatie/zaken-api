@@ -12,7 +12,7 @@ from zds_schema.mocks import ZTCMockClient
 from zds_schema.tests import JWTScopesMixin, generate_jwt, reverse
 
 from zrc.datamodel.constants import BetalingsIndicatie
-from zrc.datamodel.models import ZaakProductOfDienst
+from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
 from zrc.tests.utils import (
     ZAAK_READ_KWARGS, ZAAK_WRITE_KWARGS, isodatetime, utcdatetime
@@ -214,25 +214,24 @@ class ZakenTests(JWTScopesMixin, APITestCase):
             'verantwoordelijkeOrganisatie': '517439943',
             'registratiedatum': '2018-12-24',
             'startdatum': '2018-12-24',
-            'producten_en_diensten': [{
-                'productOfDienst': 'https://example.com/product/123'
-            }]
+            'productenOfDiensten': ['https://example.com/product/123'],
         }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(ZaakProductOfDienst.objects.count(), 1)
+        zaak = Zaak.objects.get()
+        self.assertEqual(len(zaak.producten_of_diensten), 1)
 
         # update
         response2 = self.client.patch(response.data['url'], {
-            'producten_en_diensten': [{
-                'productOfDienst': 'https://example.com/product/123'
-            }, {
-                'productOfDienst': 'https://example.com/dienst/123'
-            }]
+            'productenOfDiensten': [
+                'https://example.com/product/123',
+                'https://example.com/dienst/123',
+            ]
         }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
-        self.assertEqual(ZaakProductOfDienst.objects.count(), 2)
+        zaak.refresh_from_db()
+        self.assertEqual(len(zaak.producten_of_diensten), 2)
 
     @tag('mock_client')
     def test_zaak_vertrouwelijkheidaanduiding_afgeleid(self):

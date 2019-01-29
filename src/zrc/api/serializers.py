@@ -22,7 +22,7 @@ from zds_schema.validators import (
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakKenmerk, ZaakObject, ZaakProductOfDienst
+    ZaakKenmerk, ZaakObject
 )
 
 from .auth import get_zrc_auth, get_ztc_auth
@@ -39,12 +39,6 @@ class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
             'kenmerk',
             'bron',
         )
-
-
-class ZaakProductOfDienstSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ZaakProductOfDienst
-        fields = ('product_of_dienst',)
 
 
 class VerlengingSerializer(GegevensGroepSerializer):
@@ -94,14 +88,6 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                   "beter kan via `ZaakObject`."
     )
 
-    producten_en_diensten = ZaakProductOfDienstSerializer(
-        source='zaakproductofdienst_set',
-        many=True,
-        required=False,
-        help_text=_("De producten en/of diensten die door de zaak worden voortgebracht. "
-                    "De producten/diensten moeten bij het zaaktype vermeld zijn.")
-    )
-
     betalingsindicatie_weergave = serializers.CharField(source='get_betalingsindicatie_display', read_only=True)
 
     verlenging = VerlengingSerializer(
@@ -139,7 +125,8 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             'uiterlijke_einddatum_afdoening',
             'publicatiedatum',
             'communicatiekanaal',
-            'producten_en_diensten',
+            # TODO: add shape validator once we know the shape
+            'producten_of_diensten',
             'vertrouwelijkheidaanduiding',
             'resultaattoelichting',
             'betalingsindicatie',
