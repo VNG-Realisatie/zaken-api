@@ -2,6 +2,12 @@
 Wijzigingen
 ===========
 
+0.9.1 (2019-01-30)
+==================
+
+Modified data migration to set ``Zaak.vertrouwelijkheidaanduiding`` based
+on zaaktype so that corrupt data doesn't crash the migrations.
+
 0.9.0 (2019-01-30)
 ==================
 
