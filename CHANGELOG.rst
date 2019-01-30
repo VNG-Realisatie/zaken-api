@@ -2,6 +2,49 @@
 Wijzigingen
 ===========
 
+0.9.0 (2019-01-30)
+==================
+
+API maturity update
+
+See https://github.com/VNG-Realisatie/gemma-zaken/pull/673 for a more
+verbose description of the changes.
+
+* Documentation improvements
+* Fixed resetting ``Zaak.einddatum`` if a status other than the end-status is
+  set after closing the ``Zaak`` (#660)
+* Added validation on related ``Informatieobject``s when a ``Zaak`` is being
+  closed (#549)
+* Added more attributes (#549)
+    * ``Zaak.productenOfDiensten``
+    * ``Zaak.publicatiedatum``
+    * ``Zaak.communicatiekanaal``
+    * ``Zaak.vertrouwelijkheidaanduiding`` - always set, default derived from
+      ``Zaak.zaaktype.vertrouwelijkheidaanduiding``
+    * ``Zaak.resultaattoelichting``
+    * ``Zaak.betalingsindicatie``
+    * ``Zaak.laatsteBetaaldatum`` + validation with ``Zaak.betalingsindicatie``
+      value (no value is allowed if payment is irrelevant)
+    * ``Zaak.verlenging`` - which is a nested object. ``null`` is accepted to
+      leave the value empty. Pending change to calculate ``Zaak.einddatumGepland``
+      from this.
+    * ``Zaak.opschorting`` added as nested object
+    * ``ZAAK.selectielijstklasse`` added, should point to
+      https://ref.tst.vng.cloud/referentielijsten API
+    * ``Zaak.hoofdzaak`` and ``Zaak.deelzaken`` attributes + validation logic
+      added.
+    * ``ZAAK.andereGerelateerdeZaken``
+* Bumped a bunch of library versions (zds-schema, gemma-zds-client)
+* Improved help text of duration fields in the admin
+
+Breaking changes
+----------------
+
+* The ``Content-Crs`` header is now required for write-requests, and
+  CRS-negotiation is performed on this. Update all create, update and partial
+  update calls to include this header, even if you are not submitting geo
+  data. (#639)
+
 0.8.6 (2018-12-13)
 ==================
 
