@@ -1,7 +1,34 @@
 openapi: 3.0.0
 info:
   title: Zaakregistratiecomponent (ZRC) API
-  description: Een API om een zaakregistratiecomponent te benaderen
+  description: 'Een API om een zaakregistratiecomponent te benaderen.
+
+
+    De `ZAAK` is het kernobject in deze API, waaraan verschillende andere
+
+    resources gerelateerd zijn. De ZRC API werkt samen met andere ZGW API''s, t.w.
+
+    DRC, ZTC en BRC, om tot volledige functionaliteit te komen.
+
+
+    **Autorisatie**
+
+
+    Deze API vereist autorisatie. Je kan de
+
+    [token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken om JWT-tokens te
+
+    genereren.
+
+
+    **Handige links**
+
+
+    * [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)
+
+    * ["Papieren" standaard](https://ref.tst.vng.cloud/standaard/)
+
+    '
   contact:
     url: https://github.com/VNG-Realisatie/gemma-zaken
     email: support@maykinmedia.nl
