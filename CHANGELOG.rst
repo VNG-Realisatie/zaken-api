@@ -2,6 +2,14 @@
 Wijzigingen
 ===========
 
+0.9.2 (2019-02-07)
+==================
+
+Documentation improvements
+
+* #620 - better/added documentation for various resource operations
+* Bumped to bugfix releases of Django and zds-schema
+
 0.9.1 (2019-01-30)
 ==================
 
