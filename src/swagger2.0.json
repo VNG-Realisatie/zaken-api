@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "Zaakregistratiecomponent (ZRC) API",
-        "description": "Een API om een zaakregistratiecomponent te benaderen",
+        "description": "Een API om een zaakregistratiecomponent te benaderen.\n\nDe `ZAAK` is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De ZRC API werkt samen met andere ZGW API's, t.w.\nDRC, ZTC en BRC, om tot volledige functionaliteit te komen.\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken om JWT-tokens te\ngenereren.\n\n**Handige links**\n\n* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)\n* [\"Papieren\" standaard](https://ref.tst.vng.cloud/standaard/)\n",
         "contact": {
             "url": "https://github.com/VNG-Realisatie/gemma-zaken",
             "email": "support@maykinmedia.nl"
@@ -1044,7 +1044,7 @@
         "/statussen": {
             "get": {
                 "operationId": "status_list",
-                "description": "",
+                "description": "Geef een lijst van STATUSsen van ZAAKen.\n\nOptioneel kan je de queryparameters gebruiken om de resultaten te\nfilteren.",
                 "parameters": [
                     {
                         "name": "zaak",
@@ -1221,7 +1221,7 @@
             },
             "post": {
                 "operationId": "status_create",
-                "description": "",
+                "description": "Voeg een nieuwe STATUS voor een ZAAK toe.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar de zaak\n- geldigheid URL naar het STATUSTYPE\n- indien het de eindstatus betreft, dan moet het attribuut\n  `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die aan\n  de zaak gerelateerd zijn\n\n**Opmerkingen**\n- Indien het statustype de eindstatus is (volgens het ZTC), dan wordt de\n  zaak afgesloten door de einddatum te zetten.",
                 "parameters": [
                     {
                         "name": "data",
@@ -1397,7 +1397,7 @@
         "/statussen/{uuid}": {
             "get": {
                 "operationId": "status_read",
-                "description": "",
+                "description": "Haal de details van een zaakstatus op.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -2057,7 +2057,7 @@
         "/zaken": {
             "get": {
                 "operationId": "zaak_list",
-                "description": "Geef een lijst van ZAAKen.\n\nOptioneel kan je de queryparameters gebruiken om zaken te filteren.",
+                "description": "Geef een lijst van ZAAKen.\n\nOptioneel kan je de queryparameters gebruiken om zaken te filteren.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het\n  autorisatie-JWT vervat zitten.",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -2491,7 +2491,7 @@
         "/zaken/_zoek": {
             "post": {
                 "operationId": "zaak__zoek",
-                "description": "Voer een (geo)-zoekopdracht uit op ZAAKen.",
+                "description": "Voer een (geo)-zoekopdracht uit op ZAAKen.\n\nZoeken/filteren gaat normaal via de `list` operatie, deze is echter\nniet geschikt voor geo-zoekopdrachten.",
                 "parameters": [
                     {
                         "name": "data",
@@ -2704,7 +2704,7 @@
         "/zaken/{uuid}": {
             "get": {
                 "operationId": "zaak_read",
-                "description": "Opvragen en bewerken van ZAAKen.",
+                "description": "Haal de details van een ZAAK op.",
                 "parameters": [
                     {
                         "name": "Accept-Crs",
@@ -2903,7 +2903,7 @@
             },
             "put": {
                 "operationId": "zaak_update",
-                "description": "Werk een zaak bij.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype\n- laatsteBetaaldatum mag niet in de toekomst liggen\n- laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie \"nvt\" is",
+                "description": "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar zaaktype\n- laatsteBetaaldatum mag niet in de toekomst liggen\n- laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie \"nvt\" is\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -3124,7 +3124,7 @@
             },
             "patch": {
                 "operationId": "zaak_partial_update",
-                "description": "Werk een zaak bij.\n\nEr wordt gevalideerd op:\n- geldigheid URL naar zaaktype\n- laatsteBetaaldatum mag niet in de toekomst liggen\n- laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie \"nvt\" is",
+                "description": "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar zaaktype\n- laatsteBetaaldatum mag niet in de toekomst liggen\n- laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie \"nvt\" is\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",

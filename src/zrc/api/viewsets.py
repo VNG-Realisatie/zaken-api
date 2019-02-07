@@ -59,35 +59,42 @@ class ZaakViewSet(GeoMixin,
 
     Optioneel kan je de queryparameters gebruiken om zaken te filteren.
 
-    Opmerkingen:
+    **Opmerkingen**
     - je krijgt enkel zaken terug van de zaaktypes die in het
       autorisatie-JWT vervat zitten.
+
+    retrieve:
+    Haal de details van een ZAAK op.
 
     update:
     Werk een zaak bij.
 
-    Er wordt gevalideerd op:
+    **Er wordt gevalideerd op**
     - geldigheid URL naar zaaktype
     - laatsteBetaaldatum mag niet in de toekomst liggen
     - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
 
-    Opmerkingen:
+    **Opmerkingen**
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
       vervat zitten
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
+    - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
+      toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
 
     partial_update:
     Werk een zaak bij.
 
-    Er wordt gevalideerd op:
+    **Er wordt gevalideerd op**
     - geldigheid URL naar zaaktype
     - laatsteBetaaldatum mag niet in de toekomst liggen
     - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
 
-    Opmerkingen:
+    **Opmerkingen**
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
       vervat zitten
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
+    - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
+      toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
     """
     queryset = Zaak.objects.prefetch_related('deelzaken')
     serializer_class = ZaakSerializer
@@ -124,6 +131,9 @@ class ZaakViewSet(GeoMixin,
     def _zoek(self, request, *args, **kwargs):
         """
         Voer een (geo)-zoekopdracht uit op ZAAKen.
+
+        Zoeken/filteren gaat normaal via de `list` operatie, deze is echter
+        niet geschikt voor geo-zoekopdrachten.
         """
         search_input = self.get_search_input()
 
@@ -144,6 +154,33 @@ class StatusViewSet(CheckQueryParamsMixin,
                     mixins.ListModelMixin,
                     mixins.RetrieveModelMixin,
                     viewsets.GenericViewSet):
+    """
+    Opvragen en beheren van zaakstatussen.
+
+    list:
+    Geef een lijst van STATUSsen van ZAAKen.
+
+    Optioneel kan je de queryparameters gebruiken om de resultaten te
+    filteren.
+
+    retrieve:
+    Haal de details van een zaakstatus op.
+
+    create:
+    Voeg een nieuwe STATUS voor een ZAAK toe.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de zaak
+    - geldigheid URL naar het STATUSTYPE
+    - indien het de eindstatus betreft, dan moet het attribuut
+      `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die aan
+      de zaak gerelateerd zijn
+
+    **Opmerkingen**
+    - Indien het statustype de eindstatus is (volgens het ZTC), dan wordt de
+      zaak afgesloten door de einddatum te zetten.
+
+    """
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
     filterset_class = StatusFilter
@@ -221,7 +258,7 @@ class ZaakInformatieObjectViewSet(NestedViewSetMixin,
 
     Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
 
-    Er wordt gevalideerd op:
+    **Er wordt gevalideerd op**
     - geldigheid informatieobject URL
     - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
     - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
