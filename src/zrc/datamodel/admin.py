@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from .models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakObject
+    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    ZaakInformatieObject, ZaakObject
 )
 
 
@@ -31,6 +31,10 @@ class RolInline(admin.TabularInline):
     raw_id_fields = ['zaak']
 
 
+class ResultaatInline(admin.TabularInline):
+    model = Resultaat
+
+
 @admin.register(Zaak)
 class ZaakAdmin(admin.ModelAdmin):
     list_display = ['identificatie']
@@ -40,7 +44,8 @@ class ZaakAdmin(admin.ModelAdmin):
         ZaakInformatieObjectInline,
         KlantContactInline,
         ZaakEigenschapInline,
-        RolInline
+        RolInline,
+        ResultaatInline,
     ]
 
 
@@ -75,5 +80,12 @@ class ZaakEigenschapAdmin(admin.ModelAdmin):
 @admin.register(ZaakInformatieObject)
 class ZaakInformatieObjectAdmin(admin.ModelAdmin):
     list_display = ['zaak', 'informatieobject']
+    list_select_related = ['zaak']
+    raw_id_fields = ['zaak']
+
+
+@admin.register(Resultaat)
+class ResultaatAdmin(admin.ModelAdmin):
+    list_display = ['zaak', 'toelichting']
     list_select_related = ['zaak']
     raw_id_fields = ['zaak']

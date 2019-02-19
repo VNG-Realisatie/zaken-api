@@ -13,19 +13,19 @@ from zds_schema.utils import lookup_kwargs_to_filters
 from zds_schema.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakObject
+    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    ZaakInformatieObject, ZaakObject
 )
 
-from .filters import RolFilter, StatusFilter, ZaakFilter
+from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
 from .permissions import ZaaktypePermission
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
     SCOPE_ZAKEN_CREATE
 )
 from .serializers import (
-    KlantContactSerializer, RolSerializer, StatusSerializer,
-    ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
+    KlantContactSerializer, ResultaatSerializer, RolSerializer,
+    StatusSerializer, ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
     ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
 
@@ -43,16 +43,23 @@ class ZaakViewSet(GeoMixin,
     """
     Opvragen en bewerken van ZAAKen.
 
+    Een zaak mag (in principe) niet meer gewijzigd worden als de `archiefstatus`
+    een andere status heeft dan "nog_te_archiveren". Voor praktische redenen
+    is er geen harde validatie regel aan de provider kant.
+
     create:
     Maak een ZAAK aan.
 
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
 
-    Er wordt gevalideerd op:
-    - geldigheid URL naar zaaktype
-    - laatsteBetaaldatum mag niet in de toekomst liggen
-    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
+    **Er wordt gevalideerd op**:
+    - `zaaktype` moet een geldige URL zijn.
+    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
+    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie "nvt" is.
+    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de waarde "nog_te_archiveren" heeft.
+    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de waarde "nog_te_archiveren" heeft.
+    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren" hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut `status` de waarde "gearchiveerd" heeft.
 
     list:
     Geef een lijst van ZAAKen.
@@ -70,9 +77,12 @@ class ZaakViewSet(GeoMixin,
     Werk een zaak bij.
 
     **Er wordt gevalideerd op**
-    - geldigheid URL naar zaaktype
-    - laatsteBetaaldatum mag niet in de toekomst liggen
-    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
+    - `zaaktype` moet een geldige URL zijn.
+    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
+    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie "nvt" is.
+    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de waarde "nog_te_archiveren" heeft.
+    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de waarde "nog_te_archiveren" heeft.
+    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren" hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut `status` de waarde "gearchiveerd" heeft.
 
     **Opmerkingen**
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
@@ -85,9 +95,12 @@ class ZaakViewSet(GeoMixin,
     Werk een zaak bij.
 
     **Er wordt gevalideerd op**
-    - geldigheid URL naar zaaktype
-    - laatsteBetaaldatum mag niet in de toekomst liggen
-    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
+    - `zaaktype` moet een geldige URL zijn.
+    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
+    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie "nvt" is.
+    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de waarde "nog_te_archiveren" heeft.
+    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de waarde "nog_te_archiveren" heeft.
+    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren" hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut `status` de waarde "gearchiveerd" heeft.
 
     **Opmerkingen**
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
@@ -170,7 +183,7 @@ class StatusViewSet(CheckQueryParamsMixin,
     Voeg een nieuwe STATUS voor een ZAAK toe.
 
     **Er wordt gevalideerd op**
-    - geldigheid URL naar de zaak
+    - geldigheid URL naar de ZAAK
     - geldigheid URL naar het STATUSTYPE
     - indien het de eindstatus betreft, dan moet het attribuut
       `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die aan
@@ -351,4 +364,58 @@ class RolViewSet(CheckQueryParamsMixin,
     permission_classes = (ActionScopesRequired,)
     required_scopes = {
         'create': SCOPE_ZAKEN_CREATE
+    }
+
+
+class ResultaatViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet):
+    """
+    Opvragen en beheren van resultaten.
+
+    list:
+    Geef een lijst van RESULTAATen van ZAAKen.
+
+    Optioneel kan je de queryparameters gebruiken om de resultaten te
+    filteren.
+
+    retrieve:
+    Haal de details van het RESULTAAT op.
+
+    create:
+    Voeg een RESULTAAT voor een ZAAK toe.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de ZAAK
+    - geldigheid URL naar het RESULTAATTYPE
+
+    update:
+    Wijzig het RESULTAAT van een ZAAK.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de ZAAK
+    - geldigheid URL naar het RESULTAATTYPE
+
+    partial_update:
+    Wijzig het RESULTAAT van een ZAAK.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de ZAAK
+    - geldigheid URL naar het RESULTAATTYPE
+
+    destroy:
+    Verwijder het RESULTAAT van een ZAAK.
+
+    """
+    queryset = Resultaat.objects.all()
+    serializer_class = ResultaatSerializer
+    filterset_class = ResultaatFilter
+    lookup_field = 'uuid'
+
+    permission_classes = (ActionScopesRequired,)
+    required_scopes = {
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+        'update': SCOPE_ZAKEN_BIJWERKEN,
+        'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }
