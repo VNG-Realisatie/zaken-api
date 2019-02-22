@@ -51,3 +51,13 @@ SCOPE_ZAKEN_ALLES_LEZEN = Scope(
 * zaakobjectdetails op te vragen
 """
 )
+
+
+SCOPE_ZAKEN_ALLES_VERWIJDEREN = Scope(
+    'zds.scopes.zaken.verwijderen',
+    description="""
+**Laat toe om**:
+
+* zaken te verwijderen
+"""
+)

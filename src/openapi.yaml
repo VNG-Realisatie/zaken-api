@@ -2577,9 +2577,16 @@ paths:
   /zaken:
     get:
       operationId: zaak_list
-      description: "Geef een lijst van ZAAKen.\n\nOptioneel kan je de queryparameters\
-        \ gebruiken om zaken te filteren.\n\n**Opmerkingen**\n- je krijgt enkel zaken\
-        \ terug van de zaaktypes die in het\n  autorisatie-JWT vervat zitten."
+      description: 'Geef een lijst van ZAAKen.
+
+
+        Optioneel kan je de queryparameters gebruiken om zaken te filteren.
+
+
+        **Opmerkingen**
+
+        - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
+        vervat zitten.'
       parameters:
       - name: identificatie
         in: query
@@ -2834,32 +2841,17 @@ paths:
         - zds.scopes.zaken.lezen
     post:
       operationId: zaak_create
-      description: 'Maak een ZAAK aan.
-
-
-        Indien geen identificatie gegeven is, dan wordt deze automatisch
-
-        gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
-
-
-        **Er wordt gevalideerd op**:
-
-        - `zaaktype` moet een geldige URL zijn.
-
-        - `laatsteBetaaldatum` mag niet in de toekomst liggen.
-
-        - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie "nvt"
-        is.
-
-        - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
-        waarde "nog_te_archiveren" heeft.
-
-        - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
-        waarde "nog_te_archiveren" heeft.
-
-        - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren" hebben
-        indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut `status` de
-        waarde "gearchiveerd" heeft.'
+      description: "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan\
+        \ wordt deze automatisch gegenereerd. De identificatie moet uniek zijn\nbinnen\
+        \ de bronorganisatie.\n\n**Er wordt gevalideerd op**:\n- `zaaktype` moet een\
+        \ geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n\
+        - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie \"\
+        nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus`\
+        \ niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet\
+        \ een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\"\
+        \ heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\
+        \ hebben indien van alle gerelateeerde\n  INFORMATIEOBJECTen het attribuut\
+        \ `status` de waarde \"gearchiveerd\" heeft."
       parameters:
       - name: Accept-Crs
         in: header
@@ -3392,12 +3384,12 @@ paths:
         \ niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet\
         \ een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\"\
         \ heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\
-        \ hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut `status`\
-        \ de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel\
-        \ zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten\n\
+        \ hebben indien van alle gerelateeerde\n  INFORMATIEOBJECTen het attribuut\
+        \ `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt\
+        \ enkel zaken terug van de zaaktypes die in het autorisatie-JWT vervat zitten.\n\
         - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een\
-        \ zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te\
-        \ voegen die NIET de eindstatus is. Zie de `Status` resource."
+        \ zaak heropend moet worden, doe dit dan door een nieuwe status toe te voegen\
+        \ die NIET de eindstatus is.\n  Zie de `Status` resource."
       parameters:
       - name: Accept-Crs
         in: header
@@ -3588,12 +3580,12 @@ paths:
         \ niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet\
         \ een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\"\
         \ heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\
-        \ hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut `status`\
-        \ de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel\
-        \ zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten\n\
+        \ hebben indien van alle gerelateeerde\n  INFORMATIEOBJECTen het attribuut\
+        \ `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt\
+        \ enkel zaken terug van de zaaktypes die in het autorisatie-JWT vervat zitten.\n\
         - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een\
-        \ zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te\
-        \ voegen die NIET de eindstatus is. Zie de `Status` resource."
+        \ zaak heropend moet worden, doe dit dan door een nieuwe status toe te voegen\
+        \ die NIET de eindstatus is.\n  Zie de `Status` resource."
       parameters:
       - name: Accept-Crs
         in: header
@@ -3775,6 +3767,162 @@ paths:
         - zds.scopes.zaken.bijwerken
       requestBody:
         $ref: '#/components/requestBodies/Zaak'
+    delete:
+      operationId: zaak_delete
+      description: Verwijdert een zaak, samen met alle gerelateerde resources binnen
+        deze API.
+      parameters:
+      - name: Accept-Crs
+        in: header
+        description: Het gewenste 'Coordinate Reference System' (CRS) van de geometrie
+          in het antwoord (response body). Volgens de GeoJSON spec is WGS84 de default
+          (EPSG:4326 is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
+      - name: Content-Crs
+        in: header
+        description: Het 'Coordinate Reference System' (CRS) van de geometrie in de
+          vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
+          is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
+      responses:
+        '204':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+        '401':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '409':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '410':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '412':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+      tags:
+      - zaken
     parameters:
     - name: uuid
       in: path
