@@ -13,7 +13,7 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import (
-    RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding
+    RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
@@ -21,7 +21,6 @@ from zrc.api.scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 )
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
-from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import ZaakFactory
 
