@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.utils import timezone
 
-import dateutil.parser
+from zrc.utils import parse_isodatetime  # noqa
 
 ZAAK_READ_KWARGS = {
     'HTTP_ACCEPT_CRS': 'EPSG:4326',
@@ -21,7 +21,3 @@ def utcdatetime(*args, **kwargs) -> datetime:
 def isodatetime(*args, **kwargs) -> str:
     dt = utcdatetime(*args, **kwargs)
     return dt.isoformat()
-
-
-def parse_isodatetime(val) -> datetime:
-    return dateutil.parser.parse(val)

@@ -21,7 +21,7 @@ from zds_schema.fields import (
 from zds_schema.models import APICredential, APIMixin
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from zrc.tests.utils import parse_isodatetime
+from zrc.utils import parse_isodatetime
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from .constants import BetalingsIndicatie
