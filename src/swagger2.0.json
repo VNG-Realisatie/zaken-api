@@ -3093,7 +3093,7 @@
         "/zaken": {
             "get": {
                 "operationId": "zaak_list",
-                "description": "Geef een lijst van ZAAKen.\n\nOptioneel kan je de queryparameters gebruiken om zaken te filteren.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT vervat zitten.",
+                "description": "Geef een lijst van ZAAKen.\n\nOptioneel kan je de queryparameters gebruiken om zaken te filteren.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -3376,7 +3376,7 @@
             },
             "post": {
                 "operationId": "zaak_create",
-                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch gegenereerd. De identificatie moet uniek zijn\nbinnen de bronorganisatie.\n\n**Er wordt gevalideerd op**:\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\" hebben indien van alle gerelateeerde\n  INFORMATIEOBJECTen het attribuut `status` de waarde \"gearchiveerd\" heeft.",
+                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\n**Er wordt gevalideerd op**:\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.",
                 "parameters": [
                     {
                         "name": "data",
@@ -3998,7 +3998,7 @@
             },
             "put": {
                 "operationId": "zaak_update",
-                "description": "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\" hebben indien van alle gerelateeerde\n  INFORMATIEOBJECTen het attribuut `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
+                "description": "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -4219,7 +4219,7 @@
             },
             "patch": {
                 "operationId": "zaak_partial_update",
-                "description": "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\" hebben indien van alle gerelateeerde\n  INFORMATIEOBJECTen het attribuut `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
+                "description": "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -4440,7 +4440,7 @@
             },
             "delete": {
                 "operationId": "zaak_delete",
-                "description": "Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.",
+                "description": "Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.\n\n**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken van de verwijderde hoofzaak\n- `status` - alle statussen van de verwijderde zaak\n- `resultaat` - het resultaat van de verwijderde zaak\n- `rol` - alle rollen bij de zaak\n- `zaakobject` - alle zaakobjecten bij de zaak\n- `zaakeigenschap` - alle eigenschappen van de zaak\n- `zaakkenmerk` - alle kenmerken van de zaak\n- `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook\n  https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)\n- `klantcontact` - alle klantcontacten bij een zaak",
                 "parameters": [
                     {
                         "name": "Accept-Crs",

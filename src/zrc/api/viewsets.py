@@ -123,6 +123,18 @@ class ZaakViewSet(GeoMixin,
 
     delete:
     Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.
+
+    **De gerelateerde resources zijn hierbij**
+    - `zaak` - de deelzaken van de verwijderde hoofzaak
+    - `status` - alle statussen van de verwijderde zaak
+    - `resultaat` - het resultaat van de verwijderde zaak
+    - `rol` - alle rollen bij de zaak
+    - `zaakobject` - alle zaakobjecten bij de zaak
+    - `zaakeigenschap` - alle eigenschappen van de zaak
+    - `zaakkenmerk` - alle kenmerken van de zaak
+    - `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook
+      https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
+    - `klantcontact` - alle klantcontacten bij een zaak
     """
     queryset = Zaak.objects.prefetch_related('deelzaken')
     serializer_class = ZaakSerializer

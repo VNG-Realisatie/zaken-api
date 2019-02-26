@@ -1,24 +1,25 @@
 """
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/349
 """
-from datetime import date
-from urllib.parse import quote_plus, urlencode
-
-from django.test import override_settings
-
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import JWTScopesMixin, get_operation_url
+from zds_schema.tests import (
+    JWTScopesMixin, generate_jwt, get_operation_url, reverse
+)
 
-from zrc.api.scopes import SCOPE_ZAKEN_ALLES_VERWIJDEREN
+from zrc.api.scopes import (
+    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_ALLES_VERWIJDEREN
+)
 from zrc.datamodel.models import (
-    Resultaat, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakObject,
-    KlantContact)
+    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    ZaakInformatieObject, ZaakObject
+)
 from zrc.datamodel.tests.factories import (
-    ResultaatFactory, RolFactory, StatusFactory, ZaakEigenschapFactory,
-    ZaakFactory, ZaakInformatieObjectFactory, ZaakObjectFactory,
-    KlantContactFactory)
+    KlantContactFactory, ResultaatFactory, RolFactory, StatusFactory,
+    ZaakEigenschapFactory, ZaakFactory, ZaakInformatieObjectFactory,
+    ZaakObjectFactory
+)
+from zrc.tests.utils import ZAAK_READ_KWARGS
 
 from .utils import ZAAK_WRITE_KWARGS
 
@@ -73,3 +74,20 @@ class US349TestCase(JWTScopesMixin, APITestCase):
 
         self.assertEqual(Zaak.objects.all().count(), 1)
         self.assertEqual(Zaak.objects.get().pk, zaak.pk)
+
+    def test_zaak_with_result(self):
+        """
+        Test that the zaak-detail correctly contains the URL to the result.
+        """
+        zaak = ZaakFactory.create()
+        resultaat = ResultaatFactory.create(zaak=zaak)
+        zaak_url = 'http://testserver{path}'.format(path=reverse(zaak))
+        resultaat_url = 'http://testserver{path}'.format(path=reverse(resultaat))
+
+        token = generate_jwt(scopes=[SCOPE_ZAKEN_ALLES_LEZEN], zaaktypes=[zaak.zaaktype])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
+        response = self.client.get(zaak_url, **ZAAK_READ_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['resultaat'], resultaat_url)

@@ -370,7 +370,7 @@ class Resultaat(models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     # relaties
-    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
+    zaak = models.OneToOneField('Zaak', on_delete=models.CASCADE)
     resultaat_type = models.URLField()
 
     toelichting = models.TextField(
