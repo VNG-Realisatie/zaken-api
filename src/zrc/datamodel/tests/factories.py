@@ -30,6 +30,7 @@ class ZaakInformatieObjectFactory(factory.django.DjangoModelFactory):
 class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     eigenschap = factory.Faker('url')
+    _naam = factory.Faker('word')
     waarde = factory.Faker('word')
 
     class Meta:

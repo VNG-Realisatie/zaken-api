@@ -6,6 +6,7 @@ ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/52
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
+from zds_client.tests.mocks import mock_client
 from zds_schema.tests import TypeCheckMixin, get_operation_url
 
 from zrc.datamodel.models import ZaakEigenschap
@@ -27,9 +28,17 @@ class US52TestCase(TypeCheckMixin, APITestCase):
             'waarde': 'overlast_water'
         }
 
-        response = self.client.post(url, data)
+        responses = {
+            EIGENSCHAP_OBJECTTYPE: {
+                'url': EIGENSCHAP_OBJECTTYPE,
+                'naam': 'foobar',
+            }
+        }
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        with mock_client(responses):
+            response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()
         zaakeigenschap = ZaakEigenschap.objects.get()
         self.assertEqual(zaakeigenschap.zaak, zaak)
@@ -38,6 +47,7 @@ class US52TestCase(TypeCheckMixin, APITestCase):
             response_data,
             {
                 'url': f"http://testserver{detail_url}",
+                'naam': 'foobar',
                 'zaak': f"http://testserver{zaak_url}",
                 'eigenschap': EIGENSCHAP_OBJECTTYPE,
                 'waarde': 'overlast_water'
@@ -58,6 +68,7 @@ class US52TestCase(TypeCheckMixin, APITestCase):
             with self.subTest(obj=obj):
                 self.assertResponseTypes(obj, (
                     ('url', str),
+                    ('naam', str),
                     ('zaak', str),
                     ('eigenschap', str),
                     ('waarde', str),
