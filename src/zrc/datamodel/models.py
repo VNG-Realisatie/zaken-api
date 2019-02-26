@@ -48,7 +48,7 @@ class Zaak(APIMixin, models.Model):
     # niet ondersteund).
     hoofdzaak = models.ForeignKey(
         'self', limit_choices_to={'hoofdzaak__isnull': True},
-        null=True, blank=True, on_delete=models.PROTECT,
+        null=True, blank=True, on_delete=models.CASCADE,
         related_name='deelzaken', verbose_name='is deelzaak van',
         help_text=_("De verwijzing naar de ZAAK, waarom verzocht is door de "
                     "initiator daarvan, die behandeld wordt in twee of meer "
@@ -370,7 +370,7 @@ class Resultaat(models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     # relaties
-    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
+    zaak = models.OneToOneField('Zaak', on_delete=models.CASCADE)
     resultaat_type = models.URLField()
 
     toelichting = models.TextField(

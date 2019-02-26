@@ -37,6 +37,7 @@ from .validators import (
 
 logger = logging.getLogger(__name__)
 
+
 class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ZaakKenmerk
