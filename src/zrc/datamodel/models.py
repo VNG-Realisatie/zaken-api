@@ -1,5 +1,5 @@
 import uuid
-from datetime import date, timedelta
+from datetime import date
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 import isodate
 from zds_schema.constants import (
     Archiefnominatie, Archiefstatus, BrondatumArchiefprocedureAfleidingswijze,
-    RolOmschrijving, RolTypes
+    RolOmschrijving, RolTypes, ZaakobjectTypes
 )
 from zds_schema.descriptors import GegevensGroepType
 from zds_schema.fields import (
@@ -24,7 +24,7 @@ from zds_schema.validators import alphanumeric_excluding_diacritic
 from zrc.tests.utils import parse_isodatetime
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .constants import BetalingsIndicatie, ZaakobjectTypes
+from .constants import BetalingsIndicatie
 
 
 class Zaak(APIMixin, models.Model):

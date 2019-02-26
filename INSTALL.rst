@@ -20,7 +20,8 @@ You need the following libraries and/or programs:
 
 * `Python`_ 3.4 or above
 * Python `Virtualenv`_ and `Pip`_
-* `PostgreSQL`_ 9.1 or above, with postgis extension
+* `PostgreSQL`_ 9.1 or above, with `PostGIS`_ extension
+* `GDAL`_ with development headers
 * `Node.js`_
 * `npm`_
 
@@ -28,6 +29,8 @@ You need the following libraries and/or programs:
 .. _Virtualenv: https://virtualenv.pypa.io/en/stable/
 .. _Pip: https://packaging.python.org/tutorials/installing-packages/#ensure-pip-setuptools-and-wheel-are-up-to-date
 .. _PostgreSQL: https://www.postgresql.org
+.. _PostGIS: https://postgis.net/
+.. _GDAL: https://www.gdal.org/
 .. _Node.js: http://nodejs.org/
 .. _npm: https://www.npmjs.com/
 
