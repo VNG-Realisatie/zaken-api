@@ -20,7 +20,8 @@ You need the following libraries and/or programs:
 
 * `Python`_ 3.4 or above
 * Python `Virtualenv`_ and `Pip`_
-* `PostgreSQL`_ 9.1 or above, with postgis extension
+* `PostgreSQL`_ 9.1 or above, with `PostGIS`_ extension
+* `GDAL`_ with development headers
 * `Node.js`_
 * `npm`_
 
@@ -29,6 +30,7 @@ You need the following libraries and/or programs:
 .. _Pip: https://packaging.python.org/tutorials/installing-packages/#ensure-pip-setuptools-and-wheel-are-up-to-date
 .. _PostgreSQL: https://www.postgresql.org
 .. _PostGIS: https://postgis.net/
+.. _GDAL: https://www.gdal.org/
 .. _Node.js: http://nodejs.org/
 .. _npm: https://www.npmjs.com/
 
@@ -280,18 +282,3 @@ There are no specific commands for the project. See
 ``python src/manage.py --help``.
 
 .. _Django framework commands: https://docs.djangoproject.com/en/dev/ref/django-admin/#available-commands
-
-
-Typical installation errors
-===========================
-l. **Could not find the GDAL library**
-GDAL library is used by GeoDjango. It can be installed separately.
-
-For Ubuntu OS:
-Use external repository UbuntuGIS and install GDAL from it:
-
-   .. code-block:: bash
-
-       $ sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable
-       $ sudo apt-get update
-       $ sudo apt-get install python-gdal
