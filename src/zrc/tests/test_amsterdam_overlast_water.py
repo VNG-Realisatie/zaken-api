@@ -2,6 +2,7 @@ from django.test import override_settings
 
 from dateutil import parser
 from rest_framework.test import APITestCase
+from zds_client.tests.mocks import mock_client
 from zds_schema.constants import VertrouwelijkheidsAanduiding
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
@@ -96,16 +97,29 @@ class Application:
     def registreer_domein_data(self):
         zaak_uuid = self.references['zaak_url'].rsplit('/')[-1]
         url = get_operation_url('zaakeigenschap_create', zaak_uuid=zaak_uuid)
-        self.client.post(url, {
-            'zaak': self.references['zaak_url'],
-            'eigenschap': EIGENSCHAP_OBJECTTYPE,
-            'waarde': 'overlast_water',
-        })
-        self.client.post(url, {
-            'zaak': self.references['zaak_url'],
-            'eigenschap': EIGENSCHAP_NAAM_BOOT,
-            'waarde': TEST_DATA['waternet_naam_boot'],
-        })
+
+        responses = {
+            EIGENSCHAP_OBJECTTYPE: {
+                'url': EIGENSCHAP_OBJECTTYPE,
+                'naam': 'melding_type',
+            },
+            EIGENSCHAP_NAAM_BOOT: {
+                'url': EIGENSCHAP_NAAM_BOOT,
+                'naam': 'waternet_naam_boot',
+            }
+        }
+
+        with mock_client(responses):
+            self.client.post(url, {
+                'zaak': self.references['zaak_url'],
+                'eigenschap': EIGENSCHAP_OBJECTTYPE,
+                'waarde': 'overlast_water',
+            })
+            self.client.post(url, {
+                'zaak': self.references['zaak_url'],
+                'eigenschap': EIGENSCHAP_NAAM_BOOT,
+                'waarde': TEST_DATA['waternet_naam_boot'],
+            })
 
     def registreer_klantcontact(self):
         url = get_operation_url('klantcontact_create')

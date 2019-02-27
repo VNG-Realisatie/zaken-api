@@ -1,21 +1,30 @@
 import uuid
 from datetime import date
 
+from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
-from zds_schema.constants import RolOmschrijving, RolTypes
+import isodate
+from zds_schema.constants import (
+    Archiefnominatie, Archiefstatus, BrondatumArchiefprocedureAfleidingswijze,
+    RolOmschrijving, RolTypes, ZaakobjectTypes
+)
 from zds_schema.descriptors import GegevensGroepType
 from zds_schema.fields import (
     DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
-from zds_schema.models import APIMixin
+from zds_schema.models import APICredential, APIMixin
 from zds_schema.validators import alphanumeric_excluding_diacritic
 
-from .constants import BetalingsIndicatie, ZaakobjectTypes
+from zrc.utils import parse_isodatetime
+from zrc.utils.exceptions import DetermineProcessEndDateException
+
+from .constants import BetalingsIndicatie
 
 
 class Zaak(APIMixin, models.Model):
@@ -39,7 +48,7 @@ class Zaak(APIMixin, models.Model):
     # niet ondersteund).
     hoofdzaak = models.ForeignKey(
         'self', limit_choices_to={'hoofdzaak__isnull': True},
-        null=True, blank=True, on_delete=models.PROTECT,
+        null=True, blank=True, on_delete=models.CASCADE,
         related_name='deelzaken', verbose_name='is deelzaak van',
         help_text=_("De verwijzing naar de ZAAK, waarom verzocht is door de "
                     "initiator daarvan, die behandeld wordt in twee of meer "
@@ -120,11 +129,6 @@ class Zaak(APIMixin, models.Model):
         help_text=_("Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.")
     )
 
-    resultaattoelichting = models.TextField(
-        _("resultaattoelichting"), blank=True,
-        help_text=_("Een toelichting op wat het resultaat van de zaak inhoudt.")
-    )
-
     betalingsindicatie = models.CharField(
         _("betalingsindicatie"), max_length=20, blank=True,
         choices=BetalingsIndicatie.choices,
@@ -163,7 +167,7 @@ class Zaak(APIMixin, models.Model):
     )
     opschorting_reden = models.CharField(
         _("reden opschorting"), max_length=200, blank=True,
-        help_text=_("Omschrijving van de reden voor het opschorten van de 306behandeling van de zaak.")
+        help_text=_("Omschrijving van de reden voor het opschorten van de behandeling van de zaak.")
     )
     opschorting = GegevensGroepType({
         'indicatie': opschorting_indicatie,
@@ -172,15 +176,31 @@ class Zaak(APIMixin, models.Model):
 
     selectielijstklasse = models.URLField(
         _("selectielijstklasse"), blank=True,
-        help_text=_("URL-referentie naar de categorie in de gehanteerde "
-                    "'Selectielijst Archiefbescheiden' die, gezien het zaaktype "
-                    "en het resultaattype van de zaak, bepalend is voor het "
-                    "archiefregime van de zaak.")
+        help_text=_("URL-referentie naar de categorie in de gehanteerde 'Selectielijst Archiefbescheiden' die, gezien "
+                    "het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak.")
     )
 
     relevante_andere_zaken = ArrayField(
         models.URLField(_("URL naar andere zaak"), max_length=255),
         blank=True, default=list
+    )
+
+    # Archiving
+    archiefnominatie = models.CharField(
+        _("archiefnominatie"), max_length=40, null=True, blank=True,
+        choices=Archiefnominatie.choices,
+        help_text=_("Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.")
+    )
+    archiefstatus = models.CharField(
+        _("archiefstatus"), max_length=40,
+        choices=Archiefstatus.choices, default=Archiefstatus.nog_te_archiveren,
+        help_text=_("Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.")
+    )
+    archiefactiedatum = models.DateField(
+        _("archiefactiedatum"), null=True, blank=True,
+        help_text=_("De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
+                    "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
+                    "een RESULTAAT aan deze ZAAK indien nog leeg.")
     )
 
     class Meta:
@@ -204,6 +224,107 @@ class Zaak(APIMixin, models.Model):
     def current_status_uuid(self):
         status = self.status_set.order_by('-datum_status_gezet').first()
         return status.uuid if status else None
+
+    def get_brondatum(self, afleidingswijze: str, datum_kenmerk: str=None, objecttype: str=None,
+                      procestermijn: str=None) -> date:
+        """
+        To calculate the Archiefactiedatum, we first need the "brondatum" which is like the start date of the storage
+        period.
+
+        :param afleidingswijze:
+            One of the `Afleidingswijze` choices.
+        :param datum_kenmerk:
+            A `string` representing an arbitrary attribute name. Currently only needed when `afleidingswijze` is
+            `eigenschap` or `zaakobject`.
+        :param objecttype:
+            A `string` representing an arbitrary objecttype name. Currently only needed when `afleidingswijze` is
+            `zaakobject`.
+        :param procestermijn:
+            A `string` representing an ISO8601 period that is considered the process term of the Zaak. Currently only
+            needed when `afleidingswijze` is `termijn`.
+        :return:
+            A specific date that marks the start of the storage period, or `None`.
+        """
+        if afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.afgehandeld:
+            return self.einddatum
+
+        elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.hoofdzaak:
+            # TODO: Document that hoofdzaak can not an external zaak
+            return self.hoofdzaak.einddatum if self.hoofdzaak else None
+
+        elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.eigenschap:
+            if not datum_kenmerk:
+                raise DetermineProcessEndDateException(
+                    _('Geen datumkenmerk aanwezig om de eigenschap te achterhalen voor het bepalen van de brondatum.'))
+
+            eigenschap = self.zaakeigenschap_set.filter(_naam=datum_kenmerk).first()
+            if eigenschap:
+                if not eigenschap.waarde:
+                    return None
+
+                try:
+                    return parse_isodatetime(eigenschap.waarde).date()
+                except ValueError:
+                    raise DetermineProcessEndDateException(
+                        _('Geen geldige datumwaarde in eigenschap "{}": {}').format(datum_kenmerk, eigenschap.waarde))
+            else:
+                raise DetermineProcessEndDateException(
+                    _('Geen eigenschap gevonden die overeenkomt met het datumkenmerk "{}" voor het bepalen van de '
+                      'brondatum.').format(datum_kenmerk))
+
+        elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.ander_datumkenmerk:
+            # The brondatum, and therefore the archiefactiedatum, needs to be determined manually.
+            return None
+
+        elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.zaakobject:
+            if not objecttype:
+                raise DetermineProcessEndDateException(
+                    _('Geen objecttype aanwezig om het zaakobject te achterhalen voor het bepalen van de brondatum.'))
+            if not datum_kenmerk:
+                raise DetermineProcessEndDateException(
+                    _('Geen datumkenmerk aanwezig om het attribuut van het zaakobject te achterhalen voor het bepalen '
+                      'van de brondatum.'))
+
+            for zaak_object in self.zaakobject_set.filter(object_type=objecttype):
+                object = zaak_object._get_object()
+                if datum_kenmerk in object:
+                    try:
+                        return parse_isodatetime(object[datum_kenmerk]).date()
+                    except ValueError:
+                        raise DetermineProcessEndDateException(
+                            _('Geen geldige datumwaarde in attribuut "{}": {}').format(
+                                datum_kenmerk, object[datum_kenmerk]))
+
+            raise DetermineProcessEndDateException(
+                _('Geen attribuut gevonden die overeenkomt met het datumkenmerk "{}" voor het bepalen van de '
+                  'brondatum.').format(datum_kenmerk))
+
+        elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.termijn:
+            if self.einddatum is None:
+                # TODO: Not sure if we should raise an error instead.
+                return None
+            if procestermijn is None:
+                raise DetermineProcessEndDateException(
+                    _('Geen procestermijn aanwezig voor het bepalen van de brondatum.'))
+            try:
+                return self.einddatum + isodate.parse_duration(procestermijn)
+            except (ValueError, TypeError) as e:
+                raise DetermineProcessEndDateException(
+                    _('Geen geldige periode in procestermijn: {}').format(procestermijn))
+
+        elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.gerelateerde_zaak:
+            # TODO: Determine what this means...
+            raise NotImplementedError
+
+        elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.ingangsdatum_besluit:
+            # TODO: Relation from Zaak to Besluit is not implemented yet...
+            raise NotImplementedError
+
+        elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.vervaldatum_besluit:
+            # TODO: Relation from Zaak to Besluit is not implemented yet...
+            raise NotImplementedError
+
+        raise ValueError(f'Onbekende "Afleidingswijze": {afleidingswijze}')
 
 
 class Status(models.Model):
@@ -237,6 +358,32 @@ class Status(models.Model):
 
     def __str__(self):
         return "Status op {}".format(self.datum_status_gezet)
+
+
+class Resultaat(models.Model):
+    """
+    Het behaalde RESULTAAT is een koppeling tussen een RESULTAATTYPE en een
+    ZAAK.
+    """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
+    # relaties
+    zaak = models.OneToOneField('Zaak', on_delete=models.CASCADE)
+    resultaat_type = models.URLField()
+
+    toelichting = models.TextField(
+        max_length=1000, blank=True,
+        help_text='Een toelichting op wat het resultaat van de zaak inhoudt.'
+    )
+
+    class Meta:
+        verbose_name = 'resultaat'
+        verbose_name_plural = 'resultaten'
+
+    def __str__(self):
+        return "Resultaat ({})".format(self.uuid)
 
 
 class Rol(models.Model):
@@ -294,6 +441,22 @@ class ZaakObject(models.Model):
         verbose_name = 'zaakobject'
         verbose_name_plural = 'zaakobjecten'
 
+    def _get_object(self) -> dict:
+        """
+        Retrieve the `Object` specified as URL in `ZaakObject.object`.
+
+        :return: A `dict` representing the object.
+        """
+        if not hasattr(self, '_object'):
+            object_url = self.object
+            self._object = None
+            if object_url:
+                Client = import_string(settings.ZDS_CLIENT_CLASS)
+                client = Client.from_url(object_url)
+                client.auth = APICredential.get_auth(object_url)
+                self._object = client.retrieve(self.object_type.lower(), url=object_url)
+        return self._object
+
 
 class ZaakEigenschap(models.Model):
     """
@@ -315,10 +478,14 @@ class ZaakEigenschap(models.Model):
     )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     eigenschap = models.URLField(help_text="URL naar de eigenschap in het ZTC")
-    # TODO - validatie _zou kunnen_ de configuratie van ZTC uitlezen om input
+    # TODO - validatie _kan eventueel_ de configuratie van ZTC uitlezen om input
     # te valideren, en per eigenschap een specifiek datatype terug te geven.
     # In eerste instantie laten we het aan de client over om validatie en
     # type-conversie te doen.
+    _naam = models.CharField(
+        max_length=20,
+        help_text=_("De naam van de EIGENSCHAP (overgenomen uit ZTC).")
+    )
     waarde = models.TextField()
 
     class Meta:

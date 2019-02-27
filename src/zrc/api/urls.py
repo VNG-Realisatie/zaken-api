@@ -5,8 +5,9 @@ from zds_schema import routers
 from zds_schema.schema import SchemaView
 
 from .viewsets import (
-    KlantContactViewSet, RolViewSet, StatusViewSet, ZaakEigenschapViewSet,
-    ZaakInformatieObjectViewSet, ZaakObjectViewSet, ZaakViewSet
+    KlantContactViewSet, ResultaatViewSet, RolViewSet, StatusViewSet,
+    ZaakEigenschapViewSet, ZaakInformatieObjectViewSet, ZaakObjectViewSet,
+    ZaakViewSet
 )
 
 router = routers.DefaultRouter()
@@ -18,6 +19,7 @@ router.register('statussen', StatusViewSet)
 router.register('zaakobjecten', ZaakObjectViewSet)
 router.register('klantcontacten', KlantContactViewSet)
 router.register('rollen', RolViewSet)
+router.register('resultaten', ResultaatViewSet)
 
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path

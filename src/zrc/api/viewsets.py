@@ -13,19 +13,19 @@ from zds_schema.utils import lookup_kwargs_to_filters
 from zds_schema.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakObject
+    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    ZaakInformatieObject, ZaakObject
 )
 
-from .filters import RolFilter, StatusFilter, ZaakFilter
+from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
 from .permissions import ZaaktypePermission
 from .scopes import (
-    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
-    SCOPE_ZAKEN_CREATE
+    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
+    SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 )
 from .serializers import (
-    KlantContactSerializer, RolSerializer, StatusSerializer,
-    ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
+    KlantContactSerializer, ResultaatSerializer, RolSerializer,
+    StatusSerializer, ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
     ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
 
@@ -35,13 +35,13 @@ logger = logging.getLogger(__name__)
 class ZaakViewSet(GeoMixin,
                   SearchMixin,
                   CheckQueryParamsMixin,
-                  mixins.CreateModelMixin,
-                  mixins.ListModelMixin,
-                  mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  viewsets.GenericViewSet):
+                  viewsets.ModelViewSet):
     """
     Opvragen en bewerken van ZAAKen.
+
+    Een zaak mag (in principe) niet meer gewijzigd worden als de
+    `archiefstatus` een andere status heeft dan "nog_te_archiveren". Voor
+    praktische redenen is er geen harde validatie regel aan de provider kant.
 
     create:
     Maak een ZAAK aan.
@@ -49,10 +49,18 @@ class ZaakViewSet(GeoMixin,
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
 
-    Er wordt gevalideerd op:
-    - geldigheid URL naar zaaktype
-    - laatsteBetaaldatum mag niet in de toekomst liggen
-    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
+    **Er wordt gevalideerd op**:
+    - `zaaktype` moet een geldige URL zijn.
+    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
+    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
+      "nvt" is.
+    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
+      waarde "nog_te_archiveren" heeft.
+    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
+      waarde "nog_te_archiveren" heeft.
+    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"
+      hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut
+      `status` de waarde "gearchiveerd" heeft.
 
     list:
     Geef een lijst van ZAAKen.
@@ -60,8 +68,8 @@ class ZaakViewSet(GeoMixin,
     Optioneel kan je de queryparameters gebruiken om zaken te filteren.
 
     **Opmerkingen**
-    - je krijgt enkel zaken terug van de zaaktypes die in het
-      autorisatie-JWT vervat zitten.
+    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
+      vervat zitten.
 
     retrieve:
     Haal de details van een ZAAK op.
@@ -70,31 +78,63 @@ class ZaakViewSet(GeoMixin,
     Werk een zaak bij.
 
     **Er wordt gevalideerd op**
-    - geldigheid URL naar zaaktype
-    - laatsteBetaaldatum mag niet in de toekomst liggen
-    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
+    - `zaaktype` moet een geldige URL zijn.
+    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
+    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
+      "nvt" is.
+    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
+      waarde "nog_te_archiveren" heeft.
+    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
+      waarde "nog_te_archiveren" heeft.
+    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"
+      hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut
+      `status` de waarde "gearchiveerd" heeft.
 
     **Opmerkingen**
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
-      vervat zitten
+      vervat zitten.
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
-      toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
+      toe te voegen die NIET de eindstatus is.
+      Zie de `Status` resource.
 
     partial_update:
     Werk een zaak bij.
 
     **Er wordt gevalideerd op**
-    - geldigheid URL naar zaaktype
-    - laatsteBetaaldatum mag niet in de toekomst liggen
-    - laatsteBetaaldatum nag niet gezet worden als de betalingsindicatie "nvt" is
+    - `zaaktype` moet een geldige URL zijn.
+    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
+    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
+      "nvt" is.
+    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
+      waarde "nog_te_archiveren" heeft.
+    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
+      waarde "nog_te_archiveren" heeft.
+    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"
+      hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut
+      `status` de waarde "gearchiveerd" heeft.
 
     **Opmerkingen**
     - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
-      vervat zitten
+      vervat zitten.
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
       toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
+
+    delete:
+    Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.
+
+    **De gerelateerde resources zijn hierbij**
+    - `zaak` - de deelzaken van de verwijderde hoofzaak
+    - `status` - alle statussen van de verwijderde zaak
+    - `resultaat` - het resultaat van de verwijderde zaak
+    - `rol` - alle rollen bij de zaak
+    - `zaakobject` - alle zaakobjecten bij de zaak
+    - `zaakeigenschap` - alle eigenschappen van de zaak
+    - `zaakkenmerk` - alle kenmerken van de zaak
+    - `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook
+      https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
+    - `klantcontact` - alle klantcontacten bij een zaak
     """
     queryset = Zaak.objects.prefetch_related('deelzaken')
     serializer_class = ZaakSerializer
@@ -110,6 +150,7 @@ class ZaakViewSet(GeoMixin,
         'create': SCOPE_ZAKEN_CREATE,
         'update': SCOPE_ZAKEN_BIJWERKEN,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
+        'delete': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
 
     def get_queryset(self):
@@ -170,7 +211,7 @@ class StatusViewSet(CheckQueryParamsMixin,
     Voeg een nieuwe STATUS voor een ZAAK toe.
 
     **Er wordt gevalideerd op**
-    - geldigheid URL naar de zaak
+    - geldigheid URL naar de ZAAK
     - geldigheid URL naar het STATUSTYPE
     - indien het de eindstatus betreft, dan moet het attribuut
       `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die aan
@@ -351,4 +392,58 @@ class RolViewSet(CheckQueryParamsMixin,
     permission_classes = (ActionScopesRequired,)
     required_scopes = {
         'create': SCOPE_ZAKEN_CREATE
+    }
+
+
+class ResultaatViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet):
+    """
+    Opvragen en beheren van resultaten.
+
+    list:
+    Geef een lijst van RESULTAATen van ZAAKen.
+
+    Optioneel kan je de queryparameters gebruiken om de resultaten te
+    filteren.
+
+    retrieve:
+    Haal de details van het RESULTAAT op.
+
+    create:
+    Voeg een RESULTAAT voor een ZAAK toe.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de ZAAK
+    - geldigheid URL naar het RESULTAATTYPE
+
+    update:
+    Wijzig het RESULTAAT van een ZAAK.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de ZAAK
+    - geldigheid URL naar het RESULTAATTYPE
+
+    partial_update:
+    Wijzig het RESULTAAT van een ZAAK.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de ZAAK
+    - geldigheid URL naar het RESULTAATTYPE
+
+    destroy:
+    Verwijder het RESULTAAT van een ZAAK.
+
+    """
+    queryset = Resultaat.objects.all()
+    serializer_class = ResultaatSerializer
+    filterset_class = ResultaatFilter
+    lookup_field = 'uuid'
+
+    permission_classes = (ActionScopesRequired,)
+    required_scopes = {
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+        'update': SCOPE_ZAKEN_BIJWERKEN,
+        'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }

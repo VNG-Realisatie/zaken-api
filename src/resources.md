@@ -16,6 +16,17 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | datumtijd | De datum en het tijdstip waarop het KLANTCONTACT begint | string | ja | C​R​U​D |
 | kanaal | Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt | string | nee | C​R​U​D |
 
+## Resultaat
+
+Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/resultaat)
+
+| Attribuut | Omschrijving | Type | Verplicht | CRUD* |
+| --- | --- | --- | --- | --- |
+| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| zaak |  | string | ja | C​R​U​D |
+| resultaatType |  | string | ja | C​R​U​D |
+| toelichting | Een toelichting op wat het resultaat van de zaak inhoudt. | string | nee | C​R​U​D |
+
 ## Rol
 
 Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/rol)
@@ -84,7 +95,6 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | communicatiekanaal | Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen. | string | nee | C​R​U​D |
 | productenOfDiensten | De producten en/of diensten die door de zaak worden voortgebracht. Dit zijn URLs naar de resources zoals die door de producten- en dienstencatalogus-API wordt ontsloten. De producten/diensten moeten bij het zaaktype vermeld zijn. | array | nee | C​R​U​D |
 | vertrouwelijkheidaanduiding | Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is. Optioneel - indien geen waarde gekozen wordt, dan wordt de waarde van het ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een waarde teruggeeft. | string | nee | C​R​U​D |
-| resultaattoelichting | Een toelichting op wat het resultaat van de zaak inhoudt. | string | nee | C​R​U​D |
 | betalingsindicatie | Indicatie of de, met behandeling van de zaak gemoeide, kosten betaald zijn door de desbetreffende betrokkene.
 
 De mapping van waarden naar weergave is als volgt:
@@ -101,6 +111,10 @@ De mapping van waarden naar weergave is als volgt:
 | relevanteAndereZaken |  | array | nee | C​R​U​D |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | kenmerken | Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`. | array | nee | C​R​U​D |
+| archiefnominatie | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. | string | nee | C​R​U​D |
+| archiefstatus | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. | string | nee | C​R​U​D |
+| archiefactiedatum | De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan deze ZAAK indien nog leeg. | string | nee | C​R​U​D |
+| resultaat | Indien geen resultaat bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## ZaakInformatieObject
 
@@ -119,6 +133,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
 | eigenschap | URL naar de eigenschap in het ZTC | string | ja | C​R​U​D |
+| naam | De naam van de EIGENSCHAP (overgenomen uit ZTC). | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | waarde |  | string | ja | C​R​U​D |
 
 

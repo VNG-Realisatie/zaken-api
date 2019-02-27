@@ -1,14 +1,17 @@
+import logging
+
 from django.conf import settings
 from django.db import transaction
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
+import isodate
 import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
-from zds_schema.constants import RolOmschrijving
+from zds_schema.constants import Archiefstatus, RolOmschrijving
 from zds_schema.models import APICredential
 from zds_schema.serializers import (
     GegevensGroepSerializer, NestedGegevensGroepMixin,
@@ -21,15 +24,18 @@ from zds_schema.validators import (
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
-    KlantContact, Rol, Status, Zaak, ZaakEigenschap, ZaakInformatieObject,
-    ZaakKenmerk, ZaakObject
+    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
+from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from .auth import get_zrc_auth, get_ztc_auth
 from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
 )
+
+logger = logging.getLogger(__name__)
 
 
 class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
@@ -77,7 +83,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         read_only=True,
         view_name='status-detail',
         lookup_url_kwarg='uuid',
-        help_text="Indien geen status bekend is, dan is de waarde 'null'"
+        help_text=_("Indien geen status bekend is, dan is de waarde 'null'")
     )
 
     kenmerken = ZaakKenmerkSerializer(
@@ -108,6 +114,14 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         lookup_field='uuid'
     )
 
+    resultaat = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        view_name='resultaat-detail',
+        lookup_url_kwarg='uuid',
+        lookup_field='uuid',
+        help_text=_("Indien geen resultaat bekend is, dan is de waarde 'null'")
+    )
+
     class Meta:
         model = Zaak
         fields = (
@@ -128,7 +142,6 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             # TODO: add shape validator once we know the shape
             'producten_of_diensten',
             'vertrouwelijkheidaanduiding',
-            'resultaattoelichting',
             'betalingsindicatie',
             'betalingsindicatie_weergave',
             'laatste_betaaldatum',
@@ -145,7 +158,14 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
 
             # Writable inline resource, as opposed to eigenschappen for demo
             # purposes. Eventually, we need to choose one form.
-            'kenmerken'
+            'kenmerken',
+
+            # Archiving
+            'archiefnominatie',
+            'archiefstatus',
+            'archiefactiedatum',
+
+            'resultaat',
         )
         extra_kwargs = {
             'url': {
@@ -210,6 +230,26 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             self._zaaktype = client.request(zaaktype_url, 'zaaktype')
         return self._zaaktype
 
+    def _get_information_objects(self) -> list:
+        if not hasattr(self, '_information_objects'):
+            self._information_objects = []
+
+            if self.instance:
+                Client = import_string(settings.ZDS_CLIENT_CLASS)
+
+                zios = self.instance.zaakinformatieobject_set.all()
+                for zio in zios:
+                    io_url = zio.informatieobject
+                    client = Client.from_url(io_url)
+                    client.auth = APICredential.get_auth(
+                        io_url,
+                        scopes=['scopes.documenten.lezen']
+                    )
+                    informatieobject = client.request(io_url, 'enkelvoudiginformatieobject')
+                    self._information_objects.append(informatieobject)
+
+        return self._information_objects
+
     def validate(self, attrs):
         super().validate(attrs)
 
@@ -221,7 +261,8 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             )}, code='betaling-nvt')
 
         # check that productenOfDiensten are part of the ones on the zaaktype
-        zaaktype = attrs.get('zaaktype', self.instance.zaaktype if self.instance else None)
+        default_zaaktype = self.instance.zaaktype if self.instance else None
+        zaaktype = attrs.get('zaaktype', default_zaaktype)
         assert zaaktype, "Should not have passed validation - a zaaktype is needed"
         producten_of_diensten = attrs.get('producten_of_diensten')
         if producten_of_diensten:
@@ -231,6 +272,29 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                     'producten_of_diensten': _("Niet alle producten/diensten komen voor in "
                                                "de producten/diensten op het zaaktype")
                 }, code='invalid-products-services')
+
+        # Archiving
+        default_archiefstatus = self.instance.archiefstatus if self.instance else Archiefstatus.nog_te_archiveren
+        archiefstatus = attrs.get('archiefstatus', default_archiefstatus) != Archiefstatus.nog_te_archiveren
+        if archiefstatus:
+            ios = self._get_information_objects()
+            for io in ios:
+                if io['status'] != 'gearchiveerd':
+                    raise serializers.ValidationError({
+                        'archiefstatus',
+                        _("Er zijn gerelateerde informatieobjecten waarvan de `status` nog niet gelijk is aan "
+                          "`gearchiveerd`. Dit is een voorwaarde voor het zetten van de `archiefstatus` op een andere "
+                          "waarde dan `nog_te_archiveren`.")
+                    }, code='documents-not-archived')
+
+            for attr in ['archiefnominatie', 'archiefactiedatum']:
+                if not attrs.get(attr, getattr(self.instance, attr) if self.instance else None):
+                    raise serializers.ValidationError({
+                        attr: _("Moet van een waarde voorzien zijn als de 'Archiefstatus' een waarde heeft anders dan "
+                                "'nog_te_archiveren'.")
+                    }, code=f'{attr}-not-set')
+        # End archiving
+
         return attrs
 
     def create(self, validated_data: dict):
@@ -388,6 +452,7 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
             'url',
             'zaak',
             'eigenschap',
+            'naam',
             'waarde',
         )
         extra_kwargs = {
@@ -396,8 +461,33 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
             },
             'zaak': {
                 'lookup_field': 'uuid',
+            },
+            'naam': {
+                'source': '_naam',
+                'read_only': True,
             }
         }
+
+    def _get_eigenschap(self, eigenschap_url):
+        if not hasattr(self, '_eigenschap'):
+            self._eigenschap = None
+            if eigenschap_url:
+                Client = import_string(settings.ZDS_CLIENT_CLASS)
+                client = Client.from_url(eigenschap_url)
+                client.auth = APICredential.get_auth(
+                    eigenschap_url,
+                    scopes=['zds.scopes.zaaktypes.lezen']
+                )
+                self._eigenschap = client.request(eigenschap_url, 'eigenschap')
+        return self._eigenschap
+
+    def validate(self, attrs):
+        super().validate(attrs)
+
+        eigenschap = self._get_eigenschap(attrs['eigenschap'])
+        attrs['_naam'] = eigenschap['naam']
+
+        return attrs
 
 
 class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
@@ -446,3 +536,106 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'uuid',
             },
         }
+
+
+class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Resultaat
+        fields = (
+            'url',
+            'zaak',
+            'resultaat_type',
+            'toelichting'
+        )
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'zaak': {
+                'lookup_field': 'uuid',
+            },
+            'resultaat_type': {
+                'validators': [
+                    # TODO: Add shape-validator when we know the shape.
+                    URLValidator(get_auth=get_ztc_auth),
+                ],
+            }
+        }
+
+    def _get_resultaat_type(self, resultaat_type_url):
+        if not hasattr(self, '_resultaat_type'):
+            self._resultaat_type = None
+            if resultaat_type_url:
+                Client = import_string(settings.ZDS_CLIENT_CLASS)
+                client = Client.from_url(resultaat_type_url)
+                client.auth = APICredential.get_auth(
+                    resultaat_type_url,
+                    scopes=['zds.scopes.zaaktypes.lezen']
+                )
+                self._resultaat_type = client.request(resultaat_type_url, 'resultaattype')
+        return self._resultaat_type
+
+    def validate(self, attrs):
+        super().validate(attrs)
+
+        zaak = attrs['zaak']
+
+        # Archiving: Use default archiefnominatie
+        zaak_archiefnominatie = zaak.archiefnominatie
+        if not zaak_archiefnominatie:
+            resultaat_type = self._get_resultaat_type(attrs['resultaat_type'])
+            zaak_archiefnominatie = resultaat_type['archiefnominatie']
+        attrs['__archiefnominatie'] = zaak_archiefnominatie
+
+        # Archiving: Calculate archiefactiedatum
+        zaak_archiefactiedatum = zaak.archiefactiedatum
+        if not zaak_archiefactiedatum:
+            resultaat_type = self._get_resultaat_type(attrs['resultaat_type'])
+            archiefactietermijn = resultaat_type['archiefactietermijn']
+
+            if archiefactietermijn:
+                # All fields should be in the response
+                brondatum_archiefprocedure = resultaat_type['brondatumArchiefprocedure']
+                afleidingswijze = brondatum_archiefprocedure['afleidingswijze']
+                datum_kenmerk = brondatum_archiefprocedure['datumkenmerk']
+                objecttype = brondatum_archiefprocedure['objecttype']
+                procestermijn = brondatum_archiefprocedure['procestermijn']
+
+                try:
+                    brondatum = zaak.get_brondatum(afleidingswijze, datum_kenmerk, objecttype, procestermijn)
+                    if brondatum:
+                        zaak_archiefactiedatum = brondatum + isodate.parse_duration(archiefactietermijn)
+                except DetermineProcessEndDateException as e:
+                    raise serializers.ValidationError(e, code='archiefactiedatum-error')
+
+        attrs['__archiefactiedatum'] = zaak_archiefactiedatum
+
+        return attrs
+
+    @transaction.atomic
+    def create(self, validated_data):
+        zaak = validated_data['zaak']
+        zaak__archiefactiedatum = validated_data.pop('__archiefactiedatum', None)
+        zaak__archiefnominatie = validated_data.pop('__archiefnominatie', None)
+
+        result = super().create(validated_data)
+
+        zaak.archiefactiedatum= zaak__archiefactiedatum
+        zaak.archiefnominatie = zaak__archiefnominatie
+        zaak.save(update_fields=('archiefactiedatum', 'archiefnominatie'))
+
+        return result
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        zaak = instance.zaak
+        zaak__archiefactiedatum = validated_data.pop('__archiefactiedatum', None)
+        zaak__archiefnominatie = validated_data.pop('__archiefnominatie', None)
+
+        result = super().update(instance, validated_data)
+
+        zaak.archiefactiedatum= zaak__archiefactiedatum
+        zaak.archiefnominatie = zaak__archiefnominatie
+        zaak.save(update_fields=('archiefactiedatum', 'archiefnominatie'))
+
+        return result

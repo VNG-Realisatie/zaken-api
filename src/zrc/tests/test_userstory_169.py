@@ -13,12 +13,11 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from zds_schema.constants import (
-    RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding
+    RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
 from zds_schema.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
-from zrc.datamodel.constants import ZaakobjectTypes
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 

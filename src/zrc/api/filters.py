@@ -1,16 +1,19 @@
 from zds_schema.filtersets import FilterSet
 
-from zrc.datamodel.models import Rol, Status, Zaak
+from zrc.datamodel.models import Resultaat, Rol, Status, Zaak
 
 
 class ZaakFilter(FilterSet):
     class Meta:
         model = Zaak
-        fields = (
-            'identificatie',
-            'bronorganisatie',
-            'zaaktype',
-        )
+        fields = {
+            'identificatie': ['exact', ],
+            'bronorganisatie': ['exact', ],
+            'zaaktype': ['exact', ],
+            'archiefnominatie': ['exact', 'in', ],
+            'archiefactiedatum': ['exact', 'lt', 'gt', ],
+            'archiefstatus': ['exact', 'in', ]
+        }
 
 
 class RolFilter(FilterSet):
@@ -30,4 +33,13 @@ class StatusFilter(FilterSet):
         fields = (
             'zaak',
             'status_type',
+        )
+
+
+class ResultaatFilter(FilterSet):
+    class Meta:
+        model = Resultaat
+        fields = (
+            'zaak',
+            'resultaat_type',
         )

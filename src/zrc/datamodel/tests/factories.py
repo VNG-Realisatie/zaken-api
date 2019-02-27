@@ -30,6 +30,7 @@ class ZaakInformatieObjectFactory(factory.django.DjangoModelFactory):
 class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     eigenschap = factory.Faker('url')
+    _naam = factory.Faker('word')
     waarde = factory.Faker('word')
 
     class Meta:
@@ -62,3 +63,20 @@ class StatusFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'datamodel.Status'
+
+
+class ResultaatFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    resultaat_type = factory.Faker('url')
+
+    class Meta:
+        model = 'datamodel.Resultaat'
+
+
+class KlantContactFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    identificatie = factory.Sequence(lambda n: f'{n}')
+    datumtijd = factory.Faker('date_time_this_month', tzinfo=timezone.utc)
+
+    class Meta:
+        model = 'datamodel.KlantContact'
