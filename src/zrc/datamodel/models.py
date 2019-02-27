@@ -314,15 +314,15 @@ class Zaak(APIMixin, models.Model):
 
         elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.gerelateerde_zaak:
             # TODO: Determine what this means...
-            raise NotImplemented
+            raise NotImplementedError
 
         elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.ingangsdatum_besluit:
             # TODO: Relation from Zaak to Besluit is not implemented yet...
-            raise NotImplemented
+            raise NotImplementedError
 
         elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.vervaldatum_besluit:
             # TODO: Relation from Zaak to Besluit is not implemented yet...
-            raise NotImplemented
+            raise NotImplementedError
 
         raise ValueError(f'Onbekende "Afleidingswijze": {afleidingswijze}')
 

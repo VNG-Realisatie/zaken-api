@@ -2,6 +2,36 @@
 Wijzigingen
 ===========
 
+0.10.0 (2019-02-27)
+===================
+
+Archiving feature release
+
+Set the ``Resultaat`` for a ``Zaak`` to trigger the archiving machinery.
+
+* Requires the ZTC to be configured correctly.
+* Requires ZTC 0.9.0 or higher
+
+Changes
+-------
+
+* added ``Resultaat`` resource
+* added ``Zaak.archiefnominatie`` + filter params
+* added ``Zaak.archiefactiedatum`` + filter params
+* added ``Zaak.archiefstatus`` + filter params
+* added ``Zaak.resultaat`` URL-reference
+* added read-only ``Eigenschap.naam`` (taken from ZTC)
+* added explicit ``duration`` format to duration fields
+
+Notes
+-----
+
+The following ``afleidingswijze``s for ``brondatum`` are not implemented yet:
+
+* ``gerelateerde_zaak``
+* ``ingangsdatum_besluit``
+* ``vervaldatum_besluit``
+
 0.9.2 (2019-02-07)
 ==================
 
