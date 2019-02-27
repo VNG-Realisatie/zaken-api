@@ -6062,7 +6062,8 @@
                 "duur": {
                     "title": "Duur",
                     "description": "Het aantal werkbare dagen waarmee de doorlooptijd van de behandeling van de ZAAK is verlengd (of verkort) ten opzichte van de eerder gecommuniceerde doorlooptijd.",
-                    "type": "string"
+                    "type": "string",
+                    "format": "duration"
                 }
             }
         },

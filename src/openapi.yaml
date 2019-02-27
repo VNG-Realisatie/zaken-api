@@ -5078,6 +5078,7 @@ components:
             van de ZAAK is verlengd (of verkort) ten opzichte van de eerder gecommuniceerde
             doorlooptijd.
           type: string
+          format: duration
     Opschorting:
       title: Opschorting
       description: Gegevens omtrent het tijdelijk opschorten van de behandeling van
