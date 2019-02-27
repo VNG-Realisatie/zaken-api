@@ -4618,6 +4618,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.verwijderen"
+                        ]
+                    }
                 ]
             },
             "parameters": [

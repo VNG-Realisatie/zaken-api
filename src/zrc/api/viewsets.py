@@ -121,7 +121,7 @@ class ZaakViewSet(GeoMixin,
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
       toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
 
-    delete:
+    destroy:
     Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.
 
     **De gerelateerde resources zijn hierbij**
@@ -150,7 +150,7 @@ class ZaakViewSet(GeoMixin,
         'create': SCOPE_ZAKEN_CREATE,
         'update': SCOPE_ZAKEN_BIJWERKEN,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
-        'delete': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+        'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
 
     def get_queryset(self):
