@@ -2,6 +2,20 @@
 Wijzigingen
 ===========
 
+0.10.2 (2019-03-05)
+===================
+
+Bugfix release
+
+* Bumped gemma-zds-client via zds-schema
+
+0.10.1 (2019-02-27)
+===================
+
+Bugfix release
+
+* Fixed operation/scope mapping
+
 0.10.0 (2019-02-27)
 ===================
 
