@@ -6,7 +6,7 @@ pytz
 raven
 markdown
 
-Django
+Django==2.0.13
 django-axes
 django-choices
 django-cors-middleware
