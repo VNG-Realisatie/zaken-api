@@ -2,6 +2,25 @@
 Wijzigingen
 ===========
 
+0.11.0 (2019-03-08)
+===================
+
+Added pagination to the ``/zaken`` endpoint
+
+Breaking changes:
+-----------------
+
+* Response body of ``/zaken`` and ``/zaken/_zoek`` endpoints is now on object
+  instead of a list. The list with results can be found in the ``results`` key.
+* Pagination defaults to a 100 objects, so to read all results, you'll have to
+  fetch the other pages and/or supply a bigger ``page_size`` parameter.
+
+Minor changes
+-------------
+
+* Updated to security release of Django
+* Included URL to the EUPL-1.2 License in the API documentation
+
 0.10.2 (2019-03-05)
 ===================
 
