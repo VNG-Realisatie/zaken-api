@@ -2,6 +2,12 @@
 Wijzigingen
 ===========
 
+0.11.1 (2019-03-08)
+===================
+
+Fixed a bug where pagination parameters were incorrectly marked as invalid
+params.
+
 0.11.0 (2019-03-08)
 ===================
 
