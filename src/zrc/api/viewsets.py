@@ -6,7 +6,6 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
 from zds_schema.geo import GeoMixin
 from zds_schema.permissions import ActionScopesRequired
 from zds_schema.search import SearchMixin

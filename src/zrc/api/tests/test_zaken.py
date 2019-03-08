@@ -336,3 +336,33 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertEqual(response.json()['laatsteBetaaldatum'], None)
         zaak.refresh_from_db()
         self.assertIsNone(zaak.laatste_betaaldatum)
+
+    def test_pagination_default(self):
+        zaaktype = 'https://example.com/ztc/api/v1/zaaktypen/1234'
+        ZaakFactory.create_batch(2, zaaktype=zaaktype)
+        token = generate_jwt(scopes=[SCOPE_ZAKEN_ALLES_LEZEN], zaaktypes=[zaaktype])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+        url = reverse(Zaak)
+
+        response = self.client.get(url, **ZAAK_READ_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(response_data['count'], 2)
+        self.assertIsNone(response_data['previous'])
+        self.assertIsNone(response_data['next'])
+
+    def test_pagination_page_param(self):
+        zaaktype = 'https://example.com/ztc/api/v1/zaaktypen/1234'
+        ZaakFactory.create_batch(2, zaaktype=zaaktype)
+        token = generate_jwt(scopes=[SCOPE_ZAKEN_ALLES_LEZEN], zaaktypes=[zaaktype])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+        url = reverse(Zaak)
+
+        response = self.client.get(url, {'page': 1}, **ZAAK_READ_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(response_data['count'], 2)
+        self.assertIsNone(response_data['previous'])
+        self.assertIsNone(response_data['next'])
