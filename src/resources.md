@@ -24,7 +24,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | --- | --- | --- | --- | --- |
 | url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
-| resultaatType |  | string | ja | C​R​U​D |
+| resultaatType | URL naar het resultaattype uit het ZTC. | string | ja | C​R​U​D |
 | toelichting | Een toelichting op wat het resultaat van de zaak inhoudt. | string | nee | C​R​U​D |
 
 ## Rol
@@ -48,7 +48,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | --- | --- | --- | --- | --- |
 | url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
-| statusType |  | string | ja | C​R​U​D |
+| statusType | URL naar het statustype uit het ZTC. | string | ja | C​R​U​D |
 | datumStatusGezet | De datum waarop de ZAAK de status heeft verkregen. | string | ja | C​R​U​D |
 | statustoelichting | Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak. | string | nee | C​R​U​D |
 

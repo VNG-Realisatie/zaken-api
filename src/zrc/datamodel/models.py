@@ -75,7 +75,10 @@ class Zaak(APIMixin, models.Model):
         help_text='Een toelichting op de zaak.'
     )
     zaaktype = models.URLField(
-        help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt")
+        _("zaaktype"),
+        help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt",
+        max_length=1000
+    )
     registratiedatum = models.DateField(
         help_text='De datum waarop de zaakbehandelende organisatie de ZAAK '
                   'heeft geregistreerd. Indien deze niet opgegeven wordt, '
@@ -119,7 +122,7 @@ class Zaak(APIMixin, models.Model):
     )
 
     communicatiekanaal = models.URLField(
-        _("communicatiekanaal"), blank=True,
+        _("communicatiekanaal"), blank=True, max_length=1000,
         help_text=_("Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. "
                     "URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen.")
     )
@@ -175,13 +178,13 @@ class Zaak(APIMixin, models.Model):
     })
 
     selectielijstklasse = models.URLField(
-        _("selectielijstklasse"), blank=True,
+        _("selectielijstklasse"), blank=True, max_length=1000,
         help_text=_("URL-referentie naar de categorie in de gehanteerde 'Selectielijst Archiefbescheiden' die, gezien "
                     "het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak.")
     )
 
     relevante_andere_zaken = ArrayField(
-        models.URLField(_("URL naar andere zaak"), max_length=255),
+        models.URLField(_("URL naar andere zaak"), max_length=1000),
         blank=True, default=list
     )
 
@@ -340,7 +343,10 @@ class Status(models.Model):
     )
     # relaties
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
-    status_type = models.URLField()
+    status_type = models.URLField(
+        _("statustype"), max_length=1000,
+        help_text=_("URL naar het statustype uit het ZTC.")
+    )
 
     # extra informatie
     datum_status_gezet = models.DateTimeField(
@@ -371,7 +377,10 @@ class Resultaat(models.Model):
     )
     # relaties
     zaak = models.OneToOneField('Zaak', on_delete=models.CASCADE)
-    resultaat_type = models.URLField()
+    resultaat_type = models.URLField(
+        _("resultaattype"), max_length=1000,
+        help_text=_("URL naar het resultaattype uit het ZTC.")
+    )
 
     toelichting = models.TextField(
         max_length=1000, blank=True,
@@ -397,7 +406,10 @@ class Rol(models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
-    betrokkene = models.URLField(help_text="Een betrokkene gerelateerd aan een zaak")
+    betrokkene = models.URLField(
+        help_text="Een betrokkene gerelateerd aan een zaak",
+        max_length=1000
+    )
     betrokkene_type = models.CharField(
         max_length=100, choices=RolTypes.choices,
         help_text='Soort betrokkene'
@@ -426,7 +438,10 @@ class ZaakObject(models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
-    object = models.URLField(help_text='URL naar de resource die het OBJECT beschrijft.')
+    object = models.URLField(
+        help_text='URL naar de resource die het OBJECT beschrijft.',
+        max_length=1000
+    )
     relatieomschrijving = models.CharField(
         max_length=80, blank=True,
         help_text='Omschrijving van de betrekking tussen de ZAAK en het OBJECT.'
@@ -477,7 +492,10 @@ class ZaakEigenschap(models.Model):
         help_text="Unieke resource identifier (UUID4)"
     )
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
-    eigenschap = models.URLField(help_text="URL naar de eigenschap in het ZTC")
+    eigenschap = models.URLField(
+        help_text="URL naar de eigenschap in het ZTC",
+        max_length=1000
+    )
     # TODO - validatie _kan eventueel_ de configuratie van ZTC uitlezen om input
     # te valideren, en per eigenschap een specifiek datatype terug te geven.
     # In eerste instantie laten we het aan de client over om validatie en
@@ -523,7 +541,8 @@ class ZaakInformatieObject(models.Model):
     informatieobject = models.URLField(
         "informatieobject",
         help_text="URL-referentie naar het informatieobject in het DRC, waar "
-                  "ook de relatieinformatie opgevraagd kan worden."
+                  "ook de relatieinformatie opgevraagd kan worden.",
+        max_length=1000
     )
 
     class Meta:

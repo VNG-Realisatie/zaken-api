@@ -519,7 +519,7 @@
                     {
                         "name": "resultaatType",
                         "in": "query",
-                        "description": "",
+                        "description": "URL naar het resultaattype uit het ZTC.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2094,7 +2094,7 @@
                     {
                         "name": "statusType",
                         "in": "query",
-                        "description": "",
+                        "description": "URL naar het statustype uit het ZTC.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -5684,10 +5684,11 @@
                     "format": "uri"
                 },
                 "resultaatType": {
-                    "title": "Resultaat type",
+                    "title": "Resultaattype",
+                    "description": "URL naar het resultaattype uit het ZTC.",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 },
                 "toelichting": {
@@ -5724,7 +5725,7 @@
                     "description": "Een betrokkene gerelateerd aan een zaak",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 },
                 "betrokkeneType": {
@@ -5782,10 +5783,11 @@
                     "format": "uri"
                 },
                 "statusType": {
-                    "title": "Status type",
+                    "title": "Statustype",
+                    "description": "URL naar het statustype uit het ZTC.",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 },
                 "datumStatusGezet": {
@@ -5826,7 +5828,7 @@
                     "description": "URL naar de resource die het OBJECT beschrijft.",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 },
                 "relatieomschrijving": {
@@ -6220,7 +6222,7 @@
                     "description": "URL naar het zaaktype in de CATALOGUS waar deze voorkomt",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 },
                 "registratiedatum": {
@@ -6272,7 +6274,7 @@
                     "description": "Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen.",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200
+                    "maxLength": 1000
                 },
                 "productenOfDiensten": {
                     "description": "De producten en/of diensten die door de zaak worden voortgebracht. Dit zijn URLs naar de resources zoals die door de producten- en dienstencatalogus-API wordt ontsloten. De producten/diensten moeten bij het zaaktype vermeld zijn.",
@@ -6337,7 +6339,7 @@
                     "description": "URL-referentie naar de categorie in de gehanteerde 'Selectielijst Archiefbescheiden' die, gezien het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak.",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200
+                    "maxLength": 1000
                 },
                 "hoofdzaak": {
                     "title": "Is deelzaak van",
@@ -6504,7 +6506,7 @@
                     "description": "URL-referentie naar het informatieobject in het DRC, waar ook de relatieinformatie opgevraagd kan worden.",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 }
             }
@@ -6533,7 +6535,7 @@
                     "description": "URL naar de eigenschap in het ZTC",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 },
                 "naam": {
