@@ -2,6 +2,11 @@
 Wijzigingen
 ===========
 
+0.11.2 (2019-03-11)
+===================
+
+Increased URL-length validation from 200 to 1000 characters
+
 0.11.1 (2019-03-08)
 ===================
 
