@@ -11,6 +11,7 @@ django-axes
 django-choices
 django-cors-middleware
 django-markup
+django-solo
 
 djangorestframework
 djangorestframework-gis
