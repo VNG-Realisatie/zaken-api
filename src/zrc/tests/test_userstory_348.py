@@ -6,8 +6,8 @@ from urllib.parse import quote_plus, urlencode
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import Archiefnominatie, Archiefstatus
-from zds_schema.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.constants import Archiefnominatie, Archiefstatus
+from vng_api_common.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN
 from zrc.datamodel.tests.factories import ZaakFactory

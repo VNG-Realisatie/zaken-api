@@ -2,7 +2,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import JWTScopesMixin
+from vng_api_common.tests import JWTScopesMixin
 
 from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN
 from zrc.datamodel.tests.factories import StatusFactory
@@ -17,8 +17,8 @@ class StatusTests(JWTScopesMixin, APITestCase):
     ]
 
     @override_settings(
-        LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+        LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
     def test_filter_statussen_op_zaak(self):
         status1, status2 = StatusFactory.create_batch(2)

@@ -10,16 +10,16 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 import isodate
-from zds_schema.constants import (
+from vng_api_common.constants import (
     Archiefnominatie, Archiefstatus, BrondatumArchiefprocedureAfleidingswijze,
     RolOmschrijving, RolTypes, ZaakobjectTypes
 )
-from zds_schema.descriptors import GegevensGroepType
-from zds_schema.fields import (
+from vng_api_common.descriptors import GegevensGroepType
+from vng_api_common.fields import (
     DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
-from zds_schema.models import APICredential, APIMixin
-from zds_schema.validators import alphanumeric_excluding_diacritic
+from vng_api_common.models import APICredential, APIMixin
+from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from zrc.utils import parse_isodatetime
 from zrc.utils.exceptions import DetermineProcessEndDateException

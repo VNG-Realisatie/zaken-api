@@ -7,8 +7,8 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import VertrouwelijkheidsAanduiding
-from zds_schema.tests import (
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.tests import (
     JWTScopesMixin, get_operation_url, get_validation_errors
 )
 
@@ -29,7 +29,7 @@ FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
 STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US39TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
@@ -107,7 +107,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(error['code'], 'invalid')
 
     @override_settings(
-        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
     def test_zet_zaakstatus(self):
         """

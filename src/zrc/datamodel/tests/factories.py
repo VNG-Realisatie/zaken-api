@@ -2,7 +2,7 @@ from django.utils import timezone
 
 import factory
 import factory.fuzzy
-from zds_schema.constants import (
+from vng_api_common.constants import (
     ObjectTypes, RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding
 )
 

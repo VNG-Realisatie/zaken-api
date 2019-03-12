@@ -6,10 +6,10 @@ from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.mocks import ZTCMockClient
+from vng_api_common.tests import JWTScopesMixin, generate_jwt, reverse
 from zds_client.tests.mocks import mock_client
-from zds_schema.constants import VertrouwelijkheidsAanduiding
-from zds_schema.mocks import ZTCMockClient
-from zds_schema.tests import JWTScopesMixin, generate_jwt, reverse
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import Zaak
@@ -24,7 +24,7 @@ from ..scopes import (
 )
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class ApiStrategyTests(JWTScopesMixin, APITestCase):
 
     scopes = [
@@ -90,8 +90,8 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
 
 
 @override_settings(
-    LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-    ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
 class ZakenTests(JWTScopesMixin, APITestCase):
 
@@ -141,8 +141,8 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertEqual(zaak.einddatum, datum_status_gezet.date())
 
     @override_settings(
-        LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+        LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
     def test_enkel_initiele_status_met_scope_aanmaken(self):
         """
@@ -172,8 +172,8 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertEqual(zaak.status_set.count(), 1)
 
     @override_settings(
-        LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+        LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
     def test_zaak_heropen_reset_einddatum(self):
         token = generate_jwt([SCOPE_STATUSSEN_TOEVOEGEN])

@@ -4,10 +4,10 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.tests import JWTScopesMixin, get_validation_errors, reverse
+from vng_api_common.validators import ResourceValidator, URLValidator
 from zds_client.tests.mocks import mock_client
-from zds_schema.constants import VertrouwelijkheidsAanduiding
-from zds_schema.tests import JWTScopesMixin, get_validation_errors, reverse
-from zds_schema.validators import ResourceValidator, URLValidator
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.tests.factories import ZaakFactory
@@ -22,7 +22,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
     def test_validate_zaaktype_invalid(self):
         url = reverse('zaak-list')
 
@@ -40,7 +40,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         self.assertEqual(validation_error['code'], URLValidator.code)
         self.assertEqual(validation_error['name'], 'zaaktype')
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_validate_zaaktype_valid(self):
         url = reverse('zaak-list')
 
@@ -68,9 +68,9 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         good_casing = get_validation_errors(response, 'verantwoordelijkeOrganisatie')
         self.assertIsNotNone(good_casing)
 
-    @patch('zds_schema.validators.fetcher')
-    @patch('zds_schema.validators.obj_has_shape', return_value=False)
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    @patch('vng_api_common.validators.fetcher')
+    @patch('vng_api_common.validators.obj_has_shape', return_value=False)
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_validate_communicatiekanaal_invalid(self, mock_has_shape, mock_fetcher):
         url = reverse('zaak-list')
         body = {'communicatiekanaal': 'https://ref.tst.vng.cloud/referentielijsten/api/v1/'}
@@ -81,20 +81,20 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         error = get_validation_errors(response, 'communicatiekanaal')
         self.assertEqual(error['code'], ResourceValidator.code)
 
-    @patch('zds_schema.validators.fetcher')
+    @patch('vng_api_common.validators.fetcher')
     def test_validate_communicatiekanaal_valid(self, mock_fetcher):
         url = reverse('zaak-list')
         body = {'communicatiekanaal': 'https://example.com/dummy'}
 
-        with override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200'):
-            with patch('zds_schema.validators.obj_has_shape', return_value=True):
+        with override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200'):
+            with patch('vng_api_common.validators.obj_has_shape', return_value=True):
                 response = self.client.post(url, body, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'communicatiekanaal')
         self.assertIsNone(error)
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_404')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
     def test_relevante_andere_zaken(self):
         url = reverse('zaak-list')
 
@@ -114,7 +114,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         validation_error = get_validation_errors(response, 'relevanteAndereZaken.0')
         self.assertEqual(validation_error['code'], URLValidator.code)
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_laatste_betaaldatum_betaalindicatie_nvt(self):
         """
         Assert that the field laatsteBetaaldatum may not be set for the NVT
@@ -157,7 +157,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
             validation_error = get_validation_errors(response, 'laatsteBetaaldatum')
             self.assertEqual(validation_error['code'], 'betaling-nvt')
 
-    @override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_invalide_product_of_dienst(self):
         url = reverse('zaak-list')
 
@@ -186,7 +186,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         self.assertEqual(validation_error['code'], 'invalid-products-services')
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class DeelZaakValidationTests(JWTScopesMixin, APITestCase):
     scopes = [
         SCOPE_ZAKEN_BIJWERKEN,
@@ -236,8 +236,8 @@ class ZaakInformatieObjectValidationTests(JWTScopesMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE]
 
     @override_settings(
-        LINK_FETCHER='zds_schema.mocks.link_fetcher_404',
-        ZDS_CLIENT_CLASS='zds_schema.mocks.ObjectInformatieObjectClient'
+        LINK_FETCHER='vng_api_common.mocks.link_fetcher_404',
+        ZDS_CLIENT_CLASS='vng_api_common.mocks.ObjectInformatieObjectClient'
     )
     def test_informatieobject_invalid(self):
         zaak = ZaakFactory.create()

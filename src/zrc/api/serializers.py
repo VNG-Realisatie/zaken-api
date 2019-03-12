@@ -11,13 +11,13 @@ from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
-from zds_schema.constants import Archiefstatus, RolOmschrijving
-from zds_schema.models import APICredential
-from zds_schema.serializers import (
+from vng_api_common.constants import Archiefstatus, RolOmschrijving
+from vng_api_common.models import APICredential
+from vng_api_common.serializers import (
     GegevensGroepSerializer, NestedGegevensGroepMixin,
     add_choice_values_help_text
 )
-from zds_schema.validators import (
+from vng_api_common.validators import (
     InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
     ResourceValidator, UntilNowValidator, URLValidator
 )

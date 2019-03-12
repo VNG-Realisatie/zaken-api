@@ -2,9 +2,9 @@ from django.test import override_settings
 
 from dateutil import parser
 from rest_framework.test import APITestCase
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.tests import JWTScopesMixin, get_operation_url
 from zds_client.tests.mocks import mock_client
-from zds_schema.constants import VertrouwelijkheidsAanduiding
-from zds_schema.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import Zaak
@@ -75,7 +75,7 @@ class Application:
         self.references['zaak_url'] = response.json()['url']
 
     @override_settings(
-        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
     def zet_statussen(self):
         status_create_url = get_operation_url('status_create')
@@ -131,8 +131,8 @@ class Application:
 
 
 @override_settings(
-    LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-    ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
 class US39IntegrationTestCase(JWTScopesMixin, APITestCase):
     """

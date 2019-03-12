@@ -8,8 +8,8 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import VertrouwelijkheidsAanduiding
-from zds_schema.tests import (
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.tests import (
     JWTScopesMixin, get_operation_url, get_validation_errors
 )
 
@@ -24,7 +24,7 @@ ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US164TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]

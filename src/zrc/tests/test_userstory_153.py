@@ -12,10 +12,10 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import (
+from vng_api_common.constants import (
     RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
-from zds_schema.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTScopesMixin, get_operation_url
 
 from zrc.api.scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
@@ -35,7 +35,7 @@ AVG_INZAGE_VERZOEK = 'https://www.example.com/orc/api/v1/avg/inzageverzoeken/123
 BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
 
 
-@override_settings(LINK_FETCHER='zds_schema.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US153TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [
@@ -121,7 +121,7 @@ class US153TestCase(JWTScopesMixin, APITestCase):
         self.assertFalse(kenmerk_1.pk in zaak.zaakkenmerk_set.values_list('pk', flat=True))
 
     @override_settings(
-        ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient'
+        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
     def test_full_flow(self):
         zaak_create_url = get_operation_url('zaak_create')

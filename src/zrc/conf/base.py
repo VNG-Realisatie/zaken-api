@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'axes',
     'django_filters',
     'corsheaders',
-    'zds_schema',  # before drf_yasg to override the management command
+    'vng_api_common',  # before drf_yasg to override the management command
+    'zds_schema',  # TODO: remove once all environents have migrated
     'drf_yasg',
     'rest_framework',
     'rest_framework_gis',
@@ -75,12 +76,12 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'zds_schema.middleware.AuthMiddleware',
+    'vng_api_common.middleware.AuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'corsheaders.middleware.CorsMiddleware',
-    'zds_schema.middleware.APIVersionHeaderMiddleware',
+    'vng_api_common.middleware.APIVersionHeaderMiddleware',
 ]
 
 ROOT_URLCONF = 'zrc.urls'

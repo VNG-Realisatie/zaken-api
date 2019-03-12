@@ -5,7 +5,7 @@ import logging
 from django.db import migrations
 
 import requests
-from zds_schema.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
 
 from zrc.api.auth import get_ztc_auth
 

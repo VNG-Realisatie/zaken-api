@@ -6,8 +6,8 @@ ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/52
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
+from vng_api_common.tests import TypeCheckMixin, get_operation_url
 from zds_client.tests.mocks import mock_client
-from zds_schema.tests import TypeCheckMixin, get_operation_url
 
 from zrc.datamodel.models import ZaakEigenschap
 from zrc.datamodel.tests.factories import ZaakEigenschapFactory, ZaakFactory

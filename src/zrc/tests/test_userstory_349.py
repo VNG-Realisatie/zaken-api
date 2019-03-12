@@ -3,7 +3,7 @@ Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/349
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import (
+from vng_api_common.tests import (
     JWTScopesMixin, generate_jwt, get_operation_url, reverse
 )
 

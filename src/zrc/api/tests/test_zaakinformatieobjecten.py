@@ -15,8 +15,8 @@ INFORMATIE_OBJECT = 'https://drc.nl/api/v1/enkelvoudiginformatieobjecten/1234'
 
 
 @override_settings(
-    LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-    ZDS_CLIENT_CLASS='zds_schema.mocks.ObjectInformatieObjectClient'
+    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.ObjectInformatieObjectClient'
 )
 class ZaakInformatieObjectTests(APITestCase):
 

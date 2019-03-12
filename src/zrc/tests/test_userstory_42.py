@@ -8,7 +8,9 @@ from django.contrib.gis.geos import Point
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import JWTScopesMixin, TypeCheckMixin, get_operation_url
+from vng_api_common.tests import (
+    JWTScopesMixin, TypeCheckMixin, get_operation_url
+)
 
 from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN
 from zrc.datamodel.tests.factories import ZaakFactory

@@ -6,8 +6,10 @@ Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/45
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.constants import RolOmschrijving, RolTypes
-from zds_schema.tests import JWTScopesMixin, TypeCheckMixin, get_operation_url
+from vng_api_common.constants import RolOmschrijving, RolTypes
+from vng_api_common.tests import (
+    JWTScopesMixin, TypeCheckMixin, get_operation_url
+)
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory

@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
-from zds_schema.validators import (
+from vng_api_common.validators import (
     UniekeIdentificatieValidator as _UniekeIdentificatieValidator
 )
 

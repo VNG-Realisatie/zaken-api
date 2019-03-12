@@ -7,12 +7,12 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_client.tests.mocks import mock_client
-from zds_schema.constants import (
+from vng_api_common.constants import (
     Archiefnominatie, Archiefstatus, BrondatumArchiefprocedureAfleidingswijze,
     VertrouwelijkheidsAanduiding
 )
-from zds_schema.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
@@ -38,8 +38,8 @@ VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
 
 @override_settings(
-    LINK_FETCHER='zds_schema.mocks.link_fetcher_200',
-    ZDS_CLIENT_CLASS='zds_schema.mocks.MockClient',
+    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient',
 )
 class US345TestCase(JWTScopesMixin, APITestCase):
 

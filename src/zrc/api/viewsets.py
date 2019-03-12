@@ -6,11 +6,11 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
-from zds_schema.geo import GeoMixin
-from zds_schema.permissions import ActionScopesRequired
-from zds_schema.search import SearchMixin
-from zds_schema.utils import lookup_kwargs_to_filters
-from zds_schema.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
+from vng_api_common.geo import GeoMixin
+from vng_api_common.permissions import ActionScopesRequired
+from vng_api_common.search import SearchMixin
+from vng_api_common.utils import lookup_kwargs_to_filters
+from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,

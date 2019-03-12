@@ -3,7 +3,7 @@ Guarantee that the proper authorization amchinery is in place.
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import AuthCheckMixin, generate_jwt
+from vng_api_common.tests import AuthCheckMixin, generate_jwt
 
 from zrc.datamodel.tests.factories import ZaakFactory
 
