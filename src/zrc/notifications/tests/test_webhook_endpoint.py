@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from zds_schema.tests import JWTScopesMixin, reverse_lazy
+from vng_api_common.tests import JWTScopesMixin, reverse_lazy
 
 from ..api.scopes import SCOPE_NOTIFICATIES_STUREN
 
