@@ -1,8 +1,12 @@
+import uuid
+from urllib.parse import urljoin
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from solo.models import SingletonModel
+from zds_client import Client, ClientAuth
 
 
 class NotificationsConfig(SingletonModel):
@@ -18,6 +22,8 @@ class NotificationsConfig(SingletonModel):
 class Subscription(models.Model):
     """
     A single subscription.
+
+    TODO: on change/update, update the subscription
     """
     config = models.ForeignKey('NotificationsConfig', on_delete=models.CASCADE)
 
@@ -50,3 +56,26 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{', '.join(self.channels)} - {self.callback_url}"
+
+    def register(self) -> None:
+        """
+        Registers the webhook with the notification component.
+        """
+        dummy_detail_url = urljoin(self.config.location, f'foo/{uuid.uuid4()}')
+        client = Client.from_url(dummy_detail_url)
+
+        self_auth = ClientAuth(client_id=self.client_id, secret=self.secret)
+        payload = {
+            'callbackUrl': self.callback_url,
+            'auth': self_auth.credentials()['Authorization'],
+            'kanalen': [
+                {"kanaal": channel}
+                for channel in self.channels
+            ],
+        }
+
+        # register the subscriber
+        subscriber = client.create('abonnement', data=payload)
+
+        self._subscription = subscriber['url']
+        self.save(update_fields=['_subscription'])

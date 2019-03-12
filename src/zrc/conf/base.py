@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'rest_framework_gis',
     'rest_framework_filters',
     'django_markup',
+    'solo',
 
     # Project applications.
     'zrc.accounts',
