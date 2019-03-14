@@ -11,7 +11,6 @@ django-axes
 django-choices
 django-cors-middleware
 django-markup
-django-solo
 
 djangorestframework
 djangorestframework-gis
@@ -20,7 +19,7 @@ djangorestframework-camel-case
 djangorestframework-filters
 drf-yasg
 drf-writable-nested
-vng-api-common==0.30.0
+vng-api-common[notifications]==0.31.0
 
 # data migration - keep it around for a while
 zds-schema
