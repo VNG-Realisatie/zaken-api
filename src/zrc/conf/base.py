@@ -55,12 +55,14 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'vng_api_common',  # before drf_yasg to override the management command
+    'vng_api_common.notifications',
     'zds_schema',  # TODO: remove once all environents have migrated
     'drf_yasg',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework_filters',
     'django_markup',
+    'solo',
 
     # Project applications.
     'zrc.accounts',
