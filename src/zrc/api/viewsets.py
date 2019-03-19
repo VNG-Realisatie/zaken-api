@@ -29,10 +29,14 @@ from .serializers import (
     ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
 
+from zrc.notif.viewsets import NotificationViewSetMixin
+
+
 logger = logging.getLogger(__name__)
 
 
-class ZaakViewSet(GeoMixin,
+class ZaakViewSet(NotificationViewSetMixin,
+                  GeoMixin,
                   SearchMixin,
                   CheckQueryParamsMixin,
                   viewsets.ModelViewSet):

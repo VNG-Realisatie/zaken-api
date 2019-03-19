@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'zrc.api',
     'zrc.datamodel',
     'zrc.utils',
+    'zrc.notif'
 ]
 
 MIDDLEWARE = [
