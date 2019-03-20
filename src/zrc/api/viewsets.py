@@ -29,7 +29,7 @@ from .serializers import (
     ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
 
-from zrc.notif.viewsets import NotificationViewSetMixin
+from vng_api_common.notifications.publish.viewsets import NotificationViewSetMixin
 
 
 logger = logging.getLogger(__name__)
@@ -159,6 +159,12 @@ class ZaakViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
+
+    kenmerken = [
+        {"bron": "082096752011"},
+        {"zaaktype": "example.com/api/v1/zaaktypen/5aa5c"},
+        {"vertrouwelijkeidaanduiding": "openbaar"}
+    ]
 
     def get_queryset(self):
         base = super().get_queryset()

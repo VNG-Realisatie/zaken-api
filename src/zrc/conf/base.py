@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     'zrc.api',
     'zrc.datamodel',
     'zrc.utils',
-    'zrc.notif'
 ]
 
 MIDDLEWARE = [
@@ -363,3 +362,9 @@ if SENTRY_DSN:
             'dsn': RAVEN_CONFIG['dsn']
         },
     })
+
+
+# settings for sending notifications
+NC_URL = 'http://127.0.0.1:8001/api/v1/notificaties'
+KANAAL = 'zaken'
+HOOFD = 'zaak'

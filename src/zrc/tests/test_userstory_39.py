@@ -18,6 +18,9 @@ from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import ZAAK_WRITE_KWARGS, isodatetime
 
+from vng_api_common.models import APICredential
+from django.test.client import RequestFactory
+
 ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1'
 STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1'
 STATUS_TYPE_OVERLAST_GECONSTATEERD = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/2'
@@ -29,6 +32,7 @@ FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
 STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 
+@override_settings(HTTP_HOST='localhost')
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US39TestCase(JWTScopesMixin, APITestCase):
 
@@ -56,6 +60,11 @@ class US39TestCase(JWTScopesMixin, APITestCase):
                 ]
             }
         }
+        cretential = APICredential.objects.create(
+            client_id='zrc',
+            secret='zrc',
+            api_root='http://127.0.0.1:8001'
+        )
 
         response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
 
