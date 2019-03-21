@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'vng_api_common',  # before drf_yasg to override the management command
     'vng_api_common.notifications',
-    'zds_schema',  # TODO: remove once all environents have migrated
+    'vng_api_common.notifications.publish',
+    # 'zds_schema',  # TODO: remove once all environents have migrated
     'drf_yasg',
     'rest_framework',
     'rest_framework_gis',
@@ -365,6 +366,7 @@ if SENTRY_DSN:
 
 
 # settings for sending notifications
-NC_URL = 'http://127.0.0.1:8001/api/v1/notificaties'
-KANAAL = 'zaken'
-HOOFD = 'zaak'
+NOTIFICATIES_URL = 'http://127.0.0.1:8001/api/v1/notificaties'
+NOTIFICATIES_KANAAL = 'zaken'
+NOTIFICATIES_KANAAL_URL = 'http://127.0.0.1:8001/api/v1/kanaal'
+NOTIFICATIES_HOOFD_RESOURCE = 'zaak'

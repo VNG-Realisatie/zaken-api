@@ -1,5 +1,7 @@
 import logging
 
+from urllib.parse import urlparse
+
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
@@ -29,8 +31,8 @@ from .serializers import (
     ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
 
-from vng_api_common.notifications.publish.viewsets import NotificationViewSetMixin
-
+from vng_api_common.notifications.publish.viewsets import NotificationViewSetMixin, NotificationCreateMixin
+from vng_api_common.notifications.publish.utils import get_kenmerken_from_model
 
 logger = logging.getLogger(__name__)
 
@@ -160,12 +162,6 @@ class ZaakViewSet(NotificationViewSetMixin,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
 
-    kenmerken = [
-        {"bron": "082096752011"},
-        {"zaaktype": "example.com/api/v1/zaaktypen/5aa5c"},
-        {"vertrouwelijkeidaanduiding": "openbaar"}
-    ]
-
     def get_queryset(self):
         base = super().get_queryset()
 
@@ -201,8 +197,16 @@ class ZaakViewSet(NotificationViewSetMixin,
         return self.get_search_output(queryset)
     _zoek.is_search_action = True
 
+    def get_kenmerken(self, data):
+        kenmerken = list()
+        kenmerken.append({'bronorganisatie': data.get('bronorganisatie', '')})
+        kenmerken.append({'zaaktype': data.get('zaaktype', '')})
+        kenmerken.append({'vertrouwelijkheidaanduiding': data.get('vertrouwelijkheidaanduiding', '')})
+        return kenmerken
 
-class StatusViewSet(CheckQueryParamsMixin,
+
+class StatusViewSet(NotificationCreateMixin,
+                    CheckQueryParamsMixin,
                     mixins.CreateModelMixin,
                     mixins.ListModelMixin,
                     mixins.RetrieveModelMixin,
@@ -266,7 +270,16 @@ class StatusViewSet(CheckQueryParamsMixin,
 
         super().perform_create(serializer)
 
+    def get_kenmerken(self, data):
+        kenmerken = get_kenmerken_from_model(
+            url=data['zaak'],
+            model=Zaak,
+            topics=['bronorganisatie', 'zaaktype', 'vertrouwelijkheidaanduiding']
+        )
+        return kenmerken
 
+
+# TODO add notifications
 class ZaakObjectViewSet(mixins.CreateModelMixin,
                         mixins.ListModelMixin,
                         mixins.RetrieveModelMixin,
@@ -295,6 +308,7 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
     }
 
 
+# TODO add notifications
 class ZaakInformatieObjectViewSet(NestedViewSetMixin,
                                   mixins.ListModelMixin,
                                   mixins.CreateModelMixin,
@@ -339,6 +353,7 @@ class ZaakInformatieObjectViewSet(NestedViewSetMixin,
         return context
 
 
+# TODO add notifications
 class ZaakEigenschapViewSet(NestedViewSetMixin,
                             mixins.CreateModelMixin,
                             mixins.ListModelMixin,
@@ -361,6 +376,7 @@ class ZaakEigenschapViewSet(NestedViewSetMixin,
     lookup_field = 'uuid'
 
 
+# TODO add notifications
 class KlantContactViewSet(mixins.CreateModelMixin,
                           mixins.ListModelMixin,
                           mixins.RetrieveModelMixin,
@@ -385,6 +401,7 @@ class KlantContactViewSet(mixins.CreateModelMixin,
     lookup_field = 'uuid'
 
 
+# TODO add notifications
 class RolViewSet(CheckQueryParamsMixin,
                  mixins.CreateModelMixin,
                  mixins.ListModelMixin,
@@ -407,7 +424,9 @@ class RolViewSet(CheckQueryParamsMixin,
     }
 
 
-class ResultaatViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet):
+class ResultaatViewSet(NotificationViewSetMixin,
+                       CheckQueryParamsMixin,
+                       viewsets.ModelViewSet):
     """
     Opvragen en beheren van resultaten.
 
@@ -459,3 +478,11 @@ class ResultaatViewSet(CheckQueryParamsMixin, viewsets.ModelViewSet):
         'update': SCOPE_ZAKEN_BIJWERKEN,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }
+
+    def get_kenmerken(self, data):
+        kenmerken = get_kenmerken_from_model(
+            url=data['zaak'],
+            model=Zaak,
+            topics=['bronorganisatie', 'zaaktype', 'vertrouwelijkheidaanduiding']
+        )
+        return kenmerken

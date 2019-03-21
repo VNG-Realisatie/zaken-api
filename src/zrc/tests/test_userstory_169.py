@@ -32,7 +32,8 @@ BEHANDELAAR = 'https://example.com/orc/api/v1/brp/organisatorische-eenheden/d6cb
 VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
 
-@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+                   ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
 class US169TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
