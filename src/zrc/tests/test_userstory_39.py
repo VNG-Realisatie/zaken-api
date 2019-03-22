@@ -18,7 +18,6 @@ from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import ZAAK_WRITE_KWARGS, isodatetime
 
-
 ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1'
 STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1'
 STATUS_TYPE_OVERLAST_GECONSTATEERD = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/2'

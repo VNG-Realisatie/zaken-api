@@ -370,3 +370,4 @@ NOTIFICATIES_URL = 'http://127.0.0.1:8001/api/v1/notificaties'
 NOTIFICATIES_KANAAL = 'zaken'
 NOTIFICATIES_KANAAL_URL = 'http://127.0.0.1:8001/api/v1/kanaal'
 NOTIFICATIES_HOOFD_RESOURCE = 'zaak'
+NOTIFICATIES_KENMERKEN_NAMES = ['bronorganisatie', 'zaaktype', 'vertrouwelijkheidaanduiding']

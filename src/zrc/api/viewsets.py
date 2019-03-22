@@ -1,7 +1,7 @@
 import logging
-
 from urllib.parse import urlparse
 
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
@@ -9,6 +9,10 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from vng_api_common.geo import GeoMixin
+from vng_api_common.notifications.publish.utils import get_kenmerken_from_model
+from vng_api_common.notifications.publish.viewsets import (
+    NotificationCreateMixin, NotificationViewSetMixin
+)
 from vng_api_common.permissions import ActionScopesRequired
 from vng_api_common.search import SearchMixin
 from vng_api_common.utils import lookup_kwargs_to_filters
@@ -30,9 +34,6 @@ from .serializers import (
     StatusSerializer, ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
     ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
 )
-
-from vng_api_common.notifications.publish.viewsets import NotificationViewSetMixin, NotificationCreateMixin
-from vng_api_common.notifications.publish.utils import get_kenmerken_from_model
 
 logger = logging.getLogger(__name__)
 
@@ -198,11 +199,7 @@ class ZaakViewSet(NotificationViewSetMixin,
     _zoek.is_search_action = True
 
     def get_kenmerken(self, data):
-        kenmerken = list()
-        kenmerken.append({'bronorganisatie': data.get('bronorganisatie', '')})
-        kenmerken.append({'zaaktype': data.get('zaaktype', '')})
-        kenmerken.append({'vertrouwelijkheidaanduiding': data.get('vertrouwelijkheidaanduiding', '')})
-        return kenmerken
+        return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
 
 
 class StatusViewSet(NotificationCreateMixin,
@@ -274,13 +271,13 @@ class StatusViewSet(NotificationCreateMixin,
         kenmerken = get_kenmerken_from_model(
             url=data['zaak'],
             model=Zaak,
-            topics=['bronorganisatie', 'zaaktype', 'vertrouwelijkheidaanduiding']
+            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
         )
         return kenmerken
 
 
-# TODO add notifications
-class ZaakObjectViewSet(mixins.CreateModelMixin,
+class ZaakObjectViewSet(NotificationCreateMixin,
+                        mixins.CreateModelMixin,
                         mixins.ListModelMixin,
                         mixins.RetrieveModelMixin,
                         viewsets.GenericViewSet):
@@ -307,9 +304,17 @@ class ZaakObjectViewSet(mixins.CreateModelMixin,
         'create': SCOPE_ZAKEN_CREATE,
     }
 
+    def get_kenmerken(self, data):
+        kenmerken = get_kenmerken_from_model(
+            url=data['zaak'],
+            model=Zaak,
+            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
+        )
+        return kenmerken
 
-# TODO add notifications
-class ZaakInformatieObjectViewSet(NestedViewSetMixin,
+
+class ZaakInformatieObjectViewSet(NotificationCreateMixin,
+                                  NestedViewSetMixin,
                                   mixins.ListModelMixin,
                                   mixins.CreateModelMixin,
                                   viewsets.GenericViewSet):
@@ -352,9 +357,14 @@ class ZaakInformatieObjectViewSet(NestedViewSetMixin,
         context['parent_object'] = get_object_or_404(Zaak, **filters)
         return context
 
+    def get_kenmerken(self, data):
+        zaak = self.get_serializer_context()['parent_object']
+        kenmerken = [{k: getattr(zaak, k)} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
+        return kenmerken
 
-# TODO add notifications
-class ZaakEigenschapViewSet(NestedViewSetMixin,
+
+class ZaakEigenschapViewSet(NotificationViewSetMixin,
+                            NestedViewSetMixin,
                             mixins.CreateModelMixin,
                             mixins.ListModelMixin,
                             mixins.RetrieveModelMixin,
@@ -375,9 +385,17 @@ class ZaakEigenschapViewSet(NestedViewSetMixin,
     serializer_class = ZaakEigenschapSerializer
     lookup_field = 'uuid'
 
+    def get_kenmerken(self, data):
+        kenmerken = get_kenmerken_from_model(
+            url=data['zaak'],
+            model=Zaak,
+            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
+        )
+        return kenmerken
 
-# TODO add notifications
-class KlantContactViewSet(mixins.CreateModelMixin,
+
+class KlantContactViewSet(NotificationViewSetMixin,
+                          mixins.CreateModelMixin,
                           mixins.ListModelMixin,
                           mixins.RetrieveModelMixin,
                           viewsets.GenericViewSet):
@@ -400,9 +418,17 @@ class KlantContactViewSet(mixins.CreateModelMixin,
     serializer_class = KlantContactSerializer
     lookup_field = 'uuid'
 
+    def get_kenmerken(self, data):
+        kenmerken = get_kenmerken_from_model(
+            url=data['zaak'],
+            model=Zaak,
+            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
+        )
+        return kenmerken
 
-# TODO add notifications
-class RolViewSet(CheckQueryParamsMixin,
+
+class RolViewSet(NotificationViewSetMixin,
+                 CheckQueryParamsMixin,
                  mixins.CreateModelMixin,
                  mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
@@ -422,6 +448,14 @@ class RolViewSet(CheckQueryParamsMixin,
     required_scopes = {
         'create': SCOPE_ZAKEN_CREATE
     }
+
+    def get_kenmerken(self, data):
+        kenmerken = get_kenmerken_from_model(
+            url=data['zaak'],
+            model=Zaak,
+            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
+        )
+        return kenmerken
 
 
 class ResultaatViewSet(NotificationViewSetMixin,
@@ -483,6 +517,6 @@ class ResultaatViewSet(NotificationViewSetMixin,
         kenmerken = get_kenmerken_from_model(
             url=data['zaak'],
             model=Zaak,
-            topics=['bronorganisatie', 'zaaktype', 'vertrouwelijkheidaanduiding']
+            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
         )
         return kenmerken
