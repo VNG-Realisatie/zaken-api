@@ -4,6 +4,7 @@ from django.conf import settings
 from django.test import override_settings
 
 from mock import patch
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
@@ -25,6 +26,7 @@ ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785'
 
 
+@freeze_time("2012-01-14")
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class SendNotifTestCase(JWTScopesMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
@@ -62,13 +64,19 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
         msg = json.loads(notif_kwargs['data'])
 
         self.assertEqual(notif_args[0], settings.NOTIFICATIES_URL)
-        self.assertEqual(msg['kanaal'], settings.NOTIFICATIES_KANAAL)
-        self.assertEqual(msg['resource'], 'zaak')
-        self.assertEqual(msg['actie'], 'create')
-        self.assertEqual(msg['resourceUrl'], data['url'])
-        self.assertEqual(msg['kenmerken'][0]['bronorganisatie'], data['bronorganisatie'])
-        self.assertEqual(msg['kenmerken'][1]['zaaktype'], data['zaaktype'])
-        self.assertEqual(msg['kenmerken'][2]['vertrouwelijkheidaanduiding'], data['vertrouwelijkheidaanduiding'])
+        self.assertEqual(msg, {
+            'kanaal': settings.NOTIFICATIES_KANAAL,
+            'hoofdObject': data['url'],
+            'resource': 'zaak',
+            'resourceUrl': data['url'],
+            'actie': 'create',
+            'aanmaakdatum': '2012-01-14T00:00:00Z',
+            'kenmerken': [
+                {'bronorganisatie': '517439943'},
+                {'zaaktype': ZAAKTYPE},
+                {'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar}
+            ]
+        })
 
     @patch('zds_client.Client.request')
     def test_send_notif_delete_resultaat(self, mock_client):
@@ -87,10 +95,16 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
         msg = json.loads(notif_kwargs['data'])
 
         self.assertEqual(notif_args[0], settings.NOTIFICATIES_URL)
-        self.assertEqual(msg['kanaal'], settings.NOTIFICATIES_KANAAL)
-        self.assertEqual(msg['resource'], 'resultaat')
-        self.assertEqual(msg['actie'], 'destroy')
-        self.assertEqual(msg['resourceUrl'], 'http://testserver{}'.format(resultaat_url))
-        self.assertEqual(msg['kenmerken'][0]['bronorganisatie'], zaak.bronorganisatie)
-        self.assertEqual(msg['kenmerken'][1]['zaaktype'], zaak.zaaktype)
-        self.assertEqual(msg['kenmerken'][2]['vertrouwelijkheidaanduiding'], zaak.vertrouwelijkheidaanduiding)
+        self.assertEqual(msg, {
+            'kanaal': settings.NOTIFICATIES_KANAAL,
+            'hoofdObject': 'http://testserver{}'.format(get_operation_url('zaak_read', uuid=zaak.uuid)),
+            'resource': 'resultaat',
+            'resourceUrl': 'http://testserver{}'.format(resultaat_url),
+            'actie': 'destroy',
+            'aanmaakdatum': '2012-01-14T00:00:00Z',
+            'kenmerken': [
+                {'bronorganisatie': zaak.bronorganisatie},
+                {'zaaktype': zaak.zaaktype},
+                {'vertrouwelijkheidaanduiding': zaak.vertrouwelijkheidaanduiding}
+            ]
+        })
