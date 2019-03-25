@@ -22,7 +22,7 @@ from zrc.datamodel.models import (
 )
 
 from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
-from .kanalen import ZAKEN
+from .kanalen import KANAAL_ZAKEN
 from .permissions import ZaaktypePermission
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
@@ -161,7 +161,7 @@ class ZaakViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
-    notifications_kanaal = ZAKEN
+    notifications_kanaal = KANAAL_ZAKEN
 
     def get_queryset(self):
         base = super().get_queryset()
@@ -244,7 +244,7 @@ class StatusViewSet(NotificationCreateMixin,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN,
     }
-    notifications_kanaal = ZAKEN
+    notifications_kanaal = KANAAL_ZAKEN
 
     def perform_create(self, serializer):
         """
@@ -292,7 +292,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE,
     }
-    notifications_kanaal = ZAKEN
+    notifications_kanaal = KANAAL_ZAKEN
 
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
@@ -329,7 +329,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     parent_retrieve_kwargs = {
         'zaak_uuid': 'uuid',
     }
-    notifications_kanaal = ZAKEN
+    notifications_kanaal = KANAAL_ZAKEN
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -366,7 +366,7 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
     queryset = ZaakEigenschap.objects.all()
     serializer_class = ZaakEigenschapSerializer
     lookup_field = 'uuid'
-    notifications_kanaal = ZAKEN
+    notifications_kanaal = KANAAL_ZAKEN
 
 
 class KlantContactViewSet(NotificationCreateMixin,
@@ -390,7 +390,7 @@ class KlantContactViewSet(NotificationCreateMixin,
     queryset = KlantContact.objects.all()
     serializer_class = KlantContactSerializer
     lookup_field = 'uuid'
-    notifications_kanaal = ZAKEN
+    notifications_kanaal = KANAAL_ZAKEN
 
 
 class RolViewSet(NotificationCreateMixin,
@@ -412,7 +412,7 @@ class RolViewSet(NotificationCreateMixin,
     required_scopes = {
         'create': SCOPE_ZAKEN_CREATE
     }
-    notifications_kanaal = ZAKEN
+    notifications_kanaal = KANAAL_ZAKEN
 
 
 class ResultaatViewSet(NotificationViewSetMixin,
@@ -469,4 +469,4 @@ class ResultaatViewSet(NotificationViewSetMixin,
         'update': SCOPE_ZAKEN_BIJWERKEN,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }
-    notifications_kanaal = ZAKEN
+    notifications_kanaal = KANAAL_ZAKEN
