@@ -18,7 +18,6 @@ from ..scopes import (
 )
 
 
-@override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
 class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]

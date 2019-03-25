@@ -3,6 +3,8 @@ import os
 # Django-hijack (and Django-hijack-admin)
 from django.urls import reverse_lazy
 
+from zds_client import Client, get_operation_url
+
 from .api import *  # noqa
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -57,7 +59,7 @@ INSTALLED_APPS = [
     'vng_api_common',  # before drf_yasg to override the management command
     'vng_api_common.notifications',
     'vng_api_common.notifications.publish',
-    # 'zds_schema',  # TODO: remove once all environents have migrated
+    'zds_schema',  # TODO: remove once all environents have migrated
     'drf_yasg',
     'rest_framework',
     'rest_framework_gis',
@@ -366,8 +368,12 @@ if SENTRY_DSN:
 
 
 # settings for sending notifications
-NOTIFICATIES_URL = 'http://127.0.0.1:8001/api/v1/notificaties'
+NOTIFICATIES_HOST = os.getenv('NOTIFICATIES_HOST', 'http://127.0.0.1:8004')
+
+spec = Client.from_url(f'{NOTIFICATIES_HOST}/api/v1/someurl').schema
+NOTIFICATIES_URL = NOTIFICATIES_HOST + get_operation_url(spec, 'notificaties_create')
+NOTIFICATIES_KANAAL_URL = NOTIFICATIES_HOST + get_operation_url(spec, 'kanaal_create')
+
 NOTIFICATIES_KANAAL = 'zaken'
-NOTIFICATIES_KANAAL_URL = 'http://127.0.0.1:8001/api/v1/kanaal'
 NOTIFICATIES_HOOFD_RESOURCE = 'zaak'
 NOTIFICATIES_KENMERKEN_NAMES = ['bronorganisatie', 'zaaktype', 'vertrouwelijkheidaanduiding']
