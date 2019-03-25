@@ -364,11 +364,4 @@ if SENTRY_DSN:
         },
     })
 
-
-# settings for sending notifiqations
-NOTIFICATIES_HOST = os.getenv('NOTIFICATIES_HOST', 'http://127.0.0.1:8004')
-NOTIFICATIES_URL = f'{NOTIFICATIES_HOST}/api/v1/notificaties'
-
-NOTIFICATIES_KANAAL = 'zaken'
-NOTIFICATIES_HOOFD_RESOURCE = 'zaak'
-NOTIFICATIES_KENMERKEN_NAMES = ['bronorganisatie', 'zaaktype', 'vertrouwelijkheidaanduiding']
+NOTIFICATIONS_KANAAL = 'zaken'

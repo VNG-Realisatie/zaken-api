@@ -1,4 +1,5 @@
 import os
+import sys
 import warnings
 
 os.environ.setdefault('SECRET_KEY', '8u9chcd4g1%i5z)u@s6#c#0u%s_gggx*915w(yzrf#awezmu^i')
@@ -101,6 +102,8 @@ warnings.filterwarnings(
     RuntimeWarning, r'django\.db\.models\.fields',
 )
 
+if 'test' in sys.argv:
+    NOTIFICATIONS_DISABLED = True
 
 # Override settings with local settings.
 try:

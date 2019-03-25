@@ -8,7 +8,6 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from vng_api_common.geo import GeoMixin
-from vng_api_common.notifications.publish.utils import get_kenmerken_from_model
 from vng_api_common.notifications.publish.viewsets import (
     NotificationCreateMixin, NotificationViewSetMixin
 )
@@ -23,6 +22,7 @@ from zrc.datamodel.models import (
 )
 
 from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
+from .kanalen import ZAKEN
 from .permissions import ZaaktypePermission
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
@@ -161,6 +161,7 @@ class ZaakViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
+    notifications_kanaal = ZAKEN
 
     def get_queryset(self):
         base = super().get_queryset()
@@ -243,6 +244,7 @@ class StatusViewSet(NotificationCreateMixin,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN,
     }
+    notifications_kanaal = ZAKEN
 
     def perform_create(self, serializer):
         """
@@ -263,14 +265,6 @@ class StatusViewSet(NotificationCreateMixin,
                 raise PermissionDenied(detail=msg)
 
         super().perform_create(serializer)
-
-    def get_kenmerken(self, data):
-        kenmerken = get_kenmerken_from_model(
-            url=data['zaak'],
-            model=Zaak,
-            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
-        )
-        return kenmerken
 
 
 class ZaakObjectViewSet(NotificationCreateMixin,
@@ -298,14 +292,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE,
     }
-
-    def get_kenmerken(self, data):
-        kenmerken = get_kenmerken_from_model(
-            url=data['zaak'],
-            model=Zaak,
-            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
-        )
-        return kenmerken
+    notifications_kanaal = ZAKEN
 
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
@@ -342,6 +329,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     parent_retrieve_kwargs = {
         'zaak_uuid': 'uuid',
     }
+    notifications_kanaal = ZAKEN
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -378,14 +366,7 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
     queryset = ZaakEigenschap.objects.all()
     serializer_class = ZaakEigenschapSerializer
     lookup_field = 'uuid'
-
-    def get_kenmerken(self, data):
-        kenmerken = get_kenmerken_from_model(
-            url=data['zaak'],
-            model=Zaak,
-            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
-        )
-        return kenmerken
+    notifications_kanaal = ZAKEN
 
 
 class KlantContactViewSet(NotificationCreateMixin,
@@ -409,14 +390,7 @@ class KlantContactViewSet(NotificationCreateMixin,
     queryset = KlantContact.objects.all()
     serializer_class = KlantContactSerializer
     lookup_field = 'uuid'
-
-    def get_kenmerken(self, data):
-        kenmerken = get_kenmerken_from_model(
-            url=data['zaak'],
-            model=Zaak,
-            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
-        )
-        return kenmerken
+    notifications_kanaal = ZAKEN
 
 
 class RolViewSet(NotificationCreateMixin,
@@ -438,14 +412,7 @@ class RolViewSet(NotificationCreateMixin,
     required_scopes = {
         'create': SCOPE_ZAKEN_CREATE
     }
-
-    def get_kenmerken(self, data):
-        kenmerken = get_kenmerken_from_model(
-            url=data['zaak'],
-            model=Zaak,
-            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
-        )
-        return kenmerken
+    notifications_kanaal = ZAKEN
 
 
 class ResultaatViewSet(NotificationViewSetMixin,
@@ -502,11 +469,4 @@ class ResultaatViewSet(NotificationViewSetMixin,
         'update': SCOPE_ZAKEN_BIJWERKEN,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }
-
-    def get_kenmerken(self, data):
-        kenmerken = get_kenmerken_from_model(
-            url=data['zaak'],
-            model=Zaak,
-            topics=settings.NOTIFICATIES_KENMERKEN_NAMES
-        )
-        return kenmerken
+    notifications_kanaal = ZAKEN
