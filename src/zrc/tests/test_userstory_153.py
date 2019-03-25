@@ -35,7 +35,8 @@ AVG_INZAGE_VERZOEK = 'https://www.example.com/orc/api/v1/avg/inzageverzoeken/123
 BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
 
 
-@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+                   ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
 class US153TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [

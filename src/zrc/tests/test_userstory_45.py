@@ -4,6 +4,8 @@ kan worden gerouteerd.
 
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/45
 """
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import RolOmschrijving, RolTypes
@@ -17,6 +19,7 @@ from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 WATERNET = 'https://waternet.nl/api/organisatorische-eenheid/1234'
 
 
+@override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
 class US45TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
