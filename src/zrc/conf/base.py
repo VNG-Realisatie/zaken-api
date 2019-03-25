@@ -367,12 +367,10 @@ if SENTRY_DSN:
     })
 
 
-# settings for sending notifications
+# settings for sending notifiqations
 NOTIFICATIES_HOST = os.getenv('NOTIFICATIES_HOST', 'http://127.0.0.1:8004')
-
-spec = Client.from_url(f'{NOTIFICATIES_HOST}/api/v1/someurl').schema
-NOTIFICATIES_URL = NOTIFICATIES_HOST + get_operation_url(spec, 'notificaties_create')
-NOTIFICATIES_KANAAL_URL = NOTIFICATIES_HOST + get_operation_url(spec, 'kanaal_create')
+NOTIFICATIES_URL = f'{NOTIFICATIES_HOST}/api/v1/notificaties'
+NOTIFICATIES_KANAAL_URL = f'{NOTIFICATIES_HOST}/api/v1/kanaal'
 
 NOTIFICATIES_KANAAL = 'zaken'
 NOTIFICATIES_HOOFD_RESOURCE = 'zaak'
