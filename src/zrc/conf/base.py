@@ -3,8 +3,6 @@ import os
 # Django-hijack (and Django-hijack-admin)
 from django.urls import reverse_lazy
 
-from zds_client import Client, get_operation_url
-
 from .api import *  # noqa
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
