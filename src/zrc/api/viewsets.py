@@ -204,9 +204,7 @@ class ZaakViewSet(NotificationViewSetMixin,
 class StatusViewSet(NotificationCreateMixin,
                     CheckQueryParamsMixin,
                     mixins.CreateModelMixin,
-                    mixins.ListModelMixin,
-                    mixins.RetrieveModelMixin,
-                    viewsets.GenericViewSet):
+                    viewsets.ReadOnlyModelViewSet):
     """
     Opvragen en beheren van zaakstatussen.
 
@@ -277,9 +275,7 @@ class StatusViewSet(NotificationCreateMixin,
 
 class ZaakObjectViewSet(NotificationCreateMixin,
                         mixins.CreateModelMixin,
-                        mixins.ListModelMixin,
-                        mixins.RetrieveModelMixin,
-                        viewsets.GenericViewSet):
+                        viewsets.ReadOnlyModelViewSet):
     """
     Opvragen en bewerken van ZAAKOBJECTen.
 
@@ -317,6 +313,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   mixins.ListModelMixin,
                                   mixins.CreateModelMixin,
                                   viewsets.GenericViewSet):
+
     """
     Opvragen en bwerken van Zaak-Informatieobject relaties.
 
@@ -362,12 +359,10 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         return kenmerken
 
 
-class ZaakEigenschapViewSet(NotificationViewSetMixin,
+class ZaakEigenschapViewSet(NotificationCreateMixin,
                             NestedViewSetMixin,
                             mixins.CreateModelMixin,
-                            mixins.ListModelMixin,
-                            mixins.RetrieveModelMixin,
-                            viewsets.GenericViewSet):
+                            viewsets.ReadOnlyModelViewSet):
     """
     Opvragen en bewerken van ZAAKEIGENSCHAPpen
 
@@ -393,11 +388,9 @@ class ZaakEigenschapViewSet(NotificationViewSetMixin,
         return kenmerken
 
 
-class KlantContactViewSet(NotificationViewSetMixin,
+class KlantContactViewSet(NotificationCreateMixin,
                           mixins.CreateModelMixin,
-                          mixins.ListModelMixin,
-                          mixins.RetrieveModelMixin,
-                          viewsets.GenericViewSet):
+                          viewsets.ReadOnlyModelViewSet):
     """
     Opvragen en bewerken van KLANTCONTACTen.
 
@@ -426,12 +419,10 @@ class KlantContactViewSet(NotificationViewSetMixin,
         return kenmerken
 
 
-class RolViewSet(NotificationViewSetMixin,
+class RolViewSet(NotificationCreateMixin,
                  CheckQueryParamsMixin,
                  mixins.CreateModelMixin,
-                 mixins.ListModelMixin,
-                 mixins.RetrieveModelMixin,
-                 viewsets.GenericViewSet):
+                 viewsets.ReadOnlyModelViewSet):
     """
     Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
 
