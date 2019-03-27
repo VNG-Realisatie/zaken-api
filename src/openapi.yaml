@@ -21,6 +21,12 @@ info:
     genereren.
 
 
+    **Notificaties**
+
+
+    Deze component publiceert notificaties op het kanaal `zaken`.
+
+
     **Handige links**
 
 

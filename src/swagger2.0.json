@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "Zaakregistratiecomponent (ZRC) API",
-        "description": "Een API om een zaakregistratiecomponent te benaderen.\n\nDe `ZAAK` is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De ZRC API werkt samen met andere ZGW API's, t.w.\nDRC, ZTC en BRC, om tot volledige functionaliteit te komen.\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken om JWT-tokens te\ngenereren.\n\n**Handige links**\n\n* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)\n* [\"Papieren\" standaard](https://ref.tst.vng.cloud/standaard/)\n",
+        "description": "Een API om een zaakregistratiecomponent te benaderen.\n\nDe `ZAAK` is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De ZRC API werkt samen met andere ZGW API's, t.w.\nDRC, ZTC en BRC, om tot volledige functionaliteit te komen.\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken om JWT-tokens te\ngenereren.\n\n**Notificaties**\n\nDeze component publiceert notificaties op het kanaal `zaken`.\n\n**Handige links**\n\n* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)\n* [\"Papieren\" standaard](https://ref.tst.vng.cloud/standaard/)\n",
         "contact": {
             "url": "https://github.com/VNG-Realisatie/gemma-zaken",
             "email": "support@maykinmedia.nl"
