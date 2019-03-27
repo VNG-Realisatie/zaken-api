@@ -2,6 +2,21 @@
 Wijzigingen
 ===========
 
+0.12.0 (2019-03-27)
+===================
+
+Added support for notifications
+
+* Switched to vng-api-common, which is the rebrand of zds-schema
+* Fixed CRS-parameters ending up in API spec for ``DELETE`` actions
+* Added django-solo to store configuration
+* Added the notifications support
+    * NC configuration in database possible
+    * viewset mixins for API endpoints, to publish notifications
+    * callback endpoint available on ``/api/v1/callbacks``, to receive notifications
+    * management command ``register_kanaal`` available to register the exchange
+    * added documentation page for kanalen/exchanges
+
 0.11.2 (2019-03-11)
 ===================
 
