@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from vng_api_common.geo import GeoMixin
-from vng_api_common.notifications.publish.viewsets import (
+from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationViewSetMixin
 )
 from vng_api_common.permissions import ActionScopesRequired
