@@ -20,6 +20,3 @@ djangorestframework-filters
 drf-yasg
 drf-writable-nested
 vng-api-common[notifications]==0.35.1
-
-# data migration - keep it around for a while
-zds-schema
