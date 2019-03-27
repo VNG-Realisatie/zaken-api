@@ -5,6 +5,9 @@ from django.core.management import call_command
 from django.test import override_settings
 
 from rest_framework.test import APITestCase
+from vng_api_common.notifications.kanalen import Kanaal
+
+from zrc.datamodel.models import Zaak
 
 
 class CreateNotifKanaalTestCase(APITestCase):
@@ -16,13 +19,19 @@ class CreateNotifKanaalTestCase(APITestCase):
         """
         client = mock_client.from_url.return_value
         client.list.return_value = []
+        # ensure this is added to the registry
+        Kanaal(label='kanaal_test', main_resource=Zaak)
 
         stdout = StringIO()
         call_command('register_kanaal', 'kanaal_test', nc_api_root='https://example.com/api/v1', stdout=stdout)
 
         client.create.assert_called_once_with(
             'kanaal',
-            {'naam': 'kanaal_test'}
+            {
+                'naam': 'kanaal_test',
+                'documentatieLink': 'https://example.com/ref/kanalen/#kanaal_test',
+                'filters': [],
+            }
         )
 
     @patch('zds_client.Client')
@@ -33,11 +42,17 @@ class CreateNotifKanaalTestCase(APITestCase):
         """
         client = mock_client.from_url.return_value
         client.list.return_value = []
+        # ensure this is added to the registry
+        Kanaal(label='dummy-kanaal', main_resource=Zaak)
 
         stdout = StringIO()
         call_command('register_kanaal', nc_api_root='https://example.com/api/v1', stdout=stdout)
 
         client.create.assert_called_once_with(
             'kanaal',
-            {'naam': 'dummy-kanaal'}
+            {
+                'naam': 'dummy-kanaal',
+                'documentatieLink': 'https://example.com/ref/kanalen/#dummy-kanaal',
+                'filters': [],
+            }
         )

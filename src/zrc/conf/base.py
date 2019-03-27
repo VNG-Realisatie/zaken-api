@@ -5,6 +5,8 @@ from django.urls import reverse_lazy
 
 from .api import *  # noqa
 
+SITE_ID = int(os.getenv('SITE_ID', 1))
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 DJANGO_PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 BASE_DIR = os.path.abspath(os.path.join(DJANGO_PROJECT_DIR, os.path.pardir, os.path.pardir))
@@ -40,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
 
     # Note: If enabled, at least one Site object is required
-    # 'django.contrib.sites',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
@@ -362,5 +364,10 @@ if SENTRY_DSN:
             'dsn': RAVEN_CONFIG['dsn']
         },
     })
+
+#
+# SSL or not?
+#
+IS_HTTPS = os.getenv('IS_HTTPS', '1').lower() in ['true', '1', 'yes']
 
 NOTIFICATIONS_KANAAL = 'zaken'
