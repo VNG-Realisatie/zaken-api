@@ -29,8 +29,7 @@ FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
 STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 
-@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
-                   ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US39TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]

@@ -1,8 +1,6 @@
 """
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/349
 """
-from django.test import override_settings
-
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import (
@@ -26,7 +24,6 @@ from zrc.tests.utils import ZAAK_READ_KWARGS
 from .utils import ZAAK_WRITE_KWARGS
 
 
-@override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
 class US349TestCase(JWTScopesMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_ALLES_VERWIJDEREN]

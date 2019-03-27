@@ -52,5 +52,5 @@ six==1.11.0               # via django-markup, djangorestframework-gis, drf-yasg
 unidecode==1.0.22         # via vng-api-common, zds-schema
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.1           # via requests
-vng-api-common[notifications]==0.32.3
+vng-api-common[notifications]==0.35.0
 zds-schema==0.22.0

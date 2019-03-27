@@ -2,7 +2,9 @@ from django.conf import settings
 
 from drf_yasg import openapi
 
-description = """Een API om een zaakregistratiecomponent te benaderen.
+from .kanalen import KANAAL_ZAKEN
+
+description = f"""Een API om een zaakregistratiecomponent te benaderen.
 
 De `ZAAK` is het kernobject in deze API, waaraan verschillende andere
 resources gerelateerd zijn. De ZRC API werkt samen met andere ZGW API's, t.w.
@@ -13,6 +15,10 @@ DRC, ZTC en BRC, om tot volledige functionaliteit te komen.
 Deze API vereist autorisatie. Je kan de
 [token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken om JWT-tokens te
 genereren.
+
+**Notificaties**
+
+Deze component publiceert notificaties op het kanaal `{KANAAL_ZAKEN.label}`.
 
 **Handige links**
 

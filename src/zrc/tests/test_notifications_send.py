@@ -3,8 +3,8 @@ import json
 from django.conf import settings
 from django.test import override_settings
 
-from mock import patch
 from freezegun import freeze_time
+from mock import patch
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
@@ -27,15 +27,19 @@ RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785
 
 
 @freeze_time("2012-01-14")
-@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+@override_settings(
+    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+    NOTIFICATIONS_DISABLED=False
+)
 class SendNotifTestCase(JWTScopesMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
 
-    @patch('zds_client.Client.request')
+    @patch('zds_client.Client.from_url')
     def test_send_notif_create_zaak(self, mock_client):
         """
         Check if notifications will be send when zaak is created
         """
+        client = mock_client.return_value
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
@@ -60,30 +64,31 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         data = response.json()
-        notif_args, notif_kwargs = mock_client.call_args_list[0]
-        msg = json.loads(notif_kwargs['data'])
+        client.create.assert_called_once_with(
+            'notificaties',
+            {
+                'kanaal': 'zaken',
+                'hoofdObject': data['url'],
+                'resource': 'zaak',
+                'resourceUrl': data['url'],
+                'actie': 'create',
+                'aanmaakdatum': '2012-01-14T00:00:00Z',
+                'kenmerken': [
+                    {'bronorganisatie': '517439943'},
+                    {'zaaktype': ZAAKTYPE},
+                    {'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar}
+                ]
+            }
+        )
 
-        self.assertEqual(notif_args[0], settings.NOTIFICATIES_URL)
-        self.assertEqual(msg, {
-            'kanaal': settings.NOTIFICATIES_KANAAL,
-            'hoofdObject': data['url'],
-            'resource': 'zaak',
-            'resourceUrl': data['url'],
-            'actie': 'create',
-            'aanmaakdatum': '2012-01-14T00:00:00Z',
-            'kenmerken': [
-                {'bronorganisatie': '517439943'},
-                {'zaaktype': ZAAKTYPE},
-                {'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar}
-            ]
-        })
-
-    @patch('zds_client.Client.request')
+    @patch('zds_client.Client.from_url')
     def test_send_notif_delete_resultaat(self, mock_client):
         """
         Check if notifications will be send when resultaat is deleted
         """
+        client = mock_client.return_value
         zaak = ZaakFactory.create()
+        zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         resultaat = ResultaatFactory.create(zaak=zaak)
         resultaat_url = get_operation_url('resultaat_update', uuid=resultaat.uuid)
 
@@ -91,20 +96,19 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
 
-        notif_args, notif_kwargs = mock_client.call_args_list[0]
-        msg = json.loads(notif_kwargs['data'])
-
-        self.assertEqual(notif_args[0], settings.NOTIFICATIES_URL)
-        self.assertEqual(msg, {
-            'kanaal': settings.NOTIFICATIES_KANAAL,
-            'hoofdObject': 'http://testserver{}'.format(get_operation_url('zaak_read', uuid=zaak.uuid)),
-            'resource': 'resultaat',
-            'resourceUrl': 'http://testserver{}'.format(resultaat_url),
-            'actie': 'destroy',
-            'aanmaakdatum': '2012-01-14T00:00:00Z',
-            'kenmerken': [
-                {'bronorganisatie': zaak.bronorganisatie},
-                {'zaaktype': zaak.zaaktype},
-                {'vertrouwelijkheidaanduiding': zaak.vertrouwelijkheidaanduiding}
-            ]
-        })
+        client.create.assert_called_once_with(
+            'notificaties',
+            {
+                'kanaal': 'zaken',
+                'hoofdObject': f'http://testserver{zaak_url}',
+                'resource': 'resultaat',
+                'resourceUrl': f'http://testserver{resultaat_url}',
+                'actie': 'destroy',
+                'aanmaakdatum': '2012-01-14T00:00:00Z',
+                'kenmerken': [
+                    {'bronorganisatie': zaak.bronorganisatie},
+                    {'zaaktype': zaak.zaaktype},
+                    {'vertrouwelijkheidaanduiding': zaak.vertrouwelijkheidaanduiding}
+                ]
+            }
+        )

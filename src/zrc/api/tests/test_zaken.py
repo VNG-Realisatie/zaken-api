@@ -24,8 +24,7 @@ from ..scopes import (
 )
 
 
-@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
-                   ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
+@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class ApiStrategyTests(JWTScopesMixin, APITestCase):
 
     scopes = [

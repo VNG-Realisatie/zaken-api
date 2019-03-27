@@ -4,8 +4,6 @@ ontvangen, zodat ik voldoende details weet om de melding op te volgen.
 
 ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/52
 """
-from django.conf import settings
-
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import TypeCheckMixin, get_operation_url

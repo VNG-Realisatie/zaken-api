@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'vng_api_common',  # before drf_yasg to override the management command
     'vng_api_common.notifications',
-    'vng_api_common.notifications.publish',
     'zds_schema',  # TODO: remove once all environents have migrated
     'drf_yasg',
     'rest_framework',
@@ -364,11 +363,4 @@ if SENTRY_DSN:
         },
     })
 
-
-# settings for sending notifiqations
-NOTIFICATIES_HOST = os.getenv('NOTIFICATIES_HOST', 'http://127.0.0.1:8004')
-NOTIFICATIES_URL = f'{NOTIFICATIES_HOST}/api/v1/notificaties'
-
-NOTIFICATIES_KANAAL = 'zaken'
-NOTIFICATIES_HOOFD_RESOURCE = 'zaak'
-NOTIFICATIES_KENMERKEN_NAMES = ['bronorganisatie', 'zaaktype', 'vertrouwelijkheidaanduiding']
+NOTIFICATIONS_KANAAL = 'zaken'
