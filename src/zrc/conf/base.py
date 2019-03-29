@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'rest_framework_filters',
     'django_markup',
     'solo',
+    'reversion',
 
     # Project applications.
     'zrc.accounts',

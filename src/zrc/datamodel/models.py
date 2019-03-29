@@ -1,5 +1,5 @@
 import uuid
-from datetime import date
+from datetime import date, datetime
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
@@ -8,6 +8,10 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import make_aware
+from django.http import Http404
+import reversion
+from reversion.models import Version
 
 import isodate
 from vng_api_common.constants import (
@@ -27,6 +31,7 @@ from zrc.utils.exceptions import DetermineProcessEndDateException
 from .constants import BetalingsIndicatie
 
 
+@reversion.register()
 class Zaak(APIMixin, models.Model):
     """
     Modelleer de structuur van een ZAAK.
@@ -221,7 +226,11 @@ class Zaak(APIMixin, models.Model):
         if self.betalingsindicatie == BetalingsIndicatie.nvt and self.laatste_betaaldatum:
             self.laatste_betaaldatum = None
 
-        super().save(*args, **kwargs)
+        # Keep track of the versions of this model instance
+        with reversion.create_revision():
+            super().save(*args, **kwargs)
+            reversion.set_date_created(make_aware(datetime.now()))
+            reversion.add_to_revision(self)
 
     @property
     def current_status_uuid(self):
@@ -329,6 +338,34 @@ class Zaak(APIMixin, models.Model):
 
         raise ValueError(f'Onbekende "Afleidingswijze": {afleidingswijze}')
 
+    def get_version_at_date(self, timestamp):
+        """
+        Returns the version of the Zaak as it was at a certain point in
+        time
+
+        :param timestamp:
+            A non-naive datetime object
+
+        :return:
+            A Zaak as it existed at the specified timestamp, or 404 if
+            it did not exist at that timestamp
+        """
+        if not timestamp.tzinfo:
+            timestamp = make_aware(timestamp)
+
+        all_versions = Version.objects.get_for_object_reference(Zaak, self.id)
+
+        # Retrieve all versions that existed before the specified 
+        # datetime
+        versions_before_date = all_versions.filter(revision__date_created__lte=timestamp)
+
+        # If the Zaak existed before the specified datetime, get the 
+        # latest version created before the datetime
+        if versions_before_date:
+            zaak = Zaak(**versions_before_date[0].field_dict)
+            return zaak
+        else:
+            raise Http404
 
 class Status(models.Model):
     """

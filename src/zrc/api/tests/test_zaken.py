@@ -1,8 +1,11 @@
 import unittest
+from datetime import datetime
 
 from django.contrib.gis.geos import Point
 from django.test import override_settings, tag
 from django.utils import timezone
+import reversion
+from reversion.models import Version
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -366,3 +369,37 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertEqual(response_data['count'], 2)
         self.assertIsNone(response_data['previous'])
         self.assertIsNone(response_data['next'])
+
+    def test_zaak_datumtijd_param(self):
+        # Create a Zaak with an initial description
+        zaak = ZaakFactory.create(
+            omschrijving='versie 1'
+        )
+
+        # Store time at which the initial version existed
+        datetime_before_edit = datetime.today()
+
+        # Edit the description of the Zaak and save the changes
+        zaak.omschrijving = 'versie 2'
+        zaak.save()
+
+        # Store time at which the second version of the Zaak existed
+        datetime_after_edit = datetime.today()
+
+        # Construct the url for detailview of the zaak
+        url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        # Make the API call with the datetime parameter equal to the
+        # datetime between version 1 and version 2
+        response = self.client.get(f'{url}?datumtijd={datetime_before_edit}', **ZAAK_READ_KWARGS)
+
+        # Verify that the API returns the correct version of the Zaak
+        self.assertEqual(response.data['omschrijving'], 'versie 1')
+
+        # Make the API call with the datetime parameter equal to the
+        # datetime after version 2
+        url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+        response = self.client.get(f'{url}?datumtijd={datetime_after_edit}', **ZAAK_READ_KWARGS)
+
+        # Verify that the API returns the correct version of the Zaak
+        self.assertEqual(response.data['omschrijving'], 'versie 2')

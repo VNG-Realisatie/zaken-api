@@ -1,7 +1,12 @@
 import logging
+from datetime import datetime
+import dateutil.parser
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.http import Http404
+import reversion
+from reversion.models import Version
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
@@ -162,6 +167,19 @@ class ZaakViewSet(NotificationViewSetMixin,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
+
+    def get_object(self):
+        base = super().get_queryset().filter(uuid=self.kwargs['uuid'])
+
+        # If a datetime parameter is specified, attempt to retrieve
+        # the version of the Zaak at that timestamp
+        datetime_param = self.request.query_params.get('datumtijd', '')
+        if datetime_param:
+            timestamp = dateutil.parser.parse(datetime_param)
+            version = base.first().get_version_at_date(timestamp)
+            return version
+
+        return base.first()
 
     def get_queryset(self):
         base = super().get_queryset()
