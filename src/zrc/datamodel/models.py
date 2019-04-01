@@ -355,11 +355,11 @@ class Zaak(APIMixin, models.Model):
 
         all_versions = Version.objects.get_for_object_reference(Zaak, self.id)
 
-        # Retrieve all versions that existed before the specified 
+        # Retrieve all versions that existed before the specified
         # datetime
         versions_before_date = all_versions.filter(revision__date_created__lte=timestamp)
 
-        # If the Zaak existed before the specified datetime, get the 
+        # If the Zaak existed before the specified datetime, get the
         # latest version created before the datetime
         if versions_before_date:
             zaak = Zaak(**versions_before_date[0].field_dict)

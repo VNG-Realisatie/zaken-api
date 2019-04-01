@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
+from reversion.models import Version, Revision
 
 import isodate
 import requests
@@ -488,6 +489,27 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
         attrs['_naam'] = eigenschap['naam']
 
         return attrs
+
+
+class ZaakRevisionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Revision
+
+        fields = (
+            'date_created',
+        )
+
+
+class ZaakVersionSerializer(serializers.ModelSerializer):
+    revision = ZaakRevisionSerializer()
+    zaak = serializers.DictField(source='field_dict')
+
+    class Meta:
+        model = Version
+        fields = (
+            'revision',
+            'zaak',
+        )
 
 
 class KlantContactSerializer(serializers.HyperlinkedModelSerializer):

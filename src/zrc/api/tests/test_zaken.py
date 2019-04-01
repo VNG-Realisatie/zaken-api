@@ -181,7 +181,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
     def test_zaak_heropen_reset_einddatum(self):
         token = generate_jwt([SCOPE_STATUSSEN_TOEVOEGEN])
         self.client.credentials(HTTP_AUTHORIZATION=token)
-        zaak = ZaakFactory.create(einddatum='2019-01-07')
+        zaak = ZaakFactory.create(einddatum=utcdatetime(2019, 1, 7))
         StatusFactory.create(
             zaak=zaak,
             status_type='http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/2',
@@ -386,7 +386,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         # Store time at which the second version of the Zaak existed
         datetime_after_edit = datetime.today()
 
-        # Construct the url for detailview of the zaak
+        # Construct the url for detailview of the Zaak
         url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
 
         # Make the API call with the datetime parameter equal to the
@@ -403,3 +403,58 @@ class ZakenTests(JWTScopesMixin, APITestCase):
 
         # Verify that the API returns the correct version of the Zaak
         self.assertEqual(response.data['omschrijving'], 'versie 2')
+
+    def test_zaak_datumtijd_before_creation_gives_404(self):
+        # Store a timestamp before the creation of the Zaak
+        datetime_before_creation = datetime.today()
+
+        # Create a Zaak with an initial description
+        zaak = ZaakFactory.create(
+            omschrijving='versie 1'
+        )
+
+        # Construct the url for detailview of the zaak
+        url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        # Make the API call with the datetime parameter equal to the
+        # a datetime before the creation of the Zaak
+        response = self.client.get(f'{url}?datumtijd={datetime_before_creation}', **ZAAK_READ_KWARGS)
+
+        # Verify that the API returns a 404, because the Zaak does not exist
+        # yet at the specified point in time
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_zaak_display_history(self):
+        # Create a Zaak with an initial description
+        zaak = ZaakFactory.create(
+            omschrijving='versie1'
+        )
+
+        # Edit the description of the Zaak and save the changes
+        zaak.omschrijving = 'versie2'
+        zaak.save()
+
+        # Edit the description of the Zaak again and save the changes
+        zaak.omschrijving = 'versie3'
+        zaak.save()
+
+        # Construct the url for detailview of the Zaak and make an API call
+        # for the history of the Zaak
+        url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+        response = self.client.get(f'{url}/historie', **ZAAK_READ_KWARGS)
+
+        # Retrieve the three versions from the response
+        version3, version2, version1 = response.data
+
+        # Verify that the descriptions of each Zaak version is set correctly
+        self.assertEqual(version1['zaak']['omschrijving'], 'versie1')
+        self.assertEqual(version2['zaak']['omschrijving'], 'versie2')
+        self.assertEqual(version3['zaak']['omschrijving'], 'versie3')
+
+        # Verify that the creation dates of the versions are in the correct
+        # order
+        self.assertTrue(version1['revision']['dateCreated']
+                        < version2['revision']['dateCreated']
+                        < version3['revision']['dateCreated'])
+

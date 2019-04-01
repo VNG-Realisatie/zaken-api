@@ -36,7 +36,8 @@ from .scopes import (
 from .serializers import (
     KlantContactSerializer, ResultaatSerializer, RolSerializer,
     StatusSerializer, ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
-    ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
+    ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer, ZaakVersionSerializer,
+    ZaakRevisionSerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -218,6 +219,22 @@ class ZaakViewSet(NotificationViewSetMixin,
 
     def get_kenmerken(self, data):
         return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
+
+
+class ZaakHistorieViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Opvragen van de versie historie van een ZAAK.
+
+    list:
+    Geef een lijst van de versies van een ZAAK.
+    """
+    queryset = Version.objects.all()
+    serializer_class = ZaakVersionSerializer
+
+    def get_queryset(self):
+        base = super().get_queryset()
+        zaak_uuid = self.request.parser_context['kwargs']['zaak_uuid']
+        return base.get_for_object(Zaak.objects.get(uuid=zaak_uuid))
 
 
 class StatusViewSet(NotificationCreateMixin,
