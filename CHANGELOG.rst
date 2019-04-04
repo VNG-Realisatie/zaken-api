@@ -2,6 +2,14 @@
 Wijzigingen
 ===========
 
+0.12.1 (2019-04-04)
+===================
+
+Fixed notifications throwing 500 errors
+
+Notifications resolve internal paths to resources, which had a bug when
+components are hosted on subpaths. This has been fixed in vng-api-common.
+
 0.12.0 (2019-03-27)
 ===================
 
