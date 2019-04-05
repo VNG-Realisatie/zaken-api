@@ -164,10 +164,8 @@ paths:
       - klantcontacten
     post:
       operationId: klantcontact_create
-      description: 'Registreer een klantcontact bij een ZAAK.
-
-
-        Indien geen identificatie gegeven is, dan wordt deze automatisch
+      summary: Registreer een klantcontact bij een ZAAK.
+      description: 'Indien geen identificatie gegeven is, dan wordt deze automatisch
 
         gegenereerd.'
       responses:
@@ -443,10 +441,9 @@ paths:
   /resultaten:
     get:
       operationId: resultaat_list
-      description: 'Geef een lijst van RESULTAATen van ZAAKen.
-
-
-        Optioneel kan je de queryparameters gebruiken om de resultaten te
+      summary: Geef een lijst van RESULTAATen van ZAAKen.
+      description: 'Optioneel kan je de queryparameters gebruiken om de resultaten
+        te
 
         filteren.'
       parameters:
@@ -594,10 +591,8 @@ paths:
         - zds.scopes.zaken.lezen
     post:
       operationId: resultaat_create
-      description: 'Voeg een RESULTAAT voor een ZAAK toe.
-
-
-        **Er wordt gevalideerd op**
+      summary: Voeg een RESULTAAT voor een ZAAK toe.
+      description: '**Er wordt gevalideerd op**
 
         - geldigheid URL naar de ZAAK
 
@@ -868,10 +863,8 @@ paths:
         - zds.scopes.zaken.lezen
     put:
       operationId: resultaat_update
-      description: 'Wijzig het RESULTAAT van een ZAAK.
-
-
-        **Er wordt gevalideerd op**
+      summary: Wijzig het RESULTAAT van een ZAAK.
+      description: '**Er wordt gevalideerd op**
 
         - geldigheid URL naar de ZAAK
 
@@ -1018,10 +1011,8 @@ paths:
         $ref: '#/components/requestBodies/Resultaat'
     patch:
       operationId: resultaat_partial_update
-      description: 'Wijzig het RESULTAAT van een ZAAK.
-
-
-        **Er wordt gevalideerd op**
+      summary: Wijzig het RESULTAAT van een ZAAK.
+      description: '**Er wordt gevalideerd op**
 
         - geldigheid URL naar de ZAAK
 
@@ -1749,10 +1740,9 @@ paths:
   /statussen:
     get:
       operationId: status_list
-      description: 'Geef een lijst van STATUSsen van ZAAKen.
-
-
-        Optioneel kan je de queryparameters gebruiken om de resultaten te
+      summary: Geef een lijst van STATUSsen van ZAAKen.
+      description: 'Optioneel kan je de queryparameters gebruiken om de resultaten
+        te
 
         filteren.'
       parameters:
@@ -1900,12 +1890,13 @@ paths:
         - zds.scopes.zaken.lezen
     post:
       operationId: status_create
-      description: "Voeg een nieuwe STATUS voor een ZAAK toe.\n\n**Er wordt gevalideerd\
-        \ op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het STATUSTYPE\n\
-        - indien het de eindstatus betreft, dan moet het attribuut\n  `indicatieGebruiksrecht`\
-        \ gezet zijn op alle informatieobjecten die aan\n  de zaak gerelateerd zijn\n\
-        \n**Opmerkingen**\n- Indien het statustype de eindstatus is (volgens het ZTC),\
-        \ dan wordt de\n  zaak afgesloten door de einddatum te zetten."
+      summary: Voeg een nieuwe STATUS voor een ZAAK toe.
+      description: "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n-\
+        \ geldigheid URL naar het STATUSTYPE\n- indien het de eindstatus betreft,\
+        \ dan moet het attribuut\n  `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten\
+        \ die aan\n  de zaak gerelateerd zijn\n\n**Opmerkingen**\n- Indien het statustype\
+        \ de eindstatus is (volgens het ZTC), dan wordt de\n  zaak afgesloten door\
+        \ de einddatum te zetten."
       responses:
         '201':
           description: ''
@@ -2584,10 +2575,11 @@ paths:
   /zaken:
     get:
       operationId: zaak_list
-      description: "Geef een lijst van ZAAKen.\n\nDeze lijst wordt standaard gepagineerd\
-        \ met 100 zaken per pagina.\n\nOptioneel kan je de queryparameters gebruiken\
-        \ om zaken te filteren.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug\
-        \ van de zaaktypes die in het autorisatie-JWT\n  vervat zitten."
+      summary: Geef een lijst van ZAAKen.
+      description: "Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.\n\
+        \nOptioneel kan je de queryparameters gebruiken om zaken te filteren.\n\n\
+        **Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het\
+        \ autorisatie-JWT\n  vervat zitten."
       parameters:
       - name: identificatie
         in: query
@@ -2728,9 +2720,11 @@ paths:
                   next:
                     type: string
                     format: uri
+                    nullable: true
                   previous:
                     type: string
                     format: uri
+                    nullable: true
                   results:
                     type: array
                     items:
@@ -2862,17 +2856,18 @@ paths:
         - zds.scopes.zaken.lezen
     post:
       operationId: zaak_create
-      description: "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan\
-        \ wordt deze automatisch\ngegenereerd. De identificatie moet uniek zijn binnen\
-        \ de bronorganisatie.\n\n**Er wordt gevalideerd op**:\n- `zaaktype` moet een\
-        \ geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n\
-        - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n \
-        \ \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus`\
-        \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet\
-        \ een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
-        \ heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\
-        \n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n\
-        \  `status` de waarde \"gearchiveerd\" heeft."
+      summary: Maak een ZAAK aan.
+      description: "Indien geen identificatie gegeven is, dan wordt deze automatisch\n\
+        gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\
+        \n**Er wordt gevalideerd op**:\n- `zaaktype` moet een geldige URL zijn.\n\
+        - `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum`\
+        \ mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie`\
+        \ moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
+        \ heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus`\
+        \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen\
+        \ een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde\
+        \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
+        \ heeft."
       parameters:
       - name: Accept-Crs
         in: header
@@ -3043,10 +3038,8 @@ paths:
   /zaken/_zoek:
     post:
       operationId: zaak__zoek
-      description: 'Voer een (geo)-zoekopdracht uit op ZAAKen.
-
-
-        Zoeken/filteren gaat normaal via de `list` operatie, deze is echter
+      summary: Voer een (geo)-zoekopdracht uit op ZAAKen.
+      description: 'Zoeken/filteren gaat normaal via de `list` operatie, deze is echter
 
         niet geschikt voor geo-zoekopdrachten.'
       parameters:
@@ -3106,9 +3099,11 @@ paths:
                   next:
                     type: string
                     format: uri
+                    nullable: true
                   previous:
                     type: string
                     format: uri
+                    nullable: true
                   results:
                     type: array
                     items:
@@ -3418,19 +3413,20 @@ paths:
         - zds.scopes.zaken.lezen
     put:
       operationId: zaak_update
-      description: "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- `zaaktype`\
-        \ moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst\
-        \ liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n\
-        \  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus`\
-        \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet\
-        \ een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
-        \ heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\
-        \n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n\
-        \  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt\
-        \ enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat\
-        \ zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n\
-        - indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n\
-        \  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource."
+      summary: Werk een zaak bij.
+      description: "**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL\
+        \ zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum`\
+        \ mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie`\
+        \ moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
+        \ heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus`\
+        \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen\
+        \ een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde\
+        \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
+        \ heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes\
+        \ die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst\
+        \ niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden,\
+        \ doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus\
+        \ is.\n  Zie de `Status` resource."
       parameters:
       - name: Accept-Crs
         in: header
@@ -3614,19 +3610,20 @@ paths:
         $ref: '#/components/requestBodies/Zaak'
     patch:
       operationId: zaak_partial_update
-      description: "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- `zaaktype`\
-        \ moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst\
-        \ liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n\
-        \  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus`\
-        \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet\
-        \ een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
-        \ heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\
-        \n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n\
-        \  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt\
-        \ enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat\
-        \ zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n\
-        - indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n\
-        \  toe te voegen die NIET de eindstatus is. Zie de `Status` resource."
+      summary: Werk een zaak bij.
+      description: "**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL\
+        \ zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum`\
+        \ mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie`\
+        \ moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
+        \ heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus`\
+        \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen\
+        \ een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde\
+        \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
+        \ heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes\
+        \ die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst\
+        \ niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden,\
+        \ doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus\
+        \ is. Zie de `Status` resource."
       parameters:
       - name: Accept-Crs
         in: header
@@ -3810,8 +3807,9 @@ paths:
         $ref: '#/components/requestBodies/Zaak'
     delete:
       operationId: zaak_delete
-      description: "Verwijdert een zaak, samen met alle gerelateerde resources binnen\
-        \ deze API.\n\n**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken\
+      summary: Verwijdert een zaak, samen met alle gerelateerde resources binnen deze
+        API.
+      description: "**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken\
         \ van de verwijderde hoofzaak\n- `status` - alle statussen van de verwijderde\
         \ zaak\n- `resultaat` - het resultaat van de verwijderde zaak\n- `rol` - alle\
         \ rollen bij de zaak\n- `zaakobject` - alle zaakobjecten bij de zaak\n- `zaakeigenschap`\
@@ -5226,17 +5224,20 @@ components:
             afgerond wordt.
           type: string
           format: date
+          nullable: true
         uiterlijkeEinddatumAfdoening:
           title: Uiterlijke einddatum afdoening
           description: De laatste datum waarop volgens wet- en regelgeving de zaak
             afgerond dient te zijn.
           type: string
           format: date
+          nullable: true
         publicatiedatum:
           title: Publicatiedatum
           description: Datum waarop (het starten van) de zaak gepubliceerd is of wordt.
           type: string
           format: date
+          nullable: true
         communicatiekanaal:
           title: Communicatiekanaal
           description: Het medium waarlangs de aanleiding om een zaak te starten is
@@ -5306,6 +5307,7 @@ components:
             die gemoeid zijn met behandeling van de zaak.
           type: string
           format: date-time
+          nullable: true
         zaakgeometrie:
           $ref: '#/components/schemas/GeoJSONGeometry'
         verlenging:
@@ -5327,6 +5329,7 @@ components:
             \ de onderhavige ZAAK er \xE9\xE9n is."
           type: string
           format: uri
+          nullable: true
         deelzaken:
           type: array
           items:
@@ -5362,6 +5365,7 @@ components:
           enum:
           - blijvend_bewaren
           - vernietigen
+          nullable: true
         archiefstatus:
           title: Archiefstatus
           description: Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
@@ -5380,6 +5384,7 @@ components:
             aan deze ZAAK indien nog leeg.
           type: string
           format: date
+          nullable: true
         resultaat:
           title: Resultaat
           description: Indien geen resultaat bekend is, dan is de waarde 'null'
