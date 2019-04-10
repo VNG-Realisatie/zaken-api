@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
@@ -333,6 +334,31 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             }
         }
 
+    def _get_resultaat_type(self, resultaat_type_url):
+        if not hasattr(self, '_resultaat_type'):
+            self._resultaat_type = None
+            if resultaat_type_url:
+                Client = import_string(settings.ZDS_CLIENT_CLASS)
+                client = Client.from_url(resultaat_type_url)
+                client.auth = APICredential.get_auth(
+                    resultaat_type_url,
+                    scopes=['zds.scopes.zaaktypes.lezen']
+                )
+                self._resultaat_type = client.request(resultaat_type_url, 'resultaattype')
+        return self._resultaat_type
+
+    def _get_resultaat(self, zaak):
+        if not hasattr(self, '_resultaat'):
+            self._resultaat = None
+            try:
+                self._resultaat = zaak.resultaat
+            except ObjectDoesNotExist as exc:
+                raise serializers.ValidationError(
+                    exc.args[0],
+                    code='resultaat-error'
+                ) from exc
+        return self._resultaat
+
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
         status_type_url = validated_attrs['status_type']
@@ -361,7 +387,8 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
 
         # validate that all InformationObjects have indicatieGebruiksrecht set
         if validated_attrs['__is_eindstatus']:
-            zios = validated_attrs['zaak'].zaakinformatieobject_set.all()
+            zaak = attrs['zaak']
+            zios = zaak.zaakinformatieobject_set.all()
             for zio in zios:
                 io_url = zio.informatieobject
                 client = Client.from_url(io_url)
@@ -377,10 +404,45 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                         code='indicatiegebruiksrecht-unset'
                     )
 
+            # in case of eindstatus - retrieve archive parameters from resultaattype
+            # Archiving: Use default archiefnominatie
+            zaak_archiefnominatie = zaak.archiefnominatie
+            if not zaak_archiefnominatie:
+                resultaat = self._get_resultaat(zaak)
+                resultaat_type = self._get_resultaat_type(resultaat.resultaat_type)
+                zaak_archiefnominatie = resultaat_type['archiefnominatie']
+            attrs['__archiefnominatie'] = zaak_archiefnominatie
+
+            # Archiving: Calculate archiefactiedatum
+            zaak_archiefactiedatum = zaak.archiefactiedatum
+            if not zaak_archiefactiedatum:
+                resultaat = self._get_resultaat(zaak)
+                resultaat_type = self._get_resultaat_type(resultaat.resultaat_type)
+                archiefactietermijn = resultaat_type['archiefactietermijn']
+
+                if archiefactietermijn:
+                    # All fields should be in the response
+                    brondatum_archiefprocedure = resultaat_type['brondatumArchiefprocedure']
+                    afleidingswijze = brondatum_archiefprocedure['afleidingswijze']
+                    datum_kenmerk = brondatum_archiefprocedure['datumkenmerk']
+                    objecttype = brondatum_archiefprocedure['objecttype']
+                    procestermijn = brondatum_archiefprocedure['procestermijn']
+
+                    try:
+                        brondatum = zaak.get_brondatum(afleidingswijze, datum_kenmerk, objecttype, procestermijn)
+                        if brondatum:
+                            zaak_archiefactiedatum = brondatum + isodate.parse_duration(archiefactietermijn)
+                    except DetermineProcessEndDateException as exc:
+                        raise serializers.ValidationError(exc.args[0], code='archiefactiedatum-error')
+
+                attrs['__archiefactiedatum'] = zaak_archiefactiedatum
+
         return validated_attrs
 
     def create(self, validated_data):
         is_eindstatus = validated_data.pop('__is_eindstatus')
+        zaak__archiefnominatie = validated_data.pop('__archiefnominatie', None)
+        zaak__archiefactiedatum = validated_data.pop('__archiefactiedatum', None)
 
         with transaction.atomic():
             obj = super().create(validated_data)
@@ -390,6 +452,12 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             # Implicit conversion from datetime to date
             zaak.einddatum = validated_data['datum_status_gezet'] if is_eindstatus else None
             zaak.save(update_fields=['einddatum'])
+
+            if is_eindstatus:
+                # save archive parameters
+                zaak.archiefactiedatum = zaak__archiefactiedatum
+                zaak.archiefnominatie = zaak__archiefnominatie
+                zaak.save(update_fields=('archiefactiedatum', 'archiefnominatie'))
 
         return obj
 
@@ -561,81 +629,3 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
                 ],
             }
         }
-
-    def _get_resultaat_type(self, resultaat_type_url):
-        if not hasattr(self, '_resultaat_type'):
-            self._resultaat_type = None
-            if resultaat_type_url:
-                Client = import_string(settings.ZDS_CLIENT_CLASS)
-                client = Client.from_url(resultaat_type_url)
-                client.auth = APICredential.get_auth(
-                    resultaat_type_url,
-                    scopes=['zds.scopes.zaaktypes.lezen']
-                )
-                self._resultaat_type = client.request(resultaat_type_url, 'resultaattype')
-        return self._resultaat_type
-
-    def validate(self, attrs):
-        super().validate(attrs)
-
-        zaak = attrs['zaak']
-
-        # Archiving: Use default archiefnominatie
-        zaak_archiefnominatie = zaak.archiefnominatie
-        if not zaak_archiefnominatie:
-            resultaat_type = self._get_resultaat_type(attrs['resultaat_type'])
-            zaak_archiefnominatie = resultaat_type['archiefnominatie']
-        attrs['__archiefnominatie'] = zaak_archiefnominatie
-
-        # Archiving: Calculate archiefactiedatum
-        zaak_archiefactiedatum = zaak.archiefactiedatum
-        if not zaak_archiefactiedatum:
-            resultaat_type = self._get_resultaat_type(attrs['resultaat_type'])
-            archiefactietermijn = resultaat_type['archiefactietermijn']
-
-            if archiefactietermijn:
-                # All fields should be in the response
-                brondatum_archiefprocedure = resultaat_type['brondatumArchiefprocedure']
-                afleidingswijze = brondatum_archiefprocedure['afleidingswijze']
-                datum_kenmerk = brondatum_archiefprocedure['datumkenmerk']
-                objecttype = brondatum_archiefprocedure['objecttype']
-                procestermijn = brondatum_archiefprocedure['procestermijn']
-
-                try:
-                    brondatum = zaak.get_brondatum(afleidingswijze, datum_kenmerk, objecttype, procestermijn)
-                    if brondatum:
-                        zaak_archiefactiedatum = brondatum + isodate.parse_duration(archiefactietermijn)
-                except DetermineProcessEndDateException as e:
-                    raise serializers.ValidationError(e, code='archiefactiedatum-error')
-
-        attrs['__archiefactiedatum'] = zaak_archiefactiedatum
-
-        return attrs
-
-    @transaction.atomic
-    def create(self, validated_data):
-        zaak = validated_data['zaak']
-        zaak__archiefactiedatum = validated_data.pop('__archiefactiedatum', None)
-        zaak__archiefnominatie = validated_data.pop('__archiefnominatie', None)
-
-        result = super().create(validated_data)
-
-        zaak.archiefactiedatum= zaak__archiefactiedatum
-        zaak.archiefnominatie = zaak__archiefnominatie
-        zaak.save(update_fields=('archiefactiedatum', 'archiefnominatie'))
-
-        return result
-
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        zaak = instance.zaak
-        zaak__archiefactiedatum = validated_data.pop('__archiefactiedatum', None)
-        zaak__archiefnominatie = validated_data.pop('__archiefnominatie', None)
-
-        result = super().update(instance, validated_data)
-
-        zaak.archiefactiedatum= zaak__archiefactiedatum
-        zaak.archiefnominatie = zaak__archiefnominatie
-        zaak.save(update_fields=('archiefactiedatum', 'archiefnominatie'))
-
-        return result
