@@ -6,9 +6,13 @@ from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.mocks import ZTCMockClient
-from vng_api_common.tests import JWTScopesMixin, generate_jwt, reverse
+from vng_api_common.constants import (
+    Archiefnominatie, BrondatumArchiefprocedureAfleidingswijze,
+    VertrouwelijkheidsAanduiding
+)
+from vng_api_common.tests import (
+    JWTScopesMixin, generate_jwt, get_operation_url, reverse
+)
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
@@ -22,6 +26,14 @@ from ..scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
     SCOPE_ZAKEN_CREATE
 )
+
+# ZTC
+ZTC_ROOT = 'https://example.com/ztc/api/v1'
+CATALOGUS = f'{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04'
+ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
+RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785'
+STATUSTYPE = f'{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785'
+STATUSTYPE2 = f'{ZAAKTYPE}/statustypen/b86aa339-151e-45f0-ad6c-20698f50b6cd'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -93,52 +105,96 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
-class ZakenTests(JWTScopesMixin, APITestCase):
+class ZakenAfsluitenTests(JWTScopesMixin, APITestCase):
 
     scopes = [
-        SCOPE_ZAKEN_ALLES_LEZEN,
         SCOPE_ZAKEN_CREATE,
+        SCOPE_ZAKEN_BIJWERKEN,
         SCOPE_ZAKEN_ALLES_LEZEN,
+        SCOPE_STATUSSEN_TOEVOEGEN,
     ]
+    zaaktypes = ['*']
 
     def test_zaak_afsluiten(self):
         zaak = ZaakFactory.create()
         zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
-        status_list_url = reverse('status-list')
-        token = generate_jwt([SCOPE_STATUSSEN_TOEVOEGEN])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
 
-        # Validate StatusTypes from Mock client
-        ztc_mock_client = ZTCMockClient()
-
-        status_type_1 = ztc_mock_client.retrieve('statustype', uuid=1)
-        self.assertFalse(status_type_1['isEindstatus'])
-
-        status_type_2 = ztc_mock_client.retrieve('statustype', uuid=2)
-        self.assertTrue(status_type_2['isEindstatus'])
+        responses = {
+            RESULTAATTYPE: {
+                'url': RESULTAATTYPE,
+                'archiefactietermijn': 'P10Y',
+                'archiefnominatie': Archiefnominatie.blijvend_bewaren,
+                'brondatumArchiefprocedure': {
+                    'afleidingswijze': BrondatumArchiefprocedureAfleidingswijze.afgehandeld,
+                    'datumkenmerk': None,
+                    'objecttype': None,
+                    'procestermijn': None,
+                }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 1,
+                'isEindstatus': False,
+            },
+            STATUSTYPE2: {
+                'url': STATUSTYPE2,
+                'volgnummer': 2,
+                'isEindstatus': True,
+            }
+        }
 
         # Set initial status
-        response = self.client.post(status_list_url, {
-            'zaak': zaak_url,
-            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
-            'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
-        })
+        status_list_url = reverse('status-list')
+        with mock_client(responses):
+            response = self.client.post(status_list_url, {
+                'zaak': zaak_url,
+                'statusType': STATUSTYPE,
+                'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+            })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
 
         zaak.refresh_from_db()
         self.assertIsNone(zaak.einddatum)
 
+        # add a result for the case
+        resultaat_create_url = get_operation_url('resultaat_create')
+        data = {
+            'zaak': zaak_url,
+            'resultaatType': RESULTAATTYPE,
+            'toelichting': '',
+        }
+
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
         # Set eindstatus
         datum_status_gezet = utcdatetime(2018, 10, 22, 10, 00, 00)
-        response = self.client.post(status_list_url, {
-            'zaak': zaak_url,
-            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/2',
-            'datumStatusGezet': datum_status_gezet.isoformat(),
-        })
+
+        with mock_client(responses):
+            response = self.client.post(status_list_url, {
+                'zaak': zaak_url,
+                'statusType': STATUSTYPE2,
+                'datumStatusGezet': datum_status_gezet.isoformat(),
+            })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
 
         zaak.refresh_from_db()
         self.assertEqual(zaak.einddatum, datum_status_gezet.date())
+
+
+@override_settings(
+    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
+)
+class ZakenTests(JWTScopesMixin, APITestCase):
+
+    scopes = [
+        SCOPE_ZAKEN_CREATE,
+        SCOPE_ZAKEN_BIJWERKEN,
+        SCOPE_ZAKEN_ALLES_LEZEN,
+    ]
+    zaaktypes = ['*']
 
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
