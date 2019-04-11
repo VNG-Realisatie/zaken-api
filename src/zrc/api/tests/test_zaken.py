@@ -422,3 +422,35 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertEqual(response_data['count'], 2)
         self.assertIsNone(response_data['previous'])
         self.assertIsNone(response_data['next'])
+
+    def test_update_zaak_closed(self):
+        zaak = ZaakFactory.create(
+            einddatum=timezone.now()
+        )
+        url = reverse(zaak)
+
+        token = generate_jwt(scopes=[SCOPE_ZAKEN_BIJWERKEN], zaaktypes=[zaak.zaaktype])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
+        response = self.client.patch(url, {
+            'betalingsindicatie': BetalingsIndicatie.nvt,
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_update_zaak_open(self):
+        zaak = ZaakFactory.create(betalingsindicatie=BetalingsIndicatie.geheel)
+        url = reverse(zaak)
+
+        token = generate_jwt(scopes=[SCOPE_ZAKEN_BIJWERKEN], zaaktypes=[zaak.zaaktype])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
+        response = self.client.patch(url, {
+            'betalingsindicatie': BetalingsIndicatie.nvt,
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+
+        self.assertEqual(response.json()['betalingsindicatie'], BetalingsIndicatie.nvt)
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.betalingsindicatie, BetalingsIndicatie.nvt)

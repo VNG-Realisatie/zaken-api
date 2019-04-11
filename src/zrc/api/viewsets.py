@@ -202,6 +202,22 @@ class ZaakViewSet(NotificationViewSetMixin,
     def get_kenmerken(self, data):
         return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
 
+    def perform_update(self, serializer):
+        """
+        Perform the update of the Case.
+
+        After input validation and before DB persistance we need to check
+        scope-related permissions.
+
+        :raises: PermissionDenied if attempting to alter a closed case
+        """
+        zaak = self.get_object()
+        
+        if zaak.einddatum:
+            msg = "Modifying a closed case is forbidden"
+            raise PermissionDenied(detail=msg)
+        super().perform_create(serializer)
+
 
 class StatusViewSet(NotificationCreateMixin,
                     CheckQueryParamsMixin,
