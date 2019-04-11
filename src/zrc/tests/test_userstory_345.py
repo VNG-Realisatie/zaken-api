@@ -29,6 +29,7 @@ ZTC_ROOT = 'https://example.com/ztc/api/v1'
 CATALOGUS = f'{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785'
+STATUSTYPE = f'{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785'
 
 # DRC
 DRC_ROOT = 'https://example.com/drc/api/v1'
@@ -196,6 +197,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
+        # add a result for the case
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
@@ -203,6 +205,14 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             'toelichting': '',
         }
 
+        self.assertIsNone(zaak.archiefnominatie)
+
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -214,13 +224,21 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': None,
                     'procestermijn': None,
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
         }
-
-        self.assertIsNone(zaak.archiefnominatie)
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
+        }
 
         with mock_client(responses):
-            response = self.client.post(resultaat_create_url, data)
+            response = self.client.post(status_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -241,6 +259,14 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             'toelichting': '',
         }
 
+        self.assertIsNone(zaak.archiefactiedatum)
+
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -252,13 +278,21 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': None,
                     'procestermijn': None,
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
         }
-
-        self.assertIsNone(zaak.archiefactiedatum)
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
+        }
 
         with mock_client(responses):
-            response = self.client.post(resultaat_create_url, data)
+            response = self.client.post(status_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -279,6 +313,14 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             'toelichting': '',
         }
 
+        self.assertIsNone(zaak.archiefactiedatum)
+
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -290,13 +332,21 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': None,
                     'procestermijn': None,
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
         }
-
-        self.assertIsNone(zaak.archiefactiedatum)
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
+        }
 
         with mock_client(responses):
-            response = self.client.post(resultaat_create_url, data)
+            response = self.client.post(status_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -323,6 +373,14 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             'toelichting': '',
         }
 
+        self.assertIsNone(zaak.archiefactiedatum)
+
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -334,13 +392,21 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': None,
                     'procestermijn': None,
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
         }
-
-        self.assertIsNone(zaak.archiefactiedatum)
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
+        }
 
         with mock_client(responses):
-            response = self.client.post(resultaat_create_url, data)
+            response = self.client.post(status_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -354,6 +420,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
+        # add resultaat
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
@@ -361,6 +428,12 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             'toelichting': '',
         }
 
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -373,13 +446,23 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': None,
                     'procestermijn': None,
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
+        }
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
         with mock_client(responses):
-            response = self.client.post(resultaat_create_url, data)
+            response = self.client.post(status_create_url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_add_resultaat_on_zaak_with_hoofdzaak_causes_archiefactiedatum_to_be_set(self):
         """
@@ -390,6 +473,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         zaak = ZaakFactory.create(hoofdzaak=hoofd_zaak)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
+        # add resultaat
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
@@ -397,6 +481,12 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             'toelichting': '',
         }
 
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -408,11 +498,21 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': None,
                     'procestermijn': None,
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
+        }
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
         with mock_client(responses):
-            response = self.client.post(resultaat_create_url, data)
+            response = self.client.post(status_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -427,6 +527,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
+        # add resultaat
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
@@ -434,6 +535,12 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             'toelichting': '',
         }
 
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -446,11 +553,21 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': 'Lantaarnpaal',
                     'procestermijn': None,
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
+        }
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
         with mock_client(responses):
-            response = self.client.post(resultaat_create_url, data)
+            response = self.client.post(status_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -463,16 +580,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
-
         zaak_object = ZaakObjectFactory.create(zaak=zaak)
-
-        resultaat_create_url = get_operation_url('resultaat_create')
-        data = {
-            'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
-            'toelichting': '',
-        }
-
         responses = {
             zaak_object.object: {
                 'einddatum': isodatetime(2019, 1, 1)
@@ -487,11 +595,37 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': zaak_object.object_type,
                     'procestermijn': None,
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
+        }
+
+        # add resultaat
+        resultaat_create_url = get_operation_url('resultaat_create')
+        data = {
+            'zaak': zaak_url,
+            'resultaatType': RESULTAATTYPE,
+            'toelichting': '',
         }
 
         with mock_client(responses):
             response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
+        }
+
+        with mock_client(responses):
+            response = self.client.post(status_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -512,6 +646,12 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             'toelichting': '',
         }
 
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -523,11 +663,21 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                     'objecttype': None,
                     'procestermijn': 'P5Y',
                 }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 2,
+                'isEindstatus': True,
             }
+        }
+        data = {
+            'zaak': zaak_url,
+            'statusType': STATUSTYPE,
+            'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
         with mock_client(responses):
-            response = self.client.post(resultaat_create_url, data)
+            response = self.client.post(status_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
