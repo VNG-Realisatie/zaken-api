@@ -27,7 +27,8 @@ from .kanalen import KANAAL_ZAKEN
 from .permissions import ZaaktypePermission
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
-    SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+    SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
+    SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
 )
 from .serializers import (
     KlantContactSerializer, ResultaatSerializer, RolSerializer,
@@ -158,8 +159,8 @@ class ZaakViewSet(NotificationViewSetMixin,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
         '_zoek': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE,
-        'update': SCOPE_ZAKEN_BIJWERKEN,
-        'partial_update': SCOPE_ZAKEN_BIJWERKEN,
+        'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
@@ -207,15 +208,19 @@ class ZaakViewSet(NotificationViewSetMixin,
         Perform the update of the Case.
 
         After input validation and before DB persistance we need to check
-        scope-related permissions.
+        scope-related permissions. Only SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN scope
+        allows to alter closed cases
 
-        :raises: PermissionDenied if attempting to alter a closed case
+        :raises: PermissionDenied if attempting to alter a closed case with
+        insufficient permissions
+
         """
         zaak = self.get_object()
         
-        if zaak.einddatum:
-            msg = "Modifying a closed case is forbidden"
-            raise PermissionDenied(detail=msg)
+        if not self.request.jwt_payload.has_scopes(SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN):
+            if zaak.einddatum:
+                msg = "Modifying a closed case with current scope is forbidden"
+                raise PermissionDenied(detail=msg)
         super().perform_create(serializer)
 
 
