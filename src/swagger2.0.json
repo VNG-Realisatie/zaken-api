@@ -4282,7 +4282,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.bijwerken"
+                            "(zds.scopes.zaken.bijwerken | zds.scopes.zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -4504,7 +4504,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.bijwerken"
+                            "(zds.scopes.zaken.bijwerken | zds.scopes.zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]

@@ -3605,7 +3605,7 @@ paths:
       - zaken
       security:
       - JWT-Claims:
-        - zds.scopes.zaken.bijwerken
+        - (zds.scopes.zaken.bijwerken | zds.scopes.zaken.geforceerd-bijwerken)
       requestBody:
         $ref: '#/components/requestBodies/Zaak'
     patch:
@@ -3802,7 +3802,7 @@ paths:
       - zaken
       security:
       - JWT-Claims:
-        - zds.scopes.zaken.bijwerken
+        - (zds.scopes.zaken.bijwerken | zds.scopes.zaken.geforceerd-bijwerken)
       requestBody:
         $ref: '#/components/requestBodies/Zaak'
     delete:
