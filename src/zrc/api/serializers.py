@@ -1,7 +1,6 @@
 import logging
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
@@ -344,19 +343,19 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                     resultaat_type_url,
                     scopes=['zds.scopes.zaaktypes.lezen']
                 )
-                self._resultaat_type = client.request(resultaat_type_url, 'resultaattype')
+                self._resultaat_type = client.retrieve('resultaattype', url=resultaat_type_url)
         return self._resultaat_type
 
     def _get_resultaat(self, zaak):
         if not hasattr(self, '_resultaat'):
-            self._resultaat = None
             try:
-                self._resultaat = zaak.resultaat
-            except ObjectDoesNotExist as exc:
+                resultaat = zaak.resultaat
+            except Resultaat.DoesNotExist as exc:
                 raise serializers.ValidationError(
                     exc.args[0],
-                    code='resultaat-error'
+                    code='resultaat-does-not-exist'
                 ) from exc
+            self._resultaat = resultaat
         return self._resultaat
 
     def validate(self, attrs):
@@ -387,7 +386,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
 
         # validate that all InformationObjects have indicatieGebruiksrecht set
         if validated_attrs['__is_eindstatus']:
-            zaak = attrs['zaak']
+            zaak = validated_attrs['zaak']
             zios = zaak.zaakinformatieobject_set.all()
             for zio in zios:
                 io_url = zio.informatieobject
