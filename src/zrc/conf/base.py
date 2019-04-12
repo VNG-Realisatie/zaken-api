@@ -300,7 +300,9 @@ SILENCED_SYSTEM_CHECKS = [
 #
 # Custom settings
 #
-PROJECT_NAME = 'zrc'
+PROJECT_NAME = 'Zaken'
+SITE_TITLE = 'Zaak Registratie Component (ZRC)'
+
 ENVIRONMENT = None
 SHOW_ALERT = True
 
