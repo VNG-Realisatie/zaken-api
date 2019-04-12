@@ -491,8 +491,11 @@ class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
 
     class Meta:
         model = ZaakInformatieObject
-        fields = ('informatieobject',)
+        fields = ('url', 'informatieobject',)
         extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
             'zaak': {'lookup_field': 'uuid'},
             'informatieobject': {
                 'validators': [
