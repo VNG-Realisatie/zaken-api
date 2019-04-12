@@ -26,7 +26,7 @@ from zrc.tests.utils import (
 
 from ..scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
-    SCOPE_ZAKEN_CREATE
+    SCOPE_ZAKEN_CREATE, SCOPEN_ZAKEN_HEROPENEN
 )
 
 # ZTC
@@ -238,7 +238,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
     def test_zaak_heropen_reset_einddatum(self):
-        token = generate_jwt([SCOPE_STATUSSEN_TOEVOEGEN])
+        token = generate_jwt([SCOPEN_ZAKEN_HEROPENEN])
         self.client.credentials(HTTP_AUTHORIZATION=token)
         zaak = ZaakFactory.create(einddatum='2019-01-07')
         StatusFactory.create(

@@ -2027,7 +2027,7 @@ paths:
       - statussen
       security:
       - JWT-Claims:
-        - (zds.scopes.zaken.aanmaken | zds.scopes.statussen.toevoegen)
+        - (zds.scopes.zaken.aanmaken | zds.scopes.statussen.toevoegen | zds.scopes.zaken.heropenen)
       requestBody:
         content:
           application/json:

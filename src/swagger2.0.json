@@ -2431,7 +2431,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zds.scopes.zaken.aanmaken | zds.scopes.statussen.toevoegen)"
+                            "(zds.scopes.zaken.aanmaken | zds.scopes.statussen.toevoegen | zds.scopes.zaken.heropenen)"
                         ]
                     }
                 ]

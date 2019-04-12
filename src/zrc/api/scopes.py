@@ -68,6 +68,15 @@ SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN = Scope(
     description="""
 **Allows**:
 
-* change attributes of all cases including closed ones    
+* change attributes of all cases including closed ones
+"""
+)
+
+SCOPEN_ZAKEN_HEROPENEN = Scope(
+    'zds.scopes.zaken.heropenen',
+    description="""
+**Allows**:
+
+* reopen cases via creating new statuses after the final one
 """
 )
