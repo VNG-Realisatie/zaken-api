@@ -4224,7 +4224,8 @@ paths:
   /zaken/{zaak_uuid}/informatieobjecten/{uuid}:
     get:
       operationId: zaakinformatieobject_read
-      description: Opvragen en bwerken van Zaak-Informatieobject relaties.
+      description: Geef een informatieobject terug wat gekoppeld is aan de huidige
+        zaak
       responses:
         '200':
           description: ''
@@ -4238,6 +4239,128 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ZaakInformatieObject'
+        '401':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '409':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '410':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+      tags:
+      - zaken
+    delete:
+      operationId: zaakinformatieobject_delete
+      description: Verwijder een relatie tussen een zaak en een informatieobject
+      responses:
+        '204':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
         '401':
           description: ''
           headers:

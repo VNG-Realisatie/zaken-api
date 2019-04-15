@@ -5009,7 +5009,7 @@
         "/zaken/{zaak_uuid}/informatieobjecten/{uuid}": {
             "get": {
                 "operationId": "zaakinformatieobject_read",
-                "description": "Opvragen en bwerken van Zaak-Informatieobject relaties.",
+                "description": "Geef een informatieobject terug wat gekoppeld is aan de huidige zaak",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -5017,6 +5017,153 @@
                         "schema": {
                             "$ref": "#/definitions/ZaakInformatieObject"
                         },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "delete": {
+                "operationId": "zaakinformatieobject_delete",
+                "description": "Verwijder een relatie tussen een zaak en een informatieobject",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": "",
                         "headers": {
                             "API-version": {
                                 "schema": {

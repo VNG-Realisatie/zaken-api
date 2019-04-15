@@ -301,10 +301,11 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   mixins.ListModelMixin,
                                   mixins.CreateModelMixin,
                                   mixins.RetrieveModelMixin,
+                                  mixins.DestroyModelMixin,
                                   viewsets.GenericViewSet):
 
     """
-    Opvragen en bwerken van Zaak-Informatieobject relaties.
+    Opvragen en bewerken van Zaak-Informatieobject relaties.
 
     create:
     OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
@@ -323,6 +324,12 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
 
     list:
     Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.
+
+    retrieve:
+    Geef een informatieobject terug wat gekoppeld is aan de huidige zaak
+
+    destroy:
+    Verwijder een relatie tussen een zaak en een informatieobject
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
