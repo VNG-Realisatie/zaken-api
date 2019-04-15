@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from vng_api_common.geo import GeoMixin
+from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationViewSetMixin
 )
@@ -299,10 +300,12 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   NestedViewSetMixin,
                                   mixins.ListModelMixin,
                                   mixins.CreateModelMixin,
+                                  mixins.RetrieveModelMixin,
+                                  mixins.DestroyModelMixin,
                                   viewsets.GenericViewSet):
 
     """
-    Opvragen en bwerken van Zaak-Informatieobject relaties.
+    Opvragen en bewerken van Zaak-Informatieobject relaties.
 
     create:
     OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
@@ -321,6 +324,12 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
 
     list:
     Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.
+
+    retrieve:
+    Geef een informatieobject terug wat gekoppeld is aan de huidige zaak
+
+    destroy:
+    Verwijder een relatie tussen een zaak en een informatieobject
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
@@ -341,11 +350,9 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         context['parent_object'] = get_object_or_404(Zaak, **filters)
         return context
 
-    def get_kenmerken(self, data):
+    def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:
         zaak = self.get_serializer_context()['parent_object']
-        kenmerken = [{k: getattr(zaak, k)} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
-        return kenmerken
-
+        return zaak.get_absolute_api_url(request=self.request)
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             NestedViewSetMixin,
