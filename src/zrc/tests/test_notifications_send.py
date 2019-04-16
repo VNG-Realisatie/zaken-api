@@ -1,4 +1,5 @@
 from unittest.mock import patch
+
 from django.test import override_settings
 
 from freezegun import freeze_time
@@ -70,11 +71,11 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
                 'resourceUrl': data['url'],
                 'actie': 'create',
                 'aanmaakdatum': '2012-01-14T00:00:00Z',
-                'kenmerken': [
-                    {'bronorganisatie': '517439943'},
-                    {'zaaktype': ZAAKTYPE},
-                    {'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar}
-                ]
+                'kenmerken': {
+                    'bronorganisatie': '517439943',
+                    'zaaktype': ZAAKTYPE,
+                    'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                }
             }
         )
 
@@ -102,10 +103,10 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
                 'resourceUrl': f'http://testserver{resultaat_url}',
                 'actie': 'destroy',
                 'aanmaakdatum': '2012-01-14T00:00:00Z',
-                'kenmerken': [
-                    {'bronorganisatie': zaak.bronorganisatie},
-                    {'zaaktype': zaak.zaaktype},
-                    {'vertrouwelijkheidaanduiding': zaak.vertrouwelijkheidaanduiding}
-                ]
+                'kenmerken': {
+                    'bronorganisatie': zaak.bronorganisatie,
+                    'zaaktype': zaak.zaaktype,
+                    'vertrouwelijkheidaanduiding': zaak.vertrouwelijkheidaanduiding,
+                }
             }
         )

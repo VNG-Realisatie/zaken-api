@@ -2,19 +2,30 @@ from django.test import override_settings
 
 from dateutil import parser
 from rest_framework.test import APITestCase
-from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.constants import (
+    Archiefnominatie, BrondatumArchiefprocedureAfleidingswijze,
+    VertrouwelijkheidsAanduiding
+)
 from vng_api_common.tests import JWTScopesMixin, get_operation_url
 from zds_client.tests.mocks import mock_client
 
-from zrc.api.scopes import SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_CREATE
+from zrc.api.scopes import (
+    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+)
 from zrc.datamodel.models import Zaak
 
-from .test_userstory_39 import (
-    STATUS_TYPE, STATUS_TYPE_OVERLAST_GECONSTATEERD,
-    VERANTWOORDELIJKE_ORGANISATIE, ZAAKTYPE
-)
 from .test_userstory_52 import EIGENSCHAP_NAAM_BOOT, EIGENSCHAP_OBJECTTYPE
 from .utils import ZAAK_WRITE_KWARGS, utcdatetime
+
+VERANTWOORDELIJKE_ORGANISATIE = '517439943'
+# ZTC
+ZTC_ROOT = 'https://example.com/ztc/api/v1'
+CATALOGUS = f'{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04'
+ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
+RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785'
+STATUSTYPE = f'{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785'
+STATUSTYPE_OVERLAST_GECONSTATEERD = f'{ZAAKTYPE}/statustypen/b86aa339-151e-45f0-ad6c-20698f50b6cd'
+
 
 TEST_DATA = {
     "id": 9966,
@@ -49,9 +60,9 @@ class Application:
         self.references = {}
 
     def store_notification(self):
-        # registreer zaak & zet statussen
+        # registreer zaak & zet statussen, resultaat
         self.registreer_zaak()
-        self.zet_statussen()
+        self.zet_statussen_resultaat()
         self.registreer_domein_data()
         self.registreer_klantcontact()
 
@@ -72,27 +83,58 @@ class Application:
             'toelichting': self.data['text'],
             'zaakgeometrie': self.data['coordinates'],
         }, **ZAAK_WRITE_KWARGS)
+
         self.references['zaak_url'] = response.json()['url']
 
     @override_settings(
         ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
-    def zet_statussen(self):
+    def zet_statussen_resultaat(self):
         status_create_url = get_operation_url('status_create')
-
+        resultaat_create_url = get_operation_url('resultaat_create')
         created = parser.parse(self.data['datetime'])
 
-        self.client.post(status_create_url, {
-            'zaak': self.references['zaak_url'],
-            'statusType': STATUS_TYPE,
-            'datumStatusGezet': created.isoformat(),
-        })
+        responses = {
+            RESULTAATTYPE: {
+                'url': RESULTAATTYPE,
+                'archiefactietermijn': 'P10Y',
+                'archiefnominatie': Archiefnominatie.blijvend_bewaren,
+                'brondatumArchiefprocedure': {
+                    'afleidingswijze': BrondatumArchiefprocedureAfleidingswijze.afgehandeld,
+                    'datumkenmerk': None,
+                    'objecttype': None,
+                    'procestermijn': None,
+                }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 1,
+                'isEindstatus': False,
+            },
+            STATUSTYPE_OVERLAST_GECONSTATEERD: {
+                'url': STATUSTYPE_OVERLAST_GECONSTATEERD,
+                'volgnummer': 2,
+                'isEindstatus': True,
+            }
+        }
+        with mock_client(responses):
+            self.client.post(status_create_url, {
+                'zaak': self.references['zaak_url'],
+                'statusType': STATUSTYPE,
+                'datumStatusGezet': created.isoformat(),
+            })
 
-        self.client.post(status_create_url, {
-            'zaak': self.references['zaak_url'],
-            'statusType': STATUS_TYPE_OVERLAST_GECONSTATEERD,
-            'datumStatusGezet': parser.parse(self.data['datetime_overlast']).isoformat(),
-        })
+            self.client.post(resultaat_create_url, {
+                'zaak': self.references['zaak_url'],
+                'resultaatType': RESULTAATTYPE,
+                'toelichting': '',
+            })
+
+            self.client.post(status_create_url, {
+                'zaak': self.references['zaak_url'],
+                'statusType': STATUSTYPE_OVERLAST_GECONSTATEERD,
+                'datumStatusGezet': parser.parse(self.data['datetime_overlast']).isoformat(),
+            })
 
     def registreer_domein_data(self):
         zaak_uuid = self.references['zaak_url'].rsplit('/')[-1]
@@ -140,7 +182,8 @@ class US39IntegrationTestCase(JWTScopesMixin, APITestCase):
     """
     scopes = [
         SCOPE_ZAKEN_CREATE,
-        SCOPE_STATUSSEN_TOEVOEGEN
+        SCOPE_STATUSSEN_TOEVOEGEN,
+        SCOPE_ZAKEN_BIJWERKEN
     ]
 
     def test_full_flow(self):
@@ -156,14 +199,14 @@ class US39IntegrationTestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(zaak.status_set.count(), 2)
 
         last_status = zaak.status_set.order_by('-datum_status_gezet').first()
-        self.assertEqual(last_status.status_type, STATUS_TYPE)
+        self.assertEqual(last_status.status_type, STATUSTYPE)
         self.assertEqual(
             last_status.datum_status_gezet,
             utcdatetime(2018, 5, 28, 7, 5, 8, 732587),
         )
 
         first_status = zaak.status_set.order_by('datum_status_gezet').first()
-        self.assertEqual(first_status.status_type, STATUS_TYPE_OVERLAST_GECONSTATEERD)
+        self.assertEqual(first_status.status_type, STATUSTYPE_OVERLAST_GECONSTATEERD)
         self.assertEqual(
             first_status.datum_status_gezet,
             utcdatetime(2018, 5, 28, 6, 35, 11)

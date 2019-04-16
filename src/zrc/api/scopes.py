@@ -61,3 +61,13 @@ SCOPE_ZAKEN_ALLES_VERWIJDEREN = Scope(
 * zaken te verwijderen
 """
 )
+
+
+SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN = Scope(
+    'zds.scopes.zaken.geforceerd-bijwerken',
+    description="""
+**Allows**:
+
+* change attributes of all cases including closed ones    
+"""
+)

@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from vng_api_common.geo import GeoMixin
+from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationViewSetMixin
 )
@@ -26,7 +27,8 @@ from .kanalen import KANAAL_ZAKEN
 from .permissions import ZaaktypePermission
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
-    SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+    SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
+    SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
 )
 from .serializers import (
     KlantContactSerializer, ResultaatSerializer, RolSerializer,
@@ -157,8 +159,8 @@ class ZaakViewSet(NotificationViewSetMixin,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
         '_zoek': SCOPE_ZAKEN_ALLES_LEZEN,
         'create': SCOPE_ZAKEN_CREATE,
-        'update': SCOPE_ZAKEN_BIJWERKEN,
-        'partial_update': SCOPE_ZAKEN_BIJWERKEN,
+        'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
@@ -200,6 +202,26 @@ class ZaakViewSet(NotificationViewSetMixin,
 
     def get_kenmerken(self, data):
         return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
+
+    def perform_update(self, serializer):
+        """
+        Perform the update of the Case.
+
+        After input validation and before DB persistance we need to check
+        scope-related permissions. Only SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN scope
+        allows to alter closed cases
+
+        :raises: PermissionDenied if attempting to alter a closed case with
+        insufficient permissions
+
+        """
+        zaak = self.get_object()
+        
+        if not self.request.jwt_payload.has_scopes(SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN):
+            if zaak.einddatum:
+                msg = "Modifying a closed case with current scope is forbidden"
+                raise PermissionDenied(detail=msg)
+        super().perform_create(serializer)
 
 
 class StatusViewSet(NotificationCreateMixin,
@@ -299,10 +321,12 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   NestedViewSetMixin,
                                   mixins.ListModelMixin,
                                   mixins.CreateModelMixin,
+                                  mixins.RetrieveModelMixin,
+                                  mixins.DestroyModelMixin,
                                   viewsets.GenericViewSet):
 
     """
-    Opvragen en bwerken van Zaak-Informatieobject relaties.
+    Opvragen en bewerken van Zaak-Informatieobject relaties.
 
     create:
     OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
@@ -321,6 +345,12 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
 
     list:
     Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.
+
+    retrieve:
+    Geef een informatieobject terug wat gekoppeld is aan de huidige zaak
+
+    destroy:
+    Verwijder een relatie tussen een zaak en een informatieobject
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
@@ -341,11 +371,9 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         context['parent_object'] = get_object_or_404(Zaak, **filters)
         return context
 
-    def get_kenmerken(self, data):
+    def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:
         zaak = self.get_serializer_context()['parent_object']
-        kenmerken = [{k: getattr(zaak, k)} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
-        return kenmerken
-
+        return zaak.get_absolute_api_url(request=self.request)
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             NestedViewSetMixin,

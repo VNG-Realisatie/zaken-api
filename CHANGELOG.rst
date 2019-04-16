@@ -2,6 +2,56 @@
 Wijzigingen
 ===========
 
+0.13.0 (2019-04-16)
+===================
+
+API-lab release
+
+* Improved homepage layout, using vng-api-common boilerplate
+* Bumped to latest bugfix release of gemma-zds-client
+* Fixed a bug preventing ``ZaakInformatieObject`` being created/deleted
+
+Breaking changes
+----------------
+
+* Flattened the ``kenmerken`` in notifications sent from a list of objects with
+  one key-value to a single object with multiple key-value pairs.
+  Requires the NC to be at version 0.4.0 or higher.
+
+  Old:
+
+  .. code-block:: json
+
+  {
+    "kenmerken": [
+      {"key1": "value1"},
+      {"key2": "value2"},
+    ]
+  }
+
+  New:
+
+  .. code-block:: json
+
+  {
+    "kenmerken": {
+      "key1": "value1",
+      "key2": "value2",
+    }
+  }
+
+* ``Zaak.archiefactiedatum`` is now calculated when the final status is being
+  set, instead of when the ``Resultaat`` is created. This effectively changes
+  the order of operations needed:
+
+  1. First, set a ``Resultaat`` on a ``Zaak``
+  2. Then, create an end-status for a ``Zaak`` to close the ``Zaak``
+
+  A ``Zaak`` cannot be closed if no ``Resultaat`` has been set.
+
+* It is now no longer possible to modify a closed ``Zaak``, unless you include
+  the appropriate scope (``SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN``).
+
 0.12.2 (2019-04-04)
 ===================
 

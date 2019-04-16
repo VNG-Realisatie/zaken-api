@@ -175,7 +175,8 @@
             },
             "post": {
                 "operationId": "klantcontact_create",
-                "description": "Registreer een klantcontact bij een ZAAK.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd.",
+                "summary": "Registreer een klantcontact bij een ZAAK.",
+                "description": "Indien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd.",
                 "parameters": [
                     {
                         "name": "data",
@@ -506,7 +507,8 @@
         "/resultaten": {
             "get": {
                 "operationId": "resultaat_list",
-                "description": "Geef een lijst van RESULTAATen van ZAAKen.\n\nOptioneel kan je de queryparameters gebruiken om de resultaten te\nfilteren.",
+                "summary": "Geef een lijst van RESULTAATen van ZAAKen.",
+                "description": "Optioneel kan je de queryparameters gebruiken om de resultaten te\nfilteren.",
                 "parameters": [
                     {
                         "name": "zaak",
@@ -683,7 +685,8 @@
             },
             "post": {
                 "operationId": "resultaat_create",
-                "description": "Voeg een RESULTAAT voor een ZAAK toe.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
+                "summary": "Voeg een RESULTAAT voor een ZAAK toe.",
+                "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
                 "parameters": [
                     {
                         "name": "data",
@@ -1016,7 +1019,8 @@
             },
             "put": {
                 "operationId": "resultaat_update",
-                "description": "Wijzig het RESULTAAT van een ZAAK.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
+                "summary": "Wijzig het RESULTAAT van een ZAAK.",
+                "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
                 "parameters": [
                     {
                         "name": "data",
@@ -1196,7 +1200,8 @@
             },
             "patch": {
                 "operationId": "resultaat_partial_update",
-                "description": "Wijzig het RESULTAAT van een ZAAK.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
+                "summary": "Wijzig het RESULTAAT van een ZAAK.",
+                "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
                 "parameters": [
                     {
                         "name": "data",
@@ -2081,7 +2086,8 @@
         "/statussen": {
             "get": {
                 "operationId": "status_list",
-                "description": "Geef een lijst van STATUSsen van ZAAKen.\n\nOptioneel kan je de queryparameters gebruiken om de resultaten te\nfilteren.",
+                "summary": "Geef een lijst van STATUSsen van ZAAKen.",
+                "description": "Optioneel kan je de queryparameters gebruiken om de resultaten te\nfilteren.",
                 "parameters": [
                     {
                         "name": "zaak",
@@ -2258,7 +2264,8 @@
             },
             "post": {
                 "operationId": "status_create",
-                "description": "Voeg een nieuwe STATUS voor een ZAAK toe.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het STATUSTYPE\n- indien het de eindstatus betreft, dan moet het attribuut\n  `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die aan\n  de zaak gerelateerd zijn\n\n**Opmerkingen**\n- Indien het statustype de eindstatus is (volgens het ZTC), dan wordt de\n  zaak afgesloten door de einddatum te zetten.",
+                "summary": "Voeg een nieuwe STATUS voor een ZAAK toe.",
+                "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het STATUSTYPE\n- indien het de eindstatus betreft, dan moet het attribuut\n  `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die aan\n  de zaak gerelateerd zijn\n\n**Opmerkingen**\n- Indien het statustype de eindstatus is (volgens het ZTC), dan wordt de\n  zaak afgesloten door de einddatum te zetten.",
                 "parameters": [
                     {
                         "name": "data",
@@ -3094,7 +3101,8 @@
         "/zaken": {
             "get": {
                 "operationId": "zaak_list",
-                "description": "Geef een lijst van ZAAKen.\n\nDeze lijst wordt standaard gepagineerd met 100 zaken per pagina.\n\nOptioneel kan je de queryparameters gebruiken om zaken te filteren.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.",
+                "summary": "Geef een lijst van ZAAKen.",
+                "description": "Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.\n\nOptioneel kan je de queryparameters gebruiken om zaken te filteren.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -3220,11 +3228,13 @@
                                 },
                                 "next": {
                                     "type": "string",
-                                    "format": "uri"
+                                    "format": "uri",
+                                    "x-nullable": true
                                 },
                                 "previous": {
                                     "type": "string",
-                                    "format": "uri"
+                                    "format": "uri",
+                                    "x-nullable": true
                                 },
                                 "results": {
                                     "type": "array",
@@ -3404,7 +3414,8 @@
             },
             "post": {
                 "operationId": "zaak_create",
-                "description": "Maak een ZAAK aan.\n\nIndien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\n**Er wordt gevalideerd op**:\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.",
+                "summary": "Maak een ZAAK aan.",
+                "description": "Indien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\n**Er wordt gevalideerd op**:\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.",
                 "parameters": [
                     {
                         "name": "data",
@@ -3614,7 +3625,8 @@
         "/zaken/_zoek": {
             "post": {
                 "operationId": "zaak__zoek",
-                "description": "Voer een (geo)-zoekopdracht uit op ZAAKen.\n\nZoeken/filteren gaat normaal via de `list` operatie, deze is echter\nniet geschikt voor geo-zoekopdrachten.",
+                "summary": "Voer een (geo)-zoekopdracht uit op ZAAKen.",
+                "description": "Zoeken/filteren gaat normaal via de `list` operatie, deze is echter\nniet geschikt voor geo-zoekopdrachten.",
                 "parameters": [
                     {
                         "name": "data",
@@ -3667,11 +3679,13 @@
                                 },
                                 "next": {
                                     "type": "string",
-                                    "format": "uri"
+                                    "format": "uri",
+                                    "x-nullable": true
                                 },
                                 "previous": {
                                     "type": "string",
-                                    "format": "uri"
+                                    "format": "uri",
+                                    "x-nullable": true
                                 },
                                 "results": {
                                     "type": "array",
@@ -4053,7 +4067,8 @@
             },
             "put": {
                 "operationId": "zaak_update",
-                "description": "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
+                "summary": "Werk een zaak bij.",
+                "description": "**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -4267,14 +4282,15 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.bijwerken"
+                            "(zds.scopes.zaken.bijwerken | zds.scopes.zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
             },
             "patch": {
                 "operationId": "zaak_partial_update",
-                "description": "Werk een zaak bij.\n\n**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
+                "summary": "Werk een zaak bij.",
+                "description": "**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -4488,14 +4504,15 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.bijwerken"
+                            "(zds.scopes.zaken.bijwerken | zds.scopes.zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
             },
             "delete": {
                 "operationId": "zaak_delete",
-                "description": "Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.\n\n**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken van de verwijderde hoofzaak\n- `status` - alle statussen van de verwijderde zaak\n- `resultaat` - het resultaat van de verwijderde zaak\n- `rol` - alle rollen bij de zaak\n- `zaakobject` - alle zaakobjecten bij de zaak\n- `zaakeigenschap` - alle eigenschappen van de zaak\n- `zaakkenmerk` - alle kenmerken van de zaak\n- `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook\n  https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)\n- `klantcontact` - alle klantcontacten bij een zaak",
+                "summary": "Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.",
+                "description": "**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken van de verwijderde hoofzaak\n- `status` - alle statussen van de verwijderde zaak\n- `resultaat` - het resultaat van de verwijderde zaak\n- `rol` - alle rollen bij de zaak\n- `zaakobject` - alle zaakobjecten bij de zaak\n- `zaakeigenschap` - alle eigenschappen van de zaak\n- `zaakkenmerk` - alle kenmerken van de zaak\n- `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook\n  https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)\n- `klantcontact` - alle klantcontacten bij een zaak",
                 "parameters": [],
                 "responses": {
                     "204": {
@@ -4979,6 +4996,323 @@
                 ]
             },
             "parameters": [
+                {
+                    "name": "zaak_uuid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
+                }
+            ]
+        },
+        "/zaken/{zaak_uuid}/informatieobjecten/{uuid}": {
+            "get": {
+                "operationId": "zaakinformatieobject_read",
+                "description": "Geef een informatieobject terug wat gekoppeld is aan de huidige zaak",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakInformatieObject"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "delete": {
+                "operationId": "zaakinformatieobject_delete",
+                "description": "Verwijder een relatie tussen een zaak en een informatieobject",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": "",
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                },
                 {
                     "name": "zaak_uuid",
                     "in": "path",
@@ -6234,19 +6568,22 @@
                     "title": "Einddatum gepland",
                     "description": "De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.",
                     "type": "string",
-                    "format": "date"
+                    "format": "date",
+                    "x-nullable": true
                 },
                 "uiterlijkeEinddatumAfdoening": {
                     "title": "Uiterlijke einddatum afdoening",
                     "description": "De laatste datum waarop volgens wet- en regelgeving de zaak afgerond dient te zijn.",
                     "type": "string",
-                    "format": "date"
+                    "format": "date",
+                    "x-nullable": true
                 },
                 "publicatiedatum": {
                     "title": "Publicatiedatum",
                     "description": "Datum waarop (het starten van) de zaak gepubliceerd is of wordt.",
                     "type": "string",
-                    "format": "date"
+                    "format": "date",
+                    "x-nullable": true
                 },
                 "communicatiekanaal": {
                     "title": "Communicatiekanaal",
@@ -6302,7 +6639,8 @@
                     "title": "Laatste betaaldatum",
                     "description": "De datum waarop de meest recente betaling is verwerkt van kosten die gemoeid zijn met behandeling van de zaak.",
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "x-nullable": true
                 },
                 "zaakgeometrie": {
                     "$ref": "#/definitions/GeoJSONGeometry"
@@ -6324,7 +6662,8 @@
                     "title": "Is deelzaak van",
                     "description": "De verwijzing naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er \u00e9\u00e9n is.",
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "x-nullable": true
                 },
                 "deelzaken": {
                     "type": "array",
@@ -6366,7 +6705,8 @@
                     "enum": [
                         "blijvend_bewaren",
                         "vernietigen"
-                    ]
+                    ],
+                    "x-nullable": true
                 },
                 "archiefstatus": {
                     "title": "Archiefstatus",
@@ -6383,7 +6723,8 @@
                     "title": "Archiefactiedatum",
                     "description": "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan deze ZAAK indien nog leeg.",
                     "type": "string",
-                    "format": "date"
+                    "format": "date",
+                    "x-nullable": true
                 },
                 "resultaat": {
                     "title": "Resultaat",
@@ -6480,6 +6821,12 @@
             ],
             "type": "object",
             "properties": {
+                "url": {
+                    "title": "Url",
+                    "type": "string",
+                    "format": "uri",
+                    "readOnly": true
+                },
                 "informatieobject": {
                     "title": "Informatieobject",
                     "description": "URL-referentie naar het informatieobject in het DRC, waar ook de relatieinformatie opgevraagd kan worden.",
