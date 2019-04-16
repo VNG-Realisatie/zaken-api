@@ -281,8 +281,8 @@ class US345TestCase(JWTScopesMixin, APITestCase):
             },
             STATUSTYPE: {
                 'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
+                'volgnummer': 1,
+                'isEindstatus': False,
             }
         }
         data = {
@@ -351,7 +351,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak.refresh_from_db()
-        self.assertEqual(zaak.archiefactiedatum, date(2029, 1, 1))
+        self.assertEqual(zaak.archiefactiedatum, date(2028, 10, 18))
 
     def test_add_resultaat_on_zaak_with_eigenschap_causes_archiefactiedatum_to_be_set(self):
         """
@@ -682,4 +682,4 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak.refresh_from_db()
-        self.assertEqual(zaak.archiefactiedatum, date(2029, 1, 1))
+        self.assertEqual(zaak.archiefactiedatum, date(2028, 10, 18))
