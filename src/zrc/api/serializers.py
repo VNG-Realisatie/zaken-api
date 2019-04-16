@@ -27,6 +27,7 @@ from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
     ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
+from zrc.datamodel.utils import get_brondatum
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from .auth import get_zrc_auth, get_ztc_auth
@@ -371,7 +372,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         )
 
         try:
-            status_type = client.request(status_type_url, 'statustype')
+            status_type = client.retrieve('statustype', url=status_type_url)
             validated_attrs['__is_eindstatus'] = status_type['isEindstatus']
         except requests.HTTPError as exc:
             raise serializers.ValidationError(
@@ -395,7 +396,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                     io_url,
                     scopes=['zds.scopes.zaaktypes.lezen']
                 )
-                informatieobject = client.request(io_url, 'enkelvoudiginformatieobject')
+                informatieobject = client.retrieve('enkelvoudiginformatieobject', url=io_url)
                 if informatieobject['indicatieGebruiksrecht'] is None:
                     raise serializers.ValidationError(
                         "Er zijn gerelateerde informatieobjecten waarvoor `indicatieGebruiksrecht` nog niet "
@@ -403,18 +404,44 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                         code='indicatiegebruiksrecht-unset'
                     )
 
+        return validated_attrs
+
+    def create(self, validated_data):
+        """
+        Perform additional business logic
+
+        Ideally, this would be encapsulated in some utilities for a clear in-output
+        system, but for now we need to put a bandage on it.
+
+        NOTE: avoid doing queries outside of the transaction block - we want
+        everything or nothing to succeed and no limbo states.
+        """
+        zaak = validated_data['zaak']
+        _zaak_fields_changed = []
+
+        is_eindstatus = validated_data.pop('__is_eindstatus')
+
+        # if the eindstatus is being set, we need to calculate some more things:
+        # 1. zaak.einddatum, which may be relevant for archiving purposes
+        # 2. zaak.archiefactiedatum, if not explicitly filled in
+        if is_eindstatus:
+            zaak.einddatum = validated_data['datum_status_gezet'].date()
+        else:
+            zaak.einddatum = None
+        _zaak_fields_changed.append('einddatum')
+
+        if is_eindstatus:
             # in case of eindstatus - retrieve archive parameters from resultaattype
+
             # Archiving: Use default archiefnominatie
-            zaak_archiefnominatie = zaak.archiefnominatie
-            if not zaak_archiefnominatie:
+            if not zaak.archiefnominatie:
                 resultaat = self._get_resultaat(zaak)
                 resultaat_type = self._get_resultaat_type(resultaat.resultaat_type)
-                zaak_archiefnominatie = resultaat_type['archiefnominatie']
-            attrs['__archiefnominatie'] = zaak_archiefnominatie
+                zaak.archiefnominatie = resultaat_type['archiefnominatie']
+                _zaak_fields_changed.append('archiefnominatie')
 
             # Archiving: Calculate archiefactiedatum
-            zaak_archiefactiedatum = zaak.archiefactiedatum
-            if not zaak_archiefactiedatum:
+            if not zaak.archiefactiedatum:
                 resultaat = self._get_resultaat(zaak)
                 resultaat_type = self._get_resultaat_type(resultaat.resultaat_type)
                 archiefactietermijn = resultaat_type['archiefactietermijn']
@@ -428,35 +455,21 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                     procestermijn = brondatum_archiefprocedure['procestermijn']
 
                     try:
-                        brondatum = zaak.get_brondatum(afleidingswijze, datum_kenmerk, objecttype, procestermijn)
+                        brondatum = get_brondatum(zaak, afleidingswijze, datum_kenmerk, objecttype, procestermijn)
                         if brondatum:
-                            zaak_archiefactiedatum = brondatum + isodate.parse_duration(archiefactietermijn)
+                            zaak.archiefactiedatum = brondatum + isodate.parse_duration(archiefactietermijn)
+                            _zaak_fields_changed.append('archiefactiedatum')
                     except DetermineProcessEndDateException as exc:
+                        # ideally, we'd like to do this in the validate function, but that's unfortunately too
+                        # early since we don't know the end date yet
+                        # thought: we _can_ use the datumStatusGezet though!
                         raise serializers.ValidationError(exc.args[0], code='archiefactiedatum-error')
-
-                attrs['__archiefactiedatum'] = zaak_archiefactiedatum
-
-        return validated_attrs
-
-    def create(self, validated_data):
-        is_eindstatus = validated_data.pop('__is_eindstatus')
-        zaak__archiefnominatie = validated_data.pop('__archiefnominatie', None)
-        zaak__archiefactiedatum = validated_data.pop('__archiefactiedatum', None)
 
         with transaction.atomic():
             obj = super().create(validated_data)
 
             # Save updated information on the ZAAK
-            zaak = obj.zaak
-            # Implicit conversion from datetime to date
-            zaak.einddatum = validated_data['datum_status_gezet'] if is_eindstatus else None
-            zaak.save(update_fields=['einddatum'])
-
-            if is_eindstatus:
-                # save archive parameters
-                zaak.archiefactiedatum = zaak__archiefactiedatum
-                zaak.archiefnominatie = zaak__archiefnominatie
-                zaak.save(update_fields=('archiefactiedatum', 'archiefnominatie'))
+            zaak.save(update_fields=_zaak_fields_changed)
 
         return obj
 
