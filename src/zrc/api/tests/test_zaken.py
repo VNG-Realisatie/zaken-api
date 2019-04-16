@@ -4,6 +4,7 @@ from django.contrib.gis.geos import Point
 from django.test import override_settings, tag
 from django.utils import timezone
 
+from dateutil.relativedelta import relativedelta
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import (
@@ -181,6 +182,10 @@ class ZakenAfsluitenTests(JWTScopesMixin, APITestCase):
 
         zaak.refresh_from_db()
         self.assertEqual(zaak.einddatum, datum_status_gezet.date())
+        self.assertEqual(
+            zaak.archiefactiedatum,
+            zaak.einddatum + relativedelta(years=10)
+        )
 
 
 @override_settings(
