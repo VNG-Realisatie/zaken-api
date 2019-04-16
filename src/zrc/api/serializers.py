@@ -27,7 +27,7 @@ from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
     ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
-from zrc.datamodel.utils import get_brondatum
+from zrc.datamodel.utils import BrondatumCalculator, get_brondatum
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from .auth import get_zrc_auth, get_ztc_auth
@@ -334,31 +334,6 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             }
         }
 
-    def _get_resultaat_type(self, resultaat_type_url):
-        if not hasattr(self, '_resultaat_type'):
-            self._resultaat_type = None
-            if resultaat_type_url:
-                Client = import_string(settings.ZDS_CLIENT_CLASS)
-                client = Client.from_url(resultaat_type_url)
-                client.auth = APICredential.get_auth(
-                    resultaat_type_url,
-                    scopes=['zds.scopes.zaaktypes.lezen']
-                )
-                self._resultaat_type = client.retrieve('resultaattype', url=resultaat_type_url)
-        return self._resultaat_type
-
-    def _get_resultaat(self, zaak):
-        if not hasattr(self, '_resultaat'):
-            try:
-                resultaat = zaak.resultaat
-            except Resultaat.DoesNotExist as exc:
-                raise serializers.ValidationError(
-                    exc.args[0],
-                    code='resultaat-does-not-exist'
-                ) from exc
-            self._resultaat = resultaat
-        return self._resultaat
-
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
         status_type_url = validated_attrs['status_type']
@@ -404,6 +379,23 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                         code='indicatiegebruiksrecht-unset'
                     )
 
+            brondatum_calculator = BrondatumCalculator(zaak, validated_attrs['datum_status_gezet'])
+            try:
+                brondatum_calculator.calculate()
+            except Resultaat.DoesNotExist as exc:
+                raise serializers.ValidationError(
+                    exc.args[0],
+                    code='resultaat-does-not-exist'
+                ) from exc
+            except DetermineProcessEndDateException as exc:
+                # ideally, we'd like to do this in the validate function, but that's unfortunately too
+                # early since we don't know the end date yet
+                # thought: we _can_ use the datumStatusGezet though!
+                raise serializers.ValidationError(exc.args[0], code='archiefactiedatum-error')
+
+            # nasty to pass state around...
+            self.context['brondatum_calculator'] = brondatum_calculator
+
         return validated_attrs
 
     def create(self, validated_data):
@@ -420,6 +412,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         _zaak_fields_changed = []
 
         is_eindstatus = validated_data.pop('__is_eindstatus')
+        brondatum_calculator = self.context.pop('brondatum_calculator', None)
 
         # if the eindstatus is being set, we need to calculate some more things:
         # 1. zaak.einddatum, which may be relevant for archiving purposes
@@ -435,35 +428,14 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
 
             # Archiving: Use default archiefnominatie
             if not zaak.archiefnominatie:
-                resultaat = self._get_resultaat(zaak)
-                resultaat_type = self._get_resultaat_type(resultaat.resultaat_type)
-                zaak.archiefnominatie = resultaat_type['archiefnominatie']
+                zaak.archiefnominatie = brondatum_calculator.get_archiefnominatie()
                 _zaak_fields_changed.append('archiefnominatie')
 
             # Archiving: Calculate archiefactiedatum
             if not zaak.archiefactiedatum:
-                resultaat = self._get_resultaat(zaak)
-                resultaat_type = self._get_resultaat_type(resultaat.resultaat_type)
-                archiefactietermijn = resultaat_type['archiefactietermijn']
-
-                if archiefactietermijn:
-                    # All fields should be in the response
-                    brondatum_archiefprocedure = resultaat_type['brondatumArchiefprocedure']
-                    afleidingswijze = brondatum_archiefprocedure['afleidingswijze']
-                    datum_kenmerk = brondatum_archiefprocedure['datumkenmerk']
-                    objecttype = brondatum_archiefprocedure['objecttype']
-                    procestermijn = brondatum_archiefprocedure['procestermijn']
-
-                    try:
-                        brondatum = get_brondatum(zaak, afleidingswijze, datum_kenmerk, objecttype, procestermijn)
-                        if brondatum:
-                            zaak.archiefactiedatum = brondatum + isodate.parse_duration(archiefactietermijn)
-                            _zaak_fields_changed.append('archiefactiedatum')
-                    except DetermineProcessEndDateException as exc:
-                        # ideally, we'd like to do this in the validate function, but that's unfortunately too
-                        # early since we don't know the end date yet
-                        # thought: we _can_ use the datumStatusGezet though!
-                        raise serializers.ValidationError(exc.args[0], code='archiefactiedatum-error')
+                zaak.archiefactiedatum = brondatum_calculator.calculate()
+                if zaak.archiefactiedatum is not None:
+                    _zaak_fields_changed.append('archiefactiedatum')
 
         with transaction.atomic():
             obj = super().create(validated_data)
