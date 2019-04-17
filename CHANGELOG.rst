@@ -2,7 +2,12 @@
 Wijzigingen
 ===========
 
-0.13.1 (2019-04-17)
+0.13.2 (2019-04-17)
+===================
+
+Default value NRC api root fixed.
+
+0.13.1 (2019-04-16)
 ===================
 
 Bugfix in ``brondatum`` calculations
