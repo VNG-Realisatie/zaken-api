@@ -5,7 +5,9 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTScopesMixin, get_validation_errors, reverse
+from vng_api_common.tests import (
+    JWTScopesMixin, generate_jwt, get_validation_errors, reverse
+)
 from vng_api_common.validators import ResourceValidator, URLValidator
 from zds_client.tests.mocks import mock_client
 
@@ -184,6 +186,27 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         validation_error = get_validation_errors(response, 'productenOfDiensten')
         self.assertEqual(validation_error['code'], 'invalid-products-services')
+
+    def test_validate_verlenging(self):
+        """
+        Regression test for https://github.com/VNG-Realisatie/gemma-zaken/issues/920
+        """
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+        token = generate_jwt(
+            scopes=[SCOPE_ZAKEN_BIJWERKEN],
+            zaaktypes=[zaak.zaaktype]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
+        response = self.client.patch(zaak_url, {
+            'verlenging': {
+                'reden': 'We hebben nog tijd genoeg',
+                'duur': 'P0Y1M0D'
+            }
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
