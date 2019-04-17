@@ -2,6 +2,11 @@
 Wijzigingen
 ===========
 
+0.13.3 (2019-04-17)
+===================
+
+Fixed an issue with duration validation
+
 0.13.2 (2019-04-17)
 ===================
 
