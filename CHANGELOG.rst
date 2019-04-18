@@ -2,6 +2,11 @@
 Wijzigingen
 ===========
 
+0.13.4 (2019-04-18)
+===================
+
+Fixed a bug when setting ``Zaak.opschorting.indicatie`` to ``false``
+
 0.13.3 (2019-04-17)
 ===================
 
