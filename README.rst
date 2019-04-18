@@ -2,7 +2,7 @@
 Zaakregistratiecomponent
 ========================
 
-:Version: 0.13.3
+:Version: 0.13.4
 :Source: https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, ZRC
 :PythonVersion: 3.6
