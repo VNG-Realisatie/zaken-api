@@ -208,6 +208,24 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_validate_opschorting_indicatie_false(self):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+        token = generate_jwt(
+            scopes=[SCOPE_ZAKEN_BIJWERKEN],
+            zaaktypes=[zaak.zaaktype]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
+        response = self.client.patch(zaak_url, {
+            'opschorting': {
+                'indicatie': False,
+                'reden': ''
+            }
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class DeelZaakValidationTests(JWTScopesMixin, APITestCase):
