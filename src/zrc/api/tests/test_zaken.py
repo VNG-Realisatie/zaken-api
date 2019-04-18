@@ -19,6 +19,7 @@ from zds_client.tests.mocks import mock_client
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
+from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
 from zrc.tests.utils import (
     ZAAK_READ_KWARGS, ZAAK_WRITE_KWARGS, isodatetime, utcdatetime
 )
@@ -427,3 +428,25 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertEqual(response_data['count'], 2)
         self.assertIsNone(response_data['previous'])
         self.assertIsNone(response_data['next'])
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_complex_geometry(self):
+        url = reverse('zaak-list')
+
+        response = self.client.post(url, {
+            'zaaktype': 'https://example.com/zaaktype/123',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-12-24',
+            'startdatum': '2018-12-24',
+            'zaakgeometrie': {
+                'type': 'Polygon',
+                'coordinates': [POLYGON_AMSTERDAM_CENTRUM]
+            }
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIsNotNone(response.json()['zaakgeometrie'])
+        zaak = Zaak.objects.get()
+        self.assertIsNotNone(zaak.zaakgeometrie)
