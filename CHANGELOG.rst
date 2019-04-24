@@ -2,6 +2,16 @@
 Wijzigingen
 ===========
 
+0.14.0 (2019-04-24)
+===================
+
+Cleaned up some loose ends
+
+* Bumped Jinja2 dep (security release)
+* Improved accessibility in secret management [admin]
+* Added a test case for complexere GeoJSON
+* Implemented re-opening of ``Zaken`` & added a new scope
+
 0.13.4 (2019-04-18)
 ===================
 
