@@ -28,7 +28,7 @@ from .permissions import ZaaktypePermission
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
     SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
-    SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+    SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN, SCOPEN_ZAKEN_HEROPENEN
 )
 from .serializers import (
     KlantContactSerializer, ResultaatSerializer, RolSerializer,
@@ -216,7 +216,7 @@ class ZaakViewSet(NotificationViewSetMixin,
 
         """
         zaak = self.get_object()
-        
+
         if not self.request.jwt_payload.has_scopes(SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN):
             if zaak.einddatum:
                 msg = "Modifying a closed case with current scope is forbidden"
@@ -264,7 +264,7 @@ class StatusViewSet(NotificationCreateMixin,
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN,
+        'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN | SCOPEN_ZAKEN_HEROPENEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
 
@@ -273,17 +273,25 @@ class StatusViewSet(NotificationCreateMixin,
         Perform the create of the Status.
 
         After input validation and before DB persistance we need to check
-        scope-related permissions. Two scopes are allowed to create new
-        Status objects, however one is more limited in that only the
-        initial status may be created.
+        scope-related permissions. Three scopes are allowed to create new
+        Status objects:
+        - create initial status
+        - create initial status and subsequent statuses until the case is closed
+        - create any status before or after the case is closed
 
         :raises: PermissionDenied if attempting to create another Status with
           insufficient permissions
         """
         zaak = serializer.validated_data['zaak']
-        if not self.request.jwt_payload.has_scopes(SCOPE_STATUSSEN_TOEVOEGEN):
+        if not self.request.jwt_payload.has_scopes(SCOPE_STATUSSEN_TOEVOEGEN) and \
+                not self.request.jwt_payload.has_scopes(SCOPEN_ZAKEN_HEROPENEN):
             if zaak.status_set.exists():
                 msg = f"Met de '{SCOPE_ZAKEN_CREATE}' scope mag je slechts 1 status zetten"
+                raise PermissionDenied(detail=msg)
+
+        if not self.request.jwt_payload.has_scopes(SCOPEN_ZAKEN_HEROPENEN):
+            if zaak.einddatum:
+                msg = "Reopening a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)
 
         super().perform_create(serializer)

@@ -5,7 +5,6 @@ from django.db import transaction
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
-import isodate
 import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
@@ -27,7 +26,7 @@ from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
     ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
-from zrc.datamodel.utils import BrondatumCalculator, get_brondatum
+from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from .auth import get_zrc_auth, get_ztc_auth
@@ -414,6 +413,9 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         is_eindstatus = validated_data.pop('__is_eindstatus')
         brondatum_calculator = self.context.pop('brondatum_calculator', None)
 
+        # are we re-opening the case?
+        is_reopening = zaak.einddatum and not is_eindstatus
+
         # if the eindstatus is being set, we need to calculate some more things:
         # 1. zaak.einddatum, which may be relevant for archiving purposes
         # 2. zaak.archiefactiedatum, if not explicitly filled in
@@ -436,6 +438,10 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 zaak.archiefactiedatum = brondatum_calculator.calculate()
                 if zaak.archiefactiedatum is not None:
                     _zaak_fields_changed.append('archiefactiedatum')
+        elif is_reopening:
+            zaak.archiefnominatie = None
+            zaak.archiefactiedatum = None
+            _zaak_fields_changed += ['archiefnominatie', 'archiefactiedatum']
 
         with transaction.atomic():
             obj = super().create(validated_data)

@@ -11,11 +11,14 @@ from vng_api_common.constants import (
     Archiefnominatie, Archiefstatus, BrondatumArchiefprocedureAfleidingswijze,
     VertrouwelijkheidsAanduiding
 )
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import (
+    JWTScopesMixin, generate_jwt, get_operation_url
+)
 from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import (
-    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
+    SCOPEN_ZAKEN_HEROPENEN
 )
 from zrc.datamodel.tests.factories import (
     ZaakEigenschapFactory, ZaakFactory, ZaakInformatieObjectFactory,
@@ -273,7 +276,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
-                    'afleidingswijze': BrondatumArchiefprocedureAfleidingswijze.afgehandeld,
+                    'afleidingswijze': BrondatumArchiefprocedureAfleidingswijze.ander_datumkenmerk,
                     'datumkenmerk': None,
                     'objecttype': None,
                     'procestermijn': None,
@@ -321,6 +324,9 @@ class US345TestCase(JWTScopesMixin, APITestCase):
 
         # add final status to the case to close it and to calculate archive parameters
         status_create_url = get_operation_url('status_create')
+        token = generate_jwt(scopes=[SCOPEN_ZAKEN_HEROPENEN], zaaktypes=[zaak.zaaktype])
+        self.client.credentials(HTTP_AUTHORIZATION=token)
+
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
@@ -636,7 +642,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
-        zaak = ZaakFactory.create(einddatum=date(2019, 1, 1))
+        zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         resultaat_create_url = get_operation_url('resultaat_create')

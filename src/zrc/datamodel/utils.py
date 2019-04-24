@@ -38,8 +38,10 @@ class BrondatumCalculator:
         procestermijn = brondatum_archiefprocedure['procestermijn']
 
         # FIXME: nasty side effect
+        orig_value = self.zaak.einddatum
         self.zaak.einddatum = self.datum_status_gezet.date()
         brondatum = get_brondatum(self.zaak, afleidingswijze, datum_kenmerk, objecttype, procestermijn)
+        self.zaak.einddatum = orig_value
         if not brondatum:
             return
 
