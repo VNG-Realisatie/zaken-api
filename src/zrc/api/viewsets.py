@@ -231,7 +231,7 @@ class ZaakViewSet(NotificationViewSetMixin,
             if zaak.einddatum:
                 msg = "Modifying a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)
-        super().perform_create(serializer)
+        super().perform_update(serializer)
 
 
 class StatusViewSet(NotificationCreateMixin,
