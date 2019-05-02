@@ -489,3 +489,18 @@ class KlantContact(models.Model):
                 gen_id = self.__class__.objects.filter(identificatie=identificatie).exists()
             self.identificatie = identificatie
         super().save(*args, **kwargs)
+
+
+class AuditTrail(models.Model):
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
+    bron = models.CharField(max_length=3)
+    actie = models.CharField(max_length=20)
+    actieWeergave = models.CharField(max_length=30, blank=True)
+    resultaat = models.IntegerField()
+    hoofdObject = models.URLField()
+    resource = models.CharField(max_length=20)
+    resourceUrl = models.URLField()
+    aanmaakdatum = models.DateTimeField(auto_now=True)

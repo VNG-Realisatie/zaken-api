@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject
+    ZaakInformatieObject, ZaakObject, AuditTrail
 )
 
 
@@ -89,3 +89,7 @@ class ResultaatAdmin(admin.ModelAdmin):
     list_display = ['zaak', 'toelichting']
     list_select_related = ['zaak']
     raw_id_fields = ['zaak']
+
+@admin.register(AuditTrail)
+class AuditTrailAdmin(admin.ModelAdmin):
+    list_display = ['uuid']

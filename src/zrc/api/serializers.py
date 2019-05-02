@@ -24,7 +24,7 @@ from vng_api_common.validators import (
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakKenmerk, ZaakObject
+    ZaakInformatieObject, ZaakKenmerk, ZaakObject, AuditTrail
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
@@ -622,3 +622,27 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
                 ],
             }
         }
+
+
+class ZaakAuditTrailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AuditTrail
+        fields = (
+            'uuid',
+            'bron',
+            # 'applicatieId',
+            # 'applicatieWeergave',
+            # 'gebruikersId',
+            # 'gebruikersWeergave',
+            'actie',
+            'actieWeergave',
+            'resultaat',
+            'hoofdObject',
+            'resource',
+            'resourceUrl',
+            # 'resourceWeergave',
+            # 'toelichting',
+            'aanmaakdatum',
+            # 'wijzigingen',
+        )
