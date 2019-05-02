@@ -9,7 +9,7 @@ from django.contrib.gis.geos import Point
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import (
-    JWTScopesMixin, TypeCheckMixin, get_operation_url
+    JWTAuthMixin, TypeCheckMixin, get_operation_url
 )
 
 from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN
@@ -18,23 +18,30 @@ from zrc.datamodel.tests.factories import ZaakFactory
 from .constants import POLYGON_AMSTERDAM_CENTRUM
 from .utils import ZAAK_WRITE_KWARGS
 
+ZAAKTYPE = 'https://example.com/api/v1/zaaktype/1'
 
-class US42TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
 
-    scopes = [
-        SCOPE_ZAKEN_ALLES_LEZEN,
-    ]
+class US42TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
+
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
+    zaaktype=ZAAKTYPE
 
     def test_anoniem_binnen_ams_centrum_district(self):
         """
         Test dat zaken binnen een bepaald gebied kunnen opgevraagd worden.
         """
         # in district
-        zaak = ZaakFactory.create(zaakgeometrie=Point(4.887990, 52.377595))  # LONG LAT
+        zaak = ZaakFactory.create(
+            zaakgeometrie=Point(4.887990, 52.377595), # LONG LAT
+            zaaktype=ZAAKTYPE
+        )
         # outside of district
-        ZaakFactory.create(zaakgeometrie=Point(4.905650, 52.357621))
+        ZaakFactory.create(
+            zaakgeometrie=Point(4.905650, 52.357621),
+            zaaktype=ZAAKTYPE
+        )
         # no geo set
-        ZaakFactory.create()
+        ZaakFactory.create(zaaktype=ZAAKTYPE)
 
         url = get_operation_url('zaak__zoek')
 

@@ -13,7 +13,7 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 
@@ -27,9 +27,10 @@ VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class US169TestCase(JWTScopesMixin, APITestCase):
+class US169TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
+    zaaktype = ZAAKTYPE
 
     def test_create_aanvraag(self):
         """

@@ -7,30 +7,34 @@ from urllib.parse import quote_plus, urlencode
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import Archiefnominatie, Archiefstatus
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN
 from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import ZAAK_WRITE_KWARGS
 
+ZAAKTYPE = 'https://example.com/api/v1/zaaktype/1'
 
-class US345TestCase(JWTScopesMixin, APITestCase):
+
+class US345TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
     # TODO: Required for PATCH to work! This should work without or otherwise, why can I create a ZAAK without this?
-    zaaktypes = ['*']
+    zaaktype = ZAAKTYPE
 
     def test_filter_on_archiefactiedatum_archiefnominatie_archiefstatus(self):
         zaak_1 = ZaakFactory.create(
             archiefnominatie=Archiefnominatie.blijvend_bewaren,
             archiefactiedatum=date(2010, 1, 1),
             archiefstatus=Archiefstatus.nog_te_archiveren,
+            zaaktype=ZAAKTYPE
         )
         zaak_2 = ZaakFactory.create(
             archiefnominatie=Archiefnominatie.vernietigen,
             archiefactiedatum=date(2010, 1, 1),
             archiefstatus=Archiefstatus.nog_te_archiveren,
+            zaaktype=ZAAKTYPE
         )
 
         zaak_list_url = get_operation_url('zaak_list')

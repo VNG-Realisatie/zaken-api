@@ -6,7 +6,7 @@ from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
 from zrc.api.scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
@@ -29,8 +29,9 @@ RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     NOTIFICATIONS_DISABLED=False
 )
-class SendNotifTestCase(JWTScopesMixin, APITestCase):
+class SendNotifTestCase(JWTAuthMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
+    zaaktype = ZAAKTYPE
 
     @patch('zds_client.Client.from_url')
     def test_send_notif_create_zaak(self, mock_client):
@@ -85,7 +86,7 @@ class SendNotifTestCase(JWTScopesMixin, APITestCase):
         Check if notifications will be send when resultaat is deleted
         """
         client = mock_client.return_value
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         resultaat = ResultaatFactory.create(zaak=zaak)
         resultaat_url = get_operation_url('resultaat_update', uuid=resultaat.uuid)

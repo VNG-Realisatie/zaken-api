@@ -1,6 +1,8 @@
 """
 Guarantee that the proper authorization amchinery is in place.
 """
+from unittest import skip
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import AuthCheckMixin, generate_jwt
@@ -19,12 +21,14 @@ class ZakenCreateTests(AuthCheckMixin, APITestCase):
         self.assertForbidden(url, method='post')
 
 
+@skip('Test old Authentication Format. New tests in test_auth_new_format.py')
 class ZakenReadTests(AuthCheckMixin, APITestCase):
 
     def test_cannot_read_without_correct_scope(self):
+        zaak = ZaakFactory.create()
         urls = [
             reverse('zaak-list'),
-            reverse('zaak-detail', kwargs={'uuid': 'dummy'}),
+            reverse('zaak-detail', kwargs={'uuid': zaak.uuid}),
             reverse('status-list'),
             reverse('status-detail', kwargs={'uuid': 'dummy'}),
             reverse('zaakobject-list'),
