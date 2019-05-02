@@ -11,6 +11,9 @@ class ZaaktypePermission(permissions.BasePermission):
         """
         Return `True` if permission is granted, `False` otherwise.
         """
+        import bpdb; bpdb.set_trace()
+
+
         zaaktypes = request.jwt_payload.get('zaaktypes', [])
         if zaaktypes == ['*']:
             return True

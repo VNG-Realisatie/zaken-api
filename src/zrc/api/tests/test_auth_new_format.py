@@ -5,11 +5,13 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import generate_jwt_auth, JWTAuthMixin
-from vng_api_common.models import JWTSecret
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.models import JWTSecret
+from vng_api_common.tests import JWTAuthMixin, generate_jwt_auth
 
-from zrc.datamodel.tests.factories import ZaakFactory, StatusFactory, ZaakObjectFactory
+from zrc.datamodel.tests.factories import (
+    StatusFactory, ZaakFactory, ZaakObjectFactory
+)
 from zrc.tests.utils import ZAAK_READ_KWARGS
 
 from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN
@@ -163,4 +165,3 @@ class ZaakReadCorrectScopeTests(JWTAuthMixin, APITestCase):
         results = response.data['results']
 
         self.assertEqual(len(results), 4)
-
