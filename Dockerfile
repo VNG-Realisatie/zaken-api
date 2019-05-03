@@ -29,7 +29,7 @@ FROM mhart/alpine-node:10 AS frontend-build
 WORKDIR /app
 
 COPY ./*.json /app/
-RUN npm install
+RUN npm ci
 
 COPY ./Gulpfile.js /app/
 COPY ./build /app/build/
@@ -66,7 +66,6 @@ COPY ./setup.cfg /app/setup.cfg
 COPY ./bin/runtests.sh /runtests.sh
 
 # Stage 3.3 - Copy source code
-COPY --from=frontend-build /app/src/zrc/static/fonts /app/src/zrc/static/fonts
 COPY --from=frontend-build /app/src/zrc/static/css /app/src/zrc/static/css
 COPY ./src /app/src
 RUN mkdir /app/log && rm /app/src/zrc/conf/test.py
@@ -112,7 +111,6 @@ WORKDIR /app
 COPY ./bin/docker_start.sh /start.sh
 RUN mkdir /app/log
 
-COPY --from=frontend-build /app/src/zrc/static/fonts /app/src/zrc/static/fonts
 COPY --from=frontend-build /app/src/zrc/static/css /app/src/zrc/static/css
 COPY ./src /app/src
 

@@ -1,10 +1,5 @@
-'use strict';
-var gulp = require('gulp');
+const gulp = require('gulp');
+const {watch} = require('./watch');
 
-
-/**
- * Default task
- * Run using "gulp"
- * Runs "watch" task
- */
-gulp.task('default', ['watch']);
+gulp.task('default', watch);
+exports.default = watch;

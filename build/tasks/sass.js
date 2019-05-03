@@ -1,43 +1,77 @@
 'use strict';
-var cleanCSS = require('gulp-clean-css');
 var gulp = require('gulp');
+var gulpif = require('gulp-if');
+var postcss = require('gulp-postcss');
+var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var purge = require('gulp-css-purge');
+var autoprefixer = require('autoprefixer');
+var cssnano = require('cssnano');
+var selectorLint = require('postcss-selector-lint');
+var argv = require('yargs').argv;
 var paths = require('../paths');
 
 
+var isProduction = argv.production ? true : false;
+var sourcemap = argv.sourcemap ? true : false;
+
+
+let selectorLintConfig = {
+    global: {
+        // Simple
+        type: true,
+        class: true,
+        id: false,
+        universal: false,
+        attribute: false,
+
+        // Pseudo
+        psuedo: false,
+    },
+
+    local: {
+        // Simple
+        type: true,
+        class: true,
+        id: false,
+        universal: true,
+        attribute: true,
+
+        // Pseudo
+        psuedo: true,
+    },
+
+    options: {
+        excludedFiles: ['admin_overrides.css'],
+    }
+};
+
+
+var plugins = isProduction
+              ? [cssnano(), autoprefixer()]
+              : [autoprefixer(), selectorLint(selectorLintConfig)];
+
+
 /**
- * Sass task
+ * sass task
  * Run using "gulp sass"
  * Searches for sass files in paths.sassSrc
  * Compiles sass to css
- * Includes bourbon neat
  * Auto prefixes css
+ * Optimizes css when used with --production
  * Writes css to paths.cssDir
  */
-gulp.task('sass', ['font-awesome'], function() {
-    // Searches for sass files in paths.sassSrc
+function scss() {
     return gulp.src(paths.sassSrc)
-        // Compiles sass to css
+        .pipe(gulpif(sourcemap, sourcemaps.init()))
         .pipe(sass({
-            outputStyle: 'compressed',
-
-            // Allow importing from node_modules in .scss files
+            outputStyle: isProduction ? 'compressed' : 'expanded',
             includePaths: 'node_modules/',
-        })
-        .on('error', sass.logError))
-
-        // Auto prefixes css
-        .pipe(autoprefixer({
-            browsers: ['last 2 versions'],
-            cascade: false
-        }))
-
-        // Remove duplicated code
-        .pipe(purge())
-        .pipe(cleanCSS({compatibility: 'ie8', level: 2}))
-
-        // Writes css to paths.cssDir
+        }).on('error', sass.logError))
+        .pipe(postcss(plugins))
+        .pipe(gulpif(sourcemap, sourcemaps.write('./')))
         .pipe(gulp.dest(paths.cssDir));
-});
+}
+
+
+gulp.task('sass', scss);
+exports.sass = scss;
