@@ -1744,6 +1744,13 @@
                 },
                 "tags": [
                     "rollen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -2070,6 +2077,13 @@
                 },
                 "tags": [
                     "rollen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [

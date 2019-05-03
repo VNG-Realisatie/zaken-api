@@ -9,8 +9,8 @@ from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import AuthCheckMixin, JWTAuthMixin, reverse
 
 from zrc.datamodel.tests.factories import (
-    ResultaatFactory, StatusFactory, ZaakEigenschapFactory, ZaakFactory,
-    ZaakInformatieObjectFactory, ZaakObjectFactory
+    ResultaatFactory, RolFactory, StatusFactory, ZaakEigenschapFactory,
+    ZaakFactory, ZaakInformatieObjectFactory, ZaakObjectFactory
 )
 from zrc.tests.utils import ZAAK_READ_KWARGS
 
@@ -459,3 +459,37 @@ class ZaakEigenschapTests(JWTAuthMixin, APITestCase):
                 response = self.client.get(url)
 
                 self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class RolReadTests(JWTAuthMixin, APITestCase):
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
+    zaaktype = 'https://zaaktype.nl/ok'
+    max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.beperkt_openbaar
+
+    def test_list_rol_limited_to_authorized_zaken(self):
+        url = reverse('rol-list')
+        # must show up
+        rol = RolFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        RolFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+        )
+        # must not show up
+        RolFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/not_ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(len(response_data), 1)
+        self.assertEqual(
+            response_data[0]['url'],
+            f"http://testserver{reverse(rol)}"
+        )

@@ -484,7 +484,7 @@ class KlantContactViewSet(NotificationCreateMixin,
 
 class RolViewSet(NotificationCreateMixin,
                  CheckQueryParamsMixin,
-                 # ListFilterByAuthorizationsMixin,
+                 ListFilterByAuthorizationsMixin,
                  mixins.CreateModelMixin,
                  viewsets.ReadOnlyModelViewSet):
     """
@@ -500,7 +500,9 @@ class RolViewSet(NotificationCreateMixin,
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
-        'create': SCOPE_ZAKEN_CREATE
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_CREATE,
     }
     notifications_kanaal = KANAAL_ZAKEN
 
