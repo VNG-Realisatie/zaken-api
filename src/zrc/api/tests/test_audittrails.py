@@ -1,42 +1,25 @@
 import unittest
+from copy import deepcopy
 
-from django.contrib.gis.geos import Point
-from django.test import override_settings, tag
-from django.utils import timezone
+from django.test import override_settings
 
-from dateutil.relativedelta import relativedelta
-from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.constants import (
-    Archiefnominatie, BrondatumArchiefprocedureAfleidingswijze,
-    VertrouwelijkheidsAanduiding
-)
-from vng_api_common.tests import (
-    JWTScopesMixin, generate_jwt, get_operation_url, reverse
-)
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.tests import JWTScopesMixin, generate_jwt, reverse
 from zds_client.tests.mocks import mock_client
 
-from zrc.datamodel.constants import BetalingsIndicatie
-from zrc.datamodel.models import Zaak
+from zrc.datamodel.models import AuditTrail, Zaak
 from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
 from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
-from zrc.tests.utils import (
-    ZAAK_READ_KWARGS, ZAAK_WRITE_KWARGS, isodatetime, utcdatetime
-)
-from zrc.datamodel.models import AuditTrail
+from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from ..scopes import (
-    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN,
-    SCOPE_ZAKEN_CREATE, SCOPEN_ZAKEN_HEROPENEN
-)
+from ..scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 
 # ZTC
 ZTC_ROOT = 'https://example.com/ztc/api/v1'
 CATALOGUS = f'{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785'
-STATUSTYPE = f'{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785'
-STATUSTYPE2 = f'{ZAAKTYPE}/statustypen/b86aa339-151e-45f0-ad6c-20698f50b6cd'
 
 
 @override_settings(
@@ -44,15 +27,14 @@ STATUSTYPE2 = f'{ZAAKTYPE}/statustypen/b86aa339-151e-45f0-ad6c-20698f50b6cd'
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
 class AuditTrailTests(JWTScopesMixin, APITestCase):
-    def test_create_zaak_creates_audittrail(self):
-        url = reverse('zaak-list')
+    def setUp(self):
         token = generate_jwt(
-            scopes=[SCOPE_ZAKEN_CREATE],
+            scopes=[SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN],
             zaaktypes=['https://example.com/zaaktype/123']
         )
         self.client.credentials(HTTP_AUTHORIZATION=token)
 
-        responses = {
+        self.responses = {
             'https://example.com/zaaktype/123': {
                 'url': 'https://example.com/zaaktype/123',
                 'productenOfDiensten': [
@@ -62,25 +44,114 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
             }
         }
 
-        with mock_client(responses):
-            response = self.client.post(url, {
-                'zaaktype': 'https://example.com/zaaktype/123',
-                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
-                'bronorganisatie': '517439943',
-                'verantwoordelijkeOrganisatie': '517439943',
-                'registratiedatum': '2018-12-24',
-                'startdatum': '2018-12-24',
-                'productenOfDiensten': ['https://example.com/product/123'],
-            }, **ZAAK_WRITE_KWARGS)
+    def create_zaak(self):
+        url = reverse('zaak-list')
 
-        zaak = response.data
-        audittrails = AuditTrail.objects.filter(hoofdObject=zaak['url'])
+        zaak_data = {
+            'zaaktype': 'https://example.com/zaaktype/123',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-12-24',
+            'startdatum': '2018-12-24',
+            'productenOfDiensten': ['https://example.com/product/123']
+        }
+        with mock_client(self.responses):
+            response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS)
+
+        return response.data
+
+    def test_create_zaak_audittrail(self):
+        zaak_response = self.create_zaak()
+
+        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_response['url'])
         self.assertEqual(audittrails.count(), 1)
 
-        audittrail = audittrails.first()
-        self.assertEqual(audittrail.bron, 'ZRC')
-        self.assertEqual(audittrail.actie, 'create')
-        self.assertEqual(audittrail.resultaat, 201)
+        # Verify that the audittrail for the Zaak creation contains the correct
+        # information
+        zaak_create_audittrail = audittrails.first()
+        self.assertEqual(zaak_create_audittrail.bron, 'ZRC')
+        self.assertEqual(zaak_create_audittrail.actie, 'create')
+        self.assertEqual(zaak_create_audittrail.resultaat, 201)
+        self.assertEqual(zaak_create_audittrail.oud, None)
+        self.assertEqual(zaak_create_audittrail.nieuw, zaak_response)
 
+    def test_create_and_delete_resultaat_audittrails(self):
+        zaak_response = self.create_zaak()
 
+        url = reverse('resultaat-list')
+        resultaat_data = {
+            'zaak': zaak_response['url'],
+            'resultaatType': RESULTAATTYPE
+        }
+        response = self.client.post(url, resultaat_data, **ZAAK_WRITE_KWARGS)
+        resultaat_response = response.data
 
+        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_response['url'])
+        self.assertEqual(audittrails.count(), 2)
+
+        # Verify that the audittrail for the Resultaat creation contains the
+        # correct information
+        resultaat_create_audittrail = audittrails[1]
+        self.assertEqual(resultaat_create_audittrail.bron, 'ZRC')
+        self.assertEqual(resultaat_create_audittrail.actie, 'create')
+        self.assertEqual(resultaat_create_audittrail.resultaat, 201)
+        self.assertEqual(resultaat_create_audittrail.oud, None)
+        self.assertEqual(resultaat_create_audittrail.nieuw, resultaat_response)
+
+        response = self.client.delete(resultaat_response['url'], **ZAAK_WRITE_KWARGS)
+        self.assertEqual(audittrails.count(), 3)
+
+        # Verify that the audittrail for the Resultaat deletion contains the
+        # correct information
+        resultaat_delete_audittrail = audittrails[2]
+        self.assertEqual(resultaat_delete_audittrail.bron, 'ZRC')
+        self.assertEqual(resultaat_delete_audittrail.actie, 'delete')
+        self.assertEqual(resultaat_delete_audittrail.resultaat, 204)
+        self.assertEqual(resultaat_delete_audittrail.oud, resultaat_response)
+        self.assertEqual(resultaat_delete_audittrail.nieuw, None)
+
+    def test_update_zaak_audittrails(self):
+        zaak_data = self.create_zaak()
+
+        modified_data = deepcopy(zaak_data)
+        url = modified_data.pop('url')
+        modified_data.pop('verlenging')
+        modified_data['toelichting'] = 'aangepast'
+
+        with mock_client(self.responses):
+            response = self.client.put(url, modified_data, **ZAAK_WRITE_KWARGS)
+            zaak_response = response.data
+
+        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_response['url'])
+        self.assertEqual(audittrails.count(), 2)
+
+        # Verify that the audittrail for the Zaak update contains the correct
+        # information
+        zaak_update_audittrail = audittrails[1]
+        self.assertEqual(zaak_update_audittrail.bron, 'ZRC')
+        self.assertEqual(zaak_update_audittrail.actie, 'update')
+        self.assertEqual(zaak_update_audittrail.resultaat, 200)
+        self.assertEqual(zaak_update_audittrail.oud, zaak_data)
+        self.assertEqual(zaak_update_audittrail.nieuw, zaak_response)
+
+    def test_partial_update_zaak_audittrails(self):
+        zaak_data = self.create_zaak()
+
+        with mock_client(self.responses):
+            response = self.client.patch(zaak_data['url'], {
+                'toelichting': 'aangepast'
+            }, **ZAAK_WRITE_KWARGS)
+            zaak_response = response.data
+
+        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_response['url'])
+        self.assertEqual(audittrails.count(), 2)
+
+        # Verify that the audittrail for the Zaak partial_update contains the
+        # correct information
+        zaak_update_audittrail = audittrails[1]
+        self.assertEqual(zaak_update_audittrail.bron, 'ZRC')
+        self.assertEqual(zaak_update_audittrail.actie, 'partial_update')
+        self.assertEqual(zaak_update_audittrail.resultaat, 200)
+        self.assertEqual(zaak_update_audittrail.oud, zaak_data)
+        self.assertEqual(zaak_update_audittrail.nieuw, zaak_response)
