@@ -4827,6 +4827,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -4993,6 +5000,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.bijwerken"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -5155,6 +5169,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "delete": {
@@ -5302,6 +5323,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zds.scopes.zaken.bijwerken"
+                        ]
+                    }
                 ]
             },
             "parameters": [

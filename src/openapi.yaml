@@ -4076,6 +4076,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaken
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.lezen
     post:
       operationId: zaakinformatieobject_create
       description: ''
@@ -4207,6 +4210,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaken
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.bijwerken
       requestBody:
         content:
           application/json:
@@ -4349,6 +4355,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaken
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.lezen
     delete:
       operationId: zaakinformatieobject_delete
       description: Verwijder een relatie tussen een zaak en een informatieobject
@@ -4471,6 +4480,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaken
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.bijwerken
     parameters:
     - name: uuid
       in: path
