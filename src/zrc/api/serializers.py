@@ -625,8 +625,6 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ZaakAuditTrailSerializer(serializers.ModelSerializer):
-    wijzigingen = serializers.SerializerMethodField()
-
     class Meta:
         model = AuditTrail
         fields = (
@@ -647,6 +645,3 @@ class ZaakAuditTrailSerializer(serializers.ModelSerializer):
             'aanmaakdatum',
             'wijzigingen',
         )
-
-    def get_wijzigingen(self, obj):
-        return {'oud': obj.oud, 'nieuw': obj.nieuw}
