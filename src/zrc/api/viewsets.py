@@ -1,12 +1,14 @@
 import logging
 
 from django.conf import settings
+from django.db.models import Case, IntegerField, When
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
@@ -174,15 +176,48 @@ class ZaakViewSet(NotificationViewSetMixin,
             return base
 
         if self.action == 'list':
-            zaak_ids = []
-            for zaak in base:
-                if self.request.jwt_auth.has_auth(
-                    scopes=self.required_scopes['list'],
-                    zaaktype=zaak.zaaktype,
-                    vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding
-                ):
-                    zaak_ids.append(zaak.id)
-            return base.filter(id__in=zaak_ids)
+
+            apps = self.request.jwt_auth.applicaties
+
+            # as soon as there's one matching app that gives you all permissions,
+            # you're in...
+            if any(app.heeft_alle_autorisaties for app in apps):
+                return base
+
+            autzs = self.request.jwt_auth.autorisaties
+
+            # filter zaaktypen that client is authorized on
+            zaaktypen = (
+                autzs
+                .values_list('zaaktype', flat=True)
+                .distinct()
+            )
+
+            # filter on vertrouwelijkheidaanduiding
+            _va_order = VertrouwelijkheidsAanduiding.get_order_expression('vertrouwelijkheidaanduiding')
+            base = base.annotate(_va_order=_va_order)
+
+            scope_needed = self.required_scopes[self.action]
+
+            # depending on the case type, there's a maximum order we allow
+            whens = []
+            for autz in autzs:
+                if not scope_needed.is_contained_in(autz.scopes):
+                    zaaktypen.remove(autz.zaaktype)
+                    continue
+
+                choice_item = VertrouwelijkheidsAanduiding.get_choice(autz.max_vertrouwelijkheidaanduiding)
+                when = When(
+                    zaaktype=autz.zaaktype,
+                    then=choice_item.order
+                )
+                whens.append(when)
+            case = Case(*whens, output_field=IntegerField())
+
+            return base.filter(
+                zaaktype__in=zaaktypen,
+                _va_order__lte=case
+            )
 
         return base
 
