@@ -408,7 +408,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             NestedViewSetMixin,
-                            # ListFilterByAuthorizationsMixin,
+                            ListFilterByAuthorizationsMixin,
                             mixins.CreateModelMixin,
                             viewsets.ReadOnlyModelViewSet):
     """
@@ -425,8 +425,36 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
     """
     queryset = ZaakEigenschap.objects.all()
     serializer_class = ZaakEigenschapSerializer
+    permission_classes = (
+        permission_class_factory(
+            base=RelatedObjectAuthScopesRequired,
+            get_zaak='_get_zaak'
+        ),
+    )
     lookup_field = 'uuid'
+    required_scopes = {
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+    }
+    parent_retrieve_kwargs = {
+        'zaak_uuid': 'uuid',
+    }
     notifications_kanaal = KANAAL_ZAKEN
+
+    def _get_zaak(self):
+        if not hasattr(self, '_zaak'):
+            filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
+            self._zaak = get_object_or_404(Zaak, **filters)
+        return self._zaak
+
+    def list(self, request, *args, **kwargs):
+        zaak = self._get_zaak()
+        permission = ZaakAuthScopesRequired()
+        if not permission.has_object_permission(self.request, self, zaak):
+            raise PermissionDenied
+        return super().list(request, *args, **kwargs)
 
 
 class KlantContactViewSet(NotificationCreateMixin,

@@ -6,7 +6,9 @@ ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/52
 """
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import TypeCheckMixin, get_operation_url
+from vng_api_common.tests import (
+    JWTAuthMixin, TypeCheckMixin, get_operation_url
+)
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import ZaakEigenschap
@@ -16,7 +18,8 @@ EIGENSCHAP_OBJECTTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/
 EIGENSCHAP_NAAM_BOOT = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/eigenschappen/2'
 
 
-class US52TestCase(TypeCheckMixin, APITestCase):
+class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
+    heeft_alle_autorisaties = True
 
     def test_zet_eigenschappen(self):
         zaak = ZaakFactory.create()
