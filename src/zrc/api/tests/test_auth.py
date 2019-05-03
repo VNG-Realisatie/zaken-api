@@ -134,3 +134,34 @@ class ZaakReadCorrectScopeTests(JWTAuthMixin, APITestCase):
         results = response.data['results']
 
         self.assertEqual(len(results), 4)
+
+
+class StatusReadTests(JWTAuthMixin, APITestCase):
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
+    zaaktype = 'https://zaaktype.nl/ok'
+    max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.beperkt_openbaar
+
+    def test_list_status_limited_to_authorized_zaken(self):
+        url = reverse('status-list')
+        # must show up
+        status1 = StatusFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        StatusFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+        )
+        # must not show up
+        StatusFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/not_ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(len(response_data), 1)
+        self.assertEqual(response_data[0]['url'], reverse(status1))

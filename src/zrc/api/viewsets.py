@@ -241,9 +241,6 @@ class ZaakViewSet(NotificationViewSetMixin,
         return self.get_search_output(queryset)
     _zoek.is_search_action = True
 
-    def get_kenmerken(self, data):
-        return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
-
     def perform_update(self, serializer):
         """
         Perform the update of the Case.
