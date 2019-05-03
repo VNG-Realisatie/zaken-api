@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from .models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject, AuditTrail
+    AuditTrail, KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    ZaakInformatieObject, ZaakObject
 )
 
 
