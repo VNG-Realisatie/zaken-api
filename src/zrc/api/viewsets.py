@@ -11,9 +11,6 @@ from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationViewSetMixin
 )
-from vng_api_common.permissions import (
-    ZaakAuthScopesRequired, ZaakRelatedAuthScopesRequired
-)
 from vng_api_common.search import SearchMixin
 from vng_api_common.utils import lookup_kwargs_to_filters
 from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
@@ -26,6 +23,10 @@ from zrc.datamodel.models import (
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
 from .kanalen import KANAAL_ZAKEN
+from .permissions import (
+    RelatedObjectAuthScopesRequired, ZaakAuthScopesRequired,
+    ZaakRelatedAuthScopesRequired, permission_class_factory
+)
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
     SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
@@ -358,7 +359,12 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
-    permission_classes = (ZaakRelatedAuthScopesRequired,)
+    permission_classes = (
+        permission_class_factory(
+            base=RelatedObjectAuthScopesRequired,
+            get_zaak='_get_zaak'
+        ),
+    )
     lookup_field = 'uuid'
 
     required_scopes = {

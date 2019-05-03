@@ -267,9 +267,7 @@ class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
 
 
 class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
-
-    scopes = [SCOPE_ZAKEN_CREATE]
-    zaaktype = 'https://example.com/foo/bar'
+    heeft_alle_autorisaties = True
 
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_404',
