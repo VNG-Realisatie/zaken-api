@@ -70,7 +70,7 @@ class ZaakReadCorrectScopeTests(JWTAuthMixin, APITestCase):
         )
         url = reverse('zaak-list')
 
-        response = self.client.get(url, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.get(url, **ZAAK_READ_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -127,7 +127,7 @@ class ZaakReadCorrectScopeTests(JWTAuthMixin, APITestCase):
         )
         url = reverse('zaak-list')
 
-        response = self.client.get(url, HTTP_ACCEPT_CRS='EPSG:4326')
+        response = self.client.get(url, **ZAAK_READ_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
