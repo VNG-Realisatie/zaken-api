@@ -6,7 +6,7 @@ from vng_api_common.constants import (
     Archiefnominatie, BrondatumArchiefprocedureAfleidingswijze,
     VertrouwelijkheidsAanduiding
 )
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import (
@@ -176,7 +176,7 @@ class Application:
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
-class US39IntegrationTestCase(JWTScopesMixin, APITestCase):
+class US39IntegrationTestCase(JWTAuthMixin, APITestCase):
     """
     Simulate a full realistic flow.
     """
@@ -185,6 +185,7 @@ class US39IntegrationTestCase(JWTScopesMixin, APITestCase):
         SCOPE_STATUSSEN_TOEVOEGEN,
         SCOPE_ZAKEN_BIJWERKEN
     ]
+    zaaktype = ZAAKTYPE
 
     def test_full_flow(self):
         app = Application(self.client, TEST_DATA)

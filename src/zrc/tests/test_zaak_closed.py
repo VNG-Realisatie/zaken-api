@@ -6,9 +6,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import Archiefnominatie
-from vng_api_common.tests import (
-    JWTScopesMixin, generate_jwt, get_operation_url, reverse
-)
+from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 
 from zrc.api.scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_BIJWERKEN,
@@ -24,14 +22,16 @@ STATUS_TYPE = f'{ZAAKTYPE}/statustypen/1'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class ZaakClosedTests(JWTScopesMixin, APITestCase):
+class ZaakClosedTests(JWTAuthMixin, APITestCase):
+    scopes = [SCOPE_ZAKEN_BIJWERKEN]
+    zaaktype = ZAAKTYPE
 
     def test_update_zaak_open(self):
-        zaak = ZaakFactory.create(betalingsindicatie=BetalingsIndicatie.geheel)
+        zaak = ZaakFactory.create(
+            betalingsindicatie=BetalingsIndicatie.geheel,
+            zaaktype=ZAAKTYPE
+        )
         url = reverse(zaak)
-
-        token = generate_jwt(scopes=[SCOPE_ZAKEN_BIJWERKEN], zaaktypes=[zaak.zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
 
         response = self.client.patch(url, {
             'betalingsindicatie': BetalingsIndicatie.nvt,
@@ -45,12 +45,10 @@ class ZaakClosedTests(JWTScopesMixin, APITestCase):
 
     def test_update_zaak_closed_not_allowed(self):
         zaak = ZaakFactory.create(
-            einddatum=timezone.now()
+            einddatum=timezone.now(),
+            zaaktype=ZAAKTYPE
         )
         url = reverse(zaak)
-
-        token = generate_jwt(scopes=[SCOPE_ZAKEN_BIJWERKEN], zaaktypes=[zaak.zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
 
         response = self.client.patch(url, {
             'betalingsindicatie': BetalingsIndicatie.nvt,
@@ -60,12 +58,13 @@ class ZaakClosedTests(JWTScopesMixin, APITestCase):
 
     def test_update_zaak_closed_allowed(self):
         zaak = ZaakFactory.create(
-            einddatum=timezone.now()
+            einddatum=timezone.now(),
+            zaaktype=ZAAKTYPE
         )
         url = reverse(zaak)
 
-        token = generate_jwt(scopes=[SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN], zaaktypes=[zaak.zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
+        self.autorisatie.scopes = [SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN]
+        self.autorisatie.save()
 
         response = self.client.patch(url, {
             'betalingsindicatie': BetalingsIndicatie.nvt,
@@ -80,11 +79,12 @@ class ZaakClosedTests(JWTScopesMixin, APITestCase):
         zaak = ZaakFactory.create(
             einddatum=timezone.now(),
             archiefactiedatum='2020-01-01',
-            archiefnominatie=Archiefnominatie.blijvend_bewaren
+            archiefnominatie=Archiefnominatie.blijvend_bewaren,
+            zaaktype=ZAAKTYPE
         )
         status_create_url = get_operation_url('status_create')
-        token = generate_jwt(scopes=[SCOPEN_ZAKEN_HEROPENEN], zaaktypes=[zaak.zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
+        self.autorisatie.scopes = [SCOPEN_ZAKEN_HEROPENEN]
+        self.autorisatie.save()
 
         data = {
             'zaak': reverse(zaak),
@@ -104,11 +104,12 @@ class ZaakClosedTests(JWTScopesMixin, APITestCase):
     )
     def test_reopen_zaak_not_allowed(self):
         zaak = ZaakFactory.create(
-            einddatum=timezone.now()
+            einddatum=timezone.now(),
+            zaaktype=ZAAKTYPE
         )
         status_create_url = get_operation_url('status_create')
-        token = generate_jwt(scopes=[SCOPE_STATUSSEN_TOEVOEGEN], zaaktypes=[zaak.zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
+        self.autorisatie.scopes = [SCOPE_STATUSSEN_TOEVOEGEN]
+        self.autorisatie.save()
 
         data = {
             'zaak': reverse(zaak),

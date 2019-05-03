@@ -8,21 +8,23 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import RolOmschrijving, RolTypes
 from vng_api_common.tests import (
-    JWTScopesMixin, TypeCheckMixin, get_operation_url
+    JWTAuthMixin, TypeCheckMixin, get_operation_url
 )
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
 WATERNET = 'https://waternet.nl/api/organisatorische-eenheid/1234'
+ZAAKTYPE = 'https://example.com/api/v1/zaaktype/1'
 
 
-class US45TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
+class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
+    zaaktype = ZAAKTYPE
 
     def test_zet_behandelaar(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_create')
 
@@ -55,7 +57,7 @@ class US45TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
         Bij een ZAAK kan maximaal één ROL met als Rolomschrijving generiek
         'Initiator' voor komen.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         RolFactory.create(
             zaak=zaak,
             betrokkene_type=RolTypes.natuurlijk_persoon,
@@ -82,7 +84,7 @@ class US45TestCase(JWTScopesMixin, TypeCheckMixin, APITestCase):
         Bij een ZAAK kan maximaal één ROL met als Rolomschrijving generiek
         'Initiator' voor komen.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         RolFactory.create(
             zaak=zaak,
             betrokkene_type=RolTypes.natuurlijk_persoon,

@@ -21,6 +21,7 @@ from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from .constants import BetalingsIndicatie
+from .query import ZaakQuerySet, ZaakRelatedQuerySet
 
 
 class Zaak(APIMixin, models.Model):
@@ -202,6 +203,8 @@ class Zaak(APIMixin, models.Model):
                     "een RESULTAAT aan deze ZAAK indien nog leeg.")
     )
 
+    objects = ZaakQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'zaak'
         verbose_name_plural = 'zaken'
@@ -253,6 +256,8 @@ class Status(models.Model):
                   'op de status van een zaak.'
     )
 
+    objects = ZaakRelatedQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'status'
         verbose_name_plural = 'statussen'
@@ -281,6 +286,8 @@ class Resultaat(models.Model):
         max_length=1000, blank=True,
         help_text='Een toelichting op wat het resultaat van de zaak inhoudt.'
     )
+
+    objects = ZaakRelatedQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'resultaat'
@@ -316,6 +323,8 @@ class Rol(models.Model):
     )
     roltoelichting = models.TextField(max_length=1000)
 
+    objects = ZaakRelatedQuerySet.as_manager()
+
     class Meta:
         verbose_name = "Rol"
         verbose_name_plural = "Rollen"
@@ -346,6 +355,8 @@ class ZaakObject(models.Model):
         choices=ZaakobjectTypes.choices,
         help_text="Beschrijft het type object gerelateerd aan de zaak"
     )
+
+    objects = ZaakRelatedQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'zaakobject'
@@ -401,6 +412,8 @@ class ZaakEigenschap(models.Model):
     )
     waarde = models.TextField()
 
+    objects = ZaakRelatedQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'zaakeigenschap'
         verbose_name_plural = 'zaakeigenschappen'
@@ -418,6 +431,8 @@ class ZaakKenmerk(models.Model):
         max_length=40,
         help_text='De aanduiding van de administratie waar het kenmerk op '
                   'slaat.')
+
+    objects = ZaakRelatedQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'zaak kenmerk'
@@ -439,6 +454,8 @@ class ZaakInformatieObject(models.Model):
                   "ook de relatieinformatie opgevraagd kan worden.",
         max_length=1000
     )
+
+    objects = ZaakRelatedQuerySet.as_manager()
 
     class Meta:
         verbose_name = "zaakinformatieobject"
@@ -473,6 +490,8 @@ class KlantContact(models.Model):
         blank=True, max_length=20,
         help_text='Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt'
     )
+
+    objects = ZaakRelatedQuerySet.as_manager()
 
     class Meta:
         verbose_name = "klantcontact"

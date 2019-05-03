@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import (
-    JWTScopesMixin, get_operation_url, get_validation_errors
+    JWTAuthMixin, get_operation_url, get_validation_errors
 )
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
@@ -25,9 +25,10 @@ VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class US164TestCase(JWTScopesMixin, APITestCase):
+class US164TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
+    zaaktype = ZAAKTYPE
 
     def test_geef_zelf_identificatie(self):
         """

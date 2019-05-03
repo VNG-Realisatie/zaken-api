@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'vng_api_common',  # before drf_yasg to override the management command
+    'vng_api_common.authorizations',
     'vng_api_common.notifications',
     'drf_yasg',
     'rest_framework',
@@ -372,3 +373,4 @@ if SENTRY_DSN:
 IS_HTTPS = os.getenv('IS_HTTPS', '1').lower() in ['true', '1', 'yes']
 
 NOTIFICATIONS_KANAAL = 'zaken'
+DEFAULT_NOTIFICATIONS_HANDLER = 'vng_api_common.notifications.handlers.auth_handler'

@@ -11,9 +11,7 @@ from vng_api_common.constants import (
     Archiefnominatie, BrondatumArchiefprocedureAfleidingswijze,
     VertrouwelijkheidsAanduiding
 )
-from vng_api_common.tests import (
-    JWTScopesMixin, generate_jwt, get_operation_url, reverse
-)
+from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
@@ -39,13 +37,13 @@ STATUSTYPE2 = f'{ZAAKTYPE}/statustypen/b86aa339-151e-45f0-ad6c-20698f50b6cd'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class ApiStrategyTests(JWTScopesMixin, APITestCase):
+class ApiStrategyTests(JWTAuthMixin, APITestCase):
 
     scopes = [
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_ALLES_LEZEN,
     ]
-    zaaktypes = ['https://example.com/foo/bar']
+    zaaktype = 'https://example.com/foo/bar'
 
     @unittest.expectedFailure
     def test_api_10_lazy_eager_loading(self):
@@ -107,7 +105,7 @@ class ApiStrategyTests(JWTScopesMixin, APITestCase):
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
-class ZakenAfsluitenTests(JWTScopesMixin, APITestCase):
+class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
 
     scopes = [
         SCOPE_ZAKEN_CREATE,
@@ -115,10 +113,10 @@ class ZakenAfsluitenTests(JWTScopesMixin, APITestCase):
         SCOPE_ZAKEN_ALLES_LEZEN,
         SCOPE_STATUSSEN_TOEVOEGEN,
     ]
-    zaaktypes = ['*']
+    zaaktype = ZAAKTYPE
 
     def test_zaak_afsluiten(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
 
         responses = {
@@ -193,14 +191,14 @@ class ZakenAfsluitenTests(JWTScopesMixin, APITestCase):
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
-class ZakenTests(JWTScopesMixin, APITestCase):
+class ZakenTests(JWTAuthMixin, APITestCase):
 
     scopes = [
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_BIJWERKEN,
         SCOPE_ZAKEN_ALLES_LEZEN,
     ]
-    zaaktypes = ['*']
+    zaaktype = ZAAKTYPE
 
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
@@ -211,7 +209,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         Met de scope zaken.aanmaken mag je enkel een status aanmaken als er
         nog geen status was.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
         status_list_url = reverse('status-list')
 
@@ -238,9 +236,10 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
     def test_zaak_heropen_reset_einddatum(self):
-        token = generate_jwt([SCOPEN_ZAKEN_HEROPENEN])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
-        zaak = ZaakFactory.create(einddatum='2019-01-07')
+        self.autorisatie.scopes = self.autorisatie.scopes + [SCOPEN_ZAKEN_HEROPENEN]
+        self.autorisatie.save()
+
+        zaak = ZaakFactory.create(einddatum='2019-01-07', zaaktype=ZAAKTYPE)
         StatusFactory.create(
             zaak=zaak,
             status_type='http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/2',
@@ -263,15 +262,10 @@ class ZakenTests(JWTScopesMixin, APITestCase):
 
     def test_zaak_met_producten(self):
         url = reverse('zaak-list')
-        token = generate_jwt(
-            scopes=self.scopes + [SCOPE_ZAKEN_BIJWERKEN],
-            zaaktypes=['https://example.com/zaaktype/123']
-        )
-        self.client.credentials(HTTP_AUTHORIZATION=token)
 
         responses = {
-            'https://example.com/zaaktype/123': {
-                'url': 'https://example.com/zaaktype/123',
+            ZAAKTYPE: {
+                'url': ZAAKTYPE,
                 'productenOfDiensten': [
                     'https://example.com/product/123',
                     'https://example.com/dienst/123',
@@ -281,7 +275,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
 
         with mock_client(responses):
             response = self.client.post(url, {
-                'zaaktype': 'https://example.com/zaaktype/123',
+                'zaaktype': ZAAKTYPE,
                 'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
                 'bronorganisatie': '517439943',
                 'verantwoordelijkeOrganisatie': '517439943',
@@ -314,15 +308,15 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         """
         url = reverse('zaak-list')
         responses = {
-            'https://ztc.nl/zaaktype/1': {
-                'url': 'https://ztc.nl/zaaktype/1',
+            ZAAKTYPE: {
+                'url': ZAAKTYPE,
                 'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
             }
         }
 
         with mock_client(responses):
             response = self.client.post(url, {
-                'zaaktype': 'https://ztc.nl/zaaktype/1',
+                'zaaktype': ZAAKTYPE,
                 'bronorganisatie': '517439943',
                 'verantwoordelijkeOrganisatie': '517439943',
                 'registratiedatum': '2018-12-24',
@@ -342,15 +336,15 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         """
         url = reverse('zaak-list')
         responses = {
-            'https://ztc.nl/zaaktype/2': {
-                'url': 'https://ztc.nl/zaaktype/2',
+            ZAAKTYPE: {
+                'url': ZAAKTYPE,
                 'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
             }
         }
 
         with mock_client(responses):
             response = self.client.post(url, {
-                'zaaktype': 'https://ztc.nl/zaaktype/2',
+                'zaaktype': ZAAKTYPE,
                 'bronorganisatie': '517439943',
                 'verantwoordelijkeOrganisatie': '517439943',
                 'registratiedatum': '2018-12-24',
@@ -365,13 +359,10 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         )
 
     def test_deelzaken(self):
-        hoofdzaak = ZaakFactory.create()
-        deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak)
+        hoofdzaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak, zaaktype=ZAAKTYPE)
         detail_url = reverse(hoofdzaak)
         deelzaak_url = reverse(deelzaak)
-
-        token = generate_jwt(scopes=self.scopes, zaaktypes=[hoofdzaak.zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
 
         response = self.client.get(detail_url, **ZAAK_READ_KWARGS)
 
@@ -384,11 +375,10 @@ class ZakenTests(JWTScopesMixin, APITestCase):
     def test_zaak_betalingsindicatie_nvt(self):
         zaak = ZaakFactory.create(
             betalingsindicatie=BetalingsIndicatie.gedeeltelijk,
-            laatste_betaaldatum=timezone.now()
+            laatste_betaaldatum=timezone.now(),
+            zaaktype=ZAAKTYPE
         )
         url = reverse(zaak)
-        token = generate_jwt(scopes=[SCOPE_ZAKEN_BIJWERKEN], zaaktypes=[zaak.zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
 
         response = self.client.patch(url, {
             'betalingsindicatie': BetalingsIndicatie.nvt,
@@ -400,10 +390,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertIsNone(zaak.laatste_betaaldatum)
 
     def test_pagination_default(self):
-        zaaktype = 'https://example.com/ztc/api/v1/zaaktypen/1234'
-        ZaakFactory.create_batch(2, zaaktype=zaaktype)
-        token = generate_jwt(scopes=[SCOPE_ZAKEN_ALLES_LEZEN], zaaktypes=[zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
+        ZaakFactory.create_batch(2, zaaktype=ZAAKTYPE)
         url = reverse(Zaak)
 
         response = self.client.get(url, **ZAAK_READ_KWARGS)
@@ -415,10 +402,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         self.assertIsNone(response_data['next'])
 
     def test_pagination_page_param(self):
-        zaaktype = 'https://example.com/ztc/api/v1/zaaktypen/1234'
-        ZaakFactory.create_batch(2, zaaktype=zaaktype)
-        token = generate_jwt(scopes=[SCOPE_ZAKEN_ALLES_LEZEN], zaaktypes=[zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
+        ZaakFactory.create_batch(2, zaaktype=ZAAKTYPE)
         url = reverse(Zaak)
 
         response = self.client.get(url, {'page': 1}, **ZAAK_READ_KWARGS)
@@ -434,7 +418,7 @@ class ZakenTests(JWTScopesMixin, APITestCase):
         url = reverse('zaak-list')
 
         response = self.client.post(url, {
-            'zaaktype': 'https://example.com/zaaktype/123',
+            'zaaktype': ZAAKTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': '517439943',

@@ -1,6 +1,5 @@
 import logging
 
-from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
@@ -12,7 +11,6 @@ from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin, NotificationViewSetMixin
 )
-from vng_api_common.permissions import ActionScopesRequired
 from vng_api_common.search import SearchMixin
 from vng_api_common.utils import lookup_kwargs_to_filters
 from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
@@ -22,9 +20,13 @@ from zrc.datamodel.models import (
     ZaakInformatieObject, ZaakObject
 )
 
+from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
 from .kanalen import KANAAL_ZAKEN
-from .permissions import ZaaktypePermission
+from .permissions import (
+    RelatedObjectAuthScopesRequired, ZaakAuthScopesRequired,
+    ZaakRelatedAuthScopesRequired, permission_class_factory
+)
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
     SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
@@ -43,6 +45,7 @@ class ZaakViewSet(NotificationViewSetMixin,
                   GeoMixin,
                   SearchMixin,
                   CheckQueryParamsMixin,
+                  ListFilterByAuthorizationsMixin,
                   viewsets.ModelViewSet):
     """
     Opvragen en bewerken van ZAAKen.
@@ -153,7 +156,7 @@ class ZaakViewSet(NotificationViewSetMixin,
     lookup_field = 'uuid'
     pagination_class = PageNumberPagination
 
-    permission_classes = (ActionScopesRequired, ZaaktypePermission)
+    permission_classes = (ZaakAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
@@ -164,21 +167,6 @@ class ZaakViewSet(NotificationViewSetMixin,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
-
-    def get_queryset(self):
-        base = super().get_queryset()
-
-        # drf-yasg introspection
-        if not hasattr(self.request, 'jwt_payload'):
-            return base
-
-        if self.action == 'list':
-            zt_whitelist = self.request.jwt_payload.get('zaaktypes', [])
-            if zt_whitelist == ['*']:
-                return base  # no filtering, wildcard applies
-            return base.filter(zaaktype__in=zt_whitelist)
-
-        return base
 
     @action(methods=('post',), detail=False)
     def _zoek(self, request, *args, **kwargs):
@@ -200,9 +188,6 @@ class ZaakViewSet(NotificationViewSetMixin,
         return self.get_search_output(queryset)
     _zoek.is_search_action = True
 
-    def get_kenmerken(self, data):
-        return [{k: data.get(k, '')} for k in settings.NOTIFICATIES_KENMERKEN_NAMES]
-
     def perform_update(self, serializer):
         """
         Perform the update of the Case.
@@ -217,15 +202,20 @@ class ZaakViewSet(NotificationViewSetMixin,
         """
         zaak = self.get_object()
 
-        if not self.request.jwt_payload.has_scopes(SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN):
+        if not self.request.jwt_auth.has_auth(
+            scopes=SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+            zaaktype=zaak.zaaktype,
+            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding
+        ):
             if zaak.einddatum:
                 msg = "Modifying a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)
-        super().perform_create(serializer)
+        super().perform_update(serializer)
 
 
 class StatusViewSet(NotificationCreateMixin,
                     CheckQueryParamsMixin,
+                    ListFilterByAuthorizationsMixin,
                     mixins.CreateModelMixin,
                     viewsets.ReadOnlyModelViewSet):
     """
@@ -260,7 +250,7 @@ class StatusViewSet(NotificationCreateMixin,
     filterset_class = StatusFilter
     lookup_field = 'uuid'
 
-    permission_classes = (ActionScopesRequired,)
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
@@ -283,13 +273,20 @@ class StatusViewSet(NotificationCreateMixin,
           insufficient permissions
         """
         zaak = serializer.validated_data['zaak']
-        if not self.request.jwt_payload.has_scopes(SCOPE_STATUSSEN_TOEVOEGEN) and \
-                not self.request.jwt_payload.has_scopes(SCOPEN_ZAKEN_HEROPENEN):
+        if not self.request.jwt_auth.has_auth(
+            scopes=SCOPE_STATUSSEN_TOEVOEGEN | SCOPEN_ZAKEN_HEROPENEN,
+            zaaktype=zaak.zaaktype,
+            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding
+        ):
             if zaak.status_set.exists():
                 msg = f"Met de '{SCOPE_ZAKEN_CREATE}' scope mag je slechts 1 status zetten"
                 raise PermissionDenied(detail=msg)
 
-        if not self.request.jwt_payload.has_scopes(SCOPEN_ZAKEN_HEROPENEN):
+        if not self.request.jwt_auth.has_auth(
+            scopes=SCOPEN_ZAKEN_HEROPENEN,
+            zaaktype=zaak.zaaktype,
+            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding
+        ):
             if zaak.einddatum:
                 msg = "Reopening a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)
@@ -298,6 +295,7 @@ class StatusViewSet(NotificationCreateMixin,
 
 
 class ZaakObjectViewSet(NotificationCreateMixin,
+                        ListFilterByAuthorizationsMixin,
                         mixins.CreateModelMixin,
                         viewsets.ReadOnlyModelViewSet):
     """
@@ -316,7 +314,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     serializer_class = ZaakObjectSerializer
     lookup_field = 'uuid'
 
-    permission_classes = (ActionScopesRequired,)
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
@@ -327,11 +325,10 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   NestedViewSetMixin,
-                                  mixins.ListModelMixin,
+                                  ListFilterByAuthorizationsMixin,
                                   mixins.CreateModelMixin,
-                                  mixins.RetrieveModelMixin,
                                   mixins.DestroyModelMixin,
-                                  viewsets.GenericViewSet):
+                                  viewsets.ReadOnlyModelViewSet):
 
     """
     Opvragen en bewerken van Zaak-Informatieobject relaties.
@@ -362,12 +359,38 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
+    permission_classes = (
+        permission_class_factory(
+            base=RelatedObjectAuthScopesRequired,
+            get_zaak='_get_zaak'
+        ),
+    )
     lookup_field = 'uuid'
+
+    required_scopes = {
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+    }
 
     parent_retrieve_kwargs = {
         'zaak_uuid': 'uuid',
     }
     notifications_kanaal = KANAAL_ZAKEN
+
+    def _get_zaak(self):
+        if not hasattr(self, '_zaak'):
+            filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
+            self._zaak = get_object_or_404(Zaak, **filters)
+        return self._zaak
+
+    def list(self, request, *args, **kwargs):
+        zaak = self._get_zaak()
+        permission = ZaakAuthScopesRequired()
+        if not permission.has_object_permission(self.request, self, zaak):
+            raise PermissionDenied
+        return super().list(request, *args, **kwargs)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -375,16 +398,17 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         if not self.kwargs:
             return context
 
-        filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
-        context['parent_object'] = get_object_or_404(Zaak, **filters)
+        context['parent_object'] = self._get_zaak()
         return context
 
     def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:
-        zaak = self.get_serializer_context()['parent_object']
+        zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
+
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             NestedViewSetMixin,
+                            ListFilterByAuthorizationsMixin,
                             mixins.CreateModelMixin,
                             viewsets.ReadOnlyModelViewSet):
     """
@@ -401,11 +425,40 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
     """
     queryset = ZaakEigenschap.objects.all()
     serializer_class = ZaakEigenschapSerializer
+    permission_classes = (
+        permission_class_factory(
+            base=RelatedObjectAuthScopesRequired,
+            get_zaak='_get_zaak'
+        ),
+    )
     lookup_field = 'uuid'
+    required_scopes = {
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+    }
+    parent_retrieve_kwargs = {
+        'zaak_uuid': 'uuid',
+    }
     notifications_kanaal = KANAAL_ZAKEN
+
+    def _get_zaak(self):
+        if not hasattr(self, '_zaak'):
+            filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
+            self._zaak = get_object_or_404(Zaak, **filters)
+        return self._zaak
+
+    def list(self, request, *args, **kwargs):
+        zaak = self._get_zaak()
+        permission = ZaakAuthScopesRequired()
+        if not permission.has_object_permission(self.request, self, zaak):
+            raise PermissionDenied
+        return super().list(request, *args, **kwargs)
 
 
 class KlantContactViewSet(NotificationCreateMixin,
+                          # ListFilterByAuthorizationsMixin,
                           mixins.CreateModelMixin,
                           viewsets.ReadOnlyModelViewSet):
     """
@@ -431,6 +484,7 @@ class KlantContactViewSet(NotificationCreateMixin,
 
 class RolViewSet(NotificationCreateMixin,
                  CheckQueryParamsMixin,
+                 ListFilterByAuthorizationsMixin,
                  mixins.CreateModelMixin,
                  viewsets.ReadOnlyModelViewSet):
     """
@@ -444,15 +498,18 @@ class RolViewSet(NotificationCreateMixin,
     filterset_class = RolFilter
     lookup_field = 'uuid'
 
-    permission_classes = (ActionScopesRequired,)
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
-        'create': SCOPE_ZAKEN_CREATE
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_CREATE,
     }
     notifications_kanaal = KANAAL_ZAKEN
 
 
 class ResultaatViewSet(NotificationViewSetMixin,
                        CheckQueryParamsMixin,
+                       ListFilterByAuthorizationsMixin,
                        viewsets.ModelViewSet):
     """
     Opvragen en beheren van resultaten.
@@ -496,7 +553,7 @@ class ResultaatViewSet(NotificationViewSetMixin,
     filterset_class = ResultaatFilter
     lookup_field = 'uuid'
 
-    permission_classes = (ActionScopesRequired,)
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,

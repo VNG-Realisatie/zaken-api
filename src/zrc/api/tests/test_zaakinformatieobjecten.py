@@ -4,6 +4,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from vng_api_common.tests import JWTAuthMixin
 
 from zrc.datamodel.tests.factories import (
     ZaakFactory, ZaakInformatieObjectFactory
@@ -18,7 +19,8 @@ INFORMATIE_OBJECT = 'https://drc.nl/api/v1/enkelvoudiginformatieobjecten/1234'
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.ObjectInformatieObjectClient'
 )
-class ZaakInformatieObjectTests(APITestCase):
+class ZaakInformatieObjectTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
 
     def test_create(self):
         zaak = ZaakFactory.create()
