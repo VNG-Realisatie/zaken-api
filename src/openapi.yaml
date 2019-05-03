@@ -4615,6 +4615,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaken
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.lezen
     post:
       operationId: zaakeigenschap_create
       description: Registreer een eigenschap van een ZAAK.
@@ -4746,6 +4749,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaken
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.bijwerken
       requestBody:
         content:
           application/json:
@@ -4887,6 +4893,9 @@ paths:
                 $ref: '#/components/schemas/Fout'
       tags:
       - zaken
+      security:
+      - JWT-Claims:
+        - zds.scopes.zaken.lezen
     parameters:
     - name: uuid
       in: path
