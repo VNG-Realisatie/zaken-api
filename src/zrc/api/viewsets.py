@@ -18,10 +18,14 @@ from vng_api_common.utils import lookup_kwargs_to_filters
 from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject, AuditTrail
+    AuditTrail, KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    ZaakInformatieObject, ZaakObject
 )
 
+from .audittrails import (
+    AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailUpdateMixin,
+    AuditTrailViewsetMixin
+)
 from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
 from .kanalen import KANAAL_ZAKEN
 from .permissions import ZaaktypePermission
@@ -32,10 +36,10 @@ from .scopes import (
 )
 from .serializers import (
     KlantContactSerializer, ResultaatSerializer, RolSerializer,
-    StatusSerializer, ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
-    ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer, ZaakAuditTrailSerializer
+    StatusSerializer, ZaakAuditTrailSerializer, ZaakEigenschapSerializer,
+    ZaakInformatieObjectSerializer, ZaakObjectSerializer, ZaakSerializer,
+    ZaakZoekSerializer
 )
-from .audittrails import AuditTrailViewsetMixin
 
 logger = logging.getLogger(__name__)
 
@@ -227,7 +231,7 @@ class ZaakViewSet(NotificationViewSetMixin,
 
 
 class StatusViewSet(NotificationCreateMixin,
-                    AuditTrailViewsetMixin,
+                    AuditTrailCreateMixin,
                     CheckQueryParamsMixin,
                     mixins.CreateModelMixin,
                     viewsets.ReadOnlyModelViewSet):
@@ -301,7 +305,7 @@ class StatusViewSet(NotificationCreateMixin,
 
 
 class ZaakObjectViewSet(NotificationCreateMixin,
-                        AuditTrailViewsetMixin,
+                        AuditTrailCreateMixin,
                         mixins.CreateModelMixin,
                         viewsets.ReadOnlyModelViewSet):
     """
@@ -389,7 +393,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         return zaak.get_absolute_api_url(request=self.request)
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
-                            AuditTrailViewsetMixin,
+                            AuditTrailCreateMixin,
                             NestedViewSetMixin,
                             mixins.CreateModelMixin,
                             viewsets.ReadOnlyModelViewSet):
@@ -412,7 +416,7 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
 
 
 class KlantContactViewSet(NotificationCreateMixin,
-                          AuditTrailViewsetMixin,
+                          AuditTrailCreateMixin,
                           mixins.CreateModelMixin,
                           viewsets.ReadOnlyModelViewSet):
     """
@@ -437,7 +441,7 @@ class KlantContactViewSet(NotificationCreateMixin,
 
 
 class RolViewSet(NotificationCreateMixin,
-                 AuditTrailViewsetMixin,
+                 AuditTrailCreateMixin,
                  CheckQueryParamsMixin,
                  mixins.CreateModelMixin,
                  viewsets.ReadOnlyModelViewSet):

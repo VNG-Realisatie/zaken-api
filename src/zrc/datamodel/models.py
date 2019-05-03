@@ -3,7 +3,7 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
@@ -504,3 +504,5 @@ class AuditTrail(models.Model):
     resource = models.CharField(max_length=20)
     resourceUrl = models.URLField()
     aanmaakdatum = models.DateTimeField(auto_now=True)
+    oud = JSONField(null=True)
+    nieuw = JSONField(null=True)

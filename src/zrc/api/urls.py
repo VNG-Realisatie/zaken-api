@@ -6,8 +6,8 @@ from vng_api_common.schema import SchemaView
 
 from .viewsets import (
     KlantContactViewSet, ResultaatViewSet, RolViewSet, StatusViewSet,
-    ZaakEigenschapViewSet, ZaakInformatieObjectViewSet, ZaakObjectViewSet,
-    ZaakViewSet, ZaakAuditTrailViewset
+    ZaakAuditTrailViewset, ZaakEigenschapViewSet, ZaakInformatieObjectViewSet,
+    ZaakObjectViewSet, ZaakViewSet
 )
 
 router = routers.DefaultRouter()

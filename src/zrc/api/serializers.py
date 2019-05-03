@@ -23,8 +23,8 @@ from vng_api_common.validators import (
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakKenmerk, ZaakObject, AuditTrail
+    AuditTrail, KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
@@ -625,6 +625,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ZaakAuditTrailSerializer(serializers.ModelSerializer):
+    wijzigingen = serializers.SerializerMethodField()
 
     class Meta:
         model = AuditTrail
@@ -644,5 +645,8 @@ class ZaakAuditTrailSerializer(serializers.ModelSerializer):
             # 'resourceWeergave',
             # 'toelichting',
             'aanmaakdatum',
-            # 'wijzigingen',
+            'wijzigingen',
         )
+
+    def get_wijzigingen(self, obj):
+        return {'oud': obj.oud, 'nieuw': obj.nieuw}
