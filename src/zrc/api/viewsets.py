@@ -324,7 +324,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   NestedViewSetMixin,
-                                  # ListFilterByAuthorizationsMixin,
+                                  ListFilterByAuthorizationsMixin,
                                   mixins.CreateModelMixin,
                                   mixins.DestroyModelMixin,
                                   viewsets.ReadOnlyModelViewSet):
@@ -358,12 +358,33 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
     lookup_field = 'uuid'
+
+    required_scopes = {
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+    }
 
     parent_retrieve_kwargs = {
         'zaak_uuid': 'uuid',
     }
     notifications_kanaal = KANAAL_ZAKEN
+
+    def _get_zaak(self):
+        if not hasattr(self, '_zaak'):
+            filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
+            self._zaak = get_object_or_404(Zaak, **filters)
+        return self._zaak
+
+    def list(self, request, *args, **kwargs):
+        zaak = self._get_zaak()
+        permission = ZaakAuthScopesRequired()
+        if not permission.has_object_permission(self.request, self, zaak):
+            raise PermissionDenied
+        return super().list(request, *args, **kwargs)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -371,12 +392,11 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         if not self.kwargs:
             return context
 
-        filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
-        context['parent_object'] = get_object_or_404(Zaak, **filters)
+        context['parent_object'] = self._get_zaak()
         return context
 
     def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:
-        zaak = self.get_serializer_context()['parent_object']
+        zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
 
 
