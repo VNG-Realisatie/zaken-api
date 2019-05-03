@@ -8,7 +8,7 @@ https://wiki.exxellence.nl/display/KPORT/2.+Zaaktype+autorisaties
 from vng_api_common.scopes import Scope
 
 SCOPE_ZAKEN_CREATE = Scope(
-    'zds.scopes.zaken.aanmaken',
+    'zaken.aanmaken',
     description="""
 **Laat toe om**:
 
@@ -20,7 +20,7 @@ SCOPE_ZAKEN_CREATE = Scope(
 )
 
 SCOPE_ZAKEN_BIJWERKEN = Scope(
-    'zds.scopes.zaken.bijwerken',
+    'zaken.bijwerken',
     description="""
 **Laat toe om**:
 
@@ -29,7 +29,7 @@ SCOPE_ZAKEN_BIJWERKEN = Scope(
 )
 
 SCOPE_STATUSSEN_TOEVOEGEN = Scope(
-    'zds.scopes.statussen.toevoegen',
+    'zaken.statussen.toevoegen',
     description="""
 **Laat toe om**:
 
@@ -38,7 +38,7 @@ SCOPE_STATUSSEN_TOEVOEGEN = Scope(
 )
 
 SCOPE_ZAKEN_ALLES_LEZEN = Scope(
-    'zds.scopes.zaken.lezen',
+    'zaken.lezen',
     description="""
 **Laat toe om**:
 
@@ -54,7 +54,7 @@ SCOPE_ZAKEN_ALLES_LEZEN = Scope(
 
 
 SCOPE_ZAKEN_ALLES_VERWIJDEREN = Scope(
-    'zds.scopes.zaken.verwijderen',
+    'zaken.verwijderen',
     description="""
 **Laat toe om**:
 
@@ -64,7 +64,7 @@ SCOPE_ZAKEN_ALLES_VERWIJDEREN = Scope(
 
 
 SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN = Scope(
-    'zds.scopes.zaken.geforceerd-bijwerken',
+    'zaken.geforceerd-bijwerken',
     description="""
 **Allows**:
 
@@ -73,7 +73,7 @@ SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN = Scope(
 )
 
 SCOPEN_ZAKEN_HEROPENEN = Scope(
-    'zds.scopes.zaken.heropenen',
+    'zaken.heropenen',
     description="""
 **Allows**:
 
