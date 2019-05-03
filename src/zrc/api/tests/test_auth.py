@@ -9,11 +9,13 @@ from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import AuthCheckMixin, JWTAuthMixin, reverse
 
 from zrc.datamodel.tests.factories import (
-    StatusFactory, ZaakFactory, ZaakObjectFactory
+    ResultaatFactory, StatusFactory, ZaakFactory, ZaakObjectFactory
 )
 from zrc.tests.utils import ZAAK_READ_KWARGS
 
-from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN
+from ..scopes import (
+    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+)
 
 
 @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
@@ -27,13 +29,16 @@ class ZakenScopeForbiddenTests(AuthCheckMixin, APITestCase):
         zaak = ZaakFactory.create()
         status = StatusFactory.create()
         zaak_object = ZaakObjectFactory.create()
+        resultaat = ResultaatFactory.create()
         urls = [
             reverse('zaak-list'),
-            reverse('zaak-detail', kwargs={'uuid': zaak.uuid}),
+            reverse(zaak),
             reverse('status-list'),
-            reverse('status-detail', kwargs={'uuid': status.uuid}),
+            reverse(status),
+            reverse('status-list'),
+            reverse(resultaat),
             reverse('zaakobject-list'),
-            reverse('zaakobject-detail', kwargs={'uuid': zaak_object.uuid}),
+            reverse(zaak_object),
         ]
 
         for url in urls:
@@ -140,7 +145,7 @@ class StatusReadTests(JWTAuthMixin, APITestCase):
     zaaktype = 'https://zaaktype.nl/ok'
     max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.beperkt_openbaar
 
-    def test_list_status_limited_to_authorized_zaken(self):
+    def test_list_resultaat_limited_to_authorized_zaken(self):
         url = reverse('status-list')
         # must show up
         status1 = StatusFactory.create(
@@ -167,3 +172,107 @@ class StatusReadTests(JWTAuthMixin, APITestCase):
             response_data[0]['url'],
             f"http://testserver{reverse(status1)}"
         )
+
+
+class ResultaatTests(JWTAuthMixin, APITestCase):
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN]
+    zaaktype = 'https://zaaktype.nl/ok'
+    max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.beperkt_openbaar
+
+    def test_list_status_limited_to_authorized_zaken(self):
+        url = reverse('resultaat-list')
+        # must show up
+        resultaat = ResultaatFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        ResultaatFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+        )
+        # must not show up
+        ResultaatFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/not_ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(len(response_data), 1)
+        self.assertEqual(
+            response_data[0]['url'],
+            f"http://testserver{reverse(resultaat)}"
+        )
+
+    def test_write_operations_forbidden(self):
+        # scope not provided for writes, so this should 403 (not 404!)
+        resultaat = ResultaatFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+        )
+
+        url = reverse(resultaat)
+
+        for method in ['put', 'patch', 'delete']:
+            with self.subTest(method=method):
+                response = getattr(self.client, method)(url)
+
+                self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class ZaakObjectTests(JWTAuthMixin, APITestCase):
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_CREATE]
+    zaaktype = 'https://zaaktype.nl/ok'
+    max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.beperkt_openbaar
+
+    def test_list_zaakobject_limited_to_authorized_zaken(self):
+        url = reverse('zaakobject-list')
+        # must show up
+        zaakobject = ZaakObjectFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        ZaakObjectFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+        )
+        # must not show up
+        ZaakObjectFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/not_ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(len(response_data), 1)
+        self.assertEqual(
+            response_data[0]['url'],
+            f"http://testserver{reverse(zaakobject)}"
+        )
+
+    def test_create_zaakobject_limited_to_authorized_zaken(self):
+        url = reverse('zaakobject-list')
+        zaak1 = ZaakFactory.create(
+            zaaktype='https://zaaktype.nl/not_ok'
+        )
+        zaak2 = ZaakFactory.create(
+            zaaktype='https://zaaktype.nl/ok',
+            vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+        )
+
+        for zaak in [zaak1, zaak2]:
+            with self.subTest(
+                zaaktype=zaak.zaaktype,
+                vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding
+            ):
+                response = self.client.post(url, {
+                    "zaak": reverse(zaak),
+                })
+
+                self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
