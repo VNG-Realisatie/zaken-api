@@ -1,14 +1,11 @@
 import logging
 
-from django.conf import settings
-from django.db.models import Case, IntegerField, When
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
-from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
@@ -26,6 +23,7 @@ from zrc.datamodel.models import (
     ZaakInformatieObject, ZaakObject
 )
 
+from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
 from .kanalen import KANAAL_ZAKEN
 from .scopes import (
@@ -46,6 +44,7 @@ class ZaakViewSet(NotificationViewSetMixin,
                   GeoMixin,
                   SearchMixin,
                   CheckQueryParamsMixin,
+                  ListFilterByAuthorizationsMixin,
                   viewsets.ModelViewSet):
     """
     Opvragen en bewerken van ZAAKen.
@@ -168,59 +167,6 @@ class ZaakViewSet(NotificationViewSetMixin,
     }
     notifications_kanaal = KANAAL_ZAKEN
 
-    def get_queryset(self):
-        base = super().get_queryset()
-
-        # drf-yasg introspection
-        if not hasattr(self.request, 'jwt_auth'):
-            return base
-
-        if self.action == 'list':
-
-            apps = self.request.jwt_auth.applicaties
-
-            # as soon as there's one matching app that gives you all permissions,
-            # you're in...
-            if any(app.heeft_alle_autorisaties for app in apps):
-                return base
-
-            autzs = self.request.jwt_auth.autorisaties
-
-            # filter zaaktypen that client is authorized on
-            zaaktypen = (
-                autzs
-                .values_list('zaaktype', flat=True)
-                .distinct()
-            )
-
-            # filter on vertrouwelijkheidaanduiding
-            _va_order = VertrouwelijkheidsAanduiding.get_order_expression('vertrouwelijkheidaanduiding')
-            base = base.annotate(_va_order=_va_order)
-
-            scope_needed = self.required_scopes[self.action]
-
-            # depending on the case type, there's a maximum order we allow
-            whens = []
-            for autz in autzs:
-                if not scope_needed.is_contained_in(autz.scopes):
-                    zaaktypen.remove(autz.zaaktype)
-                    continue
-
-                choice_item = VertrouwelijkheidsAanduiding.get_choice(autz.max_vertrouwelijkheidaanduiding)
-                when = When(
-                    zaaktype=autz.zaaktype,
-                    then=choice_item.order
-                )
-                whens.append(when)
-            case = Case(*whens, output_field=IntegerField())
-
-            return base.filter(
-                zaaktype__in=zaaktypen,
-                _va_order__lte=case
-            )
-
-        return base
-
     @action(methods=('post',), detail=False)
     def _zoek(self, request, *args, **kwargs):
         """
@@ -268,6 +214,7 @@ class ZaakViewSet(NotificationViewSetMixin,
 
 class StatusViewSet(NotificationCreateMixin,
                     CheckQueryParamsMixin,
+                    ListFilterByAuthorizationsMixin,
                     mixins.CreateModelMixin,
                     viewsets.ReadOnlyModelViewSet):
     """
@@ -347,6 +294,7 @@ class StatusViewSet(NotificationCreateMixin,
 
 
 class ZaakObjectViewSet(NotificationCreateMixin,
+                        ListFilterByAuthorizationsMixin,
                         mixins.CreateModelMixin,
                         viewsets.ReadOnlyModelViewSet):
     """
@@ -376,11 +324,10 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   NestedViewSetMixin,
-                                  mixins.ListModelMixin,
+                                  # ListFilterByAuthorizationsMixin,
                                   mixins.CreateModelMixin,
-                                  mixins.RetrieveModelMixin,
                                   mixins.DestroyModelMixin,
-                                  viewsets.GenericViewSet):
+                                  viewsets.ReadOnlyModelViewSet):
 
     """
     Opvragen en bewerken van Zaak-Informatieobject relaties.
@@ -435,6 +382,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             NestedViewSetMixin,
+                            # ListFilterByAuthorizationsMixin,
                             mixins.CreateModelMixin,
                             viewsets.ReadOnlyModelViewSet):
     """
@@ -456,6 +404,7 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
 
 
 class KlantContactViewSet(NotificationCreateMixin,
+                          # ListFilterByAuthorizationsMixin,
                           mixins.CreateModelMixin,
                           viewsets.ReadOnlyModelViewSet):
     """
@@ -481,6 +430,7 @@ class KlantContactViewSet(NotificationCreateMixin,
 
 class RolViewSet(NotificationCreateMixin,
                  CheckQueryParamsMixin,
+                 # ListFilterByAuthorizationsMixin,
                  mixins.CreateModelMixin,
                  viewsets.ReadOnlyModelViewSet):
     """
@@ -503,6 +453,7 @@ class RolViewSet(NotificationCreateMixin,
 
 class ResultaatViewSet(NotificationViewSetMixin,
                        CheckQueryParamsMixin,
+                       ListFilterByAuthorizationsMixin,
                        viewsets.ModelViewSet):
     """
     Opvragen en beheren van resultaten.

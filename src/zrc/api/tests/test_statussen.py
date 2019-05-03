@@ -12,9 +12,8 @@ from .utils import reverse
 
 class StatusTests(JWTAuthMixin, APITestCase):
 
-    scopes = [
-        SCOPE_ZAKEN_ALLES_LEZEN,
-    ]
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
+    heeft_alle_autorisaties = True
 
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',

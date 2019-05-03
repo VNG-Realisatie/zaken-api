@@ -6,7 +6,7 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import AuthCheckMixin, JWTAuthMixin
+from vng_api_common.tests import AuthCheckMixin, JWTAuthMixin, reverse
 
 from zrc.datamodel.tests.factories import (
     StatusFactory, ZaakFactory, ZaakObjectFactory
@@ -14,7 +14,6 @@ from zrc.datamodel.tests.factories import (
 from zrc.tests.utils import ZAAK_READ_KWARGS
 
 from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN
-from .utils import reverse
 
 
 @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
@@ -164,4 +163,7 @@ class StatusReadTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response_data = response.json()
         self.assertEqual(len(response_data), 1)
-        self.assertEqual(response_data[0]['url'], reverse(status1))
+        self.assertEqual(
+            response_data[0]['url'],
+            f"http://testserver{reverse(status1)}"
+        )
