@@ -9,8 +9,8 @@ from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import AuthCheckMixin, JWTAuthMixin, reverse
 
 from zrc.datamodel.tests.factories import (
-    ResultaatFactory, StatusFactory, ZaakFactory, ZaakInformatieObjectFactory,
-    ZaakObjectFactory
+    ResultaatFactory, StatusFactory, ZaakEigenschapFactory, ZaakFactory,
+    ZaakInformatieObjectFactory, ZaakObjectFactory
 )
 from zrc.tests.utils import ZAAK_READ_KWARGS
 
@@ -364,6 +364,97 @@ class ZaakInformatieObjectTests(JWTAuthMixin, APITestCase):
                 vertrouwelijkheidaanduiding=zio.zaak.vertrouwelijkheidaanduiding
             ):
                 url = reverse(zio, kwargs={'zaak_uuid': zio.zaak.uuid})
+
+                response = self.client.get(url)
+
+                self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class ZaakEigenschapTests(JWTAuthMixin, APITestCase):
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN]
+    zaaktype = 'https://zaaktype.nl/ok'
+    max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.beperkt_openbaar
+
+    def test_list_zaakeigenschap_limited_to_authorized_zaken(self):
+        # must show up
+        eigenschap1 = ZaakEigenschapFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        eigenschap2 = ZaakEigenschapFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/not_ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        eigenschap3 = ZaakEigenschapFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+        )
+
+        with self.subTest(
+            zaaktype=eigenschap1.zaak.zaaktype,
+            vertrouwelijkheidaanduiding=eigenschap1.zaak.vertrouwelijkheidaanduiding
+        ):
+            url = reverse('zaakeigenschap-list', kwargs={'zaak_uuid': eigenschap1.zaak.uuid})
+            eigenschap1_url = reverse(eigenschap1, kwargs={'zaak_uuid': eigenschap1.zaak.uuid})
+
+            response = self.client.get(url)
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response_data = response.json()
+            self.assertEqual(len(response_data), 1)
+            self.assertEqual(
+                response_data[0]['url'],
+                f"http://testserver{eigenschap1_url}"
+            )
+
+        # not allowed to see these
+        for eigenschap in (eigenschap2, eigenschap3):
+            with self.subTest(
+                zaaktype=eigenschap.zaak.zaaktype,
+                vertrouwelijkheidaanduiding=eigenschap.zaak.vertrouwelijkheidaanduiding
+            ):
+                url = reverse('zaakeigenschap-list', kwargs={'zaak_uuid': eigenschap.zaak.uuid})
+
+                response = self.client.get(url)
+
+                self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_detail_zaakeigenschap_limited_to_authorized_zaken(self):
+        # must show up
+        eigenschap1 = ZaakEigenschapFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        eigenschap2 = ZaakEigenschapFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/not_ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        eigenschap3 = ZaakEigenschapFactory.create(
+            zaak__zaaktype='https://zaaktype.nl/ok',
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk
+        )
+
+        with self.subTest(
+            zaaktype=eigenschap1.zaak.zaaktype,
+            vertrouwelijkheidaanduiding=eigenschap1.zaak.vertrouwelijkheidaanduiding
+        ):
+            url = reverse(eigenschap1, kwargs={'zaak_uuid': eigenschap1.zaak.uuid})
+
+            response = self.client.get(url)
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # not allowed to see these
+        for eigenschap in (eigenschap2, eigenschap3):
+            with self.subTest(
+                zaaktype=eigenschap.zaak.zaaktype,
+                vertrouwelijkheidaanduiding=eigenschap.zaak.vertrouwelijkheidaanduiding
+            ):
+                url = reverse(eigenschap, kwargs={'zaak_uuid': eigenschap.zaak.uuid})
 
                 response = self.client.get(url)
 
