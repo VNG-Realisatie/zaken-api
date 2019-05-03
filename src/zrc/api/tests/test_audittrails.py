@@ -13,13 +13,17 @@ from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
 from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from ..scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+from ..scopes import (
+    SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_ALLES_VERWIJDEREN
+)
 
 # ZTC
 ZTC_ROOT = 'https://example.com/ztc/api/v1'
+DRC_ROOT = 'https://example.com/drc/api/v1'
 CATALOGUS = f'{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785'
+INFORMATIE_OBJECT = f'{DRC_ROOT}/enkelvoudiginformatieobjecten/1234'
 
 
 @override_settings(
@@ -29,7 +33,10 @@ RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785
 class AuditTrailTests(JWTScopesMixin, APITestCase):
     def setUp(self):
         token = generate_jwt(
-            scopes=[SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN],
+            scopes=[
+                SCOPE_ZAKEN_CREATE,
+                SCOPE_ZAKEN_BIJWERKEN,
+                SCOPE_ZAKEN_ALLES_VERWIJDEREN],
             zaaktypes=['https://example.com/zaaktype/123']
         )
         self.client.credentials(HTTP_AUTHORIZATION=token)
@@ -155,3 +162,37 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
         self.assertEqual(zaak_update_audittrail.resultaat, 200)
         self.assertEqual(zaak_update_audittrail.oud, zaak_data)
         self.assertEqual(zaak_update_audittrail.nieuw, zaak_response)
+
+    def test_create_zaakinformatieobject_audittrail(self):
+        zaak_data = self.create_zaak()
+
+        zaak_uuid = zaak_data['url'].split('/')[-1]
+        url = reverse('zaakinformatieobject-list', kwargs={'zaak_uuid': zaak_uuid})
+
+        response = self.client.post(url, {
+            'informatieobject': INFORMATIE_OBJECT,
+        })
+
+        zaakinformatieobject_response = response.data
+
+        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_data['url'])
+        self.assertEqual(audittrails.count(), 2)
+
+        # Verify that the audittrail for the ZaakInformatieObject creation
+        # contains the correct information
+        resultaat_create_audittrail = audittrails[1]
+        self.assertEqual(resultaat_create_audittrail.bron, 'ZRC')
+        self.assertEqual(resultaat_create_audittrail.actie, 'create')
+        self.assertEqual(resultaat_create_audittrail.resultaat, 201)
+        self.assertEqual(resultaat_create_audittrail.oud, None)
+        self.assertEqual(resultaat_create_audittrail.nieuw, zaakinformatieobject_response)
+
+    def test_delete_zaak_cascade_audittrails(self):
+        zaak_data = self.create_zaak()
+
+        # Delete the Zaak
+        response = self.client.delete(zaak_data['url'], **ZAAK_WRITE_KWARGS)
+
+        # Verify that deleting the Zaak deletes all related AuditTrails
+        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_data['url'])
+        self.assertEqual(audittrails.count(), 0)
