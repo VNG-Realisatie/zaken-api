@@ -171,6 +171,9 @@ class ZaakViewSet(NotificationViewSetMixin,
     }
     notifications_kanaal = KANAAL_ZAKEN
 
+    bron = 'ZRC'
+    main_resource = 'zaak'
+
     def get_queryset(self):
         base = super().get_queryset()
 
@@ -275,6 +278,9 @@ class StatusViewSet(NotificationCreateMixin,
     }
     notifications_kanaal = KANAAL_ZAKEN
 
+    bron = 'ZRC'
+    main_resource = 'zaak'
+
     def perform_create(self, serializer):
         """
         Perform the create of the Status.
@@ -332,6 +338,8 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     }
     notifications_kanaal = KANAAL_ZAKEN
 
+    bron = 'ZRC'
+    main_resource = 'zaak'
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   AuditTrailViewsetMixin,
@@ -378,6 +386,9 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     }
     notifications_kanaal = KANAAL_ZAKEN
 
+    bron = 'ZRC'
+    main_resource = 'zaak'
+
     def get_serializer_context(self):
         context = super().get_serializer_context()
         # DRF introspection
@@ -391,6 +402,11 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:
         zaak = self.get_serializer_context()['parent_object']
         return zaak.get_absolute_api_url(request=self.request)
+
+    def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
+        zaak = self.get_serializer_context()['parent_object']
+        return zaak.get_absolute_api_url(request=self.request)
+
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             AuditTrailCreateMixin,
@@ -413,6 +429,9 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
     serializer_class = ZaakEigenschapSerializer
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_ZAKEN
+
+    bron = 'ZRC'
+    main_resource = 'zaak'
 
 
 class KlantContactViewSet(NotificationCreateMixin,
@@ -439,6 +458,9 @@ class KlantContactViewSet(NotificationCreateMixin,
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_ZAKEN
 
+    bron = 'ZRC'
+    main_resource = 'zaak'
+
 
 class RolViewSet(NotificationCreateMixin,
                  AuditTrailCreateMixin,
@@ -461,6 +483,9 @@ class RolViewSet(NotificationCreateMixin,
         'create': SCOPE_ZAKEN_CREATE
     }
     notifications_kanaal = KANAAL_ZAKEN
+
+    bron = 'ZRC'
+    main_resource = 'zaak'
 
 
 class ResultaatViewSet(NotificationViewSetMixin,
@@ -519,6 +544,9 @@ class ResultaatViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
+
+    bron = 'ZRC'
+    main_resource = 'zaak'
 
 
 class ZaakAuditTrailViewset(viewsets.ReadOnlyModelViewSet, NestedViewSetMixin):

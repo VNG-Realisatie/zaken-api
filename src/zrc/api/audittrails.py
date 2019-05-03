@@ -1,25 +1,39 @@
+from django.db import transaction
+
 from ..conf.base import SITE_TITLE
 from ..datamodel.models import AuditTrail
 
 
 class AuditTrailMixin:
-    def create_audittrail(self, status_code, action, oud, nieuw):
-        data = nieuw if nieuw else oud
-        if SITE_TITLE == 'Zaak Registratie Component (ZRC)':
-            bron = 'ZRC'
-            hoofdObject = data['url'] if self.basename == 'zaak' else data['zaak']
+    bron = None
+    main_resource = None
+
+    def get_audittrail_main_object_url(self, data, main_resource):
+        return data[main_resource]
+
+    def create_audittrail(self, status_code, action, version_before_edit, version_after_edit):
+        data = version_after_edit if version_after_edit else version_before_edit
+        if self.basename == self.main_resource:
+            main_object = data['url']
+        else:
+            main_object = self.get_audittrail_main_object_url(data, self.main_resource)
+
         trail = AuditTrail(
-            bron=bron,
+            bron=self.bron,
             actie=action,
             actieWeergave='',
             resultaat=status_code,
-            hoofdObject=hoofdObject,
+            hoofdObject=main_object,
             resource=self.basename,
             resourceUrl=data['url'],
-            oud=oud,
-            nieuw=nieuw,
+            oud=version_before_edit,
+            nieuw=version_after_edit,
         )
         trail.save()
+
+    def destroy_related_audittrails(self, main_object_url):
+        AuditTrail.objects.filter(hoofdObject=main_object_url).delete()
+
 
 class AuditTrailCreateMixin(AuditTrailMixin):
     def create(self, request, *args, **kwargs):
@@ -27,36 +41,43 @@ class AuditTrailCreateMixin(AuditTrailMixin):
         self.create_audittrail(
             response.status_code,
             'create',
-            oud=None,
-            nieuw=response.data,
+            version_before_edit=None,
+            version_after_edit=response.data,
         )
         return response
 
+
 class AuditTrailUpdateMixin(AuditTrailMixin):
     def update(self, request, *args, **kwargs):
-        oud = self.get(request, *args, **kwargs).data
+        version_before_edit = self.get(request, *args, **kwargs).data
         action = 'update' if request.method == 'PUT' else 'partial_update'
         response = super().update(request, *args, **kwargs)
         self.create_audittrail(
             response.status_code,
             action,
-            oud=oud,
-            nieuw=response.data,
+            version_before_edit=version_before_edit,
+            version_after_edit=response.data,
         )
         return response
 
 
 class AuditTrailDestroyMixin(AuditTrailMixin):
     def destroy(self, request, *args, **kwargs):
-        oud = self.get(request, *args, **kwargs).data
-        response = super().destroy(request, *args, **kwargs)
-        self.create_audittrail(
-            response.status_code,
-            'delete',
-            oud=oud,
-            nieuw=None
-        )
-        return response
+        version_before_edit = self.get(request, *args, **kwargs).data
+        if self.basename == self.main_resource:
+            with transaction.atomic():
+                response = super().destroy(request, *args, **kwargs)
+                self.destroy_related_audittrails(version_before_edit['url'])
+                return response
+        else:
+            response = super().destroy(request, *args, **kwargs)
+            self.create_audittrail(
+                response.status_code,
+                'delete',
+                version_before_edit=version_before_edit,
+                version_after_edit=None
+            )
+            return response
 
 class AuditTrailViewsetMixin(AuditTrailCreateMixin,
                              AuditTrailUpdateMixin,
