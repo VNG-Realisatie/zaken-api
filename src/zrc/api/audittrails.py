@@ -29,9 +29,6 @@ class AuditTrailMixin:
         )
         trail.save()
 
-    def destroy_related_audittrails(self, main_object_url):
-        AuditTrail.objects.filter(hoofdObject=main_object_url).delete()
-
 
 class AuditTrailCreateMixin(AuditTrailMixin):
     def create(self, request, *args, **kwargs):
@@ -47,8 +44,12 @@ class AuditTrailCreateMixin(AuditTrailMixin):
 
 class AuditTrailUpdateMixin(AuditTrailMixin):
     def update(self, request, *args, **kwargs):
-        version_before_edit = self.get(request, *args, **kwargs).data
-        action = 'update' if request.method == 'PUT' else 'partial_update'
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        version_before_edit = serializer.data
+
+        action = 'partial_update' if kwargs.get('partial', False) else 'update'
+
         response = super().update(request, *args, **kwargs)
         self.create_audittrail(
             response.status_code,
@@ -61,11 +62,14 @@ class AuditTrailUpdateMixin(AuditTrailMixin):
 
 class AuditTrailDestroyMixin(AuditTrailMixin):
     def destroy(self, request, *args, **kwargs):
-        version_before_edit = self.get(request, *args, **kwargs).data
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        version_before_edit = serializer.data
+
         if self.basename == self.audit.main_resource:
             with transaction.atomic():
                 response = super().destroy(request, *args, **kwargs)
-                self.destroy_related_audittrails(version_before_edit['url'])
+                self._destroy_related_audittrails(version_before_edit['url'])
                 return response
         else:
             response = super().destroy(request, *args, **kwargs)
@@ -76,6 +80,10 @@ class AuditTrailDestroyMixin(AuditTrailMixin):
                 version_after_edit=None
             )
             return response
+
+    def _destroy_related_audittrails(self, main_object_url):
+        AuditTrail.objects.filter(hoofdObject=main_object_url).delete()
+
 
 class AuditTrailViewsetMixin(AuditTrailCreateMixin,
                              AuditTrailUpdateMixin,
