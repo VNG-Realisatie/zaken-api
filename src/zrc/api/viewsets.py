@@ -22,6 +22,7 @@ from zrc.datamodel.models import (
     ZaakInformatieObject, ZaakObject
 )
 
+from .audits import AUDIT_ZRC
 from .audittrails import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailUpdateMixin,
     AuditTrailViewsetMixin
@@ -34,7 +35,6 @@ from .scopes import (
     SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
     SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN, SCOPEN_ZAKEN_HEROPENEN
 )
-from .audits import AUDIT_ZRC
 from .serializers import (
     KlantContactSerializer, ResultaatSerializer, RolSerializer,
     StatusSerializer, ZaakAuditTrailSerializer, ZaakEigenschapSerializer,
@@ -550,7 +550,7 @@ class ZaakAuditTrailViewset(viewsets.ReadOnlyModelViewSet, NestedViewSetMixin):
 
     def get_queryset(self):
         base = super().get_queryset()
-        zaak_uuid = self.request.parser_context['kwargs'].get('zaak_uuid')
+        zaak_uuid = self.kwargs.get('zaak_uuid')
         if zaak_uuid:
             return base.filter(hoofdObject__contains=zaak_uuid)
         return base
