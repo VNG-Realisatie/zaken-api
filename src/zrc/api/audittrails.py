@@ -1,25 +1,23 @@
 from django.db import transaction
 
-from ..conf.base import SITE_TITLE
 from ..datamodel.models import AuditTrail
 
 
 class AuditTrailMixin:
-    bron = None
-    main_resource = None
+    audit = None
 
     def get_audittrail_main_object_url(self, data, main_resource):
         return data[main_resource]
 
     def create_audittrail(self, status_code, action, version_before_edit, version_after_edit):
         data = version_after_edit if version_after_edit else version_before_edit
-        if self.basename == self.main_resource:
+        if self.basename == self.audit.main_resource:
             main_object = data['url']
         else:
-            main_object = self.get_audittrail_main_object_url(data, self.main_resource)
+            main_object = self.get_audittrail_main_object_url(data, self.audit.main_resource)
 
         trail = AuditTrail(
-            bron=self.bron,
+            bron=self.audit.component_name,
             actie=action,
             actieWeergave='',
             resultaat=status_code,
@@ -64,7 +62,7 @@ class AuditTrailUpdateMixin(AuditTrailMixin):
 class AuditTrailDestroyMixin(AuditTrailMixin):
     def destroy(self, request, *args, **kwargs):
         version_before_edit = self.get(request, *args, **kwargs).data
-        if self.basename == self.main_resource:
+        if self.basename == self.audit.main_resource:
             with transaction.atomic():
                 response = super().destroy(request, *args, **kwargs)
                 self.destroy_related_audittrails(version_before_edit['url'])
