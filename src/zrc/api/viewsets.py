@@ -9,7 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 from vng_api_common.audittrails.api.serializers import AuditTrailSerializer
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailCreateMixin, AuditTrailViewsetMixin
+    AuditTrailCreateMixin, AuditTrailViewset, AuditTrailViewsetMixin
 )
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
@@ -306,11 +306,8 @@ class StatusViewSet(NotificationCreateMixin,
 
 
 class ZaakObjectViewSet(NotificationCreateMixin,
-<<<<<<< HEAD
                         ListFilterByAuthorizationsMixin,
-=======
                         AuditTrailCreateMixin,
->>>>>>> Integrated audit trails from vng-api-common
                         mixins.CreateModelMixin,
                         viewsets.ReadOnlyModelViewSet):
     """
@@ -423,12 +420,9 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
 
-<<<<<<< HEAD
-=======
     def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
         zaak = self.get_serializer_context()['parent_object']
         return zaak.get_absolute_api_url(request=self.request)
->>>>>>> Integrated audit trails from vng-api-common
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             AuditTrailCreateMixin,
@@ -484,11 +478,8 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
 
 
 class KlantContactViewSet(NotificationCreateMixin,
-<<<<<<< HEAD
                           # ListFilterByAuthorizationsMixin,
-=======
                           AuditTrailCreateMixin,
->>>>>>> Integrated audit trails from vng-api-common
                           mixins.CreateModelMixin,
                           viewsets.ReadOnlyModelViewSet):
     """
@@ -598,14 +589,14 @@ class ResultaatViewSet(NotificationViewSetMixin,
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
-class ZaakAuditTrailViewset(viewsets.ReadOnlyModelViewSet, NestedViewSetMixin):
-    queryset = AuditTrail.objects.all()
-    serializer_class = AuditTrailSerializer
-    lookup_field = 'uuid'
+class ZaakAuditTrailViewset(AuditTrailViewset):
+    """
+    Opvragen van Audit trails horend bij een Zaak.
 
-    def get_queryset(self):
-        base = super().get_queryset()
-        zaak_uuid = self.kwargs.get('zaak_uuid')
-        if zaak_uuid:
-            return base.filter(hoofdObject__contains=zaak_uuid)
-        return base
+    list:
+    Geef een lijst van AUDITTRAILS die horen bij de huidige Zaak.
+
+    retrieve:
+    Haal de details van een AUDITTRAIL op.
+    """
+    main_resource_lookup_field = 'zaak_uuid'
