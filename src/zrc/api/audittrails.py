@@ -1,6 +1,7 @@
 from django.db import transaction
 
 from ..datamodel.models import AuditTrail
+from .constants import AuditTrailAction
 
 
 class AuditTrailMixin:
@@ -19,7 +20,7 @@ class AuditTrailMixin:
         trail = AuditTrail(
             bron=self.audit.component_name,
             actie=action,
-            actieWeergave='',
+            actieWeergave=AuditTrailAction.labels.get(action, ''),
             resultaat=status_code,
             hoofdObject=main_object,
             resource=self.basename,
@@ -35,7 +36,7 @@ class AuditTrailCreateMixin(AuditTrailMixin):
         response = super().create(request, *args, **kwargs)
         self.create_audittrail(
             response.status_code,
-            'create',
+            AuditTrailAction.create,
             version_before_edit=None,
             version_after_edit=response.data,
         )
@@ -48,7 +49,7 @@ class AuditTrailUpdateMixin(AuditTrailMixin):
         serializer = self.get_serializer(instance)
         version_before_edit = serializer.data
 
-        action = 'partial_update' if kwargs.get('partial', False) else 'update'
+        action = AuditTrailAction.partial_update if kwargs.get('partial', False) else AuditTrailAction.update
 
         response = super().update(request, *args, **kwargs)
         self.create_audittrail(
@@ -75,7 +76,7 @@ class AuditTrailDestroyMixin(AuditTrailMixin):
             response = super().destroy(request, *args, **kwargs)
             self.create_audittrail(
                 response.status_code,
-                'delete',
+                AuditTrailAction.delete,
                 version_before_edit=version_before_edit,
                 version_after_edit=None
             )

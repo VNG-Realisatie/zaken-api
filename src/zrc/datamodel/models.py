@@ -21,6 +21,7 @@ from vng_api_common.fields import (
 from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
+from ..api.constants import AuditTrailAction
 from .constants import BetalingsIndicatie
 
 
@@ -497,12 +498,18 @@ class AuditTrail(models.Model):
         unique=True, default=uuid.uuid4,
         help_text="Unieke resource identifier (UUID4)"
     )
-    bron = models.CharField(max_length=3)
-    actie = models.CharField(max_length=20)
-    actieWeergave = models.CharField(max_length=30, blank=True)
+    bron = models.CharField(max_length=50)
+    actie = models.CharField(
+        choices=AuditTrailAction.choices,
+        max_length=50
+    )
+    actieWeergave = models.CharField(
+        max_length=200,
+        blank=True
+    )
     resultaat = models.IntegerField()
     hoofdObject = models.URLField()
-    resource = models.CharField(max_length=20)
+    resource = models.CharField(max_length=50)
     resourceUrl = models.URLField()
     aanmaakdatum = models.DateTimeField(auto_now=True)
 
