@@ -674,13 +674,6 @@
                 },
                 "tags": [
                     "resultaten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "post": {
@@ -848,13 +841,6 @@
                 },
                 "tags": [
                     "resultaten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.bijwerken"
-                        ]
-                    }
                 ]
             },
             "parameters": []
@@ -1008,13 +994,6 @@
                 },
                 "tags": [
                     "resultaten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "put": {
@@ -1189,13 +1168,6 @@
                 },
                 "tags": [
                     "resultaten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.bijwerken"
-                        ]
-                    }
                 ]
             },
             "patch": {
@@ -1370,13 +1342,6 @@
                 },
                 "tags": [
                     "resultaten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.bijwerken"
-                        ]
-                    }
                 ]
             },
             "delete": {
@@ -1524,13 +1489,6 @@
                 },
                 "tags": [
                     "resultaten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.bijwerken"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -1744,13 +1702,6 @@
                 },
                 "tags": [
                     "rollen"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "post": {
@@ -1917,13 +1868,6 @@
                 },
                 "tags": [
                     "rollen"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.aanmaken"
-                        ]
-                    }
                 ]
             },
             "parameters": []
@@ -2077,13 +2021,6 @@
                 },
                 "tags": [
                     "rollen"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -2267,13 +2204,6 @@
                 },
                 "tags": [
                     "statussen"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "post": {
@@ -2441,13 +2371,6 @@
                 },
                 "tags": [
                     "statussen"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "(zaken.aanmaken | zaken.statussen.toevoegen | zaken.heropenen)"
-                        ]
-                    }
                 ]
             },
             "parameters": []
@@ -2601,13 +2524,6 @@
                 },
                 "tags": [
                     "statussen"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -2759,13 +2675,6 @@
                 },
                 "tags": [
                     "zaakobjecten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "post": {
@@ -2932,13 +2841,6 @@
                 },
                 "tags": [
                     "zaakobjecten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.aanmaken"
-                        ]
-                    }
                 ]
             },
             "parameters": []
@@ -3092,13 +2994,6 @@
                 },
                 "tags": [
                     "zaakobjecten"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -3417,13 +3312,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "post": {
@@ -3625,13 +3513,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.aanmaken"
-                        ]
-                    }
                 ]
             },
             "parameters": []
@@ -3868,13 +3749,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "parameters": []
@@ -4070,13 +3944,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "put": {
@@ -4292,13 +4159,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
-                        ]
-                    }
                 ]
             },
             "patch": {
@@ -4514,13 +4374,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
-                        ]
-                    }
                 ]
             },
             "delete": {
@@ -4683,13 +4536,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.verwijderen"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -4841,13 +4687,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "post": {
@@ -5014,13 +4853,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.bijwerken"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -5183,13 +5015,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "delete": {
@@ -5337,13 +5162,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.bijwerken"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -5503,13 +5321,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "post": {
@@ -5676,13 +5487,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.bijwerken"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -5845,13 +5649,6 @@
                 },
                 "tags": [
                     "zaken"
-                ],
-                "security": [
-                    {
-                        "JWT-Claims": [
-                            "zaken.lezen"
-                        ]
-                    }
                 ]
             },
             "parameters": [
@@ -5995,7 +5792,7 @@
                 "status",
                 "detail",
                 "instance",
-                "invalid-params"
+                "invalidParams"
             ],
             "type": "object",
             "properties": {
@@ -6033,7 +5830,7 @@
                     "type": "string",
                     "minLength": 1
                 },
-                "invalid-params": {
+                "invalidParams": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/FieldValidationError"
