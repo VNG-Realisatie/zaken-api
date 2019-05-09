@@ -14,6 +14,7 @@ from vng_api_common.notifications.viewsets import (
 from vng_api_common.search import SearchMixin
 from vng_api_common.utils import lookup_kwargs_to_filters
 from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
+from vng_api_common.permissions import permission_class_factory, RelatedObjAuthScopesRequired, BaseAuthRequired
 
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
@@ -24,8 +25,8 @@ from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
-    RelatedObjectAuthScopesRequired, ZaakAuthScopesRequired,
-    ZaakRelatedAuthScopesRequired, permission_class_factory
+    ZaakAuthScopesRequired,
+    ZaakRelatedAuthScopesRequired, ZaakBaseAuthRequired
 )
 from .scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
@@ -361,8 +362,8 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     serializer_class = ZaakInformatieObjectSerializer
     permission_classes = (
         permission_class_factory(
-            base=RelatedObjectAuthScopesRequired,
-            get_zaak='_get_zaak'
+            base=ZaakBaseAuthRequired,
+            get_obj='_get_zaak',
         ),
     )
     lookup_field = 'uuid'
@@ -427,8 +428,8 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
     serializer_class = ZaakEigenschapSerializer
     permission_classes = (
         permission_class_factory(
-            base=RelatedObjectAuthScopesRequired,
-            get_zaak='_get_zaak'
+            base=ZaakBaseAuthRequired,
+            get_obj='_get_zaak',
         ),
     )
     lookup_field = 'uuid'

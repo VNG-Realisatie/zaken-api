@@ -373,4 +373,3 @@ if SENTRY_DSN:
 IS_HTTPS = os.getenv('IS_HTTPS', '1').lower() in ['true', '1', 'yes']
 
 NOTIFICATIONS_KANAAL = 'zaken'
-DEFAULT_NOTIFICATIONS_HANDLER = 'vng_api_common.notifications.handlers.auth_handler'
