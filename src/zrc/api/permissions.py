@@ -3,8 +3,7 @@ from django.conf import settings
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework.request import Request
 from vng_api_common.permissions import (
-    AuthScopesRequired, BaseAuthRequired, MainObjAuthScopesRequired,
-    RelatedObjAuthScopesRequired, get_required_scopes
+    BaseAuthRequired, MainObjAuthScopesRequired, RelatedObjAuthScopesRequired
 )
 
 
