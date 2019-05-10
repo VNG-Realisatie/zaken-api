@@ -7398,13 +7398,8 @@
                 "actie": {
                     "title": "Actie",
                     "type": "string",
-                    "enum": [
-                        "create",
-                        "get",
-                        "delete",
-                        "update",
-                        "partial_update"
-                    ]
+                    "maxLength": 50,
+                    "minLength": 1
                 },
                 "actieWeergave": {
                     "title": "ActieWeergave",
@@ -7421,7 +7416,7 @@
                     "title": "HoofdObject",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 },
                 "resource": {
@@ -7434,7 +7429,7 @@
                     "title": "ResourceUrl",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 200,
+                    "maxLength": 1000,
                     "minLength": 1
                 },
                 "aanmaakdatum": {
