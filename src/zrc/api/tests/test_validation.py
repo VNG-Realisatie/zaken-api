@@ -71,7 +71,7 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
     @patch('vng_api_common.validators.fetcher')
     @patch('vng_api_common.validators.obj_has_shape', return_value=False)
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_validate_communicatiekanaal_invalid(self, mock_has_shape, mock_fetcher):
+    def test_validate_communicatiekanaal_invalid_resource(self, mock_has_shape, mock_fetcher):
         url = reverse('zaak-list')
         body = {'communicatiekanaal': 'https://ref.tst.vng.cloud/referentielijsten/api/v1/'}
 
@@ -79,7 +79,19 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'communicatiekanaal')
-        self.assertEqual(error['code'], ResourceValidator.code)
+        self.assertEqual(error['code'], ResourceValidator._ResourceValidator__code)
+
+    @patch('vng_api_common.validators.fetcher')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
+    def test_validate_communicatiekanaal_bad_url(self, mock_fetcher):
+        url = reverse('zaak-list')
+        body = {'communicatiekanaal': 'https://someurlthatdoesntexist.com'}
+
+        response = self.client.post(url, body, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'communicatiekanaal')
+        self.assertEqual(error['code'], URLValidator.code)
 
     @patch('vng_api_common.validators.fetcher')
     def test_validate_communicatiekanaal_valid(self, mock_fetcher):
