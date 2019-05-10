@@ -9,7 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 from vng_api_common.audittrails.api.serializers import AuditTrailSerializer
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailCreateMixin, AuditTrailViewset, AuditTrailViewsetMixin
+    AuditTrailCreateMixin, AuditTrailViewSet, AuditTrailViewsetMixin
 )
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
@@ -589,7 +589,7 @@ class ResultaatViewSet(NotificationViewSetMixin,
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
-class ZaakAuditTrailViewset(AuditTrailViewset):
+class ZaakAuditTrailViewSet(AuditTrailViewSet):
     """
     Opvragen van Audit trails horend bij een Zaak.
 

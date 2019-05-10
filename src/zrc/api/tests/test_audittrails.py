@@ -113,7 +113,7 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
         # correct information
         resultaat_delete_audittrail = audittrails[2]
         self.assertEqual(resultaat_delete_audittrail.bron, 'ZRC')
-        self.assertEqual(resultaat_delete_audittrail.actie, 'delete')
+        self.assertEqual(resultaat_delete_audittrail.actie, 'destroy')
         self.assertEqual(resultaat_delete_audittrail.resultaat, 204)
         self.assertEqual(resultaat_delete_audittrail.oud, resultaat_response)
         self.assertEqual(resultaat_delete_audittrail.nieuw, None)
