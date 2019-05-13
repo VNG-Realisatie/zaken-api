@@ -9,7 +9,7 @@ from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, generate_jwt, reverse
 from zds_client.tests.mocks import mock_client
 
-from zrc.datamodel.models import Zaak, Resultaat, ZaakInformatieObject
+from zrc.datamodel.models import Resultaat, Zaak, ZaakInformatieObject
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
 from ..scopes import (
