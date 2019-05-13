@@ -9,7 +9,7 @@ from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, generate_jwt, reverse
 from zds_client.tests.mocks import mock_client
 
-from zrc.datamodel.models import Zaak
+from zrc.datamodel.models import Zaak, Resultaat, ZaakInformatieObject
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
 from ..scopes import (
@@ -43,8 +43,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         }
     }
 
-    def create_zaak(self):
-        url = reverse('zaak-list')
+    def _create_zaak(self):
+        url = reverse(Zaak)
 
         zaak_data = {
             'zaaktype': ZAAKTYPE,
@@ -61,14 +61,14 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         return response.data
 
     def test_create_zaak_audittrail(self):
-        zaak_response = self.create_zaak()
+        zaak_response = self._create_zaak()
 
         audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url'])
         self.assertEqual(audittrails.count(), 1)
 
         # Verify that the audittrail for the Zaak creation contains the correct
         # information
-        zaak_create_audittrail = audittrails.first()
+        zaak_create_audittrail = audittrails.get()
         self.assertEqual(zaak_create_audittrail.bron, 'ZRC')
         self.assertEqual(zaak_create_audittrail.actie, 'create')
         self.assertEqual(zaak_create_audittrail.resultaat, 201)
@@ -76,9 +76,9 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(zaak_create_audittrail.nieuw, zaak_response)
 
     def test_create_and_delete_resultaat_audittrails(self):
-        zaak_response = self.create_zaak()
+        zaak_response = self._create_zaak()
 
-        url = reverse('resultaat-list')
+        url = reverse(Resultaat)
         resultaat_data = {
             'zaak': zaak_response['url'],
             'resultaatType': RESULTAATTYPE
@@ -111,7 +111,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(resultaat_delete_audittrail.nieuw, None)
 
     def test_update_zaak_audittrails(self):
-        zaak_data = self.create_zaak()
+        zaak_data = self._create_zaak()
 
         modified_data = deepcopy(zaak_data)
         url = modified_data.pop('url')
@@ -135,7 +135,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(zaak_update_audittrail.nieuw, zaak_response)
 
     def test_partial_update_zaak_audittrails(self):
-        zaak_data = self.create_zaak()
+        zaak_data = self._create_zaak()
 
         with mock_client(self.responses):
             response = self.client.patch(zaak_data['url'], {
@@ -156,10 +156,10 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(zaak_update_audittrail.nieuw, zaak_response)
 
     def test_create_zaakinformatieobject_audittrail(self):
-        zaak_data = self.create_zaak()
+        zaak_data = self._create_zaak()
 
         zaak_uuid = zaak_data['url'].split('/')[-1]
-        url = reverse('zaakinformatieobject-list', kwargs={'zaak_uuid': zaak_uuid})
+        url = reverse(ZaakInformatieObject, kwargs={'zaak_uuid': zaak_uuid})
 
         response = self.client.post(url, {
             'informatieobject': INFORMATIE_OBJECT,
@@ -180,7 +180,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(resultaat_create_audittrail.nieuw, zaakinformatieobject_response)
 
     def test_delete_zaak_cascade_audittrails(self):
-        zaak_data = self.create_zaak()
+        zaak_data = self._create_zaak()
 
         # Delete the Zaak
         response = self.client.delete(zaak_data['url'], **ZAAK_WRITE_KWARGS)
