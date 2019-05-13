@@ -71,7 +71,7 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
     def test_create_zaak_audittrail(self):
         zaak_response = self.create_zaak()
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_response['url'])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url'])
         self.assertEqual(audittrails.count(), 1)
 
         # Verify that the audittrail for the Zaak creation contains the correct
@@ -94,7 +94,7 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
         response = self.client.post(url, resultaat_data, **ZAAK_WRITE_KWARGS)
         resultaat_response = response.data
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_response['url'])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url'])
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the Resultaat creation contains the
@@ -130,7 +130,7 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
             response = self.client.put(url, modified_data, **ZAAK_WRITE_KWARGS)
             zaak_response = response.data
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_response['url'])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url'])
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the Zaak update contains the correct
@@ -151,7 +151,7 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
             }, **ZAAK_WRITE_KWARGS)
             zaak_response = response.data
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_response['url'])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url'])
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the Zaak partial_update contains the
@@ -175,7 +175,7 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
 
         zaakinformatieobject_response = response.data
 
-        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_data['url'])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_data['url'])
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the ZaakInformatieObject creation
@@ -194,5 +194,5 @@ class AuditTrailTests(JWTScopesMixin, APITestCase):
         response = self.client.delete(zaak_data['url'], **ZAAK_WRITE_KWARGS)
 
         # Verify that deleting the Zaak deletes all related AuditTrails
-        audittrails = AuditTrail.objects.filter(hoofdObject=zaak_data['url'])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_data['url'])
         self.assertEqual(audittrails.count(), 0)
