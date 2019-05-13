@@ -6,7 +6,7 @@ from django.test import override_settings
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTScopesMixin, generate_jwt, reverse
+from vng_api_common.tests import JWTAuthMixin, generate_jwt, reverse
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import Zaak
@@ -29,33 +29,25 @@ INFORMATIE_OBJECT = f'{DRC_ROOT}/enkelvoudiginformatieobjecten/1234'
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
-class AuditTrailTests(JWTScopesMixin, APITestCase):
-    def setUp(self):
-        token = generate_jwt(
-            scopes=[
-                SCOPE_ZAKEN_CREATE,
-                SCOPE_ZAKEN_BIJWERKEN,
-                SCOPE_ZAKEN_ALLES_VERWIJDEREN
-            ],
-            zaaktypes=['https://example.com/zaaktype/123']
-        )
-        self.client.credentials(HTTP_AUTHORIZATION=token)
+class AuditTrailTests(JWTAuthMixin, APITestCase):
 
-        self.responses = {
-            'https://example.com/zaaktype/123': {
-                'url': 'https://example.com/zaaktype/123',
-                'productenOfDiensten': [
-                    'https://example.com/product/123',
-                    'https://example.com/dienst/123',
-                ]
-            }
+    heeft_alle_autorisaties = True
+
+    responses = {
+        ZAAKTYPE: {
+            'url': ZAAKTYPE,
+            'productenOfDiensten': [
+                'https://example.com/product/123',
+                'https://example.com/dienst/123',
+            ]
         }
+    }
 
     def create_zaak(self):
         url = reverse('zaak-list')
 
         zaak_data = {
-            'zaaktype': 'https://example.com/zaaktype/123',
+            'zaaktype': ZAAKTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': '517439943',
