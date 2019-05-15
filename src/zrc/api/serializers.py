@@ -29,7 +29,7 @@ from zrc.datamodel.models import (
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .auth import get_zrc_auth, get_ztc_auth, get_drc_auth
+from .auth import get_drc_auth, get_zrc_auth, get_ztc_auth
 from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
