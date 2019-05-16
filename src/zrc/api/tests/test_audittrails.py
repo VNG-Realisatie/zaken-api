@@ -172,12 +172,12 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
         # Verify that the audittrail for the ZaakInformatieObject creation
         # contains the correct information
-        resultaat_create_audittrail = audittrails[1]
-        self.assertEqual(resultaat_create_audittrail.bron, 'ZRC')
-        self.assertEqual(resultaat_create_audittrail.actie, 'create')
-        self.assertEqual(resultaat_create_audittrail.resultaat, 201)
-        self.assertEqual(resultaat_create_audittrail.oud, None)
-        self.assertEqual(resultaat_create_audittrail.nieuw, zaakinformatieobject_response)
+        zio_create_audittrail = audittrails[1]
+        self.assertEqual(zio_create_audittrail.bron, 'ZRC')
+        self.assertEqual(zio_create_audittrail.actie, 'create')
+        self.assertEqual(zio_create_audittrail.resultaat, 201)
+        self.assertEqual(zio_create_audittrail.oud, None)
+        self.assertEqual(zio_create_audittrail.nieuw, zaakinformatieobject_response)
 
     def test_delete_zaak_cascade_audittrails(self):
         zaak_data = self._create_zaak()
