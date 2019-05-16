@@ -6,6 +6,12 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
+from vng_api_common.audittrails.api.serializers import AuditTrailSerializer
+from vng_api_common.audittrails.models import AuditTrail
+from vng_api_common.audittrails.viewsets import (
+    AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
+    AuditTrailViewsetMixin
+)
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
@@ -21,6 +27,7 @@ from zrc.datamodel.models import (
     ZaakInformatieObject, ZaakObject
 )
 
+from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
 from .kanalen import KANAAL_ZAKEN
@@ -43,6 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 class ZaakViewSet(NotificationViewSetMixin,
+                  AuditTrailViewsetMixin,
                   GeoMixin,
                   SearchMixin,
                   CheckQueryParamsMixin,
@@ -168,6 +176,7 @@ class ZaakViewSet(NotificationViewSetMixin,
         'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
 
     @action(methods=('post',), detail=False)
     def _zoek(self, request, *args, **kwargs):
@@ -215,6 +224,7 @@ class ZaakViewSet(NotificationViewSetMixin,
 
 
 class StatusViewSet(NotificationCreateMixin,
+                    AuditTrailCreateMixin,
                     CheckQueryParamsMixin,
                     ListFilterByAuthorizationsMixin,
                     mixins.CreateModelMixin,
@@ -258,6 +268,7 @@ class StatusViewSet(NotificationCreateMixin,
         'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN | SCOPEN_ZAKEN_HEROPENEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
 
     def perform_create(self, serializer):
         """
@@ -297,6 +308,7 @@ class StatusViewSet(NotificationCreateMixin,
 
 class ZaakObjectViewSet(NotificationCreateMixin,
                         ListFilterByAuthorizationsMixin,
+                        AuditTrailCreateMixin,
                         mixins.CreateModelMixin,
                         viewsets.ReadOnlyModelViewSet):
     """
@@ -322,9 +334,12 @@ class ZaakObjectViewSet(NotificationCreateMixin,
         'create': SCOPE_ZAKEN_CREATE,
     }
     notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
 
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
+                                  AuditTrailCreateMixin,
+                                  AuditTrailDestroyMixin,
                                   NestedViewSetMixin,
                                   ListFilterByAuthorizationsMixin,
                                   mixins.CreateModelMixin,
@@ -379,6 +394,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         'zaak_uuid': 'uuid',
     }
     notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
 
     def _get_zaak(self):
         if not hasattr(self, '_zaak'):
@@ -406,8 +422,12 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
 
+    def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
+        zaak = self._get_zaak()
+        return zaak.get_absolute_api_url(request=self.request)
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
+                            AuditTrailCreateMixin,
                             NestedViewSetMixin,
                             ListFilterByAuthorizationsMixin,
                             mixins.CreateModelMixin,
@@ -443,6 +463,7 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
         'zaak_uuid': 'uuid',
     }
     notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
 
     def _get_zaak(self):
         if not hasattr(self, '_zaak'):
@@ -460,6 +481,7 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
 
 class KlantContactViewSet(NotificationCreateMixin,
                           # ListFilterByAuthorizationsMixin,
+                          AuditTrailCreateMixin,
                           mixins.CreateModelMixin,
                           viewsets.ReadOnlyModelViewSet):
     """
@@ -481,9 +503,10 @@ class KlantContactViewSet(NotificationCreateMixin,
     serializer_class = KlantContactSerializer
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_ZAKEN
-
+    audit = AUDIT_ZRC
 
 class RolViewSet(NotificationCreateMixin,
+                 AuditTrailCreateMixin,
                  CheckQueryParamsMixin,
                  ListFilterByAuthorizationsMixin,
                  mixins.CreateModelMixin,
@@ -506,9 +529,11 @@ class RolViewSet(NotificationCreateMixin,
         'create': SCOPE_ZAKEN_CREATE,
     }
     notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
 
 
 class ResultaatViewSet(NotificationViewSetMixin,
+                       AuditTrailViewsetMixin,
                        CheckQueryParamsMixin,
                        ListFilterByAuthorizationsMixin,
                        viewsets.ModelViewSet):
@@ -564,3 +589,16 @@ class ResultaatViewSet(NotificationViewSetMixin,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
+
+class ZaakAuditTrailViewSet(AuditTrailViewSet):
+    """
+    Opvragen van Audit trails horend bij een Zaak.
+
+    list:
+    Geef een lijst van AUDITTRAILS die horen bij de huidige Zaak.
+
+    retrieve:
+    Haal de details van een AUDITTRAIL op.
+    """
+    main_resource_lookup_field = 'zaak_uuid'

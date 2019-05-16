@@ -116,6 +116,23 @@ De mapping van waarden naar weergave is als volgt:
 | archiefactiedatum | De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan deze ZAAK indien nog leeg. | string | nee | C​R​U​D |
 | resultaat | Indien geen resultaat bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
+## AuditTrail
+
+Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/audittrail)
+
+| Attribuut | Omschrijving | Type | Verplicht | CRUD* |
+| --- | --- | --- | --- | --- |
+| uuid | Unieke resource identifier (UUID4) | string | nee | C​R​U​D |
+| bron |  | string | ja | C​R​U​D |
+| actie |  | string | ja | C​R​U​D |
+| actieWeergave |  | string | nee | C​R​U​D |
+| resultaat |  | integer | ja | C​R​U​D |
+| hoofdObject |  | string | ja | C​R​U​D |
+| resource |  | string | ja | C​R​U​D |
+| resourceUrl |  | string | ja | C​R​U​D |
+| aanmaakdatum |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| wijzigingen |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+
 ## ZaakInformatieObject
 
 Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/zaakinformatieobject)
