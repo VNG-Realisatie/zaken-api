@@ -9,7 +9,8 @@ from rest_framework.pagination import PageNumberPagination
 from vng_api_common.audittrails.api.serializers import AuditTrailSerializer
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailCreateMixin, AuditTrailViewSet, AuditTrailViewsetMixin
+    AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
+    AuditTrailViewsetMixin
 )
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
@@ -338,6 +339,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   AuditTrailCreateMixin,
+                                  AuditTrailDestroyMixin,
                                   NestedViewSetMixin,
                                   ListFilterByAuthorizationsMixin,
                                   mixins.CreateModelMixin,
