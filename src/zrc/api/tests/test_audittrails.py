@@ -187,4 +187,4 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
         # Verify that deleting the Zaak deletes all related AuditTrails
         audittrails = AuditTrail.objects.filter(hoofd_object=zaak_data['url'])
-        self.assertEqual(audittrails.count(), 0)
+        self.assertFalse(audittrails.exists())

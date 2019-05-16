@@ -337,7 +337,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
-                                  AuditTrailViewsetMixin,
+                                  AuditTrailCreateMixin,
                                   NestedViewSetMixin,
                                   ListFilterByAuthorizationsMixin,
                                   mixins.CreateModelMixin,
@@ -421,7 +421,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         return zaak.get_absolute_api_url(request=self.request)
 
     def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
-        zaak = self.get_serializer_context()['parent_object']
+        zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
