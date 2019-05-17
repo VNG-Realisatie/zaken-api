@@ -1,5 +1,6 @@
 import uuid
 from datetime import date
+from typing import Union
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
@@ -545,7 +546,8 @@ class KlantContact(models.Model):
         return f'{self.identificatie}'
 
 
-def request_object_attribute(model_object, field, attribute, resource=None):
+def request_object_attribute(model_object: models.Model, field: str,
+                             attribute: str, resource: Union[str, None] = None) -> str:
     resource = resource or field
     field = getattr(model_object, field)
 
