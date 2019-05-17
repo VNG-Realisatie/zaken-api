@@ -505,6 +505,7 @@ class KlantContactViewSet(NotificationCreateMixin,
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
+
 class RolViewSet(NotificationCreateMixin,
                  AuditTrailCreateMixin,
                  CheckQueryParamsMixin,
@@ -590,6 +591,7 @@ class ResultaatViewSet(NotificationViewSetMixin,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
 
 class ZaakAuditTrailViewSet(AuditTrailViewSet):
     """

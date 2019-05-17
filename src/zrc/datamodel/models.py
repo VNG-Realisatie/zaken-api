@@ -8,6 +8,7 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import cached_property
 
 from vng_api_common.constants import (
     Archiefnominatie, Archiefstatus, RolOmschrijving, RolTypes,
@@ -22,6 +23,7 @@ from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from .constants import BetalingsIndicatie
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
+from zds_client.client import ClientError
 
 
 class Zaak(APIMixin, models.Model):
@@ -227,6 +229,9 @@ class Zaak(APIMixin, models.Model):
         status = self.status_set.order_by('-datum_status_gezet').first()
         return status.uuid if status else None
 
+    def unique_representation(self):
+        return f"{self.bronorganisatie} - {self.identificatie}"
+
 
 class Status(models.Model):
     """
@@ -261,9 +266,13 @@ class Status(models.Model):
     class Meta:
         verbose_name = 'status'
         verbose_name_plural = 'statussen'
+        unique_together = ('zaak', 'datum_status_gezet')
 
     def __str__(self):
         return "Status op {}".format(self.datum_status_gezet)
+
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {self.datum_status_gezet}"
 
 
 class Resultaat(models.Model):
@@ -295,6 +304,12 @@ class Resultaat(models.Model):
 
     def __str__(self):
         return "Resultaat ({})".format(self.uuid)
+
+    def unique_representation(self):
+        if not hasattr(self, '__unique_representation'):
+            result_type_desc = request_object_attribute(self, 'resultaat_type', 'omschrijving', 'resultaattype')
+            self.__unique_representation = f"({self.zaak.unique_representation()}) - {result_type_desc}"
+        return self.__unique_representation
 
 
 class Rol(models.Model):
@@ -328,6 +343,12 @@ class Rol(models.Model):
     class Meta:
         verbose_name = "Rol"
         verbose_name_plural = "Rollen"
+
+    def unique_representation(self):
+        if not hasattr(self, '__unique_representation'):
+            betrokkene_id = request_object_attribute(self, 'betrokkene', 'identificatie')
+            self.__unique_representation = f"({self.zaak.unique_representation()}) - {betrokkene_id}"
+        return self.__unique_representation
 
 
 class ZaakObject(models.Model):
@@ -378,6 +399,10 @@ class ZaakObject(models.Model):
                 self._object = client.retrieve(self.object_type.lower(), url=object_url)
         return self._object
 
+    @cached_property
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation})-{self._get_object()['identificatie']}"
+
 
 class ZaakEigenschap(models.Model):
     """
@@ -418,6 +443,9 @@ class ZaakEigenschap(models.Model):
         verbose_name = 'zaakeigenschap'
         verbose_name_plural = 'zaakeigenschappen'
 
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation}) - {self._naam}"
+
 
 class ZaakKenmerk(models.Model):
     """
@@ -437,6 +465,9 @@ class ZaakKenmerk(models.Model):
     class Meta:
         verbose_name = 'zaak kenmerk'
         verbose_name_plural = 'zaak kenmerken'
+
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {self.kenmerk}"
 
 
 class ZaakInformatieObject(models.Model):
@@ -464,6 +495,12 @@ class ZaakInformatieObject(models.Model):
 
     def __str__(self) -> str:
         return f"{self.zaak} - {self.informatieobject}"
+
+    def unique_representation(self):
+        if not hasattr(self, '__unique_representation'):
+            io_id = request_object_attribute(self, 'informatieobject', 'identificatie', 'enkelvoudiginformatieobject')
+            self.__unique_representation = f"({self.zaak.unique_representation()}) - {io_id}"
+        return self.__unique_representation
 
 
 class KlantContact(models.Model):
@@ -508,3 +545,20 @@ class KlantContact(models.Model):
                 gen_id = self.__class__.objects.filter(identificatie=identificatie).exists()
             self.identificatie = identificatie
         super().save(*args, **kwargs)
+
+    def unique_representation(self):
+        return self.identificatie
+
+
+def request_object_attribute(model_object, field, attribute, resource=None):
+    resource = resource or field
+    field = getattr(model_object, field)
+
+    Client = import_string(settings.ZDS_CLIENT_CLASS)
+    client = Client.from_url(field)
+    client.auth = APICredential.get_auth(field)
+    try:
+        result = client.retrieve(resource, url=field)[attribute]
+    except (ClientError, KeyError):
+        result = ''
+    return result
