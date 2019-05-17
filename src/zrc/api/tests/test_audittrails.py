@@ -44,7 +44,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         }
     }
 
-    def _create_zaak(self):
+    def _create_zaak(self, **HEADERS):
         url = reverse(Zaak)
 
         zaak_data = {
@@ -57,7 +57,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
             'productenOfDiensten': ['https://example.com/product/123']
         }
         with mock_client(self.responses):
-            response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS)
+            response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS, **HEADERS)
 
         return response.data
 
@@ -215,3 +215,13 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # Verify that the user representation stored in the AuditTrail matches
         # the user representation in the JWT token for the request
         self.assertEqual(audittrail.gebruikers_weergave, self.user_representation)
+
+    def test_audittrail_toelichting(self):
+        toelichting = 'blaaaa'
+        zaak_response = self._create_zaak(HTTP_X_AUDIT_TOELICHTING=toelichting)
+
+        audittrail = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).get()
+
+        # Verify that the toelichting stored in the AuditTrail matches
+        # the X-Audit-Toelichting header in the HTTP request
+        self.assertEqual(audittrail.toelichting, toelichting)
