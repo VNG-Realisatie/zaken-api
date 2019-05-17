@@ -426,6 +426,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
 
+
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             AuditTrailCreateMixin,
                             NestedViewSetMixin,

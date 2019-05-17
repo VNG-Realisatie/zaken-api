@@ -8,7 +8,6 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
-from django.utils.functional import cached_property
 
 from vng_api_common.constants import (
     Archiefnominatie, Archiefstatus, RolOmschrijving, RolTypes,
@@ -20,10 +19,10 @@ from vng_api_common.fields import (
 )
 from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.validators import alphanumeric_excluding_diacritic
+from zds_client.client import ClientError
 
 from .constants import BetalingsIndicatie
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
-from zds_client.client import ClientError
 
 
 class Zaak(APIMixin, models.Model):
@@ -399,9 +398,8 @@ class ZaakObject(models.Model):
                 self._object = client.retrieve(self.object_type.lower(), url=object_url)
         return self._object
 
-    @cached_property
     def unique_representation(self):
-        return f"({self.zaak.unique_representation})-{self._get_object()['identificatie']}"
+        return f"({self.zaak.unique_representation()}) - {self._get_object()['identificatie']}"
 
 
 class ZaakEigenschap(models.Model):
@@ -444,7 +442,7 @@ class ZaakEigenschap(models.Model):
         verbose_name_plural = 'zaakeigenschappen'
 
     def unique_representation(self):
-        return f"({self.zaak.unique_representation}) - {self._naam}"
+        return f"({self.zaak.unique_representation()}) - {self._naam}"
 
 
 class ZaakKenmerk(models.Model):
@@ -465,9 +463,6 @@ class ZaakKenmerk(models.Model):
     class Meta:
         verbose_name = 'zaak kenmerk'
         verbose_name_plural = 'zaak kenmerken'
-
-    def unique_representation(self):
-        return f"({self.zaak.unique_representation()}) - {self.kenmerk}"
 
 
 class ZaakInformatieObject(models.Model):
@@ -547,7 +542,7 @@ class KlantContact(models.Model):
         super().save(*args, **kwargs)
 
     def unique_representation(self):
-        return self.identificatie
+        return f'{self.identificatie}'
 
 
 def request_object_attribute(model_object, field, attribute, resource=None):
