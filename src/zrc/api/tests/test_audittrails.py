@@ -5,6 +5,7 @@ from django.test import override_settings
 
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
+from vng_api_common.authorizations.models import Applicatie
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, generate_jwt, reverse
 from zds_client.tests.mocks import mock_client
@@ -188,3 +189,16 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # Verify that deleting the Zaak deletes all related AuditTrails
         audittrails = AuditTrail.objects.filter(hoofd_object=zaak_data['url'])
         self.assertFalse(audittrails.exists())
+
+    def test_audittrail_applicatie_information(self):
+        zaak_response = self._create_zaak()
+
+        audittrail = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).get()
+
+        # Verify that the application id stored in the AuditTrail matches
+        # the id of the Application used for the request
+        self.assertIn(audittrail.applicatie_id, self.applicatie.client_ids)
+
+        # Verify that the application representation stored in the AuditTrail
+        # matches the label of the Application used for the request
+        self.assertEqual(audittrail.applicatie_weergave, self.applicatie.label)
