@@ -307,7 +307,7 @@ class Resultaat(models.Model):
 
     def unique_representation(self):
         if not hasattr(self, '__unique_representation'):
-            result_type_desc = request_object_attribute(self, 'resultaat_type', 'omschrijving', 'resultaattype')
+            result_type_desc = request_object_attribute(self.resultaat_type, 'omschrijving', 'resultaattype')
             self.__unique_representation = f"({self.zaak.unique_representation()}) - {result_type_desc}"
         return self.__unique_representation
 
@@ -346,7 +346,7 @@ class Rol(models.Model):
 
     def unique_representation(self):
         if not hasattr(self, '__unique_representation'):
-            betrokkene_id = request_object_attribute(self, 'betrokkene', 'identificatie')
+            betrokkene_id = request_object_attribute(self.betrokkene, 'identificatie', 'betrokkene')
             self.__unique_representation = f"({self.zaak.unique_representation()}) - {betrokkene_id}"
         return self.__unique_representation
 
@@ -494,7 +494,7 @@ class ZaakInformatieObject(models.Model):
 
     def unique_representation(self):
         if not hasattr(self, '__unique_representation'):
-            io_id = request_object_attribute(self, 'informatieobject', 'identificatie', 'enkelvoudiginformatieobject')
+            io_id = request_object_attribute(self.informatieobject, 'identificatie', 'enkelvoudiginformatieobject')
             self.__unique_representation = f"({self.zaak.unique_representation()}) - {io_id}"
         return self.__unique_representation
 
@@ -546,16 +546,12 @@ class KlantContact(models.Model):
         return f'{self.identificatie}'
 
 
-def request_object_attribute(model_object: models.Model, field: str,
-                             attribute: str, resource: Union[str, None] = None) -> str:
-    resource = resource or field
-    field = getattr(model_object, field)
-
+def request_object_attribute(url: str, attribute: str, resource: Union[str, None] = None) -> str:
     Client = import_string(settings.ZDS_CLIENT_CLASS)
-    client = Client.from_url(field)
-    client.auth = APICredential.get_auth(field)
+    client = Client.from_url(url)
+    client.auth = APICredential.get_auth(url)
     try:
-        result = client.retrieve(resource, url=field)[attribute]
+        result = client.retrieve(resource, url=url)[attribute]
     except (ClientError, KeyError):
         result = ''
     return result
