@@ -237,3 +237,14 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         response_audittrails = self.client.get(audittrails_url)
 
         self.assertEqual(response_audittrails.status_code, status.HTTP_200_OK)
+
+    def test_audittrail_resource_weergave(self):
+        zaak_response = self._create_zaak()
+
+        zaak_unique_representation = Zaak.objects.get(uuid=zaak_response['uuid']).unique_representation()
+
+        audittrail = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).get()
+
+        # Verify that the resource weergave stored in the AuditTrail matches
+        # the unique representation as defined in the Zaak model
+        self.assertIn(audittrail.resource_weergave, zaak_unique_representation)
