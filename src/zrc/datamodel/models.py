@@ -1,3 +1,4 @@
+import logging
 import uuid
 from datetime import date
 from typing import Union
@@ -19,11 +20,14 @@ from vng_api_common.fields import (
     DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential, APIMixin
+from vng_api_common.utils import get_uuid_from_path
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 from zds_client.client import ClientError
 
 from .constants import BetalingsIndicatie
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
+
+logger = logging.getLogger(__name__)
 
 
 class Zaak(APIMixin, models.Model):
@@ -306,10 +310,10 @@ class Resultaat(models.Model):
         return "Resultaat ({})".format(self.uuid)
 
     def unique_representation(self):
-        if not hasattr(self, '__unique_representation'):
+        if not hasattr(self, '_unique_representation'):
             result_type_desc = request_object_attribute(self.resultaat_type, 'omschrijving', 'resultaattype')
-            self.__unique_representation = f"({self.zaak.unique_representation()}) - {result_type_desc}"
-        return self.__unique_representation
+            self._unique_representation = f"({self.zaak.unique_representation()}) - {result_type_desc}"
+        return self._unique_representation
 
 
 class Rol(models.Model):
@@ -345,10 +349,10 @@ class Rol(models.Model):
         verbose_name_plural = "Rollen"
 
     def unique_representation(self):
-        if not hasattr(self, '__unique_representation'):
+        if not hasattr(self, '_unique_representation'):
             betrokkene_id = request_object_attribute(self.betrokkene, 'identificatie', 'betrokkene')
-            self.__unique_representation = f"({self.zaak.unique_representation()}) - {betrokkene_id}"
-        return self.__unique_representation
+            self._unique_representation = f"({self.zaak.unique_representation()}) - {betrokkene_id}"
+        return self._unique_representation
 
 
 class ZaakObject(models.Model):
@@ -400,7 +404,7 @@ class ZaakObject(models.Model):
         return self._object
 
     def unique_representation(self):
-        return f"({self.zaak.unique_representation()}) - {self._get_object()['identificatie']}"
+        return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.object)}"
 
 
 class ZaakEigenschap(models.Model):
@@ -493,10 +497,10 @@ class ZaakInformatieObject(models.Model):
         return f"{self.zaak} - {self.informatieobject}"
 
     def unique_representation(self):
-        if not hasattr(self, '__unique_representation'):
+        if not hasattr(self, '_unique_representation'):
             io_id = request_object_attribute(self.informatieobject, 'identificatie', 'enkelvoudiginformatieobject')
-            self.__unique_representation = f"({self.zaak.unique_representation()}) - {io_id}"
-        return self.__unique_representation
+            self._unique_representation = f"({self.zaak.unique_representation()}) - {io_id}"
+        return self._unique_representation
 
 
 class KlantContact(models.Model):
@@ -552,6 +556,7 @@ def request_object_attribute(url: str, attribute: str, resource: Union[str, None
     client.auth = APICredential.get_auth(url)
     try:
         result = client.retrieve(resource, url=url)[attribute]
-    except (ClientError, KeyError):
+    except (ClientError, KeyError) as exc:
+        logger.warning("%s was retrieved from %s with the %s: %s", attribute, url, exc.__class__.__name__, exc)
         result = ''
     return result

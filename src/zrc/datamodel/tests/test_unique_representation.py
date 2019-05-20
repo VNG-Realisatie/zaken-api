@@ -81,19 +81,12 @@ class UniqueRepresentationTestCase(APITestCase):
         zaakobject = ZaakObjectFactory(
             zaak__bronorganisatie=730924658,
             zaak__identificatie='5d940d52-ff5e-4b18-a769-977af9130c04',
+            object='http://example.come/api/objects/255aaec2-d269-480c-adab-d5d7bc7f9987'
         )
-        responses = {
-            zaakobject.object: {
-                'url': zaakobject.object,
-                'identificatie': "12345",
-            }
-        }
-        with mock_client(responses):
-            unique_representation = zaakobject.unique_representation()
 
         self.assertEqual(
-            unique_representation,
-            '(730924658 - 5d940d52-ff5e-4b18-a769-977af9130c04) - 12345'
+            zaakobject.unique_representation(),
+            '(730924658 - 5d940d52-ff5e-4b18-a769-977af9130c04) - 255aaec2-d269-480c-adab-d5d7bc7f9987'
         )
 
     def test_zaakeigenschap(self):
