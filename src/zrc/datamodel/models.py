@@ -1,7 +1,6 @@
 import logging
 import uuid
 from datetime import date
-from typing import Union
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
@@ -20,9 +19,8 @@ from vng_api_common.fields import (
     DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential, APIMixin
-from vng_api_common.utils import get_uuid_from_path
+from vng_api_common.utils import get_uuid_from_path, request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
-from zds_client.client import ClientError
 
 from .constants import BetalingsIndicatie
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
@@ -548,15 +546,3 @@ class KlantContact(models.Model):
 
     def unique_representation(self):
         return f'{self.identificatie}'
-
-
-def request_object_attribute(url: str, attribute: str, resource: Union[str, None] = None) -> str:
-    Client = import_string(settings.ZDS_CLIENT_CLASS)
-    client = Client.from_url(url)
-    client.auth = APICredential.get_auth(url)
-    try:
-        result = client.retrieve(resource, url=url)[attribute]
-    except (ClientError, KeyError) as exc:
-        logger.warning("%s was retrieved from %s with the %s: %s", attribute, url, exc.__class__.__name__, exc)
-        result = ''
-    return result
