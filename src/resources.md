@@ -122,17 +122,17 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| uuid | Unieke resource identifier (UUID4) | string | nee | C​R​U​D |
-| bron |  | string | ja | C​R​U​D |
+| uuid | Unieke identificatie van de audit regel | string | nee | C​R​U​D |
+| bron | De naam van het component waar de wijziging in is gedaan | string | ja | C​R​U​D |
 | applicatieId | Unieke identificatie van de applicatie, binnen de organisatie | string | nee | C​R​U​D |
 | applicatieWeergave | Vriendelijke naam van de applicatie | string | nee | C​R​U​D |
-| actie |  | string | ja | C​R​U​D |
-| actieWeergave |  | string | nee | C​R​U​D |
-| resultaat |  | integer | ja | C​R​U​D |
-| hoofdObject |  | string | ja | C​R​U​D |
-| resource |  | string | ja | C​R​U​D |
-| resourceUrl |  | string | ja | C​R​U​D |
-| aanmaakdatum |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| actie | De uitgevoerde handeling | string | ja | C​R​U​D |
+| actieWeergave | Vriendelijke naam van de actie | string | nee | C​R​U​D |
+| resultaat | HTTP status code van de API response van de uitgevoerde handeling | integer | ja | C​R​U​D |
+| hoofdObject | De URL naar het hoofdobject van een component | string | ja | C​R​U​D |
+| resource | Het type resource waarop de actie gebeurde | string | ja | C​R​U​D |
+| resourceUrl | De URL naar het object | string | ja | C​R​U​D |
+| aanmaakdatum | De datum waarop de handeling is gedaan | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | wijzigingen |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## ZaakInformatieObject
