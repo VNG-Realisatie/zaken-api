@@ -202,7 +202,10 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                 'child': serializers.URLField(
                     label=_("URL naar andere zaak"),
                     max_length=255,
-                    validators=[URLValidator(get_auth=get_zrc_auth)]
+                    validators=[URLValidator(
+                        get_auth=get_zrc_auth,
+                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
+                    )]
                 )
             },
             'laatste_betaaldatum': {
