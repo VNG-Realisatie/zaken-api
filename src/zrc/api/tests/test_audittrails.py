@@ -202,3 +202,16 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # Verify that the application representation stored in the AuditTrail
         # matches the label of the Application used for the request
         self.assertEqual(audittrail.applicatie_weergave, self.applicatie.label)
+
+    def test_audittrail_user_information(self):
+        zaak_response = self._create_zaak()
+
+        audittrail = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).get()
+
+        # Verify that the user id stored in the AuditTrail matches
+        # the user id in the JWT token for the request
+        self.assertIn(audittrail.gebruikers_id, self.user_id)
+
+        # Verify that the user representation stored in the AuditTrail matches
+        # the user representation in the JWT token for the request
+        self.assertEqual(audittrail.gebruikers_weergave, self.user_representation)
