@@ -15,7 +15,7 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import (
     RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
 from zrc.api.scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
@@ -36,14 +36,14 @@ BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class US153TestCase(JWTScopesMixin, APITestCase):
+class US153TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_ALLES_LEZEN,
         SCOPE_ZAKEN_BIJWERKEN
     ]
-    zaaktypes = [ZAAKTYPE]
+    zaaktype = ZAAKTYPE
 
     def test_create_zaak_with_kenmerken(self):
         zaak_create_url = get_operation_url('zaak_create')

@@ -2,7 +2,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import JWTScopesMixin
+from vng_api_common.tests import JWTAuthMixin
 
 from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN
 from zrc.datamodel.tests.factories import StatusFactory
@@ -10,11 +10,10 @@ from zrc.datamodel.tests.factories import StatusFactory
 from .utils import reverse
 
 
-class StatusTests(JWTScopesMixin, APITestCase):
+class StatusTests(JWTAuthMixin, APITestCase):
 
-    scopes = [
-        SCOPE_ZAKEN_ALLES_LEZEN,
-    ]
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
+    heeft_alle_autorisaties = True
 
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',

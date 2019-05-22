@@ -2,6 +2,35 @@
 Wijzigingen
 ===========
 
+0.15.0 (2019-05-22)
+===================
+
+Authorizations V2 and audittrail release - breaking changes!
+
+* Reworked authorizations - authorizations are now retrieved from the
+  authorizations component (AC) and need to be configured there. You can use
+  the token tool for this.
+* Authorizations are now more fine-grained, scopes/maximum
+  vertrouwelijkheidaanduiding apply to a ``zaaktype``, which filters data at
+  the source. Only ``zaken`` of the ``zaaktype``s you're authorized for are
+  returned. The same logic applies to related data, such as ``status``.
+* Creation of ``zaken`` of a ``zaaktype`` you are not authorized for is no
+  longer allowed (it results in an HTTP 403).
+* Renamed scopes - the ``zds.scopes`` prefix is dropped.
+* Added scope-based protection on resources/operations where they were missing
+* Improved URL-based reference validation
+* Added audittrails - actions are now logged in an audittrail and they can be
+  retrieved for a ``zaak``.  Consumers need to/should:
+
+    * include the ``client_id`` in the JWT (always needed)
+    * include the ``X-Audit-Toelichting`` header
+    * include the ``user_id`` claim in the JWT, or use the
+      ``X-Nlx-Request-User-Id`` header, which should uniquely identify the
+      end-user (in combination with the application ID)
+    * include the ``user_representation`` claim in the JWT for a human-readable
+      representation of the end-user
+
+
 0.14.0 (2019-04-24)
 ===================
 

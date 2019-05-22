@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import (
-    JWTScopesMixin, get_operation_url, get_validation_errors
+    JWTAuthMixin, get_operation_url, get_validation_errors
 )
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
@@ -30,9 +30,10 @@ STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class US39TestCase(JWTScopesMixin, APITestCase):
+class US39TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
+    zaaktype = ZAAKTYPE
 
     def test_create_zaak(self):
         """
@@ -115,7 +116,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
         van de zaak.
         """
         url = get_operation_url('status_create')
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
@@ -146,7 +147,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
         Het adres van de melding moet in de zaak beschikbaar zijn.
         """
         url = get_operation_url('zaakobject_create')
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
@@ -175,7 +176,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
 
     def test_create_klantcontact(self):
         url = get_operation_url('klantcontact_create')
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
@@ -205,7 +206,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
 
     def test_zet_stadsdeel(self):
         url = get_operation_url('zaakobject_create')
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
@@ -235,7 +236,7 @@ class US39TestCase(JWTScopesMixin, APITestCase):
     def test_zet_verantwoordelijk(self):
         url = get_operation_url('rol_create')
         betrokkene = 'https://example.com/orc/api/v1/vestigingen/waternet'
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,

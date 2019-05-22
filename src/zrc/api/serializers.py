@@ -29,7 +29,7 @@ from zrc.datamodel.models import (
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .auth import get_zrc_auth, get_ztc_auth
+from .auth import get_drc_auth, get_zrc_auth, get_ztc_auth
 from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
@@ -202,7 +202,10 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                 'child': serializers.URLField(
                     label=_("URL naar andere zaak"),
                     max_length=255,
-                    validators=[URLValidator(get_auth=get_zrc_auth)]
+                    validators=[URLValidator(
+                        get_auth=get_zrc_auth,
+                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
+                    )]
                 )
             },
             'laatste_betaaldatum': {
@@ -490,7 +493,7 @@ class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
             'zaak': {'lookup_field': 'uuid'},
             'informatieobject': {
                 'validators': [
-                    URLValidator(),
+                    URLValidator(get_auth=get_drc_auth),
                     InformatieObjectUniqueValidator('zaak', 'informatieobject'),
                     ObjectInformatieObjectValidator(),
                 ]

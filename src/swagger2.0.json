@@ -678,7 +678,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -852,7 +852,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.bijwerken"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -1012,7 +1012,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -1193,7 +1193,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.bijwerken"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -1374,7 +1374,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.bijwerken"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -1528,7 +1528,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.bijwerken"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -1744,6 +1744,13 @@
                 },
                 "tags": [
                     "rollen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -1914,7 +1921,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.aanmaken"
+                            "zaken.aanmaken"
                         ]
                     }
                 ]
@@ -2070,6 +2077,13 @@
                 },
                 "tags": [
                     "rollen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -2257,7 +2271,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -2431,7 +2445,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zds.scopes.zaken.aanmaken | zds.scopes.statussen.toevoegen | zds.scopes.zaken.heropenen)"
+                            "(zaken.aanmaken | zaken.statussen.toevoegen | zaken.heropenen)"
                         ]
                     }
                 ]
@@ -2591,7 +2605,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -2749,7 +2763,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -2922,7 +2936,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.aanmaken"
+                            "zaken.aanmaken"
                         ]
                     }
                 ]
@@ -3082,7 +3096,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -3407,7 +3421,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -3615,7 +3629,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.aanmaken"
+                            "zaken.aanmaken"
                         ]
                     }
                 ]
@@ -3858,7 +3872,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -4060,7 +4074,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.lezen"
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -4282,7 +4296,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zds.scopes.zaken.bijwerken | zds.scopes.zaken.geforceerd-bijwerken)"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -4504,7 +4518,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zds.scopes.zaken.bijwerken | zds.scopes.zaken.geforceerd-bijwerken)"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -4673,7 +4687,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zds.scopes.zaken.verwijderen"
+                            "zaken.verwijderen"
                         ]
                     }
                 ]
@@ -4686,6 +4700,327 @@
                     "required": true,
                     "type": "string",
                     "format": "uuid"
+                }
+            ]
+        },
+        "/zaken/{zaak_uuid}/audittrail": {
+            "get": {
+                "operationId": "audittrail_list",
+                "description": "Geef een lijst van AUDITTRAILS die horen bij de huidige Zaak.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AuditTrail"
+                            }
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "zaak_uuid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
+                }
+            ]
+        },
+        "/zaken/{zaak_uuid}/audittrail/{uuid}": {
+            "get": {
+                "operationId": "audittrail_read",
+                "description": "Haal de details van een AUDITTRAIL op.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/AuditTrail"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "uuid",
+                    "in": "path",
+                    "description": "Unieke identificatie van de audit regel",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid"
+                },
+                {
+                    "name": "zaak_uuid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unieke resource identifier (UUID4)"
                 }
             ]
         },
@@ -4827,6 +5162,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -4993,6 +5335,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.bijwerken"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -5155,6 +5504,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "delete": {
@@ -5302,6 +5658,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.bijwerken"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -5461,6 +5824,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -5627,6 +5997,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.bijwerken"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -5789,6 +6166,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -5932,7 +6316,7 @@
                 "status",
                 "detail",
                 "instance",
-                "invalid-params"
+                "invalidParams"
             ],
             "type": "object",
             "properties": {
@@ -5970,7 +6354,7 @@
                     "type": "string",
                     "minLength": 1
                 },
-                "invalid-params": {
+                "invalidParams": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/FieldValidationError"
@@ -6812,6 +7196,137 @@
                     "description": "Multiple values may be separated by commas.",
                     "type": "string",
                     "minLength": 1
+                }
+            }
+        },
+        "Wijzgingen": {
+            "title": "Wijzigingen",
+            "type": "object",
+            "properties": {
+                "oud": {
+                    "title": "Oud",
+                    "description": "Volledige JSON body van het object zoals dat bestond voordat de actie heeft plaatsgevonden",
+                    "type": "object"
+                },
+                "nieuw": {
+                    "title": "Nieuw",
+                    "description": "Volledige JSON body van het object na de actie",
+                    "type": "object"
+                }
+            }
+        },
+        "AuditTrail": {
+            "required": [
+                "bron",
+                "actie",
+                "resultaat",
+                "hoofdObject",
+                "resource",
+                "resourceUrl",
+                "wijzigingen"
+            ],
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke identificatie van de audit regel",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "bron": {
+                    "title": "Bron",
+                    "description": "De naam van het component waar de wijziging in is gedaan\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `AC` - Autorisatiecomponent\n* `NRC` - Notificatierouteringcomponent\n* `ZRC` - Zaakregistratiecomponent\n* `ZTC` - Zaaktypecatalogus\n* `DRC` - Documentregistratiecomponent\n* `BRC` - Besluitregistratiecomponent",
+                    "type": "string",
+                    "enum": [
+                        "AC",
+                        "NRC",
+                        "ZRC",
+                        "ZTC",
+                        "DRC",
+                        "BRC"
+                    ]
+                },
+                "applicatieId": {
+                    "title": "Applicatie id",
+                    "description": "Unieke identificatie van de applicatie, binnen de organisatie",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "applicatieWeergave": {
+                    "title": "Applicatie weergave",
+                    "description": "Vriendelijke naam van de applicatie",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "gebruikersId": {
+                    "title": "Gebruikers id",
+                    "description": "Unieke identificatie van de gebruiker die binnen de organisatie herleid kan worden naar een persoon",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "gebruikersWeergave": {
+                    "title": "Gebruikers weergave",
+                    "description": "Vriendelijke naam van de gebruiker",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "actie": {
+                    "title": "Actie",
+                    "description": "De uitgevoerde handeling\n\nDe bekende waardes voor dit veld zijn hieronder aangegeven,                         maar andere waardes zijn ook toegestaan\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `create` - aangemaakt\n* `list` - opgehaald\n* `retrieve` - opgehaald\n* `destroy` - verwijderd\n* `update` - bijgewerkt\n* `partial_update` - deels bijgewerkt",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "actieWeergave": {
+                    "title": "Actie weergave",
+                    "description": "Vriendelijke naam van de actie",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "resultaat": {
+                    "title": "Resultaat",
+                    "description": "HTTP status code van de API response van de uitgevoerde handeling",
+                    "type": "integer",
+                    "maximum": 599,
+                    "minimum": 100
+                },
+                "hoofdObject": {
+                    "title": "Hoofd object",
+                    "description": "De URL naar het hoofdobject van een component",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 1000,
+                    "minLength": 1
+                },
+                "resource": {
+                    "title": "Resource",
+                    "description": "Het type resource waarop de actie gebeurde",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "resourceUrl": {
+                    "title": "Resource url",
+                    "description": "De URL naar het object",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 1000,
+                    "minLength": 1
+                },
+                "toelichting": {
+                    "title": "Toelichting",
+                    "description": "Toelichting waarom de handeling is uitgevoerd",
+                    "type": "string"
+                },
+                "aanmaakdatum": {
+                    "title": "Aanmaakdatum",
+                    "description": "De datum waarop de handeling is gedaan",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "wijzigingen": {
+                    "$ref": "#/definitions/Wijzgingen"
                 }
             }
         },

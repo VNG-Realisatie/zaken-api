@@ -1,3 +1,4 @@
+from unittest import skip
 from unittest.mock import patch
 
 from django.test import override_settings
@@ -5,9 +6,7 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import (
-    JWTScopesMixin, generate_jwt, get_validation_errors, reverse
-)
+from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from vng_api_common.validators import ResourceValidator, URLValidator
 from zds_client.tests.mocks import mock_client
 
@@ -15,14 +14,13 @@ from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from ..scopes import (
-    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
-)
+from ..scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 
 
-class ZaakValidationTests(JWTScopesMixin, APITestCase):
+class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
+    zaaktype = 'https://example.com/foo/bar'
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
     def test_validate_zaaktype_invalid(self):
@@ -73,7 +71,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
     @patch('vng_api_common.validators.fetcher')
     @patch('vng_api_common.validators.obj_has_shape', return_value=False)
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_validate_communicatiekanaal_invalid(self, mock_has_shape, mock_fetcher):
+    def test_validate_communicatiekanaal_invalid_resource(self, mock_has_shape, mock_fetcher):
         url = reverse('zaak-list')
         body = {'communicatiekanaal': 'https://ref.tst.vng.cloud/referentielijsten/api/v1/'}
 
@@ -81,7 +79,19 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, 'communicatiekanaal')
-        self.assertEqual(error['code'], ResourceValidator.code)
+        self.assertEqual(error['code'], ResourceValidator._ResourceValidator__code)
+
+    @patch('vng_api_common.validators.fetcher')
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
+    def test_validate_communicatiekanaal_bad_url(self, mock_fetcher):
+        url = reverse('zaak-list')
+        body = {'communicatiekanaal': 'https://someurlthatdoesntexist.com'}
+
+        response = self.client.post(url, body, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, 'communicatiekanaal')
+        self.assertEqual(error['code'], URLValidator.code)
 
     @patch('vng_api_common.validators.fetcher')
     def test_validate_communicatiekanaal_valid(self, mock_fetcher):
@@ -164,8 +174,8 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         url = reverse('zaak-list')
 
         responses = {
-            'https://example.com/zaaktype/123': {
-                'url': 'https://example.com/zaaktype/123',
+            'https://example.com/foo/bar': {
+                'url': 'https://example.com/foo/bar',
                 'productenOfDiensten': [
                     'https://example.com/product/123',
                 ]
@@ -174,7 +184,7 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
         with mock_client(responses):
             response = self.client.post(url, {
-                'zaaktype': 'https://example.com/zaaktype/123',
+                'zaaktype': 'https://example.com/foo/bar',
                 'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
                 'bronorganisatie': '517439943',
                 'verantwoordelijkeOrganisatie': '517439943',
@@ -187,17 +197,18 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         validation_error = get_validation_errors(response, 'productenOfDiensten')
         self.assertEqual(validation_error['code'], 'invalid-products-services')
 
+
+class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
+
+    scopes = [SCOPE_ZAKEN_BIJWERKEN]
+    zaaktype = 'https://example.com/foo/bar'
+
     def test_validate_verlenging(self):
         """
         Regression test for https://github.com/VNG-Realisatie/gemma-zaken/issues/920
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
         zaak_url = reverse(zaak)
-        token = generate_jwt(
-            scopes=[SCOPE_ZAKEN_BIJWERKEN],
-            zaaktypes=[zaak.zaaktype]
-        )
-        self.client.credentials(HTTP_AUTHORIZATION=token)
 
         response = self.client.patch(zaak_url, {
             'verlenging': {
@@ -209,13 +220,8 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_validate_opschorting_indicatie_false(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
         zaak_url = reverse(zaak)
-        token = generate_jwt(
-            scopes=[SCOPE_ZAKEN_BIJWERKEN],
-            zaaktypes=[zaak.zaaktype]
-        )
-        self.client.credentials(HTTP_AUTHORIZATION=token)
 
         response = self.client.patch(zaak_url, {
             'opschorting': {
@@ -228,18 +234,18 @@ class ZaakValidationTests(JWTScopesMixin, APITestCase):
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class DeelZaakValidationTests(JWTScopesMixin, APITestCase):
+class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
     scopes = [
         SCOPE_ZAKEN_BIJWERKEN,
         SCOPE_ZAKEN_CREATE
     ]
-    zaaktypes = ['*']
+    zaaktype = 'https://example.com/foo/bar'
 
     def test_cannot_use_self_as_hoofdzaak(self):
         """
         Hoofdzaak moet een andere zaak zijn dan de deelzaak zelf.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
         detail_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
 
         response = self.client.patch(
@@ -257,8 +263,8 @@ class DeelZaakValidationTests(JWTScopesMixin, APITestCase):
         Deelzaak kan enkel deelzaak zijn van hoofdzaak en niet andere deelzaken.
         """
         url = reverse('zaak-list')
-        hoofdzaak = ZaakFactory.create()
-        deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak)
+        hoofdzaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
+        deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak, zaaktype='https://example.com/foo/bar')
         deelzaak_url = reverse('zaak-detail', kwargs={'uuid': deelzaak.uuid})
 
         response = self.client.post(
@@ -272,16 +278,15 @@ class DeelZaakValidationTests(JWTScopesMixin, APITestCase):
         self.assertEqual(error['code'], 'deelzaak-als-hoofdzaak')
 
 
-class ZaakInformatieObjectValidationTests(JWTScopesMixin, APITestCase):
-
-    scopes = [SCOPE_ZAKEN_CREATE]
+class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
 
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_404',
         ZDS_CLIENT_CLASS='vng_api_common.mocks.ObjectInformatieObjectClient'
     )
     def test_informatieobject_invalid(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
         url = reverse('zaakinformatieobject-list', kwargs={'zaak_uuid': zaak.uuid})
 
         response = self.client.post(url, {'informatieobject': 'https://drc.nl/api/v1'})
@@ -293,12 +298,12 @@ class ZaakInformatieObjectValidationTests(JWTScopesMixin, APITestCase):
         self.assertEqual(validation_error['name'], 'informatieobject')
 
 
-class FilterValidationTests(JWTScopesMixin, APITestCase):
+class FilterValidationTests(JWTAuthMixin, APITestCase):
     """
     Test that incorrect filter usage results in HTTP 400.
     """
 
-    scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
+    heeft_alle_autorisaties = True
 
     def test_zaak_invalid_filters(self):
         url = reverse('zaak-list')
@@ -314,6 +319,7 @@ class FilterValidationTests(JWTScopesMixin, APITestCase):
                 response = self.client.get(url, {key: value}, **ZAAK_WRITE_KWARGS)
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    @skip('LIST action for /rollen is not supported')
     def test_rol_invalid_filters(self):
         url = reverse('rol-list')
 

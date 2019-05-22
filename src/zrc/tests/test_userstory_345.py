@@ -11,9 +11,7 @@ from vng_api_common.constants import (
     Archiefnominatie, Archiefstatus, BrondatumArchiefprocedureAfleidingswijze,
     VertrouwelijkheidsAanduiding
 )
-from vng_api_common.tests import (
-    JWTScopesMixin, generate_jwt, get_operation_url
-)
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import (
@@ -45,11 +43,11 @@ VERANTWOORDELIJKE_ORGANISATIE = '517439943'
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient',
 )
-class US345TestCase(JWTScopesMixin, APITestCase):
+class US345TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     # TODO: Required for PATCH to work! This should work without or otherwise, why can I create a ZAAK without this?
-    zaaktypes = ['*']
+    zaaktype = ZAAKTYPE
 
     def test_create_zaak_causes_archiving_defaults(self):
         """
@@ -78,7 +76,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         self.assertIsNone(data['archiefactiedatum'])
 
     def test_can_set_archiefnominatie(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_patch_url = get_operation_url('zaak_partial_update', uuid=zaak.uuid)
 
         data = {
@@ -89,7 +87,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_can_set_archiefactiedatum(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_patch_url = get_operation_url('zaak_partial_update', uuid=zaak.uuid)
 
         data = {
@@ -100,7 +98,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_cannot_set_archiefstatus_without_archiefnominatie_and_archiefactiedatum(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_patch_url = get_operation_url('zaak_partial_update', uuid=zaak.uuid)
 
         data = {
@@ -111,7 +109,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
 
     def test_can_set_archiefstatus_with_archiefnominatie_and_archiefactiedatum(self):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_patch_url = get_operation_url('zaak_partial_update', uuid=zaak.uuid)
 
         data = {
@@ -126,7 +124,8 @@ class US345TestCase(JWTScopesMixin, APITestCase):
     def test_can_set_archiefstatus_when_archiefnominatie_and_archiefactiedatum_already_set(self):
         zaak = ZaakFactory.create(
             archiefnominatie=Archiefnominatie.vernietigen,
-            archiefactiedatum=date.today()
+            archiefactiedatum=date.today(),
+            zaaktype=ZAAKTYPE
         )
         zaak_patch_url = get_operation_url('zaak_partial_update', uuid=zaak.uuid)
 
@@ -140,7 +139,8 @@ class US345TestCase(JWTScopesMixin, APITestCase):
     def test_can_set_archiefstatus_when_all_documents_are_gearchiveerd(self):
         zaak = ZaakFactory.create(
             archiefnominatie=Archiefnominatie.vernietigen,
-            archiefactiedatum=date.today()
+            archiefactiedatum=date.today(),
+            zaaktype=ZAAKTYPE
         )
         zio = ZaakInformatieObjectFactory.create(
             zaak=zaak,
@@ -168,7 +168,8 @@ class US345TestCase(JWTScopesMixin, APITestCase):
     def test_cannot_set_archiefstatus_when_not_all_documents_are_gearchiveerd(self):
         zaak = ZaakFactory.create(
             archiefnominatie=Archiefnominatie.vernietigen,
-            archiefactiedatum=date.today()
+            archiefactiedatum=date.today(),
+            zaaktype=ZAAKTYPE
         )
         zio = ZaakInformatieObjectFactory.create(
             zaak=zaak,
@@ -197,7 +198,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefnominatie` to be copied from RESULTAATTYPE.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         # add a result for the case
@@ -252,7 +253,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefactiedatum` to remain `None`.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         resultaat_create_url = get_operation_url('resultaat_create')
@@ -306,7 +307,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
-        zaak = ZaakFactory.create(einddatum=date(2019, 1, 1))
+        zaak = ZaakFactory.create(einddatum=date(2019, 1, 1), zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         resultaat_create_url = get_operation_url('resultaat_create')
@@ -324,8 +325,8 @@ class US345TestCase(JWTScopesMixin, APITestCase):
 
         # add final status to the case to close it and to calculate archive parameters
         status_create_url = get_operation_url('status_create')
-        token = generate_jwt(scopes=[SCOPEN_ZAKEN_HEROPENEN], zaaktypes=[zaak.zaaktype])
-        self.client.credentials(HTTP_AUTHORIZATION=token)
+        self.autorisatie.scopes = self.autorisatie.scopes + [SCOPEN_ZAKEN_HEROPENEN]
+        self.autorisatie.save()
 
         responses = {
             RESULTAATTYPE: {
@@ -363,7 +364,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         ZaakEigenschapFactory.create(
@@ -423,7 +424,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Attempt to add RESULTAAT with incorrect ZTC-configuration.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         # add resultaat
@@ -474,9 +475,9 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
-        hoofd_zaak = ZaakFactory.create(einddatum=date(2019, 1, 1))
+        hoofd_zaak = ZaakFactory.create(einddatum=date(2019, 1, 1), zaaktype=ZAAKTYPE)
 
-        zaak = ZaakFactory.create(hoofdzaak=hoofd_zaak)
+        zaak = ZaakFactory.create(hoofdzaak=hoofd_zaak, zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         # add resultaat
@@ -530,7 +531,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         Add RESULTAAT that causes `archiefactiedatum` to remain empty. It needs to be manually set based on the
         information in the RESULTAATTYPE.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         # add resultaat
@@ -584,7 +585,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         zaak_object = ZaakObjectFactory.create(zaak=zaak)
         responses = {
@@ -642,7 +643,7 @@ class US345TestCase(JWTScopesMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
 
         resultaat_create_url = get_operation_url('resultaat_create')

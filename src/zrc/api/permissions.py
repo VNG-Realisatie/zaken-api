@@ -1,18 +1,25 @@
-from rest_framework import permissions
-from rest_framework.request import Request
+from vng_api_common.permissions import (
+    BaseAuthRequired, MainObjAuthScopesRequired, RelatedObjAuthScopesRequired
+)
 
 
-class ZaaktypePermission(permissions.BasePermission):
+class ZaakAuthScopesRequired(MainObjAuthScopesRequired):
     """
-    Object-level permissions based on the zaaktypes claim.
+    Look at the scopes required for the current action and at zaaktype and vertrouwelijkheidaanduiding
+    of current zaak and check that they are present in the AC for this client
     """
+    permission_fields = ('zaaktype', 'vertrouwelijkheidaanduiding')
 
-    def has_object_permission(self, request: Request, view, obj) -> bool:
-        """
-        Return `True` if permission is granted, `False` otherwise.
-        """
-        zaaktypes = request.jwt_payload.get('zaaktypes', [])
-        if zaaktypes == ['*']:
-            return True
 
-        return obj.zaaktype in zaaktypes
+class ZaakRelatedAuthScopesRequired(RelatedObjAuthScopesRequired):
+    """
+    Look at the scopes required for the current action and at zaaktype and vertrouwelijkheidaanduiding
+    of related zaak and check that they are present in the AC for this client
+    """
+    permission_fields = ('zaaktype', 'vertrouwelijkheidaanduiding')
+    obj_path = 'zaak'
+
+
+class ZaakBaseAuthRequired(BaseAuthRequired):
+    permission_fields = ('zaaktype', 'vertrouwelijkheidaanduiding')
+    obj_path = 'zaak'

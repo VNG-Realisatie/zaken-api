@@ -7,6 +7,7 @@ Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/169
 Zie ook: test_userstory_39.py
 """
 from datetime import date
+from unittest import skip
 
 from django.test import override_settings
 
@@ -15,7 +16,7 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import (
     RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
-from vng_api_common.tests import JWTScopesMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import Zaak
@@ -33,9 +34,10 @@ VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-class US169TestCase(JWTScopesMixin, APITestCase):
+class US169TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE]
+    zaaktype = ZAAKTYPE
 
     def test_create_melding(self):
         """
@@ -117,13 +119,14 @@ class US169TestCase(JWTScopesMixin, APITestCase):
         behandelaar = zaak.rol_set.get(rolomschrijving=RolOmschrijving.behandelaar)
         self.assertEqual(behandelaar.betrokkene, BEHANDELAAR)
 
+    @skip('LIST action for /rollen is not supported')
     def test_ophalen_alle_betrokkenen(self):
         """
         Test dat alle betrokkenen kunnen opgehaald worden, onafhankelijk van rol.
 
         Zie https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/pull/9#issuecomment-407882637
         """
-        zaak1 = ZaakFactory.create()
+        zaak1 = ZaakFactory.create(zaaktype=ZAAKTYPE)
         rollen1 = RolFactory.create_batch(3, zaak=zaak1)
         rol2 = RolFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak1.uuid)
