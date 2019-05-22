@@ -347,10 +347,7 @@ class Rol(models.Model):
         verbose_name_plural = "Rollen"
 
     def unique_representation(self):
-        if not hasattr(self, '_unique_representation'):
-            betrokkene_id = request_object_attribute(self.betrokkene, 'identificatie', 'betrokkene')
-            self._unique_representation = f"({self.zaak.unique_representation()}) - {betrokkene_id}"
-        return self._unique_representation
+        return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.betrokkene)}"
 
 
 class ZaakObject(models.Model):

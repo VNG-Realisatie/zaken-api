@@ -62,19 +62,12 @@ class UniqueRepresentationTestCase(APITestCase):
         rol = RolFactory(
             zaak__bronorganisatie=730924658,
             zaak__identificatie='5d940d52-ff5e-4b18-a769-977af9130c04',
+            betrokkene='http://example.come/api/betrokkene/255aaec2-d269-480c-adab-d5d7bc7f9987'
         )
-        responses = {
-            rol.betrokkene: {
-                'url': rol.betrokkene,
-                'identificatie': "12345",
-            }
-        }
-        with mock_client(responses):
-            unique_representation = rol.unique_representation()
 
         self.assertEqual(
-            unique_representation,
-            '(730924658 - 5d940d52-ff5e-4b18-a769-977af9130c04) - 12345'
+            rol.unique_representation(),
+            '(730924658 - 5d940d52-ff5e-4b18-a769-977af9130c04) - 255aaec2-d269-480c-adab-d5d7bc7f9987'
         )
 
     def test_zaakobject(self):
