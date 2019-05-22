@@ -7199,6 +7199,22 @@
                 }
             }
         },
+        "Wijzgingen": {
+            "title": "Wijzigingen",
+            "type": "object",
+            "properties": {
+                "oud": {
+                    "title": "Oud",
+                    "description": "Volledige JSON body van het object zoals dat bestond voordat de actie heeft plaatsgevonden",
+                    "type": "object"
+                },
+                "nieuw": {
+                    "title": "Nieuw",
+                    "description": "Volledige JSON body van het object na de actie",
+                    "type": "object"
+                }
+            }
+        },
         "AuditTrail": {
             "required": [
                 "bron",
@@ -7206,7 +7222,8 @@
                 "resultaat",
                 "hoofdObject",
                 "resource",
-                "resourceUrl"
+                "resourceUrl",
+                "wijzigingen"
             ],
             "type": "object",
             "properties": {
@@ -7218,10 +7235,16 @@
                 },
                 "bron": {
                     "title": "Bron",
-                    "description": "De naam van het component waar de wijziging in is gedaan",
+                    "description": "De naam van het component waar de wijziging in is gedaan\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `AC` - Autorisatiecomponent\n* `NRC` - Notificatierouteringcomponent\n* `ZRC` - Zaakregistratiecomponent\n* `ZTC` - Zaaktypecatalogus\n* `DRC` - Documentregistratiecomponent\n* `BRC` - Besluitregistratiecomponent",
                     "type": "string",
-                    "maxLength": 50,
-                    "minLength": 1
+                    "enum": [
+                        "AC",
+                        "NRC",
+                        "ZRC",
+                        "ZTC",
+                        "DRC",
+                        "BRC"
+                    ]
                 },
                 "applicatieId": {
                     "title": "Applicatie id",
@@ -7235,9 +7258,21 @@
                     "type": "string",
                     "maxLength": 200
                 },
+                "gebruikersId": {
+                    "title": "Gebruikers id",
+                    "description": "Unieke identificatie van de gebruiker die binnen de organisatie herleid kan worden naar een persoon",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "gebruikersWeergave": {
+                    "title": "Gebruikers weergave",
+                    "description": "Vriendelijke naam van de gebruiker",
+                    "type": "string",
+                    "maxLength": 255
+                },
                 "actie": {
                     "title": "Actie",
-                    "description": "De uitgevoerde handeling",
+                    "description": "De uitgevoerde handeling\n\nDe bekende waardes voor dit veld zijn hieronder aangegeven,                         maar andere waardes zijn ook toegestaan\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `create` - aangemaakt\n* `list` - opgehaald\n* `retrieve` - opgehaald\n* `destroy` - verwijderd\n* `update` - bijgewerkt\n* `partial_update` - deels bijgewerkt",
                     "type": "string",
                     "maxLength": 50,
                     "minLength": 1
@@ -7252,8 +7287,8 @@
                     "title": "Resultaat",
                     "description": "HTTP status code van de API response van de uitgevoerde handeling",
                     "type": "integer",
-                    "maximum": 2147483647,
-                    "minimum": -2147483648
+                    "maximum": 599,
+                    "minimum": 100
                 },
                 "hoofdObject": {
                     "title": "Hoofd object",
@@ -7278,6 +7313,11 @@
                     "maxLength": 1000,
                     "minLength": 1
                 },
+                "toelichting": {
+                    "title": "Toelichting",
+                    "description": "Toelichting waarom de handeling is uitgevoerd",
+                    "type": "string"
+                },
                 "aanmaakdatum": {
                     "title": "Aanmaakdatum",
                     "description": "De datum waarop de handeling is gedaan",
@@ -7286,9 +7326,7 @@
                     "readOnly": true
                 },
                 "wijzigingen": {
-                    "title": "Wijzigingen",
-                    "type": "string",
-                    "readOnly": true
+                    "$ref": "#/definitions/Wijzgingen"
                 }
             }
         },
