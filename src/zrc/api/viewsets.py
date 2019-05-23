@@ -23,8 +23,8 @@ from vng_api_common.utils import lookup_kwargs_to_filters
 from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject, ZaakBesluit
+    KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
+    ZaakInformatieObject, ZaakObject
 )
 
 from .audits import AUDIT_ZRC
@@ -42,8 +42,9 @@ from .scopes import (
 )
 from .serializers import (
     KlantContactSerializer, ResultaatSerializer, RolSerializer,
-    StatusSerializer, ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
-    ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer, ZaakBesluitSerializer
+    StatusSerializer, ZaakBesluitSerializer, ZaakEigenschapSerializer,
+    ZaakInformatieObjectSerializer, ZaakObjectSerializer, ZaakSerializer,
+    ZaakZoekSerializer
 )
 
 logger = logging.getLogger(__name__)

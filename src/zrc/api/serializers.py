@@ -23,13 +23,13 @@ from vng_api_common.validators import (
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakKenmerk, ZaakObject, ZaakBesluit
+    KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
+    ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .auth import get_drc_auth, get_zrc_auth, get_ztc_auth, get_auth
+from .auth import get_auth, get_drc_auth, get_zrc_auth, get_ztc_auth
 from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
