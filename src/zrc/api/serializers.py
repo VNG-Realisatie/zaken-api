@@ -24,12 +24,12 @@ from vng_api_common.validators import (
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakKenmerk, ZaakObject
+    ZaakInformatieObject, ZaakKenmerk, ZaakObject, ZaakBesluit
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .auth import get_drc_auth, get_zrc_auth, get_ztc_auth
+from .auth import get_drc_auth, get_zrc_auth, get_ztc_auth, get_auth
 from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
@@ -625,3 +625,28 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
                 ],
             }
         }
+
+
+class ZaakBesluitSerializer(NestedHyperlinkedModelSerializer):
+    parent_lookup_kwargs = {
+        'zaak_uuid': 'zaak__uuid'
+    }
+
+    class Meta:
+        model = ZaakBesluit
+        fields = ('url', 'besluit',)
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'zaak': {'lookup_field': 'uuid'},
+            'besluit': {
+                'validators': [
+                    URLValidator(get_auth=get_auth),
+                ]
+            }
+        }
+
+    def create(self, validated_data):
+        validated_data['zaak'] = self.context['parent_object']
+        return super().create(validated_data)

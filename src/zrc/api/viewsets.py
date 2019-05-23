@@ -24,7 +24,7 @@ from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject
+    ZaakInformatieObject, ZaakObject, ZaakBesluit
 )
 
 from .audits import AUDIT_ZRC
@@ -43,7 +43,7 @@ from .scopes import (
 from .serializers import (
     KlantContactSerializer, ResultaatSerializer, RolSerializer,
     StatusSerializer, ZaakEigenschapSerializer, ZaakInformatieObjectSerializer,
-    ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer
+    ZaakObjectSerializer, ZaakSerializer, ZaakZoekSerializer, ZaakBesluitSerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -605,3 +605,89 @@ class ZaakAuditTrailViewSet(AuditTrailViewSet):
     Haal de details van een AUDITTRAIL op.
     """
     main_resource_lookup_field = 'zaak_uuid'
+
+
+class ZaakBesluitViewSet(NotificationCreateMixin,
+                         AuditTrailCreateMixin,
+                         AuditTrailDestroyMixin,
+                         NestedViewSetMixin,
+                         ListFilterByAuthorizationsMixin,
+                         mixins.CreateModelMixin,
+                         mixins.DestroyModelMixin,
+                         viewsets.ReadOnlyModelViewSet):
+
+    """
+    Read and edit Zaak-Besluit relations.
+
+    create:
+    Attention: do't use this endpoint as a client
+
+    BRC uses this endpoint to synchronize relations. There for this endpoint
+    should be implemented in ZRC but not accessible for clients.
+
+    Register which Besluiten have Zaaken
+
+    **Validated on**
+    - correct Besluit URL
+
+    list:
+    Provides a list of relations between Zaak and Besluit objects
+
+    retrieve:
+    Return Besluit which is linked with the current Zaak object
+
+    destroy:
+    Remove relations between Zaak and Besluit objects
+    """
+    queryset = ZaakBesluit.objects.all()
+    serializer_class = ZaakBesluitSerializer
+    permission_classes = (
+        permission_class_factory(
+            base=ZaakBaseAuthRequired,
+            get_obj='_get_zaak',
+        ),
+    )
+    lookup_field = 'uuid'
+
+    required_scopes = {
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+    }
+
+    parent_retrieve_kwargs = {
+        'zaak_uuid': 'uuid',
+    }
+    notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
+
+    def _get_zaak(self):
+        if not hasattr(self, '_zaak'):
+            filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
+            self._zaak = get_object_or_404(Zaak, **filters)
+        return self._zaak
+
+    def list(self, request, *args, **kwargs):
+        zaak = self._get_zaak()
+        permission = ZaakAuthScopesRequired()
+        if not permission.has_object_permission(self.request, self, zaak):
+            raise PermissionDenied
+        return super().list(request, *args, **kwargs)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # DRF introspection
+        if not self.kwargs:
+            return context
+
+        context['parent_object'] = self._get_zaak()
+        return context
+
+    def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:
+        zaak = self._get_zaak()
+        return zaak.get_absolute_api_url(request=self.request)
+
+    def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
+        zaak = self._get_zaak()
+        return zaak.get_absolute_api_url(request=self.request)

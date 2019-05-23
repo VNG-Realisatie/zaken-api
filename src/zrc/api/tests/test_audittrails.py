@@ -4,7 +4,9 @@ from copy import deepcopy
 from django.test import override_settings
 
 from rest_framework.test import APITestCase
+from rest_framework import status
 from vng_api_common.audittrails.models import AuditTrail
+from vng_api_common.audittrails.api.scopes import SCOPE_AUDITTRAILS_LEZEN
 from vng_api_common.authorizations.models import Applicatie
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, generate_jwt, reverse
@@ -16,6 +18,7 @@ from zrc.tests.utils import ZAAK_WRITE_KWARGS
 from ..scopes import (
     SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 )
+# from vng_api_common.audittrails.api.scopes import SCOPE_AUDITTRAILS_LEZEN
 
 # ZTC
 ZTC_ROOT = 'https://example.com/ztc/api/v1'
@@ -225,3 +228,17 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # Verify that the toelichting stored in the AuditTrail matches
         # the X-Audit-Toelichting header in the HTTP request
         self.assertEqual(audittrail.toelichting, toelichting)
+
+    def test_read_audittrail(self):
+        response_zaak = self._create_zaak()
+        self.assertEqual(response_zaak.status_code, status.HTTP_201_CREATED)
+
+        zaak = Zaak.objects.get()
+        audittrails = AuditTrail.objects.get()
+        audittrails_url = reverse(audittrails, kwargs={'zaak_uuid': zaak.uuid})
+        self.autorisatie.scopes = [SCOPE_AUDITTRAILS_LEZEN]
+        self.autorisatie.save()
+
+        response_audittrails = self.client.get(audittrails_url)
+
+        self.assertEqual(response_audittrails.status_code, status.HTTP_200_OK)
