@@ -157,6 +157,15 @@ De mapping van waarden naar weergave is als volgt:
 | toelichting | Toelichting waarom de handeling is uitgevoerd | string | nee | C​R​U​D |
 | aanmaakdatum | De datum waarop de handeling is gedaan | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
+## ZaakBesluit
+
+Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/zaakbesluit)
+
+| Attribuut | Omschrijving | Type | Verplicht | CRUD* |
+| --- | --- | --- | --- | --- |
+| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| besluit | URL-referentie naar het informatieobject in het BRC, waar ook de relatieinformatie opgevraagd kan worden. | string | ja | C​R​U​D |
+
 ## ZaakInformatieObject
 
 Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/zaakinformatieobject)
