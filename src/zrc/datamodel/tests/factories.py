@@ -80,3 +80,11 @@ class KlantContactFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'datamodel.KlantContact'
+
+
+class ZaakBesluitFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    besluit = factory.Faker('url')
+
+    class Meta:
+        model = 'datamodel.ZaakBesluit'
