@@ -29,7 +29,7 @@ from zrc.datamodel.models import (
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .auth import get_auth, get_drc_auth, get_zrc_auth, get_ztc_auth
+from .auth import get_auth
 from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
@@ -176,7 +176,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             },
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
-                'validators': [URLValidator(get_auth=get_ztc_auth)],
+                'validators': [URLValidator(get_auth=get_auth)],
             },
             'einddatum': {
                 'read_only': True
@@ -203,7 +203,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                     label=_("URL naar andere zaak"),
                     max_length=255,
                     validators=[URLValidator(
-                        get_auth=get_zrc_auth,
+                        get_auth=get_auth,
                         headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
                     )]
                 )
@@ -493,7 +493,7 @@ class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
             'zaak': {'lookup_field': 'uuid'},
             'informatieobject': {
                 'validators': [
-                    URLValidator(get_auth=get_drc_auth),
+                    URLValidator(get_auth=get_auth),
                     InformatieObjectUniqueValidator('zaak', 'informatieobject'),
                     ObjectInformatieObjectValidator(),
                 ]
@@ -621,7 +621,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
             'resultaat_type': {
                 'validators': [
                     # TODO: Add shape-validator when we know the shape.
-                    URLValidator(get_auth=get_ztc_auth),
+                    URLValidator(get_auth=get_auth),
                 ],
             }
         }

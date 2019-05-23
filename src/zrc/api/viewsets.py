@@ -6,8 +6,6 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
-from vng_api_common.audittrails.api.serializers import AuditTrailSerializer
-from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
