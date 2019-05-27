@@ -2315,7 +2315,8 @@ paths:
   /zaakinformatieobjecten:
     get:
       operationId: zaakinformatieobject_list
-      description: Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.
+      summary: Geef een lijst van relaties tussen INFORMATIEOBJECTen en ZAAKen.
+      description: Deze lijst kan gefilterd wordt met querystringparameters.
       responses:
         '200':
           description: ''
@@ -2434,7 +2435,19 @@ paths:
         - zaken.lezen
     post:
       operationId: zaakinformatieobject_create
-      description: ''
+      summary: 'Registreer een INFORMATIEOBJECT bij een ZAAK. Er worden twee types
+        van
+
+        relaties met andere objecten gerealiseerd:'
+      description: "**Er wordt gevalideerd op**\n- geldigheid zaak URL\n- geldigheid\
+        \ informatieobject URL\n- de combinatie informatieobject en object moet uniek\
+        \ zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op\
+        \ 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij\
+        \ het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,\n \
+        \ echter zonder de relatie-informatie.\n\n\nRegistreer welk(e) INFORMATIEOBJECT(en)\
+        \ een ZAAK kent.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject\
+        \ URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT\n- bestaan van relatie\
+        \ ZAAK-INFORMATIEOBJECT in het DRC waar het\n  informatieobject leeft"
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
@@ -2591,8 +2604,8 @@ paths:
   /zaakinformatieobjecten/{uuid}:
     get:
       operationId: zaakinformatieobject_read
-      description: Geef een informatieobject terug wat gekoppeld is aan de huidige
-        zaak
+      description: Geef de details van een relatie tussen een INFORMATIEOBJECT en
+        een ZAAK.
       responses:
         '200':
           description: ''
@@ -2721,7 +2734,14 @@ paths:
         - zaken.lezen
     put:
       operationId: zaakinformatieobject_update
-      description: Opvragen en bewerken van Zaak-Informatieobject relaties.
+      description: 'Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens
+
+        van de relatie bewerken, en niet de relatie zelf aanpassen.
+
+
+        **Er wordt gevalideerd op**
+
+        - informatieobject URL en zaak URL mogen niet veranderen'
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
@@ -2883,7 +2903,14 @@ paths:
         $ref: '#/components/requestBodies/ZaakInformatieObject'
     patch:
       operationId: zaakinformatieobject_partial_update
-      description: Opvragen en bewerken van Zaak-Informatieobject relaties.
+      description: 'Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens
+
+        van de relatie bewerken, en niet de relatie zelf aanpassen.
+
+
+        **Er wordt gevalideerd op**
+
+        - informatieobject URL en zaak URL mogen niet veranderen'
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
@@ -3045,7 +3072,7 @@ paths:
         $ref: '#/components/requestBodies/ZaakInformatieObject'
     delete:
       operationId: zaakinformatieobject_delete
-      description: Verwijder een relatie tussen een zaak en een informatieobject
+      description: Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT.
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
