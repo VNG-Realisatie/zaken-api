@@ -346,11 +346,20 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     Opvragen en bewerken van Zaak-Informatieobject relaties.
 
     create:
-    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
+    Registreer een INFORMATIEOBJECT bij een ZAAK. Er worden twee types van
+    relaties met andere objecten gerealiseerd:
 
-    DRCs gebruiken deze endpoint bij het synchroniseren van relaties. De
-    endpoint dient dus bij ZRC providers geimplementeerd te worden, maar voor
-    clients is die niet relevant.
+    **Er wordt gevalideerd op**
+    - geldigheid zaak URL
+    - geldigheid informatieobject URL
+    - de combinatie informatieobject en object moet uniek zijn
+
+    **Opmerkingen**
+    - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
+      wordt ook door het systeem gezet.
+    - Bij het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,
+      echter zonder de relatie-informatie.
+
 
     Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
 
@@ -361,13 +370,29 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
       informatieobject leeft
 
     list:
-    Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.
+    Geef een lijst van relaties tussen INFORMATIEOBJECTen en ZAAKen.
+
+    Deze lijst kan gefilterd wordt met querystringparameters.
 
     retrieve:
-    Geef een informatieobject terug wat gekoppeld is aan de huidige zaak
+    Geef de details van een relatie tussen een INFORMATIEOBJECT en een ZAAK.
+
+    update:
+    Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens
+    van de relatie bewerken, en niet de relatie zelf aanpassen.
+
+    **Er wordt gevalideerd op**
+    - informatieobject URL en zaak URL mogen niet veranderen
+
+    partial_update:
+    Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens
+    van de relatie bewerken, en niet de relatie zelf aanpassen.
+
+    **Er wordt gevalideerd op**
+    - informatieobject URL en zaak URL mogen niet veranderen
 
     destroy:
-    Verwijder een relatie tussen een zaak en een informatieobject
+    Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT.
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
