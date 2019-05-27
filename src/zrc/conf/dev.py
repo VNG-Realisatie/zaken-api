@@ -102,6 +102,8 @@ warnings.filterwarnings(
     RuntimeWarning, r'django\.db\.models\.fields',
 )
 
+IS_HTTPS = False
+
 if 'test' in sys.argv:
     NOTIFICATIONS_DISABLED = True
 
