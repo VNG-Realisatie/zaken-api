@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'zrc.accounts',
     'zrc.api',
     'zrc.datamodel',
+    'zrc.sync',
     'zrc.utils',
 ]
 

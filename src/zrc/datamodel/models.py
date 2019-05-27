@@ -11,7 +11,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.constants import (
-    Archiefnominatie, Archiefstatus, RolOmschrijving, RolTypes,
+    Archiefnominatie, Archiefstatus, ObjectTypes, RolOmschrijving, RolTypes,
     ZaakobjectTypes
 )
 from vng_api_common.descriptors import GegevensGroepType
@@ -22,7 +22,7 @@ from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.utils import get_uuid_from_path, request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import BetalingsIndicatie
+from .constants import BetalingsIndicatie, RelatieAarden
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -480,6 +480,28 @@ class ZaakInformatieObject(models.Model):
                   "ook de relatieinformatie opgevraagd kan worden.",
         max_length=1000
     )
+    aard_relatie = models.CharField(
+        "aard relatie", max_length=20,
+        choices=RelatieAarden.choices
+    )
+
+    # relatiegegevens
+    titel = models.CharField(
+        "titel", max_length=200, blank=True,
+        help_text="De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is."
+    )
+    beschrijving = models.TextField(
+        "beschrijving", blank=True,
+        help_text="Een op het object gerichte beschrijving van de inhoud van"
+                  "het INFORMATIEOBJECT."
+    )
+    registratiedatum = models.DateTimeField(
+        "registratiedatum", auto_now_add=True,
+        help_text="De datum waarop de behandelende organisatie het "
+                  "INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. "
+                  "Geldige waardes zijn datumtijden gelegen op of voor de "
+                  "huidige datum en tijd."
+    )
 
     objects = ZaakRelatedQuerySet.as_manager()
 
@@ -491,11 +513,17 @@ class ZaakInformatieObject(models.Model):
     def __str__(self) -> str:
         return f"{self.zaak} - {self.informatieobject}"
 
+    def save(self, *args, **kwargs):
+        # override to set aard_relatie
+        self.aard_relatie = RelatieAarden.from_object_type('zaak')
+        super().save(*args, **kwargs)
+
     def unique_representation(self):
         if not hasattr(self, '_unique_representation'):
-            io_id = request_object_attribute(self.informatieobject, 'identificatie', 'enkelvoudiginformatieobject')
-            self._unique_representation = f"({self.zaak.unique_representation()}) - {io_id}"
+            io_id = request_object_attribute(self.object, 'identificatie', ObjectTypes.zaak)
+            self._unique_representation = f"({self.informatieobject.unique_representation()}) - {io_id}"
         return self._unique_representation
+
 
 
 class KlantContact(models.Model):

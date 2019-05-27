@@ -2,12 +2,14 @@ import logging
 
 from django.conf import settings
 from django.db import transaction
+from django.utils.encoding import force_text
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
+from rest_framework.settings import api_settings
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import Archiefstatus, RolOmschrijving
@@ -17,16 +19,16 @@ from vng_api_common.serializers import (
     add_choice_values_help_text
 )
 from vng_api_common.validators import (
-    InformatieObjectUniqueValidator, ObjectInformatieObjectValidator,
-    ResourceValidator, UntilNowValidator, URLValidator
+    IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import BetalingsIndicatie
+from zrc.datamodel.constants import BetalingsIndicatie, RelatieAarden
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
     ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
+from zrc.sync.signals import SyncError
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from .auth import get_auth
@@ -478,31 +480,59 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
-class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
-    parent_lookup_kwargs = {
-        'zaak_uuid': 'zaak__uuid'
-    }
+class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
+    aard_relatie_weergave = serializers.ChoiceField(
+        source='get_aard_relatie_display', read_only=True,
+        choices=[(force_text(value), key) for key, value in RelatieAarden.choices]
+    )
 
+    # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
+    # bij zaak.zaaktype
     class Meta:
         model = ZaakInformatieObject
-        fields = ('url', 'informatieobject',)
+        fields = (
+            'url',
+            'informatieobject',
+            'zaak',
+            'aard_relatie_weergave',
+            'titel',
+            'beschrijving',
+            'registratiedatum',
+        )
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
             },
-            'zaak': {'lookup_field': 'uuid'},
             'informatieobject': {
-                'validators': [
-                    URLValidator(get_auth=get_auth),
-                    InformatieObjectUniqueValidator('zaak', 'informatieobject'),
-                    ObjectInformatieObjectValidator(),
-                ]
-            }
+                # 'lookup_field': 'uuid',
+                'validators': [URLValidator(get_auth=get_auth), IsImmutableValidator()],
+            },
+            'zaak': {
+                'lookup_field': 'uuid',
+                'validators': [IsImmutableValidator()],
+            },
         }
 
-    def create(self, validated_data):
-        validated_data['zaak'] = self.context['parent_object']
-        return super().create(validated_data)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not hasattr(self, 'initial_data'):
+            return
+
+    def save(self, **kwargs):
+        # can't slap a transaction atomic on this, since ZRC/BRC query for the
+        # relation!
+        try:
+            return super().save(**kwargs)
+        except SyncError as sync_error:
+            # delete the object again
+            ZaakInformatieObject.objects.filter(
+                informatieobject=self.validated_data['informatieobject'],
+                zaak=self.validated_data['zaak']
+            )._raw_delete('default')
+            raise serializers.ValidationError({
+                api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]
+            }) from sync_error
 
 
 class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):

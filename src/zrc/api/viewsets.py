@@ -337,13 +337,9 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
-                                  AuditTrailCreateMixin,
-                                  AuditTrailDestroyMixin,
-                                  NestedViewSetMixin,
+                                  AuditTrailViewsetMixin,
                                   ListFilterByAuthorizationsMixin,
-                                  mixins.CreateModelMixin,
-                                  mixins.DestroyModelMixin,
-                                  viewsets.ReadOnlyModelViewSet):
+                                  viewsets.ModelViewSet):
 
     """
     Opvragen en bewerken van Zaak-Informatieobject relaties.
@@ -374,56 +370,22 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     """
     queryset = ZaakInformatieObject.objects.all()
     serializer_class = ZaakInformatieObjectSerializer
-    permission_classes = (
-        permission_class_factory(
-            base=ZaakBaseAuthRequired,
-            get_obj='_get_zaak',
-        ),
-    )
     lookup_field = 'uuid'
+    notifications_kanaal = KANAAL_ZAKEN
+    notifications_main_resource_key = 'zaak'
 
+    # TODO new permission classes and scopes needed?
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+        'create': SCOPE_ZAKEN_CREATE,
+        'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
-
-    parent_retrieve_kwargs = {
-        'zaak_uuid': 'uuid',
-    }
-    notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
-    def _get_zaak(self):
-        if not hasattr(self, '_zaak'):
-            filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
-            self._zaak = get_object_or_404(Zaak, **filters)
-        return self._zaak
-
-    def list(self, request, *args, **kwargs):
-        zaak = self._get_zaak()
-        permission = ZaakAuthScopesRequired()
-        if not permission.has_object_permission(self.request, self, zaak):
-            raise PermissionDenied
-        return super().list(request, *args, **kwargs)
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        # DRF introspection
-        if not self.kwargs:
-            return context
-
-        context['parent_object'] = self._get_zaak()
-        return context
-
-    def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:
-        zaak = self._get_zaak()
-        return zaak.get_absolute_api_url(request=self.request)
-
-    def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
-        zaak = self._get_zaak()
-        return zaak.get_absolute_api_url(request=self.request)
 
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,
