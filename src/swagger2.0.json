@@ -185,6 +185,27 @@
                         "schema": {
                             "$ref": "#/definitions/KlantContact"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -513,7 +534,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL to the related resource",
+                        "description": "URL naar de/het gerelateerde zaak",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -695,6 +716,27 @@
                         "schema": {
                             "$ref": "#/definitions/Resultaat"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1029,6 +1071,27 @@
                         "schema": {
                             "$ref": "#/definitions/Resultaat"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1210,6 +1273,27 @@
                         "schema": {
                             "$ref": "#/definitions/Resultaat"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1382,7 +1466,29 @@
             "delete": {
                 "operationId": "resultaat_delete",
                 "description": "Verwijder het RESULTAAT van een ZAAK.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "",
@@ -1552,7 +1658,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL to the related resource",
+                        "description": "URL naar de/het gerelateerde zaak",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -1764,6 +1870,27 @@
                         "schema": {
                             "$ref": "#/definitions/Rol"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -2106,7 +2233,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL to the related resource",
+                        "description": "URL naar de/het gerelateerde zaak",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2288,6 +2415,27 @@
                         "schema": {
                             "$ref": "#/definitions/Status"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -2779,6 +2927,27 @@
                         "schema": {
                             "$ref": "#/definitions/ZaakObject"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -3202,7 +3371,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "A page number within the paginated result set.",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
                         "required": false,
                         "type": "integer"
                     },
@@ -3458,6 +3627,27 @@
                         "enum": [
                             "EPSG:4326"
                         ]
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -3653,7 +3843,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "A page number within the paginated result set.",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
                         "required": false,
                         "type": "integer"
                     },
@@ -4111,6 +4301,27 @@
                         "enum": [
                             "EPSG:4326"
                         ]
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -4333,6 +4544,27 @@
                         "enum": [
                             "EPSG:4326"
                         ]
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -4527,7 +4759,29 @@
                 "operationId": "zaak_delete",
                 "summary": "Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.",
                 "description": "**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken van de verwijderde hoofzaak\n- `status` - alle statussen van de verwijderde zaak\n- `resultaat` - het resultaat van de verwijderde zaak\n- `rol` - alle rollen bij de zaak\n- `zaakobject` - alle zaakobjecten bij de zaak\n- `zaakeigenschap` - alle eigenschappen van de zaak\n- `zaakkenmerk` - alle kenmerken van de zaak\n- `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook\n  https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)\n- `klantcontact` - alle klantcontacten bij een zaak",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "",
@@ -4841,6 +5095,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "audittrails.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -5003,6 +5264,13 @@
                 },
                 "tags": [
                     "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "audittrails.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [
@@ -5182,6 +5450,27 @@
                         "schema": {
                             "$ref": "#/definitions/ZaakInformatieObject"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -5516,7 +5805,29 @@
             "delete": {
                 "operationId": "zaakinformatieobject_delete",
                 "description": "Verwijder een relatie tussen een zaak en een informatieobject",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "",
@@ -5844,6 +6155,27 @@
                         "schema": {
                             "$ref": "#/definitions/ZaakEigenschap"
                         }
+                    },
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Application that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identifier of the user that performs request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Explanation why the request is done",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
