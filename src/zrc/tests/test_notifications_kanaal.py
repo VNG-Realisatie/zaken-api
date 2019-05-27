@@ -1,6 +1,7 @@
 from io import StringIO
 from unittest.mock import patch
 
+from django.conf import settings
 from django.core.management import call_command
 from django.test import override_settings
 
@@ -25,11 +26,13 @@ class CreateNotifKanaalTestCase(APITestCase):
         stdout = StringIO()
         call_command('register_kanaal', 'kanaal_test', nc_api_root='https://example.com/api/v1', stdout=stdout)
 
+        protocol = 'https' if settings.IS_HTTPS else 'http'
+
         client.create.assert_called_once_with(
             'kanaal',
             {
                 'naam': 'kanaal_test',
-                'documentatieLink': 'https://example.com/ref/kanalen/#kanaal_test',
+                'documentatieLink': f'{protocol}://example.com/ref/kanalen/#kanaal_test',
                 'filters': [],
             }
         )
@@ -52,7 +55,7 @@ class CreateNotifKanaalTestCase(APITestCase):
             'kanaal',
             {
                 'naam': 'dummy-kanaal',
-                'documentatieLink': 'https://example.com/ref/kanalen/#dummy-kanaal',
+                'documentatieLink': 'http://example.com/ref/kanalen/#dummy-kanaal',
                 'filters': [],
             }
         )

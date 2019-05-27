@@ -332,9 +332,17 @@ class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
     )
     def test_informatieobject_invalid(self):
         zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
-        url = reverse('zaakinformatieobject-list', kwargs={'zaak_uuid': zaak.uuid})
+        zaak_url = reverse('zaak-detail', kwargs={
+            'version': 1,
+            'uuid': zaak.uuid
+        })
 
-        response = self.client.post(url, {'informatieobject': 'https://drc.nl/api/v1'})
+        url = reverse('zaakinformatieobject-list', kwargs={'version': 1})
+
+        response = self.client.post(url, {
+            'zaak': zaak_url,
+            'informatieobject': 'https://drc.nl/api/v1'
+        })
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
