@@ -16,6 +16,7 @@ from zrc.tests.utils import ZAAK_WRITE_KWARGS
 from ..scopes import (
     SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 )
+from .mixins import ZaakInformatieObjectSyncMixin
 
 # ZTC
 ZTC_ROOT = 'https://example.com/ztc/api/v1'
@@ -30,7 +31,7 @@ INFORMATIE_OBJECT = f'{DRC_ROOT}/enkelvoudiginformatieobjecten/1234'
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
-class AuditTrailTests(JWTAuthMixin, APITestCase):
+class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
@@ -159,10 +160,12 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
     def test_create_zaakinformatieobject_audittrail(self):
         zaak_data = self._create_zaak()
 
-        zaak_uuid = zaak_data['url'].split('/')[-1]
-        url = reverse(ZaakInformatieObject, kwargs={'zaak_uuid': zaak_uuid})
+        url = reverse('zaakinformatieobject-list', kwargs={
+            'version': '1',
+        })
 
         response = self.client.post(url, {
+            'zaak': zaak_data['url'],
             'informatieobject': INFORMATIE_OBJECT,
         })
 
