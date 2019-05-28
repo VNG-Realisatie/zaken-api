@@ -10,7 +10,7 @@ from vng_api_common.notifications.kanalen import Kanaal
 
 from zrc.datamodel.models import Zaak
 
-
+@override_settings(IS_HTTPS=True)
 class CreateNotifKanaalTestCase(APITestCase):
 
     @patch('zds_client.Client')
@@ -26,13 +26,11 @@ class CreateNotifKanaalTestCase(APITestCase):
         stdout = StringIO()
         call_command('register_kanaal', 'kanaal_test', nc_api_root='https://example.com/api/v1', stdout=stdout)
 
-        protocol = 'https' if settings.IS_HTTPS else 'http'
-
         client.create.assert_called_once_with(
             'kanaal',
             {
                 'naam': 'kanaal_test',
-                'documentatieLink': f'{protocol}://example.com/ref/kanalen/#kanaal_test',
+                'documentatieLink': 'https://example.com/ref/kanalen/#kanaal_test',
                 'filters': [],
             }
         )
@@ -55,7 +53,7 @@ class CreateNotifKanaalTestCase(APITestCase):
             'kanaal',
             {
                 'naam': 'dummy-kanaal',
-                'documentatieLink': 'http://example.com/ref/kanalen/#dummy-kanaal',
+                'documentatieLink': 'https://example.com/ref/kanalen/#dummy-kanaal',
                 'filters': [],
             }
         )
