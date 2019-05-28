@@ -32,8 +32,8 @@ def sync_create(relation: ZaakInformatieObject):
     protocol = 'https' if settings.IS_HTTPS else 'http'
     zaak_url = f'{protocol}://{domain}{path}'
 
-    logger.info("Remote object: %s", zaak_url)
-    logger.info("Zaak: %s", relation.informatieobject)
+    logger.info("Zaak: %s", zaak_url)
+    logger.info("Informatieobject: %s", relation.informatieobject)
 
     # Define the remote resource with which we need to interact
     resource = 'objectinformatieobject'
@@ -65,7 +65,7 @@ def sync_delete(relation: ZaakInformatieObject):
     protocol = 'https' if settings.IS_HTTPS else 'http'
     zaak_url = f'{protocol}://{domain}{path}'
 
-    logger.info("Remote object: %s", zaak_url)
+    logger.info("Zaak: %s", zaak_url)
     logger.info("Informatieobject: %s", relation.informatieobject)
 
     # Define the remote resource with which we need to interact

@@ -2335,14 +2335,13 @@ paths:
 
         relaties met andere objecten gerealiseerd:'
       description: "**Er wordt gevalideerd op**\n- geldigheid zaak URL\n- geldigheid\
-        \ informatieobject URL\n- de combinatie informatieobject en object moet uniek\
+        \ informatieobject URL\n- de combinatie informatieobject en zaak moet uniek\
         \ zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op\
         \ 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij\
         \ het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,\n \
         \ echter zonder de relatie-informatie.\n\n\nRegistreer welk(e) INFORMATIEOBJECT(en)\
         \ een ZAAK kent.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject\
-        \ URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT\n- bestaan van relatie\
-        \ ZAAK-INFORMATIEOBJECT in het DRC waar het\n  informatieobject leeft"
+        \ URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT"
       responses:
         '201':
           description: ''
