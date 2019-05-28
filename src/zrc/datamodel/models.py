@@ -518,13 +518,6 @@ class ZaakInformatieObject(models.Model):
         self.aard_relatie = RelatieAarden.from_object_type('zaak')
         super().save(*args, **kwargs)
 
-    def unique_representation(self):
-        if not hasattr(self, '_unique_representation'):
-            io_id = request_object_attribute(self.object, 'identificatie', ObjectTypes.zaak)
-            self._unique_representation = f"({self.informatieobject.unique_representation()}) - {io_id}"
-        return self._unique_representation
-
-
 
 class KlantContact(models.Model):
     """
