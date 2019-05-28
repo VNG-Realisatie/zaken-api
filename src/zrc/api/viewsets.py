@@ -27,7 +27,7 @@ from zrc.datamodel.models import (
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
-from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
+from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter, ZaakInformatieObjectFilter
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
     ZaakAuthScopesRequired, ZaakBaseAuthRequired,
@@ -338,6 +338,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   AuditTrailViewsetMixin,
+                                  CheckQueryParamsMixin,
                                   ListFilterByAuthorizationsMixin,
                                   viewsets.ModelViewSet):
 
@@ -394,6 +395,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT.
     """
     queryset = ZaakInformatieObject.objects.all()
+    filterset_class = ZaakInformatieObjectFilter
     serializer_class = ZaakInformatieObjectSerializer
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_ZAKEN
