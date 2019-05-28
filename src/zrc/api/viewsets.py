@@ -355,7 +355,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     **Er wordt gevalideerd op**
     - geldigheid zaak URL
     - geldigheid informatieobject URL
-    - de combinatie informatieobject en object moet uniek zijn
+    - de combinatie informatieobject en zaak moet uniek zijn
 
     **Opmerkingen**
     - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
@@ -369,8 +369,6 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     **Er wordt gevalideerd op**
     - geldigheid informatieobject URL
     - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
-    - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
-      informatieobject leeft
 
     list:
     Geef een lijst van relaties tussen INFORMATIEOBJECTen en ZAAKen.
