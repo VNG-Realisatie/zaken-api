@@ -27,7 +27,10 @@ from zrc.datamodel.models import (
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
-from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter, ZaakInformatieObjectFilter
+from .filters import (
+    ResultaatFilter, RolFilter, StatusFilter, ZaakFilter,
+    ZaakInformatieObjectFilter
+)
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
     ZaakAuthScopesRequired, ZaakBaseAuthRequired,
