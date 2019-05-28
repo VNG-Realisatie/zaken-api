@@ -1,6 +1,8 @@
 from vng_api_common.filtersets import FilterSet
 
-from zrc.datamodel.models import Resultaat, Rol, Status, Zaak, ZaakInformatieObject
+from zrc.datamodel.models import (
+    Resultaat, Rol, Status, Zaak, ZaakInformatieObject
+)
 
 
 class ZaakFilter(FilterSet):
