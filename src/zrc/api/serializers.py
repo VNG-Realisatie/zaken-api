@@ -513,12 +513,6 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             },
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if not hasattr(self, 'initial_data'):
-            return
-
     def save(self, **kwargs):
         # can't slap a transaction atomic on this, since ZRC/BRC query for the
         # relation!
