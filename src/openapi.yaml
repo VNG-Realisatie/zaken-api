@@ -2184,6 +2184,22 @@ paths:
       operationId: zaakinformatieobject_list
       summary: Geef een lijst van relaties tussen INFORMATIEOBJECTen en ZAAKen.
       description: Deze lijst kan gefilterd wordt met querystringparameters.
+      parameters:
+      - name: zaak
+        in: query
+        description: URL to the related resource
+        required: false
+        schema:
+          type: string
+          format: uri
+      - name: informatieobject
+        in: query
+        description: URL-referentie naar het informatieobject in het DRC, waar ook
+          de relatieinformatie opgevraagd kan worden.
+        required: false
+        schema:
+          type: string
+          format: uri
       responses:
         '200':
           description: ''
@@ -2199,6 +2215,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ZaakInformatieObject'
+        '400':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidatieFout'
         '401':
           description: ''
           headers:

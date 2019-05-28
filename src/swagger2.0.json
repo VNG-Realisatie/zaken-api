@@ -2626,7 +2626,24 @@
                 "operationId": "zaakinformatieobject_list",
                 "summary": "Geef een lijst van relaties tussen INFORMATIEOBJECTen en ZAAKen.",
                 "description": "Deze lijst kan gefilterd wordt met querystringparameters.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "zaak",
+                        "in": "query",
+                        "description": "URL to the related resource",
+                        "required": false,
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    {
+                        "name": "informatieobject",
+                        "in": "query",
+                        "description": "URL-referentie naar het informatieobject in het DRC, waar ook de relatieinformatie opgevraagd kan worden.",
+                        "required": false,
+                        "type": "string",
+                        "format": "uri"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -2635,6 +2652,20 @@
                             "items": {
                                 "$ref": "#/definitions/ZaakInformatieObject"
                             }
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
                         },
                         "headers": {
                             "API-version": {
