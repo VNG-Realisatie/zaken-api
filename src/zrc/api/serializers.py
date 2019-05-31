@@ -23,13 +23,13 @@ from vng_api_common.validators import (
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
+    KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
     ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .auth import get_drc_auth, get_zrc_auth, get_ztc_auth
+from .auth import get_auth
 from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
@@ -176,7 +176,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             },
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
-                'validators': [URLValidator(get_auth=get_ztc_auth)],
+                'validators': [URLValidator(get_auth=get_auth)],
             },
             'einddatum': {
                 'read_only': True
@@ -203,7 +203,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                     label=_("URL naar andere zaak"),
                     max_length=255,
                     validators=[URLValidator(
-                        get_auth=get_zrc_auth,
+                        get_auth=get_auth,
                         headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
                     )]
                 )
@@ -493,7 +493,7 @@ class ZaakInformatieObjectSerializer(NestedHyperlinkedModelSerializer):
             'zaak': {'lookup_field': 'uuid'},
             'informatieobject': {
                 'validators': [
-                    URLValidator(get_auth=get_drc_auth),
+                    URLValidator(get_auth=get_auth),
                     InformatieObjectUniqueValidator('zaak', 'informatieobject'),
                     ObjectInformatieObjectValidator(),
                 ]
@@ -621,7 +621,32 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
             'resultaat_type': {
                 'validators': [
                     # TODO: Add shape-validator when we know the shape.
-                    URLValidator(get_auth=get_ztc_auth),
+                    URLValidator(get_auth=get_auth),
                 ],
             }
         }
+
+
+class ZaakBesluitSerializer(NestedHyperlinkedModelSerializer):
+    parent_lookup_kwargs = {
+        'zaak_uuid': 'zaak__uuid'
+    }
+
+    class Meta:
+        model = ZaakBesluit
+        fields = ('url', 'besluit',)
+        extra_kwargs = {
+            'url': {
+                'lookup_field': 'uuid',
+            },
+            'zaak': {'lookup_field': 'uuid'},
+            'besluit': {
+                'validators': [
+                    URLValidator(get_auth=get_auth),
+                ]
+            }
+        }
+
+    def create(self, validated_data):
+        validated_data['zaak'] = self.context['parent_object']
+        return super().create(validated_data)

@@ -7,7 +7,7 @@ from django.db import migrations
 import requests
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 
-from zrc.api.auth import get_ztc_auth
+from zrc.api.auth import get_auth
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ def _get_zaaktype(zaak) -> dict:
     if zaak.zaaktype in zt_cache:
         return zt_cache[zaak.zaaktype]
 
-    auth = get_ztc_auth(zaak.zaaktype)
+    auth = get_auth(zaak.zaaktype)
     response = requests.get(zaak.zaaktype, headers=auth)
     response.raise_for_status()
 

@@ -543,3 +543,30 @@ class KlantContact(models.Model):
 
     def unique_representation(self):
         return f'{self.identificatie}'
+
+
+class ZaakBesluit(models.Model):
+    """
+    Model Besluit belonged to Zaak
+    """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
+    zaak = models.ForeignKey(Zaak, on_delete=models.CASCADE)
+    besluit = models.URLField(
+        "besluit",
+        help_text="URL-referentie naar het informatieobject in het BRC, waar "
+                  "ook de relatieinformatie opgevraagd kan worden.",
+        max_length=1000
+    )
+
+    objects = ZaakRelatedQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = "zaakbesluit"
+        verbose_name_plural = "zaakbesluiten"
+        unique_together = ('zaak', 'besluit')
+
+    def __str__(self) -> str:
+        return f"{self.zaak} - {self.besluit}"
