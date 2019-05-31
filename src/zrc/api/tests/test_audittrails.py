@@ -55,6 +55,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         with mock_client(self.responses):
             response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS, **HEADERS)
 
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
         return response.data
 
     def test_create_zaak_audittrail(self):
@@ -83,7 +85,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         response = self.client.post(url, resultaat_data, **ZAAK_WRITE_KWARGS)
         resultaat_response = response.data
 
-        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url'])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).order_by('pk')
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the Resultaat creation contains the
@@ -225,14 +227,11 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         self.assertEqual(audittrail.toelichting, toelichting)
 
     def test_read_audittrail(self):
-        response_zaak = self._create_zaak()
-        self.assertEqual(response_zaak.status_code, status.HTTP_201_CREATED)
+        self._create_zaak()
 
         zaak = Zaak.objects.get()
         audittrails = AuditTrail.objects.get()
         audittrails_url = reverse(audittrails, kwargs={'zaak_uuid': zaak.uuid})
-        self.autorisatie.scopes = [SCOPE_AUDITTRAILS_LEZEN]
-        self.autorisatie.save()
 
         response_audittrails = self.client.get(audittrails_url)
 
