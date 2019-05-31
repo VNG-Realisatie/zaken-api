@@ -1,3 +1,4 @@
+import logging
 import uuid
 from datetime import date
 
@@ -18,10 +19,13 @@ from vng_api_common.fields import (
     DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential, APIMixin
+from vng_api_common.utils import get_uuid_from_path, request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from .constants import BetalingsIndicatie
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
+
+logger = logging.getLogger(__name__)
 
 
 class Zaak(APIMixin, models.Model):
@@ -227,6 +231,9 @@ class Zaak(APIMixin, models.Model):
         status = self.status_set.order_by('-datum_status_gezet').first()
         return status.uuid if status else None
 
+    def unique_representation(self):
+        return f"{self.bronorganisatie} - {self.identificatie}"
+
 
 class Status(models.Model):
     """
@@ -261,9 +268,13 @@ class Status(models.Model):
     class Meta:
         verbose_name = 'status'
         verbose_name_plural = 'statussen'
+        unique_together = ('zaak', 'datum_status_gezet')
 
     def __str__(self):
         return "Status op {}".format(self.datum_status_gezet)
+
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {self.datum_status_gezet}"
 
 
 class Resultaat(models.Model):
@@ -295,6 +306,12 @@ class Resultaat(models.Model):
 
     def __str__(self):
         return "Resultaat ({})".format(self.uuid)
+
+    def unique_representation(self):
+        if not hasattr(self, '_unique_representation'):
+            result_type_desc = request_object_attribute(self.resultaat_type, 'omschrijving', 'resultaattype')
+            self._unique_representation = f"({self.zaak.unique_representation()}) - {result_type_desc}"
+        return self._unique_representation
 
 
 class Rol(models.Model):
@@ -328,6 +345,9 @@ class Rol(models.Model):
     class Meta:
         verbose_name = "Rol"
         verbose_name_plural = "Rollen"
+
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.betrokkene)}"
 
 
 class ZaakObject(models.Model):
@@ -378,6 +398,9 @@ class ZaakObject(models.Model):
                 self._object = client.retrieve(self.object_type.lower(), url=object_url)
         return self._object
 
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.object)}"
+
 
 class ZaakEigenschap(models.Model):
     """
@@ -417,6 +440,9 @@ class ZaakEigenschap(models.Model):
     class Meta:
         verbose_name = 'zaakeigenschap'
         verbose_name_plural = 'zaakeigenschappen'
+
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {self._naam}"
 
 
 class ZaakKenmerk(models.Model):
@@ -465,6 +491,12 @@ class ZaakInformatieObject(models.Model):
     def __str__(self) -> str:
         return f"{self.zaak} - {self.informatieobject}"
 
+    def unique_representation(self):
+        if not hasattr(self, '_unique_representation'):
+            io_id = request_object_attribute(self.informatieobject, 'identificatie', 'enkelvoudiginformatieobject')
+            self._unique_representation = f"({self.zaak.unique_representation()}) - {io_id}"
+        return self._unique_representation
+
 
 class KlantContact(models.Model):
     """
@@ -508,3 +540,6 @@ class KlantContact(models.Model):
                 gen_id = self.__class__.objects.filter(identificatie=identificatie).exists()
             self.identificatie = identificatie
         super().save(*args, **kwargs)
+
+    def unique_representation(self):
+        return f'{self.identificatie}'

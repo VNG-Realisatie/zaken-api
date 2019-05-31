@@ -225,7 +225,7 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         response = self.client.post(status_list_url, {
             'zaak': zaak_url,
             'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
-            'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+            'datumStatusGezet': isodatetime(2018, 10, 2, 10, 00, 00),
         })
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

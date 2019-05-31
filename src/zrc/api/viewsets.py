@@ -426,6 +426,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
 
+
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             AuditTrailCreateMixin,
                             NestedViewSetMixin,
@@ -504,6 +505,7 @@ class KlantContactViewSet(NotificationCreateMixin,
     lookup_field = 'uuid'
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
 
 class RolViewSet(NotificationCreateMixin,
                  AuditTrailCreateMixin,
@@ -590,6 +592,7 @@ class ResultaatViewSet(NotificationViewSetMixin,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
 
 class ZaakAuditTrailViewSet(AuditTrailViewSet):
     """
