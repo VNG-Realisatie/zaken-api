@@ -1,25 +1,17 @@
-import unittest
 from copy import deepcopy
 
 from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.audittrails.api.scopes import SCOPE_AUDITTRAILS_LEZEN
-from vng_api_common.authorizations.models import Applicatie
+from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTAuthMixin, generate_jwt, reverse
+from vng_api_common.tests import JWTAuthMixin, reverse
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import Resultaat, Zaak, ZaakInformatieObject
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
-
-from ..scopes import (
-    SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
-)
-
-# from vng_api_common.audittrails.api.scopes import SCOPE_AUDITTRAILS_LEZEN
 
 # ZTC
 ZTC_ROOT = 'https://example.com/ztc/api/v1'
@@ -189,6 +181,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
         # Delete the Zaak
         response = self.client.delete(zaak_data['url'], **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Verify that deleting the Zaak deletes all related AuditTrails
         audittrails = AuditTrail.objects.filter(hoofd_object=zaak_data['url'])
