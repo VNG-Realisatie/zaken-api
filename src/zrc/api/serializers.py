@@ -12,7 +12,9 @@ from rest_framework import serializers
 from rest_framework.settings import api_settings
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
-from vng_api_common.constants import Archiefstatus, RolOmschrijving
+from vng_api_common.constants import (
+    Archiefstatus, RelatieAarden, RolOmschrijving
+)
 from vng_api_common.models import APICredential
 from vng_api_common.serializers import (
     GegevensGroepSerializer, NestedGegevensGroepMixin,
@@ -22,7 +24,7 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import BetalingsIndicatie, RelatieAarden
+from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
     ZaakInformatieObject, ZaakKenmerk, ZaakObject
@@ -514,7 +516,7 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         }
 
     def save(self, **kwargs):
-        # can't slap a transaction atomic on this, since ZRC/BRC query for the
+        # can't slap a transaction atomic on this, since DRC queries for the
         # relation!
         try:
             return super().save(**kwargs)

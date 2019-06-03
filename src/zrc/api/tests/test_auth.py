@@ -10,6 +10,7 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import AuthCheckMixin, JWTAuthMixin, reverse
 
+from zrc.datamodel.models import ZaakInformatieObject
 from zrc.datamodel.tests.factories import (
     ResultaatFactory, RolFactory, StatusFactory, ZaakBesluitFactory,
     ZaakEigenschapFactory, ZaakFactory, ZaakInformatieObjectFactory,
@@ -103,8 +104,8 @@ class ZaakReadCorrectScopeTests(JWTAuthMixin, APITestCase):
             zaaktype='https://zaaktype.nl/ok',
             vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.zeer_geheim
         )
-        url1 = reverse('zaak-detail', kwargs={'uuid': zaak1.uuid})
-        url2 = reverse('zaak-detail', kwargs={'uuid': zaak2.uuid})
+        url1 = reverse(zaak1)
+        url2 = reverse(zaak2)
 
         response1 = self.client.get(url1, **ZAAK_READ_KWARGS)
         response2 = self.client.get(url2, **ZAAK_READ_KWARGS)
@@ -309,14 +310,14 @@ class ZaakInformatieObjectTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, API
             informatieobject=INFORMATIEOBJECT
         )
 
-        url = reverse('zaakinformatieobject-list')
+        url = reverse(ZaakInformatieObject)
 
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
 
-        zaak_url = reverse('zaak-detail', kwargs={'uuid': zio1.zaak.uuid})
+        zaak_url = reverse(zio1.zaak)
         self.assertEqual(response.data[0]['zaak'], f'http://testserver{zaak_url}')
 
 

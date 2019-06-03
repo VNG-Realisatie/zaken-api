@@ -11,8 +11,8 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.constants import (
-    Archiefnominatie, Archiefstatus, ObjectTypes, RolOmschrijving, RolTypes,
-    ZaakobjectTypes
+    Archiefnominatie, Archiefstatus, ObjectTypes, RelatieAarden,
+    RolOmschrijving, RolTypes, ZaakobjectTypes
 )
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
@@ -22,7 +22,7 @@ from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.utils import get_uuid_from_path, request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import BetalingsIndicatie, RelatieAarden
+from .constants import BetalingsIndicatie
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -512,6 +512,12 @@ class ZaakInformatieObject(models.Model):
 
     def __str__(self) -> str:
         return f"{self.zaak} - {self.informatieobject}"
+
+    def unique_representation(self):
+        if not hasattr(self, '_unique_representation'):
+            io_id = request_object_attribute(self.informatieobject, 'identificatie', 'enkelvoudiginformatieobject')
+            self._unique_representation = f"({self.zaak.unique_representation()}) - {io_id}"
+        return self._unique_representation
 
     def save(self, *args, **kwargs):
         # override to set aard_relatie

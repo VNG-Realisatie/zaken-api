@@ -162,9 +162,7 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     def test_create_zaakinformatieobject_audittrail(self):
         zaak_data = self._create_zaak()
 
-        url = reverse('zaakinformatieobject-list', kwargs={
-            'version': '1',
-        })
+        url = reverse(ZaakInformatieObject)
 
         response = self.client.post(url, {
             'zaak': zaak_data['url'],

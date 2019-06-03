@@ -11,6 +11,7 @@ from vng_api_common.validators import ResourceValidator, URLValidator
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
+from zrc.datamodel.models import ZaakInformatieObject
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import ZAAK_READ_KWARGS, ZAAK_WRITE_KWARGS
 
@@ -291,7 +292,7 @@ class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
         Hoofdzaak moet een andere zaak zijn dan de deelzaak zelf.
         """
         zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
-        detail_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+        detail_url = reverse(zaak)
 
         response = self.client.patch(
             detail_url,
@@ -310,7 +311,7 @@ class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
         url = reverse('zaak-list')
         hoofdzaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
         deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak, zaaktype='https://example.com/foo/bar')
-        deelzaak_url = reverse('zaak-detail', kwargs={'uuid': deelzaak.uuid})
+        deelzaak_url = reverse(deelzaak)
 
         response = self.client.post(
             url,
@@ -332,12 +333,9 @@ class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
     )
     def test_informatieobject_invalid(self):
         zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
-        zaak_url = reverse('zaak-detail', kwargs={
-            'version': 1,
-            'uuid': zaak.uuid
-        })
+        zaak_url = reverse(zaak)
 
-        url = reverse('zaakinformatieobject-list', kwargs={'version': 1})
+        url = reverse(ZaakInformatieObject)
 
         response = self.client.post(url, {
             'zaak': zaak_url,

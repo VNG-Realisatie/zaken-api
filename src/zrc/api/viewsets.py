@@ -393,7 +393,9 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     - informatieobject URL en zaak URL mogen niet veranderen
 
     destroy:
-    Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT.
+    Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT. De gespiegelde
+    relatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je
+    niets te doen.
     """
     queryset = ZaakInformatieObject.objects.all()
     filterset_class = ZaakInformatieObjectFilter
@@ -410,7 +412,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         'create': SCOPE_ZAKEN_CREATE,
         'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     audit = AUDIT_ZRC
 

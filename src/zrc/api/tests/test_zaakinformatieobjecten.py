@@ -2,16 +2,15 @@ import uuid
 from datetime import datetime
 
 from django.test import override_settings
-from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import JWTAuthMixin, get_validation_errors
+from vng_api_common.constants import RelatieAarden
+from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from vng_api_common.validators import IsImmutableValidator
 
-from zrc.datamodel.constants import RelatieAarden
 from zrc.datamodel.models import Zaak, ZaakInformatieObject
 from zrc.datamodel.tests.factories import (
     ZaakFactory, ZaakInformatieObjectFactory
@@ -33,7 +32,7 @@ def dt_to_api(dt: datetime):
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
-    list_url = reverse_lazy('zaakinformatieobject-list', kwargs={'version': '1'})
+    list_url = reverse(ZaakInformatieObject)
 
     heeft_alle_autorisaties = True
 
@@ -49,7 +48,7 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         beschrijving = 'some beschrijving'
         content = {
             'informatieobject': INFORMATIEOBJECT,
-            'zaak': 'http://testserver' + zaak_url,
+            'zaak': f'http://testserver{zaak_url}',
             'titel': titel,
             'beschrijving': beschrijving,
             'aardRelatieWeergave': 'bla'    # Should be ignored by the API
@@ -67,10 +66,7 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         self.assertEqual(stored_object.zaak, zaak)
         self.assertEqual(stored_object.aard_relatie, RelatieAarden.hoort_bij)
 
-        expected_url = reverse('zaakinformatieobject-detail', kwargs={
-            'version': '1',
-            'uuid': stored_object.uuid,
-        })
+        expected_url = reverse(stored_object)
 
         expected_response = content.copy()
         expected_response.update({
@@ -130,6 +126,7 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'unique')
 
+    @freeze_time('2018-09-20 12:00:00')
     def test_read_zaak(self):
         zio = ZaakInformatieObjectFactory.create(
             informatieobject=INFORMATIEOBJECT
@@ -157,7 +154,7 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
             'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.hoort_bij],
             'titel': '',
             'beschrijving': '',
-            'registratiedatum': dt_to_api(zio.registratiedatum),
+            'registratiedatum': '2018-09-20T12:00:00Z'
         }
 
         self.assertEqual(response.json(), expected)
