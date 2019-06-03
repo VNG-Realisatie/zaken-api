@@ -2320,7 +2320,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL to the related resource
+        description: URL to the related zaak
         required: false
         schema:
           type: string
@@ -2474,8 +2474,7 @@ paths:
         \ het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,\n \
         \ echter zonder de relatie-informatie.\n\n\nRegistreer welk(e) INFORMATIEOBJECT(en)\
         \ een ZAAK kent.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject\
-        \ URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT\n- bestaan van relatie\
-        \ ZAAK-INFORMATIEOBJECT in het DRC waar het\n  informatieobject leeft"
+        \ URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT"
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
@@ -3100,7 +3099,11 @@ paths:
         $ref: '#/components/requestBodies/ZaakInformatieObject'
     delete:
       operationId: zaakinformatieobject_delete
-      description: Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT.
+      description: 'Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT. De gespiegelde
+
+        relatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je
+
+        niets te doen.'
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
@@ -3241,7 +3244,7 @@ paths:
       - zaakinformatieobjecten
       security:
       - JWT-Claims:
-        - zaken.verwijderen
+        - (zaken.bijwerken | zaken.geforceerd-bijwerken | zaken.verwijderen)
     parameters:
     - name: uuid
       in: path
@@ -7328,7 +7331,6 @@ components:
       - hoofdObject
       - resource
       - resourceUrl
-      - resourceWeergave
       - wijzigingen
       type: object
       properties:
@@ -7446,13 +7448,6 @@ components:
           title: Toelichting
           description: Toelichting waarom de handeling is uitgevoerd
           type: string
-        resourceWeergave:
-          title: Resource weergave
-          description: Vriendelijke identificatie van het object
-          type: string
-          format: uri
-          maxLength: 200
-          minLength: 1
         aanmaakdatum:
           title: Aanmaakdatum
           description: De datum waarop de handeling is gedaan

@@ -2620,20 +2620,6 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/ValidatieFout"
-                        },
-                        "headers": {
-                            "API-version": {
-                                "schema": {
-                                    "type": "string"
-                                },
-                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
-                            }
-                        }
-                    },
                     "401": {
                         "description": "",
                         "schema": {
@@ -2792,7 +2778,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL to the related resource",
+                        "description": "URL to the related zaak",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2814,6 +2800,20 @@
                             "items": {
                                 "$ref": "#/definitions/ZaakInformatieObject"
                             }
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
                         },
                         "headers": {
                             "API-version": {
@@ -3707,7 +3707,7 @@
             },
             "delete": {
                 "operationId": "zaakinformatieobject_delete",
-                "description": "Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT.",
+                "description": "Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT. De gespiegelde\nrelatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je\nniets te doen.",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -3876,7 +3876,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.verwijderen"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken | zaken.verwijderen)"
                         ]
                     }
                 ]
@@ -8733,7 +8733,6 @@
                 "hoofdObject",
                 "resource",
                 "resourceUrl",
-                "resourceWeergave",
                 "wijzigingen"
             ],
             "type": "object",
@@ -8828,14 +8827,6 @@
                     "title": "Toelichting",
                     "description": "Toelichting waarom de handeling is uitgevoerd",
                     "type": "string"
-                },
-                "resourceWeergave": {
-                    "title": "Resource weergave",
-                    "description": "Vriendelijke identificatie van het object",
-                    "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
-                    "minLength": 1
                 },
                 "aanmaakdatum": {
                     "title": "Aanmaakdatum",
