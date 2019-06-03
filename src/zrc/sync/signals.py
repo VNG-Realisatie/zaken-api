@@ -38,13 +38,10 @@ def sync_create(relation: ZaakInformatieObject):
     # Define the remote resource with which we need to interact
     resource = 'objectinformatieobject'
     client = Client.from_url(relation.informatieobject)
-
-    # TODO?
     client.auth = APICredential.get_auth(relation.informatieobject)
 
     try:
-        operation_function = getattr(client, operation)
-        operation_function(
+        client.create(
             resource,
             {'object': zaak_url, 'informatieobject': relation.informatieobject, 'objectType': 'zaak'}
         )
@@ -73,8 +70,12 @@ def sync_delete(relation: ZaakInformatieObject):
     client = Client.from_url(relation.informatieobject)
     client.auth = APICredential.get_auth(relation.informatieobject)
 
-    # Retrieve the url of the relation between the object and the
-    response = client.list(resource, query_params={'object': zaak_url})
+    # Retrieve the url of the relation between the object and
+    # the informatieobject
+    response = client.list(resource, query_params={
+        'object': zaak_url,
+        'informatieobject': relation.informatieobject
+    })
     try:
         relation_url = response[0]['url']
     except IndexError as exc:
@@ -83,8 +84,7 @@ def sync_delete(relation: ZaakInformatieObject):
         raise IndexError(msg) from exc
 
     try:
-        operation_function = getattr(client, operation)
-        operation_function(resource, url=relation_url)
+        client.delete(resource, url=relation_url)
     except Exception as exc:
         logger.error(f"Could not {operation} remote relation", exc_info=1)
         raise SyncError(f"Could not {operation} remote relation") from exc

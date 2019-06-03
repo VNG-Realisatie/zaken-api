@@ -43,9 +43,7 @@ class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         RolFactory.create(zaak=zaak)
         ResultaatFactory.create(zaak=zaak)
         ZaakObjectFactory.create(zaak=zaak)
-        ZaakInformatieObjectFactory.create(
-            zaak=zaak,
-        )
+        ZaakInformatieObjectFactory.create(zaak=zaak)
         KlantContactFactory.create(zaak=zaak)
 
         zaak_delete_url = get_operation_url('zaak_delete', uuid=zaak.uuid)
