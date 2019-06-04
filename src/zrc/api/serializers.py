@@ -642,7 +642,7 @@ class ZaakBesluitSerializer(NestedHyperlinkedModelSerializer):
             'zaak': {'lookup_field': 'uuid'},
             'besluit': {
                 'validators': [
-                    URLValidator(get_auth=get_auth),
+                    # URLValidator(get_auth=get_auth),
                 ]
             }
         }
