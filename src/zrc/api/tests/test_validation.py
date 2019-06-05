@@ -13,7 +13,7 @@ from zds_client.tests.mocks import mock_client
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import ZaakInformatieObject
 from zrc.datamodel.tests.factories import ZaakFactory
-from zrc.tests.utils import ZAAK_READ_KWARGS, ZAAK_WRITE_KWARGS
+from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
 from ..scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
@@ -29,6 +29,7 @@ RESPONSES = {
         ]
     }
 }
+
 
 class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
@@ -277,6 +278,40 @@ class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
         }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_validate_opschorting_required_fields_partial_update(self):
+        zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
+        zaak_url = reverse(zaak)
+
+        response = self.client.patch(zaak_url, {
+            'opschorting': {
+                'wrongfield': 'bla'
+            }
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        for field in ['opschorting.indicatie', 'opschorting.reden']:
+            with self.subTest(field=field):
+                error = get_validation_errors(response, field)
+                self.assertEqual(error['code'], 'required')
+
+    def test_validate_verlenging_required_fields_partial_update(self):
+        zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
+        zaak_url = reverse(zaak)
+
+        response = self.client.patch(zaak_url, {
+            'verlenging': {
+                'wrongfield': 'bla'
+            }
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        for field in ['verlenging.reden', 'verlenging.duur']:
+            with self.subTest(field=field):
+                error = get_validation_errors(response, field)
+                self.assertEqual(error['code'], 'required')
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
