@@ -200,6 +200,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             },
             'hoofdzaak': {
                 'lookup_field': 'uuid',
+                'queryset': Zaak.objects.all(),
                 'validators': [NotSelfValidator(), HoofdzaakValidator()],
             },
             'relevante_andere_zaken': {
