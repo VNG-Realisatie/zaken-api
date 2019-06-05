@@ -11,8 +11,8 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.constants import (
-    Archiefnominatie, Archiefstatus, ObjectTypes, RelatieAarden,
-    RolOmschrijving, RolTypes, ZaakobjectTypes
+    Archiefnominatie, Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes,
+    ZaakobjectTypes
 )
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
@@ -166,7 +166,7 @@ class Zaak(APIMixin, models.Model):
     })
 
     opschorting_indicatie = models.BooleanField(
-        _("indicatie opschorting"), default=False,
+        _("indicatie opschorting"), default=False, blank=True,
         help_text=_("Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.")
     )
     opschorting_reden = models.CharField(
