@@ -2,6 +2,28 @@
 Wijzigingen
 ===========
 
+0.16.0 (2019-05-22)
+===================
+
+First release towards release candidate
+
+* Added representation function to all models
+* Fixed fetching ``relevanteAndereZaken`` with correct headers
+* Translated API docs
+* Added ``ZaakBesluit`` to easily retrieve besluiten from the ``Zaak`` object.
+  Relation is created by BRC.
+* Applied fixes to nested ``GegevensGroep``-validation
+* Enabled config view to diagnose problems
+* Bumped to Django 2.2 (LTS)
+* Removed unused dependencies
+
+Breaking changes
+----------------
+
+* Moved relation information ``ZaakInformatieObject`` to ZRC. Relations are now
+  created here instead of DRC, and are synced from ZRC to DRC. It is now a
+  root resource instead of a subresource.
+
 0.15.0 (2019-05-22)
 ===================
 
