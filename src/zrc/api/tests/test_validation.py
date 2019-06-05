@@ -11,16 +11,34 @@ from vng_api_common.validators import ResourceValidator, URLValidator
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
+from zrc.datamodel.models import ZaakInformatieObject
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from ..scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+from ..scopes import (
+    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+)
+
+ZAAKTYPE = 'https://example.com/foo/bar'
+
+RESPONSES = {
+    ZAAKTYPE: {
+        'url': ZAAKTYPE,
+        'productenOfDiensten': [
+            'https://example.com/product/123',
+        ]
+    }
+}
 
 
 class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
-    scopes = [SCOPE_ZAKEN_CREATE]
-    zaaktype = 'https://example.com/foo/bar'
+    scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_ALLES_LEZEN]
+    zaaktype = ZAAKTYPE
+
+    # Needed to pass Django's URLValidator, since the default APIClient domain
+    # is not considered a valid URL by Django
+    valid_testserver_url = 'testserver.nl'
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
     def test_validate_zaaktype_invalid(self):
@@ -126,6 +144,44 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, 'relevanteAndereZaken.0')
         self.assertEqual(validation_error['code'], URLValidator.code)
 
+    @override_settings(
+        LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+        ALLOWED_HOSTS=[valid_testserver_url]
+    )
+    def test_relevante_andere_zaken_valid_zaak_url(self):
+        url = reverse('zaak-list')
+
+        zaak_body = {
+            'zaaktype': ZAAKTYPE,
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-06-11',
+            'startdatum': '2018-06-11',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+        }
+
+        with mock_client(RESPONSES):
+            response = self.client.post(
+                url,
+                zaak_body,
+                HTTP_HOST=self.valid_testserver_url,
+                **ZAAK_WRITE_KWARGS
+            )
+
+        andere_zaak_url = response.data['url']
+
+        zaak_body.update({'relevanteAndereZaken': [andere_zaak_url]})
+
+        with mock_client(RESPONSES):
+            response = self.client.post(
+                url,
+                zaak_body,
+                HTTP_HOST=self.valid_testserver_url,
+                **ZAAK_WRITE_KWARGS
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_laatste_betaaldatum_betaalindicatie_nvt(self):
         """
@@ -173,16 +229,7 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
     def test_invalide_product_of_dienst(self):
         url = reverse('zaak-list')
 
-        responses = {
-            'https://example.com/foo/bar': {
-                'url': 'https://example.com/foo/bar',
-                'productenOfDiensten': [
-                    'https://example.com/product/123',
-                ]
-            }
-        }
-
-        with mock_client(responses):
+        with mock_client(RESPONSES):
             response = self.client.post(url, {
                 'zaaktype': 'https://example.com/foo/bar',
                 'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
@@ -232,6 +279,40 @@ class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_validate_opschorting_required_fields_partial_update(self):
+        zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
+        zaak_url = reverse(zaak)
+
+        response = self.client.patch(zaak_url, {
+            'opschorting': {
+                'wrongfield': 'bla'
+            }
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        for field in ['opschorting.indicatie', 'opschorting.reden']:
+            with self.subTest(field=field):
+                error = get_validation_errors(response, field)
+                self.assertEqual(error['code'], 'required')
+
+    def test_validate_verlenging_required_fields_partial_update(self):
+        zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
+        zaak_url = reverse(zaak)
+
+        response = self.client.patch(zaak_url, {
+            'verlenging': {
+                'wrongfield': 'bla'
+            }
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        for field in ['verlenging.reden', 'verlenging.duur']:
+            with self.subTest(field=field):
+                error = get_validation_errors(response, field)
+                self.assertEqual(error['code'], 'required')
+
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
@@ -246,7 +327,7 @@ class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
         Hoofdzaak moet een andere zaak zijn dan de deelzaak zelf.
         """
         zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
-        detail_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+        detail_url = reverse(zaak)
 
         response = self.client.patch(
             detail_url,
@@ -265,7 +346,7 @@ class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
         url = reverse('zaak-list')
         hoofdzaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
         deelzaak = ZaakFactory.create(hoofdzaak=hoofdzaak, zaaktype='https://example.com/foo/bar')
-        deelzaak_url = reverse('zaak-detail', kwargs={'uuid': deelzaak.uuid})
+        deelzaak_url = reverse(deelzaak)
 
         response = self.client.post(
             url,
@@ -287,9 +368,14 @@ class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
     )
     def test_informatieobject_invalid(self):
         zaak = ZaakFactory.create(zaaktype='https://example.com/foo/bar')
-        url = reverse('zaakinformatieobject-list', kwargs={'zaak_uuid': zaak.uuid})
+        zaak_url = reverse(zaak)
 
-        response = self.client.post(url, {'informatieobject': 'https://drc.nl/api/v1'})
+        url = reverse(ZaakInformatieObject)
+
+        response = self.client.post(url, {
+            'zaak': zaak_url,
+            'informatieobject': 'https://drc.nl/api/v1'
+        })
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

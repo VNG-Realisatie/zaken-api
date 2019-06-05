@@ -8,6 +8,7 @@ from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 from zrc.api.scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_ALLES_VERWIJDEREN
 )
+from zrc.api.tests.mixins import ZaakInformatieObjectSyncMixin
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
     ZaakInformatieObject, ZaakObject
@@ -24,7 +25,7 @@ from .utils import ZAAK_WRITE_KWARGS
 ZAAKTYPE = 'https://example.com/api/v1/zaaktype/1'
 
 
-class US349TestCase(JWTAuthMixin, APITestCase):
+class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_ALLES_VERWIJDEREN]
     zaaktype = ZAAKTYPE

@@ -1,3 +1,4 @@
+import logging
 import uuid
 from datetime import date
 
@@ -10,7 +11,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from vng_api_common.constants import (
-    Archiefnominatie, Archiefstatus, RolOmschrijving, RolTypes,
+    Archiefnominatie, Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes,
     ZaakobjectTypes
 )
 from vng_api_common.descriptors import GegevensGroepType
@@ -18,10 +19,13 @@ from vng_api_common.fields import (
     DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential, APIMixin
+from vng_api_common.utils import get_uuid_from_path, request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from .constants import BetalingsIndicatie
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
+
+logger = logging.getLogger(__name__)
 
 
 class Zaak(APIMixin, models.Model):
@@ -162,7 +166,7 @@ class Zaak(APIMixin, models.Model):
     })
 
     opschorting_indicatie = models.BooleanField(
-        _("indicatie opschorting"), default=False,
+        _("indicatie opschorting"), default=False, blank=True,
         help_text=_("Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.")
     )
     opschorting_reden = models.CharField(
@@ -227,6 +231,9 @@ class Zaak(APIMixin, models.Model):
         status = self.status_set.order_by('-datum_status_gezet').first()
         return status.uuid if status else None
 
+    def unique_representation(self):
+        return f"{self.bronorganisatie} - {self.identificatie}"
+
 
 class Status(models.Model):
     """
@@ -261,9 +268,13 @@ class Status(models.Model):
     class Meta:
         verbose_name = 'status'
         verbose_name_plural = 'statussen'
+        unique_together = ('zaak', 'datum_status_gezet')
 
     def __str__(self):
         return "Status op {}".format(self.datum_status_gezet)
+
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {self.datum_status_gezet}"
 
 
 class Resultaat(models.Model):
@@ -295,6 +306,12 @@ class Resultaat(models.Model):
 
     def __str__(self):
         return "Resultaat ({})".format(self.uuid)
+
+    def unique_representation(self):
+        if not hasattr(self, '_unique_representation'):
+            result_type_desc = request_object_attribute(self.resultaat_type, 'omschrijving', 'resultaattype')
+            self._unique_representation = f"({self.zaak.unique_representation()}) - {result_type_desc}"
+        return self._unique_representation
 
 
 class Rol(models.Model):
@@ -328,6 +345,9 @@ class Rol(models.Model):
     class Meta:
         verbose_name = "Rol"
         verbose_name_plural = "Rollen"
+
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.betrokkene)}"
 
 
 class ZaakObject(models.Model):
@@ -378,6 +398,9 @@ class ZaakObject(models.Model):
                 self._object = client.retrieve(self.object_type.lower(), url=object_url)
         return self._object
 
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.object)}"
+
 
 class ZaakEigenschap(models.Model):
     """
@@ -418,6 +441,9 @@ class ZaakEigenschap(models.Model):
         verbose_name = 'zaakeigenschap'
         verbose_name_plural = 'zaakeigenschappen'
 
+    def unique_representation(self):
+        return f"({self.zaak.unique_representation()}) - {self._naam}"
+
 
 class ZaakKenmerk(models.Model):
     """
@@ -454,6 +480,28 @@ class ZaakInformatieObject(models.Model):
                   "ook de relatieinformatie opgevraagd kan worden.",
         max_length=1000
     )
+    aard_relatie = models.CharField(
+        "aard relatie", max_length=20,
+        choices=RelatieAarden.choices
+    )
+
+    # relatiegegevens
+    titel = models.CharField(
+        "titel", max_length=200, blank=True,
+        help_text="De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is."
+    )
+    beschrijving = models.TextField(
+        "beschrijving", blank=True,
+        help_text="Een op het object gerichte beschrijving van de inhoud van"
+                  "het INFORMATIEOBJECT."
+    )
+    registratiedatum = models.DateTimeField(
+        "registratiedatum", auto_now_add=True,
+        help_text="De datum waarop de behandelende organisatie het "
+                  "INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. "
+                  "Geldige waardes zijn datumtijden gelegen op of voor de "
+                  "huidige datum en tijd."
+    )
 
     objects = ZaakRelatedQuerySet.as_manager()
 
@@ -464,6 +512,17 @@ class ZaakInformatieObject(models.Model):
 
     def __str__(self) -> str:
         return f"{self.zaak} - {self.informatieobject}"
+
+    def unique_representation(self):
+        if not hasattr(self, '_unique_representation'):
+            io_id = request_object_attribute(self.informatieobject, 'identificatie', 'enkelvoudiginformatieobject')
+            self._unique_representation = f"({self.zaak.unique_representation()}) - {io_id}"
+        return self._unique_representation
+
+    def save(self, *args, **kwargs):
+        # override to set aard_relatie
+        self.aard_relatie = RelatieAarden.from_object_type('zaak')
+        super().save(*args, **kwargs)
 
 
 class KlantContact(models.Model):
@@ -508,3 +567,33 @@ class KlantContact(models.Model):
                 gen_id = self.__class__.objects.filter(identificatie=identificatie).exists()
             self.identificatie = identificatie
         super().save(*args, **kwargs)
+
+    def unique_representation(self):
+        return f'{self.identificatie}'
+
+
+class ZaakBesluit(models.Model):
+    """
+    Model Besluit belonged to Zaak
+    """
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4,
+        help_text="Unieke resource identifier (UUID4)"
+    )
+    zaak = models.ForeignKey(Zaak, on_delete=models.CASCADE)
+    besluit = models.URLField(
+        "besluit",
+        help_text="URL-referentie naar het informatieobject in het BRC, waar "
+                  "ook de relatieinformatie opgevraagd kan worden.",
+        max_length=1000
+    )
+
+    objects = ZaakRelatedQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = "zaakbesluit"
+        verbose_name_plural = "zaakbesluiten"
+        unique_together = ('zaak', 'besluit')
+
+    def __str__(self) -> str:
+        return f"{self.zaak} - {self.besluit}"

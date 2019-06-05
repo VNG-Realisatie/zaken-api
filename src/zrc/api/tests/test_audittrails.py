@@ -1,21 +1,18 @@
-import unittest
 from copy import deepcopy
 
 from django.test import override_settings
 
+from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
-from vng_api_common.authorizations.models import Applicatie
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTAuthMixin, generate_jwt, reverse
+from vng_api_common.tests import JWTAuthMixin, reverse
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import Resultaat, Zaak, ZaakInformatieObject
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from ..scopes import (
-    SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
-)
+from .mixins import ZaakInformatieObjectSyncMixin
 
 # ZTC
 ZTC_ROOT = 'https://example.com/ztc/api/v1'
@@ -30,7 +27,7 @@ INFORMATIE_OBJECT = f'{DRC_ROOT}/enkelvoudiginformatieobjecten/1234'
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
 )
-class AuditTrailTests(JWTAuthMixin, APITestCase):
+class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
@@ -44,7 +41,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         }
     }
 
-    def _create_zaak(self):
+    def _create_zaak(self, **HEADERS):
         url = reverse(Zaak)
 
         zaak_data = {
@@ -57,7 +54,9 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
             'productenOfDiensten': ['https://example.com/product/123']
         }
         with mock_client(self.responses):
-            response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS)
+            response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS, **HEADERS)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         return response.data
 
@@ -87,7 +86,7 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         response = self.client.post(url, resultaat_data, **ZAAK_WRITE_KWARGS)
         resultaat_response = response.data
 
-        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url'])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).order_by('pk')
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the Resultaat creation contains the
@@ -159,10 +158,10 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
     def test_create_zaakinformatieobject_audittrail(self):
         zaak_data = self._create_zaak()
 
-        zaak_uuid = zaak_data['url'].split('/')[-1]
-        url = reverse(ZaakInformatieObject, kwargs={'zaak_uuid': zaak_uuid})
+        url = reverse(ZaakInformatieObject)
 
         response = self.client.post(url, {
+            'zaak': zaak_data['url'],
             'informatieobject': INFORMATIE_OBJECT,
         })
 
@@ -185,6 +184,8 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
 
         # Delete the Zaak
         response = self.client.delete(zaak_data['url'], **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Verify that deleting the Zaak deletes all related AuditTrails
         audittrails = AuditTrail.objects.filter(hoofd_object=zaak_data['url'])
@@ -215,3 +216,24 @@ class AuditTrailTests(JWTAuthMixin, APITestCase):
         # Verify that the user representation stored in the AuditTrail matches
         # the user representation in the JWT token for the request
         self.assertEqual(audittrail.gebruikers_weergave, self.user_representation)
+
+    def test_audittrail_toelichting(self):
+        toelichting = 'blaaaa'
+        zaak_response = self._create_zaak(HTTP_X_AUDIT_TOELICHTING=toelichting)
+
+        audittrail = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).get()
+
+        # Verify that the toelichting stored in the AuditTrail matches
+        # the X-Audit-Toelichting header in the HTTP request
+        self.assertEqual(audittrail.toelichting, toelichting)
+
+    def test_read_audittrail(self):
+        self._create_zaak()
+
+        zaak = Zaak.objects.get()
+        audittrails = AuditTrail.objects.get()
+        audittrails_url = reverse(audittrails, kwargs={'zaak_uuid': zaak.uuid})
+
+        response_audittrails = self.client.get(audittrails_url)
+
+        self.assertEqual(response_audittrails.status_code, status.HTTP_200_OK)

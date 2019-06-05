@@ -63,7 +63,6 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'rest_framework_gis',
-    'rest_framework_filters',
     'django_markup',
     'solo',
 
@@ -71,6 +70,7 @@ INSTALLED_APPS = [
     'zrc.accounts',
     'zrc.api',
     'zrc.datamodel',
+    'zrc.sync',
     'zrc.utils',
 ]
 

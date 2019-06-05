@@ -18,6 +18,7 @@ from zrc.api.scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
     SCOPEN_ZAKEN_HEROPENEN
 )
+from zrc.api.tests.mixins import ZaakInformatieObjectSyncMixin
 from zrc.datamodel.tests.factories import (
     ZaakEigenschapFactory, ZaakFactory, ZaakInformatieObjectFactory,
     ZaakObjectFactory
@@ -43,7 +44,7 @@ VERANTWOORDELIJKE_ORGANISATIE = '517439943'
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
     ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient',
 )
-class US345TestCase(JWTAuthMixin, APITestCase):
+class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     # TODO: Required for PATCH to work! This should work without or otherwise, why can I create a ZAAK without this?

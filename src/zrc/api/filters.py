@@ -1,6 +1,8 @@
 from vng_api_common.filtersets import FilterSet
 
-from zrc.datamodel.models import Resultaat, Rol, Status, Zaak
+from zrc.datamodel.models import (
+    Resultaat, Rol, Status, Zaak, ZaakInformatieObject
+)
 
 
 class ZaakFilter(FilterSet):
@@ -42,4 +44,13 @@ class ResultaatFilter(FilterSet):
         fields = (
             'zaak',
             'resultaat_type',
+        )
+
+
+class ZaakInformatieObjectFilter(FilterSet):
+    class Meta:
+        model = ZaakInformatieObject
+        fields = (
+            'zaak',
+            'informatieobject',
         )

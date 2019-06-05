@@ -6,7 +6,7 @@ pytz
 raven
 markdown
 
-Django==2.0.13
+Django
 django-axes
 django-choices
 django-cors-middleware
@@ -16,7 +16,6 @@ djangorestframework
 djangorestframework-gis
 django-filter
 djangorestframework-camel-case
-djangorestframework-filters
 drf-yasg
 drf-writable-nested
 vng-api-common
