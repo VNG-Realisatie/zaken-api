@@ -27,7 +27,10 @@ from zrc.datamodel.models import (
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
-from .filters import ResultaatFilter, RolFilter, StatusFilter, ZaakFilter
+from .filters import (
+    ResultaatFilter, RolFilter, StatusFilter, ZaakFilter,
+    ZaakInformatieObjectFilter
+)
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
     ZaakAuthScopesRequired, ZaakBaseAuthRequired,
@@ -337,93 +340,82 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
 
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
-                                  AuditTrailCreateMixin,
-                                  AuditTrailDestroyMixin,
-                                  NestedViewSetMixin,
+                                  AuditTrailViewsetMixin,
+                                  CheckQueryParamsMixin,
                                   ListFilterByAuthorizationsMixin,
-                                  mixins.CreateModelMixin,
-                                  mixins.DestroyModelMixin,
-                                  viewsets.ReadOnlyModelViewSet):
+                                  viewsets.ModelViewSet):
 
     """
     Opvragen en bewerken van Zaak-Informatieobject relaties.
 
     create:
-    OPGELET: dit endpoint hoor je als client NIET zelf aan te spreken.
+    Registreer een INFORMATIEOBJECT bij een ZAAK. Er worden twee types van
+    relaties met andere objecten gerealiseerd:
 
-    DRCs gebruiken deze endpoint bij het synchroniseren van relaties. De
-    endpoint dient dus bij ZRC providers geimplementeerd te worden, maar voor
-    clients is die niet relevant.
+    **Er wordt gevalideerd op**
+    - geldigheid zaak URL
+    - geldigheid informatieobject URL
+    - de combinatie informatieobject en zaak moet uniek zijn
+
+    **Opmerkingen**
+    - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
+      wordt ook door het systeem gezet.
+    - Bij het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,
+      echter zonder de relatie-informatie.
+
 
     Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
 
     **Er wordt gevalideerd op**
     - geldigheid informatieobject URL
     - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
-    - bestaan van relatie ZAAK-INFORMATIEOBJECT in het DRC waar het
-      informatieobject leeft
 
     list:
-    Geef een lijst van relaties tussen ZAAKen en INFORMATIEOBJECTen.
+    Geef een lijst van relaties tussen INFORMATIEOBJECTen en ZAAKen.
+
+    Deze lijst kan gefilterd wordt met querystringparameters.
 
     retrieve:
-    Geef een informatieobject terug wat gekoppeld is aan de huidige zaak
+    Geef de details van een relatie tussen een INFORMATIEOBJECT en een ZAAK.
+
+    update:
+    Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens
+    van de relatie bewerken, en niet de relatie zelf aanpassen.
+
+    **Er wordt gevalideerd op**
+    - informatieobject URL en zaak URL mogen niet veranderen
+
+    partial_update:
+    Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens
+    van de relatie bewerken, en niet de relatie zelf aanpassen.
+
+    **Er wordt gevalideerd op**
+    - informatieobject URL en zaak URL mogen niet veranderen
 
     destroy:
-    Verwijder een relatie tussen een zaak en een informatieobject
+    Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT. De gespiegelde
+    relatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je
+    niets te doen.
     """
     queryset = ZaakInformatieObject.objects.all()
+    filterset_class = ZaakInformatieObjectFilter
     serializer_class = ZaakInformatieObjectSerializer
-    permission_classes = (
-        permission_class_factory(
-            base=ZaakBaseAuthRequired,
-            get_obj='_get_zaak',
-        ),
-    )
     lookup_field = 'uuid'
+    notifications_kanaal = KANAAL_ZAKEN
+    notifications_main_resource_key = 'zaak'
 
+    # TODO new permission classes and scopes needed?
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+        'create': SCOPE_ZAKEN_CREATE,
+        'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
-
-    parent_retrieve_kwargs = {
-        'zaak_uuid': 'uuid',
-    }
-    notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
-    def _get_zaak(self):
-        if not hasattr(self, '_zaak'):
-            filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
-            self._zaak = get_object_or_404(Zaak, **filters)
-        return self._zaak
-
-    def list(self, request, *args, **kwargs):
-        zaak = self._get_zaak()
-        permission = ZaakAuthScopesRequired()
-        if not permission.has_object_permission(self.request, self, zaak):
-            raise PermissionDenied
-        return super().list(request, *args, **kwargs)
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        # DRF introspection
-        if not self.kwargs:
-            return context
-
-        context['parent_object'] = self._get_zaak()
-        return context
-
-    def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:
-        zaak = self._get_zaak()
-        return zaak.get_absolute_api_url(request=self.request)
-
-    def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
-        zaak = self._get_zaak()
-        return zaak.get_absolute_api_url(request=self.request)
 
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,

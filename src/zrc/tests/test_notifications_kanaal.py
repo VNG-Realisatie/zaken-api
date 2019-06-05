@@ -10,6 +10,7 @@ from vng_api_common.notifications.kanalen import Kanaal
 from zrc.datamodel.models import Zaak
 
 
+@override_settings(IS_HTTPS=True)
 class CreateNotifKanaalTestCase(APITestCase):
 
     @patch('zds_client.Client')

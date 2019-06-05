@@ -3,6 +3,8 @@ from django.test import override_settings
 from rest_framework.test import APITestCase
 from zds_client.tests.mocks import mock_client
 
+from zrc.api.tests.mixins import ZaakInformatieObjectSyncMixin
+
 from .factories import (
     KlantContactFactory, ResultaatFactory, RolFactory, StatusFactory,
     ZaakEigenschapFactory, ZaakFactory, ZaakInformatieObjectFactory,
@@ -11,9 +13,9 @@ from .factories import (
 
 
 @override_settings(
-    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient',
 )
-class UniqueRepresentationTestCase(APITestCase):
+class UniqueRepresentationTestCase(ZaakInformatieObjectSyncMixin, APITestCase):
 
     def test_zaak(self):
         zaak = ZaakFactory(
