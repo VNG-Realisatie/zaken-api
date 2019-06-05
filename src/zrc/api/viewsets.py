@@ -5,11 +5,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
 )
+from vng_api_common.filters import Backend
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
@@ -163,7 +165,9 @@ class ZaakViewSet(NotificationViewSetMixin,
     queryset = Zaak.objects.prefetch_related('deelzaken').order_by('-pk')
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
+    filter_backends = (Backend, OrderingFilter)
     filterset_class = ZaakFilter
+    ordering_fields = ('startdatum', )
     lookup_field = 'uuid'
     pagination_class = PageNumberPagination
 
