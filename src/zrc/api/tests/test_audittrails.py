@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, reverse
+from vng_api_common.utils import get_uuid_from_path
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import Resultaat, Zaak, ZaakInformatieObject
@@ -41,7 +42,7 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
     }
 
-    def _create_zaak(self, **HEADERS):
+    def _create_zaak(self, **headers):
         url = reverse(Zaak)
 
         zaak_data = {
@@ -54,7 +55,7 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             'productenOfDiensten': ['https://example.com/product/123']
         }
         with mock_client(self.responses):
-            response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS, **HEADERS)
+            response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS, **headers)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -241,7 +242,8 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     def test_audittrail_resource_weergave(self):
         zaak_response = self._create_zaak()
 
-        zaak_unique_representation = Zaak.objects.get(uuid=zaak_response['uuid']).unique_representation()
+        zaak_uuid = get_uuid_from_path(zaak_response['url'])
+        zaak_unique_representation = Zaak.objects.get(uuid=zaak_uuid).unique_representation()
 
         audittrail = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).get()
 

@@ -7,6 +7,7 @@ Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/163
 Zie ook: test_userstory_39.py, test_userstory_169.py
 """
 import datetime
+import uuid
 
 from django.test import override_settings
 
@@ -26,13 +27,13 @@ from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import ZAAK_WRITE_KWARGS, parse_isodatetime
 
-CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
+CATALOGUS = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 STATUS_TYPE = f'{ZAAKTYPE}/statustypen/1'
 
 VERANTWOORDELIJKE_ORGANISATIE = '517439943'
-AVG_INZAGE_VERZOEK = 'https://www.example.com/orc/api/v1/avg/inzageverzoeken/1234'
-BEHANDELAAR = 'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/1234'
+AVG_INZAGE_VERZOEK = f'https://www.example.com/orc/api/v1/avg/inzageverzoeken/{uuid.uuid4().hex}'
+BEHANDELAAR = f'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/{uuid.uuid4().hex}'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')

@@ -1,6 +1,7 @@
 """
 Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/39
 """
+import uuid
 from datetime import date
 
 from django.test import override_settings
@@ -18,15 +19,15 @@ from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import ZAAK_WRITE_KWARGS, isodatetime
 
-ZAAKTYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1'
-STATUS_TYPE = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/1'
-STATUS_TYPE_OVERLAST_GECONSTATEERD = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/statustypen/2'
+ZAAKTYPE = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}/zaaktypen/{uuid.uuid4().hex}'
+STATUS_TYPE = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}/zaaktypen/{uuid.uuid4().hex}/statustypen/{uuid.uuid4().hex}'
+STATUS_TYPE_OVERLAST_GECONSTATEERD = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}/zaaktypen/{uuid.uuid4().hex}/statustypen/{uuid.uuid4().hex}'
 VERANTWOORDELIJKE_ORGANISATIE = '517439943'
-OBJECT_MET_ADRES = 'https://example.com/orc/api/v1/objecten/1'
-FOTO = 'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/1'
+OBJECT_MET_ADRES = f'https://example.com/orc/api/v1/objecten/{uuid.uuid4().hex}'
+FOTO = f'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
 # file:///home/bbt/Downloads/2a.aansluitspecificatieskennisgevingen-gegevenswoordenboek-entiteitenv1.0.6.pdf
 # Stadsdeel is een WijkObject in het RSGB
-STADSDEEL = 'https://example.com/rsgb/api/v1/wijkobjecten/1'
+STADSDEEL = f'https://example.com/rsgb/api/v1/wijkobjecten/{uuid.uuid4().hex}'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -235,7 +236,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
     def test_zet_verantwoordelijk(self):
         url = get_operation_url('rol_create')
-        betrokkene = 'https://example.com/orc/api/v1/vestigingen/waternet'
+        betrokkene = f'https://example.com/orc/api/v1/vestigingen/waternet/{uuid.uuid4().hex}'
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
