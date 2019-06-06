@@ -434,3 +434,38 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertIsNotNone(response.json()['zaakgeometrie'])
         zaak = Zaak.objects.get()
         self.assertIsNotNone(zaak.zaakgeometrie)
+
+    def test_filter_startdatum(self):
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum='2019-01-01')
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum='2019-03-01')
+        url = reverse('zaak-list')
+
+        response_gt = self.client.get(url, {'startdatum__gt': '2019-02-01'}, **ZAAK_READ_KWARGS)
+        response_lt = self.client.get(url, {'startdatum__lt': '2019-02-01'}, **ZAAK_READ_KWARGS)
+        response_gte = self.client.get(url, {'startdatum__gte': '2019-03-01'}, **ZAAK_READ_KWARGS)
+        response_lte = self.client.get(url, {'startdatum__lte': '2019-01-01'}, **ZAAK_READ_KWARGS)
+
+        for response in [response_gt, response_lt, response_gte, response_lte]:
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data['count'], 1)
+
+        self.assertEqual(response_gt.data['results'][0]['startdatum'], '2019-03-01')
+        self.assertEqual(response_lt.data['results'][0]['startdatum'], '2019-01-01')
+        self.assertEqual(response_gte.data['results'][0]['startdatum'], '2019-03-01')
+        self.assertEqual(response_lte.data['results'][0]['startdatum'], '2019-01-01')
+
+    def test_sort_startdatum(self):
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum='2019-01-01')
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum='2019-03-01')
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum='2019-02-01')
+        url = reverse('zaak-list')
+
+        response = self.client.get(url, {'ordering': '-startdatum'}, **ZAAK_READ_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.data['results']
+
+        self.assertEqual(data[0]['startdatum'], '2019-03-01')
+        self.assertEqual(data[1]['startdatum'], '2019-02-01')
+        self.assertEqual(data[2]['startdatum'], '2019-01-01')
