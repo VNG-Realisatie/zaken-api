@@ -29,7 +29,10 @@ def dt_to_api(dt: datetime):
     return formatted
 
 
-@override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+@override_settings(
+    LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+    ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
+)
 class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     list_url = reverse(ZaakInformatieObject)

@@ -597,3 +597,6 @@ class ZaakBesluit(models.Model):
 
     def __str__(self) -> str:
         return f"{self.zaak} - {self.besluit}"
+
+    def unique_representation(self):
+        return f"{self.zaak} - {self.besluit}"
