@@ -16,11 +16,13 @@ from vng_api_common.constants import (
 )
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
-    DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField, BSNField
+    BSNField, DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.utils import get_uuid_from_path, request_object_attribute
-from vng_api_common.validators import alphanumeric_excluding_diacritic, validate_non_negative_string
+from vng_api_common.validators import (
+    alphanumeric_excluding_diacritic, validate_non_negative_string
+)
 
 from .constants import BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
 from .query import ZaakQuerySet, ZaakRelatedQuerySet

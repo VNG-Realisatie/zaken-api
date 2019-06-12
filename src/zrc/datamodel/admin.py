@@ -1,10 +1,9 @@
 from django.contrib import admin
 
 from .models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject,
-    NatuurlijkPersoon, NietNatuurlijkPersoon, OrganisatorischeEenheid,
-    Medewerker, Vestiging
+    KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
+    OrganisatorischeEenheid, Resultaat, Rol, Status, Vestiging, Zaak,
+    ZaakEigenschap, ZaakInformatieObject, ZaakObject
 )
 
 

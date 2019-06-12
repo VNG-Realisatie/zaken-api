@@ -27,7 +27,8 @@ from vng_api_common.validators import (
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
-    ZaakInformatieObject, ZaakKenmerk, ZaakObject
+    ZaakInformatieObject, ZaakKenmerk, ZaakObject,
+    NatuurlijkPersoon, NietNatuurlijkPersoon, Vestiging, OrganisatorischeEenheid, Medewerker
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
@@ -39,9 +40,103 @@ from .validators import (
     UniekeIdentificatieValidator
 )
 
+from vng_api_common.polymorphism import PolymorphicSerializer, Discriminator
+from vng_api_common.constants import RolTypes
+
 logger = logging.getLogger(__name__)
 
 
+# serializers for betrokkene identificatie data used in Rol api
+class NatuurlijkPersoonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = NatuurlijkPersoon
+        fields = (
+            'burgerservicenummer',
+            'nummer_ander_natuurlijk_persoon',
+            'a_nummer',
+            'geslachtsnaam',
+            'voorvoegsel_geslachtsnaam',
+            'voorletters',
+            'voornamen',
+            'geslachtsaanduiding',
+            'geboortedatum',
+            'verblijfsadres',
+            'sub_verblijf_buitenland'
+        )
+
+    def to_representation(self, instance):
+        if isinstance(instance, Rol):
+            instance = instance.natuurlijkpersoon
+        return super().to_representation(instance)
+
+
+class NietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NietNatuurlijkPersoon
+        fields = (
+            'rsin',
+            'nummer_ander_nietnatuurlijk_persoon',
+            'statutaire_naam',
+            'rechtsvorm',
+            'bezoekadres',
+            'sub_verblijf_buitenland'
+        )
+
+    def to_representation(self, instance):
+        if isinstance(instance, Rol):
+            instance = instance.nietnatuurlijkpersoon
+        return super().to_representation(instance)
+
+
+class VestigingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vestiging
+        fields = (
+            'vestigings_nummer',
+            'handelsnaam',
+            'verblijfsadres',
+            'sub_verblijf_buitenland'
+        )
+
+    def to_representation(self, instance):
+        if isinstance(instance, Rol):
+            instance = instance.vestiging
+        return super().to_representation(instance)
+
+
+class OrganisatorischeEenheidSerialezer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganisatorischeEenheid
+        fields = (
+            'identificatie',
+            'naam',
+            'is_gehuisvest_in'
+        )
+
+    def to_representation(self, instance):
+        if isinstance(instance, Rol):
+            instance = instance.organisatorischeeenheid
+        return super().to_representation(instance)
+
+
+class MedewerkerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medewerker
+        fields = (
+            'identificatie',
+            'achternaam',
+            'voorletters',
+            'voorvoegsel_achternaam'
+        )
+
+    def to_representation(self, instance):
+        if isinstance(instance, Rol):
+            instance = instance.medewerker
+        return super().to_representation(instance)
+
+
+# Zaak API
 class ZaakKenmerkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ZaakKenmerk
@@ -604,7 +699,19 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
-class RolSerializer(serializers.HyperlinkedModelSerializer):
+class RolSerializer(PolymorphicSerializer):
+    discriminator = Discriminator(
+        discriminator_field='betrokkene_type',
+        mapping={
+            RolTypes.natuurlijk_persoon: NatuurlijkPersoonSerializer(),
+            RolTypes.niet_natuurlijk_persoon: NietNatuurlijkPersoonSerializer(),
+            RolTypes.vestiging:  VestigingSerializer(),
+            RolTypes.organisatorische_eenheid: OrganisatorischeEenheidSerialezer(),
+            RolTypes.medewerker: MedewerkerSerializer()
+        },
+        group_field='betrokkene_identificatie'
+    )
+
     class Meta:
         model = Rol
         fields = (
@@ -627,6 +734,19 @@ class RolSerializer(serializers.HyperlinkedModelSerializer):
                 'lookup_field': 'uuid',
             },
         }
+
+    # TODO validation for betrokkene and betrokkeneIdentificatie
+    @transaction.atomic
+    def create(self, validated_data):
+        group_data = validated_data.pop('betrokkene_identificatie', None)
+        rol = super().create(validated_data)
+
+        if group_data:
+            serializer = self.discriminator.mapping[validated_data['betrokkene_type']]
+            group_data['rol'] = rol
+            serializer.create(group_data)
+
+        return rol
 
 
 class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
