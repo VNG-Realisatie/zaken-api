@@ -2,7 +2,9 @@ from django.contrib import admin
 
 from .models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject
+    ZaakInformatieObject, ZaakObject,
+    NatuurlijkPersoon, NietNatuurlijkPersoon, OrganisatorischeEenheid,
+    Medewerker, Vestiging
 )
 
 
@@ -89,3 +91,29 @@ class ResultaatAdmin(admin.ModelAdmin):
     list_display = ['zaak', 'toelichting']
     list_select_related = ['zaak']
     raw_id_fields = ['zaak']
+
+
+# Betrokkene models
+@admin.register(NatuurlijkPersoon)
+class NatuurlijkPersoonAdmin(admin.ModelAdmin):
+    list_display = ['rol', 'burgerservicenummer']
+
+
+@admin.register(NietNatuurlijkPersoon)
+class NietNatuurlijkPersoonAdmin(admin.ModelAdmin):
+    list_display = ['rol', 'rsin']
+
+
+@admin.register(OrganisatorischeEenheid)
+class OrganisatorischeEenheidAdmin(admin.ModelAdmin):
+    list_display = ['rol', 'identificatie']
+
+
+@admin.register(Vestiging)
+class VestigingAdmin(admin.ModelAdmin):
+    list_display = ['rol', 'vestigings_nummer']
+
+
+@admin.register(Medewerker)
+class MedewerkerAdmin(admin.ModelAdmin):
+    list_display = ['rol', 'identificatie']
