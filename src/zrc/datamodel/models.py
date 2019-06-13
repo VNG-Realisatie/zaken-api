@@ -329,7 +329,7 @@ class Rol(models.Model):
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     betrokkene = models.URLField(
         help_text="Een betrokkene gerelateerd aan een zaak",
-        max_length=1000
+        max_length=1000, blank=True
     )
     betrokkene_type = models.CharField(
         max_length=100, choices=RolTypes.choices,

@@ -65,11 +65,6 @@ class NatuurlijkPersoonSerializer(serializers.ModelSerializer):
             'sub_verblijf_buitenland'
         )
 
-    def to_representation(self, instance):
-        if isinstance(instance, Rol):
-            instance = instance.natuurlijkpersoon
-        return super().to_representation(instance)
-
 
 class NietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
     class Meta:
@@ -83,11 +78,6 @@ class NietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
             'sub_verblijf_buitenland'
         )
 
-    def to_representation(self, instance):
-        if isinstance(instance, Rol):
-            instance = instance.nietnatuurlijkpersoon
-        return super().to_representation(instance)
-
 
 class VestigingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -99,11 +89,6 @@ class VestigingSerializer(serializers.ModelSerializer):
             'sub_verblijf_buitenland'
         )
 
-    def to_representation(self, instance):
-        if isinstance(instance, Rol):
-            instance = instance.vestiging
-        return super().to_representation(instance)
-
 
 class OrganisatorischeEenheidSerialezer(serializers.ModelSerializer):
     class Meta:
@@ -113,11 +98,6 @@ class OrganisatorischeEenheidSerialezer(serializers.ModelSerializer):
             'naam',
             'is_gehuisvest_in'
         )
-
-    def to_representation(self, instance):
-        if isinstance(instance, Rol):
-            instance = instance.organisatorischeeenheid
-        return super().to_representation(instance)
 
 
 class MedewerkerSerializer(serializers.ModelSerializer):
@@ -129,11 +109,6 @@ class MedewerkerSerializer(serializers.ModelSerializer):
             'voorletters',
             'voorvoegsel_achternaam'
         )
-
-    def to_representation(self, instance):
-        if isinstance(instance, Rol):
-            instance = instance.medewerker
-        return super().to_representation(instance)
 
 
 # Zaak API
@@ -709,7 +684,8 @@ class RolSerializer(PolymorphicSerializer):
             RolTypes.organisatorische_eenheid: OrganisatorischeEenheidSerialezer(),
             RolTypes.medewerker: MedewerkerSerializer()
         },
-        group_field='betrokkene_identificatie'
+        group_field='betrokkene_identificatie',
+        same_model=False
     )
 
     class Meta:
@@ -733,9 +709,23 @@ class RolSerializer(PolymorphicSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             },
+            'betrokkene': {
+                'required': False,
+            }
         }
 
-    # TODO validation for betrokkene and betrokkeneIdentificatie
+    def validate(self, attrs):
+        validated_attrs = super().validate(attrs)
+        betrokkene = validated_attrs.get('betrokkene', None)
+        betrokkene_identificatie = validated_attrs.get('betrokkene_identificatie', None)
+
+        if not betrokkene and not betrokkene_identificatie:
+            raise serializers.ValidationError(
+                _("betrokkene or betrokkeneIdentificatie must be provided"),
+                code='invalid-betrokkene')
+
+        return validated_attrs
+
     @transaction.atomic
     def create(self, validated_data):
         group_data = validated_data.pop('betrokkene_identificatie', None)
