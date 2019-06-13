@@ -732,7 +732,8 @@ class RolSerializer(PolymorphicSerializer):
         rol = super().create(validated_data)
 
         if group_data:
-            serializer = self.discriminator.mapping[validated_data['betrokkene_type']]
+            group_serializer = self.discriminator.mapping[validated_data['betrokkene_type']]
+            serializer = group_serializer.get_fields()['betrokkene_identificatie']
             group_data['rol'] = rol
             serializer.create(group_data)
 

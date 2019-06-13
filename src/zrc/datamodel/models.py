@@ -702,8 +702,10 @@ class Vestiging(models.Model):
         max_length=24, blank=True,
         help_text='Een korte unieke aanduiding van de Vestiging.'
     )
-    handelsnaam = ArrayField(models.TextField(
-        max_length=625, help_text='De naam van de vestiging waaronder gehandeld wordt.'))
+    handelsnaam = ArrayField(
+        models.TextField(max_length=625, blank=True),
+        default=list,
+        help_text='De naam van de vestiging waaronder gehandeld wordt.')
 
     verblijfsadres = models.CharField(
         max_length=1000, blank=True,
