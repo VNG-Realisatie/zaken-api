@@ -41,6 +41,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
 
         response_data = response.json()
+        print('response_data=', response_data)
         self.assertIn('url', response_data)
         del response_data['url']
         self.assertEqual(response_data, {
@@ -49,6 +50,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'betrokkeneType': RolTypes.organisatorische_eenheid,
             'rolomschrijving': RolOmschrijving.behandelaar,
             'roltoelichting': 'Verantwoordelijke behandelaar voor de melding',
+            'betrokkeneIdentificatie': None
         })
 
     def test_meerdere_initiatoren_verboden(self):

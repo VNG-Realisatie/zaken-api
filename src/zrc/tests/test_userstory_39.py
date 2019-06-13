@@ -264,5 +264,6 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'betrokkeneType': 'Vestiging',
                 'rolomschrijving': 'Behandelaar',
                 'roltoelichting': 'Baggeren van gracht',
+                'betrokkeneIdentificatie': None
             }
         )
