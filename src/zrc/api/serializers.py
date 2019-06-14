@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 
 
 # serializers for betrokkene identificatie data used in Rol api
-class NatuurlijkPersoonSerializer(serializers.ModelSerializer):
+class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NatuurlijkPersoon
@@ -66,7 +66,7 @@ class NatuurlijkPersoonSerializer(serializers.ModelSerializer):
         )
 
 
-class NietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
+class RolNietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
     class Meta:
         model = NietNatuurlijkPersoon
         fields = (
@@ -79,7 +79,7 @@ class NietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
         )
 
 
-class VestigingSerializer(serializers.ModelSerializer):
+class RolVestigingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vestiging
         fields = (
@@ -90,7 +90,7 @@ class VestigingSerializer(serializers.ModelSerializer):
         )
 
 
-class OrganisatorischeEenheidSerialezer(serializers.ModelSerializer):
+class RolOrganisatorischeEenheidSerialezer(serializers.ModelSerializer):
     class Meta:
         model = OrganisatorischeEenheid
         fields = (
@@ -100,7 +100,7 @@ class OrganisatorischeEenheidSerialezer(serializers.ModelSerializer):
         )
 
 
-class MedewerkerSerializer(serializers.ModelSerializer):
+class RolMedewerkerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medewerker
         fields = (
@@ -678,11 +678,11 @@ class RolSerializer(PolymorphicSerializer):
     discriminator = Discriminator(
         discriminator_field='betrokkene_type',
         mapping={
-            RolTypes.natuurlijk_persoon: NatuurlijkPersoonSerializer(),
-            RolTypes.niet_natuurlijk_persoon: NietNatuurlijkPersoonSerializer(),
-            RolTypes.vestiging:  VestigingSerializer(),
-            RolTypes.organisatorische_eenheid: OrganisatorischeEenheidSerialezer(),
-            RolTypes.medewerker: MedewerkerSerializer()
+            RolTypes.natuurlijk_persoon: RolNatuurlijkPersoonSerializer(),
+            RolTypes.niet_natuurlijk_persoon: RolNietNatuurlijkPersoonSerializer(),
+            RolTypes.vestiging:  RolVestigingSerializer(),
+            RolTypes.organisatorische_eenheid: RolOrganisatorischeEenheidSerialezer(),
+            RolTypes.medewerker: RolMedewerkerSerializer()
         },
         group_field='betrokkene_identificatie',
         same_model=False
