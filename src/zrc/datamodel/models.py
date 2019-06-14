@@ -349,7 +349,9 @@ class Rol(models.Model):
         verbose_name_plural = "Rollen"
 
     def unique_representation(self):
-        return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.betrokkene)}"
+        if self.betrokkene:
+            return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.betrokkene)}"
+        return f"({self.zaak.unique_representation()}) - {self.roltoelichting}"
 
 
 class ZaakObject(models.Model):

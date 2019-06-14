@@ -41,7 +41,6 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
 
         response_data = response.json()
-        print('response_data=', response_data)
         self.assertIn('url', response_data)
         del response_data['url']
         self.assertEqual(response_data, {
