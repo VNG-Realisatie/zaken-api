@@ -13,9 +13,10 @@ from rest_framework.settings import api_settings
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import (
-    Archiefstatus, RelatieAarden, RolOmschrijving
+    Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes
 )
 from vng_api_common.models import APICredential
+from vng_api_common.polymorphism import Discriminator, PolymorphicSerializer
 from vng_api_common.serializers import (
     GegevensGroepSerializer, NestedGegevensGroepMixin,
     add_choice_values_help_text
@@ -26,9 +27,9 @@ from vng_api_common.validators import (
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
-    ZaakInformatieObject, ZaakKenmerk, ZaakObject,
-    NatuurlijkPersoon, NietNatuurlijkPersoon, Vestiging, OrganisatorischeEenheid, Medewerker
+    KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
+    OrganisatorischeEenheid, Resultaat, Rol, Status, Vestiging, Zaak,
+    ZaakBesluit, ZaakEigenschap, ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
@@ -39,9 +40,6 @@ from .validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
 )
-
-from vng_api_common.polymorphism import PolymorphicSerializer, Discriminator
-from vng_api_common.constants import RolTypes
 
 logger = logging.getLogger(__name__)
 
