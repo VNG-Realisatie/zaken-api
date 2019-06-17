@@ -341,6 +341,11 @@ class Rol(models.Model):
     )
     roltoelichting = models.TextField(max_length=1000)
 
+    registratiedatum = models.DateTimeField(
+        "registratiedatum", auto_now_add=True,
+        help_text="De datum waarop dit object is geregistreerd."
+    )
+
     objects = ZaakRelatedQuerySet.as_manager()
 
     class Meta:

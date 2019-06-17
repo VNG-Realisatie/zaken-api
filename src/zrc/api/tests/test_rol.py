@@ -1,3 +1,4 @@
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import RolTypes
@@ -15,6 +16,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
+    @freeze_time("2018-01-01")
     def test_read_rol_np(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
@@ -45,6 +47,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'betrokkeneType': RolTypes.natuurlijk_persoon,
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
+                'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': {
                     'burgerservicenummer': '',
                     'nummerAnderNatuurlijkPersoon': '12345',
@@ -61,6 +64,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             }
         )
 
+    @freeze_time("2018-01-01")
     def test_read_rol_nnp(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
@@ -91,6 +95,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'betrokkeneType': RolTypes.niet_natuurlijk_persoon,
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
+                'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': {
                     'rsin': '',
                     'nummerAnderNietnatuurlijkPersoon': '123456',

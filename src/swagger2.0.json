@@ -7952,6 +7952,13 @@
                     "type": "string",
                     "maxLength": 1000,
                     "minLength": 1
+                },
+                "registratiedatum": {
+                    "title": "Registratiedatum",
+                    "description": "De datum waarop dit object is geregistreerd.",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
                 }
             },
             "discriminator": "betrokkene_type"
