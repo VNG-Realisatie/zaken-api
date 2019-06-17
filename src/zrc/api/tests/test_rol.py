@@ -28,6 +28,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         NatuurlijkPersoon.objects.create(
             rol=rol,
             nummer_ander_natuurlijk_persoon='12345',
+            a_nummer='1234567890'
         )
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_read', uuid=rol.uuid)
@@ -49,9 +50,9 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'roltoelichting': '',
                 'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': {
-                    'burgerservicenummer': '',
-                    'nummerAnderNatuurlijkPersoon': '12345',
-                    'aNummer': '',
+                    'inp.bsn': '',
+                    'anp.identificatie': '12345',
+                    'inp.a-nummer': '1234567890',
                     'geslachtsnaam': '',
                     'voorvoegselGeslachtsnaam': '',
                     'voorletters': '',
@@ -59,7 +60,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                     'geslachtsaanduiding': '',
                     'geboortedatum': '',
                     'verblijfsadres': '',
-                    'subVerblijfBuitenland': ''
+                    'sub.verblijfBuitenland': ''
                 }
             }
         )
@@ -97,12 +98,12 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'roltoelichting': '',
                 'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': {
-                    'rsin': '',
-                    'nummerAnderNietnatuurlijkPersoon': '123456',
+                    'inn.nnpId': '',
+                    'ann.identificatie': '123456',
                     'statutaireNaam': '',
-                    'rechtsvorm': '',
+                    'inn.rechtsvorm': '',
                     'bezoekadres': '',
-                    'subVerblijfBuitenland': ''
+                    'sub.verblijfBuitenland': ''
                 }
             }
         )
@@ -117,7 +118,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'rolomschrijving': 'Initiator',
             'roltoelichting': 'awerw',
             'betrokkeneIdentificatie': {
-                'nummerAnderNatuurlijkPersoon': '12345',
+                'anp.identificatie': '12345',
                 }
         }
 
