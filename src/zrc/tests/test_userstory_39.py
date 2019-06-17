@@ -6,6 +6,7 @@ from datetime import date
 
 from django.test import override_settings
 
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
@@ -234,6 +235,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             }
         )
 
+    @freeze_time('2018-01-01')
     def test_zet_verantwoordelijk(self):
         url = get_operation_url('rol_create')
         betrokkene = f'https://example.com/orc/api/v1/vestigingen/waternet/{uuid.uuid4().hex}'
@@ -264,6 +266,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'betrokkeneType': 'Vestiging',
                 'rolomschrijving': 'Behandelaar',
                 'roltoelichting': 'Baggeren van gracht',
+                'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': None
             }
         )
