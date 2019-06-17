@@ -35,7 +35,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | --- | --- | --- | --- | --- |
 | url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
-| betrokkene | Een betrokkene gerelateerd aan een zaak | string | ja | C​R​U​D |
+| betrokkene | Een betrokkene gerelateerd aan een zaak | string | nee | C​R​U​D |
 | betrokkeneType | Soort betrokkene | string | ja | C​R​U​D |
 | rolomschrijving | Algemeen gehanteerde benaming van de aard van de ROL | string | ja | C​R​U​D |
 | roltoelichting |  | string | ja | C​R​U​D |
@@ -169,6 +169,7 @@ De mapping van waarden naar weergave is als volgt:
 | resource | Het type resource waarop de actie gebeurde | string | ja | C​R​U​D |
 | resourceUrl | De URL naar het object | string | ja | C​R​U​D |
 | toelichting | Toelichting waarom de handeling is uitgevoerd | string | nee | C​R​U​D |
+| resourceWeergave | Vriendelijke identificatie van het object | string | ja | C​R​U​D |
 | aanmaakdatum | De datum waarop de handeling is gedaan | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## ZaakBesluit

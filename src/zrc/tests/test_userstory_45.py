@@ -49,6 +49,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'betrokkeneType': RolTypes.organisatorische_eenheid,
             'rolomschrijving': RolOmschrijving.behandelaar,
             'roltoelichting': 'Verantwoordelijke behandelaar voor de melding',
+            'betrokkeneIdentificatie': None
         })
 
     def test_meerdere_initiatoren_verboden(self):
