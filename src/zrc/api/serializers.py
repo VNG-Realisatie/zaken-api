@@ -368,6 +368,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             ) from exc
 
         # validate that all InformationObjects have indicatieGebruiksrecht set
+        # and are unlocked
         if validated_attrs['__is_eindstatus']:
             zaak = validated_attrs['zaak']
             zios = zaak.zaakinformatieobject_set.all()
@@ -379,6 +380,12 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                     scopes=['zds.scopes.zaaktypes.lezen']
                 )
                 informatieobject = client.retrieve('enkelvoudiginformatieobject', url=io_url)
+                if informatieobject['locked']:
+                    raise serializers.ValidationError(
+                        "Er zijn gerelateerde informatieobjecten die nog gelocked zijn."
+                        "Deze informatieobjecten moet eerst unlocked worden voordat de zaak afgesloten kan worden.",
+                        code='informatieobject-locked'
+                    )
                 if informatieobject['indicatieGebruiksrecht'] is None:
                     raise serializers.ValidationError(
                         "Er zijn gerelateerde informatieobjecten waarvoor `indicatieGebruiksrecht` nog niet "
