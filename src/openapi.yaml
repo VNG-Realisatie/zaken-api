@@ -171,19 +171,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -468,7 +470,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL to the related zaak
+        description: URL naar de/het gerelateerde zaak
         required: false
         schema:
           type: string
@@ -619,19 +621,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -910,19 +914,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -1077,19 +1083,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -1239,19 +1247,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -1392,7 +1402,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL to the related zaak
+        description: URL naar de/het gerelateerde zaak
         required: false
         schema:
           type: string
@@ -1565,19 +1575,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -1868,7 +1880,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL to the related zaak
+        description: URL naar de/het gerelateerde zaak
         required: false
         schema:
           type: string
@@ -2020,19 +2032,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -2320,7 +2334,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL to the related zaak
+        description: URL naar de/het gerelateerde zaak
         required: false
         schema:
           type: string
@@ -2478,19 +2492,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -2772,19 +2788,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -2941,19 +2959,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -3107,19 +3127,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -3379,19 +3401,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -3801,7 +3825,7 @@ paths:
           type: string
       - name: page
         in: query
-        description: A page number within the paginated result set.
+        description: Een pagina binnen de gepagineerde set resultaten.
         required: false
         schema:
           type: integer
@@ -4026,19 +4050,21 @@ paths:
           - EPSG:4326
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -4198,7 +4224,7 @@ paths:
       parameters:
       - name: page
         in: query
-        description: A page number within the paginated result set.
+        description: Een pagina binnen de gepagineerde set resultaten.
         required: false
         schema:
           type: integer
@@ -4603,19 +4629,21 @@ paths:
           - EPSG:4326
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -4818,19 +4846,21 @@ paths:
           - EPSG:4326
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -5009,19 +5039,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -5566,19 +5598,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -5863,19 +5897,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -6142,19 +6178,21 @@ paths:
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
-        description: Application that performs request
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-NLX-Request-User-Id
         in: header
-        description: Identifier of the user that performs request
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
         required: false
         schema:
           type: string
       - name: X-Audit-Toelichting
         in: header
-        description: Explanation why the request is done
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
         required: false
         schema:
           type: string
@@ -6708,10 +6746,9 @@ components:
           maxLength: 17
         aNummer:
           title: A nummer
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          nullable: true
+          type: string
+          pattern: ^[1-9][0-9]{9}$
+          maxLength: 10
         geslachtsnaam:
           title: Geslachtsnaam
           description: De stam van de geslachtsnaam.
@@ -6734,8 +6771,18 @@ components:
           maxLength: 200
         geslachtsaanduiding:
           title: Geslachtsaanduiding
-          description: Een aanduiding die aangeeft of de persoon een man of een vrouw
+          description: 'Een aanduiding die aangeeft of de persoon een man of een vrouw
             is, of dat het geslacht nog onbekend is.
+
+
+            De mapping van waarden naar weergave is als volgt:
+
+
+            * `M` - Man
+
+            * `V` - Vrouw
+
+            * `O` - Onbekend'
           type: string
           enum:
           - M
@@ -6861,7 +6908,7 @@ components:
       allOf:
       - $ref: '#/components/schemas/Rol'
       - $ref: '#/components/schemas/betrokkene_identificatie_RolVestiging'
-    RolOrganisatorischeEenheidSerialezer:
+    RolOrganisatorischeEenheid:
       title: betrokkene_identificatie
       type: object
       properties:
@@ -6879,11 +6926,11 @@ components:
           title: Is gehuisvest in
           type: string
           maxLength: 24
-    betrokkene_identificatie_RolOrganisatorischeEenheidSerialezer:
+    betrokkene_identificatie_RolOrganisatorischeEenheid:
       type: object
       properties:
         betrokkeneIdentificatie:
-          $ref: '#/components/schemas/RolOrganisatorischeEenheidSerialezer'
+          $ref: '#/components/schemas/RolOrganisatorischeEenheid'
     RolMedewerker:
       title: betrokkene_identificatie
       type: object
@@ -7825,4 +7872,4 @@ components:
       type: object
       allOf:
       - $ref: '#/components/schemas/Rol'
-      - $ref: '#/components/schemas/betrokkene_identificatie_RolOrganisatorischeEenheidSerialezer'
+      - $ref: '#/components/schemas/betrokkene_identificatie_RolOrganisatorischeEenheid'

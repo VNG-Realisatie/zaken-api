@@ -48,7 +48,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'betrokkeneIdentificatie': {
                     'burgerservicenummer': '',
                     'nummerAnderNatuurlijkPersoon': '12345',
-                    'aNummer': None,
+                    'aNummer': '',
                     'geslachtsnaam': '',
                     'voorvoegselGeslachtsnaam': '',
                     'voorletters': '',

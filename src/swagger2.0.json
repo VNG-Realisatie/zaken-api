@@ -189,21 +189,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -534,7 +534,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL to the related zaak",
+                        "description": "URL naar de/het gerelateerde zaak",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -720,21 +720,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -1075,21 +1075,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -1277,21 +1277,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -1470,21 +1470,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -1658,7 +1658,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL to the related zaak",
+                        "description": "URL naar de/het gerelateerde zaak",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -1874,21 +1874,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -2233,7 +2233,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL to the related zaak",
+                        "description": "URL naar de/het gerelateerde zaak",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2419,21 +2419,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -2778,7 +2778,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL to the related zaak",
+                        "description": "URL naar de/het gerelateerde zaak",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2964,21 +2964,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -3318,21 +3318,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -3519,21 +3519,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -3712,21 +3712,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -4054,21 +4054,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -4536,7 +4536,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "A page number within the paginated result set.",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
                         "required": false,
                         "type": "integer"
                     },
@@ -4796,21 +4796,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -5008,7 +5008,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "A page number within the paginated result set.",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
                         "required": false,
                         "type": "integer"
                     },
@@ -5470,21 +5470,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -5713,21 +5713,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -5928,21 +5928,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -6619,21 +6619,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -6974,21 +6974,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -7324,21 +7324,21 @@
                     {
                         "name": "X-NLX-Request-Application-Id",
                         "in": "header",
-                        "description": "Application that performs request",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-NLX-Request-User-Id",
                         "in": "header",
-                        "description": "Identifier of the user that performs request",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "name": "X-Audit-Toelichting",
                         "in": "header",
-                        "description": "Explanation why the request is done",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
                         "required": false,
                         "type": "string"
                     }
@@ -7974,10 +7974,9 @@
                 },
                 "aNummer": {
                     "title": "A nummer",
-                    "type": "integer",
-                    "maximum": 2147483647,
-                    "minimum": -2147483648,
-                    "x-nullable": true
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{9}$",
+                    "maxLength": 10
                 },
                 "geslachtsnaam": {
                     "title": "Geslachtsnaam",
@@ -8004,7 +8003,7 @@
                 },
                 "geslachtsaanduiding": {
                     "title": "Geslachtsaanduiding",
-                    "description": "Een aanduiding die aangeeft of de persoon een man of een vrouw is, of dat het geslacht nog onbekend is.",
+                    "description": "Een aanduiding die aangeeft of de persoon een man of een vrouw is, of dat het geslacht nog onbekend is.\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `M` - Man\n* `V` - Vrouw\n* `O` - Onbekend",
                     "type": "string",
                     "enum": [
                         "M",
@@ -8187,7 +8186,7 @@
                 }
             ]
         },
-        "RolOrganisatorischeEenheidSerialezer": {
+        "RolOrganisatorischeEenheid": {
             "title": "betrokkene_identificatie",
             "type": "object",
             "properties": {
@@ -8210,11 +8209,11 @@
                 }
             }
         },
-        "betrokkene_identificatie_RolOrganisatorischeEenheidSerialezer": {
+        "betrokkene_identificatie_RolOrganisatorischeEenheid": {
             "type": "object",
             "properties": {
                 "betrokkeneIdentificatie": {
-                    "$ref": "#/definitions/RolOrganisatorischeEenheidSerialezer"
+                    "$ref": "#/definitions/RolOrganisatorischeEenheid"
                 }
             }
         },
@@ -8225,7 +8224,7 @@
                     "$ref": "#/definitions/Rol"
                 },
                 {
-                    "$ref": "#/definitions/betrokkene_identificatie_RolOrganisatorischeEenheidSerialezer"
+                    "$ref": "#/definitions/betrokkene_identificatie_RolOrganisatorischeEenheid"
                 }
             ]
         },

@@ -5,6 +5,7 @@ from datetime import date
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
@@ -20,9 +21,7 @@ from vng_api_common.fields import (
 )
 from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.utils import get_uuid_from_path, request_object_attribute
-from vng_api_common.validators import (
-    alphanumeric_excluding_diacritic, validate_non_negative_string
-)
+from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from .constants import BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
@@ -618,9 +617,15 @@ class NatuurlijkPersoon(models.Model):
         max_length=17, blank=True,
         help_text='Het door de gemeente uitgegeven unieke nummer voor een ANDER NATUURLIJK PERSOON'
     )
-    # TODO add regex validation <totalDigits value="10"/><pattern value="[1-9][0-9]{9}"/>
-    a_nummer = models.IntegerField(
-        null=True
+    a_nummer = models.CharField(
+        max_length=10, blank=True,
+        validators=[
+            RegexValidator(
+                regex=r'^[1-9][0-9]{9}$',
+                message=_('inp.a-nummer must consist of 10 digits'),
+                code='a-nummer-incorrect-format'
+            )
+        ]
     )
     geslachtsnaam = models.CharField(
         max_length=200, blank=True,

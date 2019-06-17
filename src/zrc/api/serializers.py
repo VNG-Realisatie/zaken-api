@@ -25,7 +25,7 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import BetalingsIndicatie
+from zrc.datamodel.constants import BetalingsIndicatie, GeslachtsAanduiding
 from zrc.datamodel.models import (
     KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
     OrganisatorischeEenheid, Resultaat, Rol, Status, Vestiging, Zaak,
@@ -46,6 +46,12 @@ logger = logging.getLogger(__name__)
 
 # serializers for betrokkene identificatie data used in Rol api
 class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(GeslachtsAanduiding)
+        self.fields['geslachtsaanduiding'].help_text += f"\n\n{value_display_mapping}"
 
     class Meta:
         model = NatuurlijkPersoon
@@ -88,7 +94,7 @@ class RolVestigingSerializer(serializers.ModelSerializer):
         )
 
 
-class RolOrganisatorischeEenheidSerialezer(serializers.ModelSerializer):
+class RolOrganisatorischeEenheidSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganisatorischeEenheid
         fields = (
@@ -679,7 +685,7 @@ class RolSerializer(PolymorphicSerializer):
             RolTypes.natuurlijk_persoon: RolNatuurlijkPersoonSerializer(),
             RolTypes.niet_natuurlijk_persoon: RolNietNatuurlijkPersoonSerializer(),
             RolTypes.vestiging:  RolVestigingSerializer(),
-            RolTypes.organisatorische_eenheid: RolOrganisatorischeEenheidSerialezer(),
+            RolTypes.organisatorische_eenheid: RolOrganisatorischeEenheidSerializer(),
             RolTypes.medewerker: RolMedewerkerSerializer()
         },
         group_field='betrokkene_identificatie',
