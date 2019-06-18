@@ -4,7 +4,7 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.crypto import get_random_string
@@ -23,7 +23,9 @@ from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.utils import get_uuid_from_path, request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
+from .constants import (
+    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
+)
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -186,8 +188,14 @@ class Zaak(APIMixin, models.Model):
     )
 
     relevante_andere_zaken = ArrayField(
-        models.URLField(_("URL naar andere zaak"), max_length=1000),
-        blank=True, default=list
+        JSONField(blank=True),
+        blank=True, default=list,
+        help_text=_(
+                "Een lijst van objecten met ieder twee elementen:\n"
+                "* `zaak` - een url naar een andere `Zaak`\n"
+                "* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, "
+                "waarbij de onderstaande waardes toegestaan zijn."
+            ),
     )
 
     # Archiving

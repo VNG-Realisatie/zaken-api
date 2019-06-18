@@ -25,7 +25,9 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import BetalingsIndicatie, GeslachtsAanduiding
+from zrc.datamodel.constants import (
+    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding
+)
 from zrc.datamodel.models import (
     KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
     OrganisatorischeEenheid, Resultaat, Rol, Status, Vestiging, Zaak,
@@ -37,8 +39,8 @@ from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from .auth import get_auth
 from .validators import (
-    HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
-    UniekeIdentificatieValidator
+    HoofdzaakValidator, NotSelfValidator, RelevanteAndereZaakValidator,
+    RolOccurenceValidator, UniekeIdentificatieValidator
 )
 
 logger = logging.getLogger(__name__)
@@ -311,13 +313,8 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                 'validators': [NotSelfValidator(), HoofdzaakValidator()],
             },
             'relevante_andere_zaken': {
-                'child': serializers.URLField(
-                    label=_("URL naar andere zaak"),
-                    max_length=255,
-                    validators=[URLValidator(
-                        get_auth=get_auth,
-                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
-                    )]
+                'child': serializers.DictField(
+                    validators=[RelevanteAndereZaakValidator()]
                 )
             },
             'laatste_betaaldatum': {
@@ -332,6 +329,9 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
 
         value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
         self.fields['betalingsindicatie'].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(AardZaakRelatie)
+        self.fields['relevante_andere_zaken'].help_text += f"\n\n{value_display_mapping}"
 
     def _get_zaaktype(self, zaaktype_url: str) -> dict:
         if not hasattr(self, '_zaaktype'):

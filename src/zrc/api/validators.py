@@ -3,8 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 from vng_api_common.validators import (
-    UniekeIdentificatieValidator as _UniekeIdentificatieValidator
+    UniekeIdentificatieValidator as _UniekeIdentificatieValidator,
+    URLValidator
 )
+
+from zrc.datamodel.constants import AardZaakRelatie
+
+from .auth import get_auth
 
 
 class RolOccurenceValidator:
@@ -85,3 +90,23 @@ class HoofdzaakValidator:
     def __call__(self, obj: models.Model):
         if obj.hoofdzaak_id is not None:
             raise serializers.ValidationError(self.message, code=self.code)
+
+
+class RelevanteAndereZaakValidator:
+    def __call__(self, obj):
+        if sorted(obj.keys()) != ['aard_relatie', 'zaak']:
+            raise serializers.ValidationError(
+                _("Mag alleen de velden (`zaak`, `aard_relatie`) bevatten"),
+                code='relevanteAndereZaken-invalid-shape'
+            )
+
+        URLValidator(
+            get_auth=get_auth,
+            headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
+        )(obj['zaak'])
+
+        if obj['aard_relatie'] not in AardZaakRelatie.labels:
+            raise serializers.ValidationError(
+                _("`aardRelatie` moet een keuze uit {} zijn").format(list(AardZaakRelatie.labels.keys())),
+                code='invalid-aardRelatie'
+            )
