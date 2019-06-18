@@ -10,7 +10,7 @@ from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from vng_api_common.validators import ResourceValidator, URLValidator
 from zds_client.tests.mocks import mock_client
 
-from zrc.datamodel.constants import BetalingsIndicatie
+from zrc.datamodel.constants import AardZaakRelatie, BetalingsIndicatie
 from zrc.datamodel.models import ZaakInformatieObject
 from zrc.datamodel.tests.factories import ZaakFactory
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
@@ -134,9 +134,10 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
             'verantwoordelijkeOrganisatie': '517439943',
             'registratiedatum': '2018-06-11',
             'startdatum': '2018-06-11',
-            'relevanteAndereZaken': [
-                'https://example.com/andereZaak'
-            ]
+            'relevanteAndereZaken': [{
+                'zaak': 'https://example.com/andereZaak',
+                'aardRelatie': AardZaakRelatie.vervolg
+            }]
         }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -170,7 +171,10 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
         andere_zaak_url = response.data['url']
 
-        zaak_body.update({'relevanteAndereZaken': [andere_zaak_url]})
+        zaak_body.update({'relevanteAndereZaken': [{
+            'zaak': andere_zaak_url,
+            'aardRelatie': AardZaakRelatie.vervolg
+        }]})
 
         with mock_client(RESPONSES):
             response = self.client.post(
