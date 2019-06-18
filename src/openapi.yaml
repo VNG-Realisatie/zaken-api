@@ -7500,13 +7500,30 @@ components:
           readOnly: true
           uniqueItems: true
         relevanteAndereZaken:
+          description: 'Een lijst van objecten met ieder twee elementen:
+
+            * `zaak` - een url naar een andere `Zaak`
+
+            * `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en,
+            waarbij de onderstaande waardes toegestaan zijn.
+
+
+            De mapping van waarden naar weergave is als volgt:
+
+
+            * `vervolg` - De andere zaak gaf aanleiding tot het starten van de onderhanden
+            zaak.
+
+            * `onderwerp` - De andere zaak is relevant voor cq. is onderwerp van de
+            onderhanden zaak.
+
+            * `bijdrage` - Aan het bereiken van de uitkomst van de andere zaak levert
+            de onderhanden zaak een bijdrage.'
           type: array
           items:
-            title: URL naar andere zaak
-            type: string
-            format: uri
-            maxLength: 255
-            minLength: 1
+            type: object
+            additionalProperties:
+              type: string
         status:
           title: Status
           description: Indien geen status bekend is, dan is de waarde 'null'
