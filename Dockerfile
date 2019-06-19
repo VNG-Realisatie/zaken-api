@@ -1,20 +1,9 @@
 # Stage 1 - Compile needed python dependencies
-FROM python:3.6-alpine AS build
-RUN apk --no-cache add \
-    gcc \
-    musl-dev \
-    pcre-dev \
-    linux-headers \
-    postgresql-dev \
-    python3-dev \
-    # libraries installed using git
-    git \
-    # lxml dependencies
-    libxslt-dev \
-    # pillow dependencies
-    jpeg-dev \
-    openjpeg-dev \
-    zlib-dev
+FROM python:3.6-stretch AS build
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -41,20 +30,13 @@ RUN npm run build
 # Stage 3 - Prepare jenkins tests image
 FROM build AS jenkins
 
-RUN apk --no-cache add \
-    postgresql-client
-
 # Stage 3.1 - Set up the needed testing/development dependencies
 # install all the dependencies for GeoDjango
-RUN apk --no-cache add \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    libcrypto1.1
-
-RUN apk --no-cache add \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-    gdal-dev \
-    geos \
-    proj4
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        postgresql-client \
+        libgdal-dev \
+        libproj-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local/lib/python3.6 /usr/local/lib/python3.6
 COPY --from=build /app/requirements /app/requirements
@@ -73,33 +55,16 @@ CMD ["/runtests.sh"]
 
 
 # Stage 4 - Build docker image suitable for execution and deployment
-FROM python:3.6-alpine AS production
-RUN apk --no-cache add \
-    ca-certificates \
-    mailcap \
-    musl \
-    pcre \
-    postgresql \
-    # lxml dependencies
-    libxslt \
-    # pillow dependencies
-    jpeg \
-    openjpeg \
-    zlib \
-    nodejs
+FROM python:3.6-stretch AS production
 
-# Stage 4.1 - Set up dependencies
+# Stage 4.1 - Set up the needed production dependencies
 # install all the dependencies for GeoDjango
-RUN apk --no-cache add \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    libcrypto1.1
-
-RUN apk --no-cache add \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-    gdal-dev \
-    geos \
-    proj4
-
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        postgresql-client \
+        libgdal20 \
+        libgeos-c1v5 \
+        libproj12 \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local/lib/python3.6 /usr/local/lib/python3.6
 COPY --from=build /usr/local/bin/uwsgi /usr/local/bin/uwsgi
