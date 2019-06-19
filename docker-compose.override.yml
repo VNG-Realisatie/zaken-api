@@ -1,20 +1,9 @@
 version: '3.4'
 
 services:
-  tests:
-    build:
-      context: ./
-      target: jenkins
+  db:
     volumes:
-      - ${WORKSPACE}/reports:/app/reports
-    environment:
-      - DJANGO_SETTINGS_MODULE=zrc.conf.jenkins
-      - SECRET_KEY=jenkins
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASSWORD=
-      - DB_HOST=db
-      - WORKSPACE=${WORKSPACE}
-      - ZTC_JWT_SECRET=dummy
-    depends_on:
-      - db
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
