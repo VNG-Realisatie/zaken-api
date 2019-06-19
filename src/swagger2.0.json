@@ -7961,7 +7961,7 @@
                     "readOnly": true
                 }
             },
-            "discriminator": "betrokkene_type"
+            "discriminator": "betrokkeneType"
         },
         "RolNatuurlijkPersoon": {
             "title": "betrokkene_identificatie",
