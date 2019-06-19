@@ -39,6 +39,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | betrokkeneType | Soort betrokkene | string | ja | C​R​U​D |
 | rolomschrijving | Algemeen gehanteerde benaming van de aard van de ROL | string | ja | C​R​U​D |
 | roltoelichting |  | string | ja | C​R​U​D |
+| registratiedatum | De datum waarop dit object is geregistreerd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## Status
 

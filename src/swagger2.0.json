@@ -7952,27 +7952,34 @@
                     "type": "string",
                     "maxLength": 1000,
                     "minLength": 1
+                },
+                "registratiedatum": {
+                    "title": "Registratiedatum",
+                    "description": "De datum waarop dit object is geregistreerd.",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
                 }
             },
-            "discriminator": "betrokkene_type"
+            "discriminator": "betrokkeneType"
         },
         "RolNatuurlijkPersoon": {
             "title": "betrokkene_identificatie",
             "type": "object",
             "properties": {
-                "burgerservicenummer": {
+                "inp.bsn": {
                     "title": "Burgerservicenummer",
                     "description": "Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.",
                     "type": "string",
                     "maxLength": 9
                 },
-                "nummerAnderNatuurlijkPersoon": {
+                "anp.identificatie": {
                     "title": "Nummer ander natuurlijk persoon",
                     "description": "Het door de gemeente uitgegeven unieke nummer voor een ANDER NATUURLIJK PERSOON",
                     "type": "string",
                     "maxLength": 17
                 },
-                "aNummer": {
+                "inp.a-nummer": {
                     "title": "A nummer",
                     "type": "string",
                     "pattern": "^[1-9][0-9]{9}$",
@@ -8022,7 +8029,7 @@
                     "type": "string",
                     "maxLength": 1000
                 },
-                "subVerblijfBuitenland": {
+                "sub.verblijfBuitenland": {
                     "title": "Sub verblijf buitenland",
                     "description": "De gegevens over het verblijf in het buitenland",
                     "type": "string",
@@ -8052,17 +8059,17 @@
         "RolNietNatuurlijkPersoon": {
             "title": "betrokkene_identificatie",
             "required": [
-                "nummerAnderNietnatuurlijkPersoon"
+                "ann.identificatie"
             ],
             "type": "object",
             "properties": {
-                "rsin": {
+                "inn.nnpId": {
                     "title": "Rsin",
                     "description": "Het door een kamer toegekend uniek nummer voor de INGESCHREVEN NIET-NATUURLIJK PERSOON",
                     "type": "string",
                     "maxLength": 9
                 },
-                "nummerAnderNietnatuurlijkPersoon": {
+                "ann.identificatie": {
                     "title": "Nummer ander nietnatuurlijk persoon",
                     "description": "Het door de gemeente uitgegeven uniekenummer voor een ANDER NIET-NATUURLIJK PERSOON",
                     "type": "string",
@@ -8075,7 +8082,7 @@
                     "type": "string",
                     "maxLength": 500
                 },
-                "rechtsvorm": {
+                "inn.rechtsvorm": {
                     "title": "Rechtsvorm",
                     "description": "De juridische vorm van de NIET-NATUURLIJK PERSOON.",
                     "type": "string",
@@ -8107,7 +8114,7 @@
                     "type": "string",
                     "maxLength": 1000
                 },
-                "subVerblijfBuitenland": {
+                "sub.verblijfBuitenland": {
                     "title": "Sub verblijf buitenland",
                     "description": "De gegevens over het verblijf in het buitenland",
                     "type": "string",
@@ -8159,7 +8166,7 @@
                     "type": "string",
                     "maxLength": 1000
                 },
-                "subVerblijfBuitenland": {
+                "sub.verblijfBuitenland": {
                     "title": "Sub verblijf buitenland",
                     "description": "De gegevens over het verblijf in het buitenland",
                     "type": "string",

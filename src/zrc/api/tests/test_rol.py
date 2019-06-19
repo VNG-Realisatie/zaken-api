@@ -1,3 +1,4 @@
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import RolTypes
@@ -15,6 +16,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
+    @freeze_time("2018-01-01")
     def test_read_rol_np(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
@@ -26,6 +28,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         NatuurlijkPersoon.objects.create(
             rol=rol,
             nummer_ander_natuurlijk_persoon='12345',
+            a_nummer='1234567890'
         )
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_read', uuid=rol.uuid)
@@ -45,10 +48,11 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'betrokkeneType': RolTypes.natuurlijk_persoon,
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
+                'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': {
-                    'burgerservicenummer': '',
-                    'nummerAnderNatuurlijkPersoon': '12345',
-                    'aNummer': '',
+                    'inp.bsn': '',
+                    'anp.identificatie': '12345',
+                    'inp.a-nummer': '1234567890',
                     'geslachtsnaam': '',
                     'voorvoegselGeslachtsnaam': '',
                     'voorletters': '',
@@ -56,11 +60,12 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                     'geslachtsaanduiding': '',
                     'geboortedatum': '',
                     'verblijfsadres': '',
-                    'subVerblijfBuitenland': ''
+                    'sub.verblijfBuitenland': ''
                 }
             }
         )
 
+    @freeze_time("2018-01-01")
     def test_read_rol_nnp(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
@@ -91,13 +96,14 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'betrokkeneType': RolTypes.niet_natuurlijk_persoon,
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
+                'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': {
-                    'rsin': '',
-                    'nummerAnderNietnatuurlijkPersoon': '123456',
+                    'inn.nnpId': '',
+                    'ann.identificatie': '123456',
                     'statutaireNaam': '',
-                    'rechtsvorm': '',
+                    'inn.rechtsvorm': '',
                     'bezoekadres': '',
-                    'subVerblijfBuitenland': ''
+                    'sub.verblijfBuitenland': ''
                 }
             }
         )
@@ -112,7 +118,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'rolomschrijving': 'Initiator',
             'roltoelichting': 'awerw',
             'betrokkeneIdentificatie': {
-                'nummerAnderNatuurlijkPersoon': '12345',
+                'anp.identificatie': '12345',
                 }
         }
 
