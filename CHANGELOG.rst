@@ -2,6 +2,25 @@
 Wijzigingen
 ===========
 
+0.17.0 (2019-06-18)
+===================
+
+Second release towards release candidate
+
+* Added filters to ``Zaak`` list endpoint: ``startdatum`` variations (equal,
+  greater then, etc.)
+* Added fixture loading to container start script
+* Added more tests
+* Added models for ``Betrokkene`` types - see "Grenzen van het API-Landschap"
+* Added polymorphism to ``Betrokkene`` serializer
+* Fixed a bug on ZIO deletion w/r to DRC validation
+* Fixed docker image build
+
+Breaking changes
+----------------
+
+* Re-enabled validation of ``ZaakBesluit.besluit``. Requires BRC >= 0.11.1
+
 0.16.0 (2019-05-22)
 ===================
 

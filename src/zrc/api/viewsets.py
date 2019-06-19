@@ -1,15 +1,18 @@
 import logging
 
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
 )
+from vng_api_common.filters import Backend
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
@@ -163,7 +166,9 @@ class ZaakViewSet(NotificationViewSetMixin,
     queryset = Zaak.objects.prefetch_related('deelzaken').order_by('-pk')
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
+    filter_backends = (Backend, OrderingFilter)
     filterset_class = ZaakFilter
+    ordering_fields = ('startdatum', )
     lookup_field = 'uuid'
     pagination_class = PageNumberPagination
 
@@ -404,7 +409,6 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     notifications_kanaal = KANAAL_ZAKEN
     notifications_main_resource_key = 'zaak'
 
-    # TODO new permission classes and scopes needed?
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
@@ -416,6 +420,14 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     }
     audit = AUDIT_ZRC
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        # Do not display ZaakInformatieObjecten that are marked to be deleted
+        marked_zios = cache.get('zios_marked_for_delete')
+        if marked_zios:
+            return qs.exclude(uuid__in=marked_zios)
+        return qs
 
 
 class ZaakEigenschapViewSet(NotificationCreateMixin,

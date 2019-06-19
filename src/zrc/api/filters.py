@@ -14,7 +14,8 @@ class ZaakFilter(FilterSet):
             'zaaktype': ['exact', ],
             'archiefnominatie': ['exact', 'in', ],
             'archiefactiedatum': ['exact', 'lt', 'gt', ],
-            'archiefstatus': ['exact', 'in', ]
+            'archiefstatus': ['exact', 'in', ],
+            'startdatum': ['exact', 'gt', 'gte', 'lt', 'lte']
         }
 
 

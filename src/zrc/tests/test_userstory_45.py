@@ -4,6 +4,8 @@ kan worden gerouteerd.
 
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/45
 """
+import uuid
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import RolOmschrijving, RolTypes
@@ -14,8 +16,8 @@ from vng_api_common.tests import (
 from zrc.api.scopes import SCOPE_ZAKEN_CREATE
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
-WATERNET = 'https://waternet.nl/api/organisatorische-eenheid/1234'
-ZAAKTYPE = 'https://example.com/api/v1/zaaktype/1'
+WATERNET = f'https://waternet.nl/api/organisatorische-eenheid/{uuid.uuid4().hex}'
+ZAAKTYPE = f'https://example.com/api/v1/zaaktype/{uuid.uuid4().hex}'
 
 
 class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
@@ -47,6 +49,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'betrokkeneType': RolTypes.organisatorische_eenheid,
             'rolomschrijving': RolOmschrijving.behandelaar,
             'roltoelichting': 'Verantwoordelijke behandelaar voor de melding',
+            'betrokkeneIdentificatie': None
         })
 
     def test_meerdere_initiatoren_verboden(self):
