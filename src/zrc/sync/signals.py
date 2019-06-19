@@ -2,7 +2,8 @@ import logging
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.db.models.signals import post_delete, post_save
+from django.core.cache import cache
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.urls import reverse
 
@@ -90,10 +91,23 @@ def sync_delete(relation: ZaakInformatieObject):
         raise SyncError(f"Could not {operation} remote relation") from exc
 
 
-@receiver([post_save, post_delete], sender=ZaakInformatieObject, dispatch_uid='sync.sync_informatieobject_relation')
+@receiver([post_save, pre_delete], sender=ZaakInformatieObject, dispatch_uid='sync.sync_informatieobject_relation')
 def sync_informatieobject_relation(sender, instance: ZaakInformatieObject=None, **kwargs):
     signal = kwargs['signal']
     if signal is post_save and kwargs.get('created', False):
         sync_create(instance)
-    elif signal is post_delete:
+    elif signal is pre_delete:
+        # Add the uuid of the ZaakInformatieObject to the list of ZIOs that are
+        # marked for delete, causing them not to show up when performing
+        # GET requests on the ZRC, allowing the validation in the DRC to pass
+        marked_zios = cache.get('zios_marked_for_delete')
+        if marked_zios:
+            cache.set('zios_marked_for_delete', marked_zios + [instance.uuid])
+        else:
+            cache.set('zios_marked_for_delete', [instance.uuid])
+
         sync_delete(instance)
+
+        marked_zios = cache.get('zios_marked_for_delete')
+        marked_zios.remove(instance.uuid)
+        cache.set('zios_marked_for_delete', marked_zios)
