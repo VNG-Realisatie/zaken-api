@@ -30,8 +30,9 @@ from zrc.datamodel.constants import (
 )
 from zrc.datamodel.models import (
     KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, Resultaat, Rol, Status, Vestiging, Zaak,
-    ZaakBesluit, ZaakEigenschap, ZaakInformatieObject, ZaakKenmerk, ZaakObject
+    OrganisatorischeEenheid, RelevanteZaakRelatie, Resultaat, Rol, Status,
+    Vestiging, Zaak, ZaakBesluit, ZaakEigenschap, ZaakInformatieObject,
+    ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
@@ -189,6 +190,22 @@ class OpschortingSerializer(GegevensGroepSerializer):
         }
 
 
+class RelevanteZaakSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RelevanteZaakRelatie
+        fields = ('url', 'aard_relatie',)
+        extra_kwargs = {
+            'url': {
+                'validators': [
+                    URLValidator(
+                        get_auth=get_auth,
+                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
+                    )
+                ]
+            }
+        }
+
+
 class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMixin,
                      serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
@@ -233,6 +250,16 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         lookup_url_kwarg='uuid',
         lookup_field='uuid',
         help_text=_("Indien geen resultaat bekend is, dan is de waarde 'null'")
+    )
+
+    relevante_andere_zaken = RelevanteZaakSerializer(
+        many=True, required=False,
+        help_text=_(
+            "Een lijst van objecten met ieder twee elementen:\n"
+            "* `zaak` - een url naar een andere `Zaak`\n"
+            "* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, "
+            "waarbij de onderstaande waardes toegestaan zijn."
+        )
     )
 
     class Meta:
@@ -311,11 +338,6 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                 'lookup_field': 'uuid',
                 'queryset': Zaak.objects.all(),
                 'validators': [NotSelfValidator(), HoofdzaakValidator()],
-            },
-            'relevante_andere_zaken': {
-                'child': serializers.DictField(
-                    validators=[RelevanteAndereZaakValidator()]
-                )
             },
             'laatste_betaaldatum': {
                 'validators': [UntilNowValidator()]

@@ -187,17 +187,6 @@ class Zaak(APIMixin, models.Model):
                     "het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak.")
     )
 
-    relevante_andere_zaken = ArrayField(
-        JSONField(blank=True),
-        blank=True, default=list,
-        help_text=_(
-                "Een lijst van objecten met ieder twee elementen:\n"
-                "* `zaak` - een url naar een andere `Zaak`\n"
-                "* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, "
-                "waarbij de onderstaande waardes toegestaan zijn."
-            ),
-    )
-
     # Archiving
     archiefnominatie = models.CharField(
         _("archiefnominatie"), max_length=40, null=True, blank=True,
@@ -242,6 +231,15 @@ class Zaak(APIMixin, models.Model):
 
     def unique_representation(self):
         return f"{self.bronorganisatie} - {self.identificatie}"
+
+
+class RelevanteZaakRelatie(models.Model):
+    """
+    Registreer een ZAAK als relevant voor een andere ZAAK
+    """
+    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE, related_name='relevante_andere_zaken')
+    url = models.URLField(_("URL naar zaak"), max_length=1000)
+    aard_relatie = models.CharField(max_length=20, choices=AardZaakRelatie.choices)
 
 
 class Status(models.Model):
