@@ -47,27 +47,7 @@ from .validators import (
 logger = logging.getLogger(__name__)
 
 
-# serializers for betrokkene identificatie data used in Rol api
-class RenameModelSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # iterating through all fields in a nasty way to keep their order
-        fields_count = len(self.fields)
-        for i in range(fields_count):
-            field, value = self.fields.popitem()
-            if field in self.Meta.rename_field_mapping:
-                self.fields[self.Meta.rename_field_mapping[field]] = value
-            else:
-                if value.source == field:
-                    value.source = None
-                self.fields[field] = value
-
-    class Meta:
-        rename_field_mapping = {}
-
-
-class RolNatuurlijkPersoonSerializer(RenameModelSerializer):
+class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -77,9 +57,9 @@ class RolNatuurlijkPersoonSerializer(RenameModelSerializer):
     class Meta:
         model = NatuurlijkPersoon
         fields = (
-            'burgerservicenummer',
-            'nummer_ander_natuurlijk_persoon',
-            'a_nummer',
+            'inp_bsn',
+            'anp_identificatie',
+            'inp_a_nummer',
             'geslachtsnaam',
             'voorvoegsel_geslachtsnaam',
             'voorletters',
@@ -89,34 +69,22 @@ class RolNatuurlijkPersoonSerializer(RenameModelSerializer):
             'verblijfsadres',
             'sub_verblijf_buitenland'
         )
-        rename_field_mapping = {
-            'burgerservicenummer': 'inp.bsn',
-            'nummer_ander_natuurlijk_persoon': 'anp.identificatie',
-            'a_nummer': 'inp.a-nummer',
-            'sub_verblijf_buitenland': 'sub.verblijfBuitenland'
-        }
 
 
-class RolNietNatuurlijkPersoonSerializer(RenameModelSerializer):
+class RolNietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
     class Meta:
         model = NietNatuurlijkPersoon
         fields = (
-            'rsin',
-            'nummer_ander_nietnatuurlijk_persoon',
+            'inn_nnp_id',
+            'ann_identificatie',
             'statutaire_naam',
-            'rechtsvorm',
+            'inn_rechtsvorm',
             'bezoekadres',
             'sub_verblijf_buitenland'
         )
-        rename_field_mapping = {
-            'rsin': 'inn.nnpId',
-            'nummer_ander_nietnatuurlijk_persoon': 'ann.identificatie',
-            'rechtsvorm': 'inn.rechtsvorm',
-            'sub_verblijf_buitenland': 'sub.verblijfBuitenland',
-        }
 
 
-class RolVestigingSerializer(RenameModelSerializer):
+class RolVestigingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vestiging
         fields = (
@@ -125,9 +93,6 @@ class RolVestigingSerializer(RenameModelSerializer):
             'verblijfsadres',
             'sub_verblijf_buitenland'
         )
-        rename_field_mapping = {
-            'sub_verblijf_buitenland': 'sub.verblijfBuitenland',
-        }
 
 
 class RolOrganisatorischeEenheidSerializer(serializers.ModelSerializer):
