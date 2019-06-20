@@ -135,14 +135,14 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
             'registratiedatum': '2018-06-11',
             'startdatum': '2018-06-11',
             'relevanteAndereZaken': [{
-                'zaak': 'https://example.com/andereZaak',
+                'url': 'https://example.com/andereZaak',
                 'aardRelatie': AardZaakRelatie.vervolg
             }]
         }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        validation_error = get_validation_errors(response, 'relevanteAndereZaken.0')
+        validation_error = get_validation_errors(response, 'relevanteAndereZaken.0.url')
         self.assertEqual(validation_error['code'], URLValidator.code)
 
     @override_settings(
@@ -172,7 +172,7 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         andere_zaak_url = response.data['url']
 
         zaak_body.update({'relevanteAndereZaken': [{
-            'zaak': andere_zaak_url,
+            'url': andere_zaak_url,
             'aardRelatie': AardZaakRelatie.vervolg
         }]})
 
