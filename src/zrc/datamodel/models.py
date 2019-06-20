@@ -220,7 +220,7 @@ class Zaak(APIMixin, models.Model):
 
     def save(self, *args, **kwargs):
         if not self.identificatie:
-            self.identificatie = generate_unique_identification(self, 'registratiedatum__year')
+            self.identificatie = generate_unique_identification(self, 'registratiedatum')
 
         if self.betalingsindicatie == BetalingsIndicatie.nvt and self.laatste_betaaldatum:
             self.laatste_betaaldatum = None
