@@ -2,7 +2,8 @@ from django_filters import filters
 from vng_api_common.filtersets import FilterSet
 
 from zrc.datamodel.models import (
-    Resultaat, Rol, Status, Zaak, ZaakInformatieObject)
+    Resultaat, Rol, Status, Zaak, ZaakInformatieObject
+)
 
 
 def get_help_text(model_string, field_name):
