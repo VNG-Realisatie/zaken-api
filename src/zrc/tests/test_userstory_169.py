@@ -18,7 +18,7 @@ from vng_api_common.constants import (
 )
 from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
-from zrc.api.scopes import SCOPE_ZAKEN_CREATE
+from zrc.api.scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
@@ -36,7 +36,7 @@ VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US169TestCase(JWTAuthMixin, APITestCase):
 
-    scopes = [SCOPE_ZAKEN_CREATE]
+    scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 
     def test_create_melding(self):
