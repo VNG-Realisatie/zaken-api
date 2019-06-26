@@ -1,6 +1,7 @@
 import logging
 from django.core.validators import MaxValueValidator
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from vng_api_common.descriptors import GegevensGroepType
 
@@ -211,7 +212,8 @@ class Overige(models.Model):
 
 
 class TerreinGebouwdObject(models.Model):
-    huishouden = models.OneToOneField(Huishouden, on_delete=models.CASCADE, related_name='is_gehuisvest_in')
+    zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE, null=True)
+    huishouden = models.OneToOneField(Huishouden, on_delete=models.CASCADE, null=True, related_name='is_gehuisvest_in')
     identificatie = models.CharField(
         max_length=100, help_text='De unieke identificatie van het OBJECT'
     )
@@ -241,6 +243,11 @@ class TerreinGebouwdObject(models.Model):
         'ogo_locatie_aanduiding': ogo_locatie_aanduiding
     })
 
+    def clean(self):
+        super().clean()
+        if self.zaakobject is None and self.huishouden is None:
+            raise ValidationError('Relations to ZaakObject or Huishouden models should be set')
+
 
 class WozDeelobject(models.Model):
     zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE)
@@ -256,6 +263,7 @@ class WozWaarde(models.Model):
 
 
 class WozObjectNummer(models.Model):
+    zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE, null=True)
     woz_deelobject = models.OneToOneField(
         WozDeelobject, on_delete=models.CASCADE, null=True, related_name='is_onderdeel_van'
     )
@@ -288,6 +296,11 @@ class WozObjectNummer(models.Model):
         'aoa_huisnummertoevoeging': aoa_huisnummertoevoeging,
         'locatie_omschrijving': locatie_omschrijving
     })
+
+    def clean(self):
+        super().clean()
+        if self.zaakobject is None and self.woz_deelobject is None and self.woz_warde is None:
+            raise ValidationError('Relations to ZaakObject, WozDeelobject or WozWaarde models should be set')
 
 
 class ZakelijkRecht(models.Model):
