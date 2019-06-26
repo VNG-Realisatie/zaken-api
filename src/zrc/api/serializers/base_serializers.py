@@ -26,94 +26,26 @@ from vng_api_common.validators import (
 )
 
 from zrc.datamodel.constants import (
-    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding
+    AardZaakRelatie, BetalingsIndicatie
 )
 from zrc.datamodel.models import (
-    KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, RelevanteZaakRelatie, Resultaat, Rol, Status,
-    Vestiging, Zaak, ZaakBesluit, ZaakEigenschap, ZaakInformatieObject,
+    KlantContact, RelevanteZaakRelatie, Resultaat, Rol, Status,
+    Zaak, ZaakBesluit, ZaakEigenschap, ZaakInformatieObject,
     ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .auth import get_auth
-from .validators import (
+from ..auth import get_auth
+from ..validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
 )
+from .betrokkene import RolMedewerkerSerializer, RolNatuurlijkPersoonSerializer, \
+    RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer, RolVestigingSerializer
 
 logger = logging.getLogger(__name__)
-
-
-class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        value_display_mapping = add_choice_values_help_text(GeslachtsAanduiding)
-        self.fields['geslachtsaanduiding'].help_text += f"\n\n{value_display_mapping}"
-
-    class Meta:
-        model = NatuurlijkPersoon
-        fields = (
-            'inp_bsn',
-            'anp_identificatie',
-            'inp_a_nummer',
-            'geslachtsnaam',
-            'voorvoegsel_geslachtsnaam',
-            'voorletters',
-            'voornamen',
-            'geslachtsaanduiding',
-            'geboortedatum',
-            'verblijfsadres',
-            'sub_verblijf_buitenland'
-        )
-
-
-class RolNietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = NietNatuurlijkPersoon
-        fields = (
-            'inn_nnp_id',
-            'ann_identificatie',
-            'statutaire_naam',
-            'inn_rechtsvorm',
-            'bezoekadres',
-            'sub_verblijf_buitenland'
-        )
-
-
-class RolVestigingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Vestiging
-        fields = (
-            'vestigings_nummer',
-            'handelsnaam',
-            'verblijfsadres',
-            'sub_verblijf_buitenland'
-        )
-
-
-class RolOrganisatorischeEenheidSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrganisatorischeEenheid
-        fields = (
-            'identificatie',
-            'naam',
-            'is_gehuisvest_in'
-        )
-
-
-class RolMedewerkerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Medewerker
-        fields = (
-            'identificatie',
-            'achternaam',
-            'voorletters',
-            'voorvoegsel_achternaam'
-        )
 
 
 # Zaak API
