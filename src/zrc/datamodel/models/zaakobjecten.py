@@ -211,7 +211,7 @@ class Overige(models.Model):
 
 
 class TerreinGebouwdObject(models.Model):
-    huishouden = models.ForeignKey(Huishouden, on_delete=models.CASCADE, related_name='is_gehuisvest_in')
+    huishouden = models.OneToOneField(Huishouden, on_delete=models.CASCADE, related_name='is_gehuisvest_in')
     identificatie = models.CharField(
         max_length=100, help_text='De unieke identificatie van het OBJECT'
     )
@@ -256,6 +256,12 @@ class WozWaarde(models.Model):
 
 
 class WozObjectNummer(models.Model):
+    woz_deelobject = models.OneToOneField(
+        WozDeelobject, on_delete=models.CASCADE, null=True, related_name='is_onderdeel_van'
+    )
+    woz_warde = models.OneToOneField(
+        WozWaarde, on_delete=models.CASCADE, null=True, related_name='is_voor'
+    )
     wozobject_nummer = models.CharField(
         max_length=100, help_text='De unieke identificatie van het OBJECT'
     )
@@ -283,15 +289,9 @@ class WozObjectNummer(models.Model):
         'locatie_omschrijving': locatie_omschrijving
     })
 
-    woz_deelobject = models.OneToOneField(
-        WozDeelobject, on_delete=models.CASCADE, null=True, related_name='is_onderdeel_van'
-    )
-    woz_warde = models.OneToOneField(
-        WozWaarde, on_delete=models.CASCADE, null=True, related_name='is_voor'
-    )
-
 
 class ZakelijkRecht(models.Model):
+    zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE)
     identificatie = models.CharField(
         max_length=100, help_text='De unieke identificatie van het OBJECT'
     )
