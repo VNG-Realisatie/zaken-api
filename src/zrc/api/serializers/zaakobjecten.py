@@ -2,7 +2,8 @@ import logging
 
 from rest_framework import serializers
 from vng_api_common.serializers import GegevensGroepSerializer, NestedGegevensGroepMixin, add_choice_values_help_text
-from zrc.datamodel.constants import TyperingWater
+from zrc.datamodel.constants import TyperingWater, TyperingInrichtingselement, \
+    TyperingKunstwerk, TypeSpoorbaan
 
 from zrc.datamodel.models import (
     Adres, Buurt, Gemeente, GemeentelijkeOpenbareRuimte, Huishouden,
@@ -76,6 +77,12 @@ class ObjectInrichtingselementSerializer(serializers.ModelSerializer):
             'naam',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(TyperingInrichtingselement)
+        self.fields['type'].help_text += f"\n\n{value_display_mapping}"
+
 
 class ObjectKunstwerkdeelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -85,6 +92,12 @@ class ObjectKunstwerkdeelSerializer(serializers.ModelSerializer):
             'identificatie',
             'naam',
         )
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            value_display_mapping = add_choice_values_help_text(TyperingKunstwerk)
+            self.fields['type'].help_text += f"\n\n{value_display_mapping}"
 
 
 class ObjectMaatschappelijkeActiviteitSerializer(serializers.ModelSerializer):
@@ -122,6 +135,12 @@ class ObjectSpoorbaandeelSerializer(serializers.ModelSerializer):
             'identificatie',
             'naam',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(TypeSpoorbaan)
+        self.fields['type_waterdeel'].help_text += f"\n\n{value_display_mapping}"
 
 
 class ObjectTerreindeelSerializer(serializers.ModelSerializer):
