@@ -262,7 +262,7 @@ class WozWaarde(models.Model):
     )
 
 
-class WozObjectNummer(models.Model):
+class WozObject(models.Model):
     zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE, null=True)
     woz_deelobject = models.OneToOneField(
         WozDeelobject, on_delete=models.CASCADE, null=True, related_name='is_onderdeel_van'

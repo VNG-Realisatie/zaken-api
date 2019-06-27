@@ -3,7 +3,7 @@ from django.contrib import admin
 from ..models import (
     Adres, Waterdeel, Pand, Buurt, OpenbareRuimte, Gemeente, GemeentelijkeOpenbareRuimte,
     MaatschappelijkeActiviteit, Inrichtingselement, Kunstwerkdeel, Huishouden, Spoorbaandeel,
-    Terreindeel, WozObjectNummer, WozWaarde, WozDeelobject, Woonplaats, Wijk, Overige,
+    Terreindeel, WozObject, WozWaarde, WozDeelobject, Woonplaats, Wijk, Overige,
     TerreinGebouwdObject, ZakelijkRechtHeeftAlsGerechtigde, ZakelijkRecht, Wegdeel,
     KadastraleOnroerendeZaak
 )
@@ -109,8 +109,8 @@ class WozWaardeAdmin(admin.ModelAdmin):
     list_display = ['zaakobject', 'waardepeildatum']
 
 
-@admin.register(WozObjectNummer)
-class WozObjectNummerAdmin(admin.ModelAdmin):
+@admin.register(WozObject)
+class WozObjectAdmin(admin.ModelAdmin):
     list_display = ['woz_deelobject', 'woz_warde', 'wozobject_nummer']
 
 

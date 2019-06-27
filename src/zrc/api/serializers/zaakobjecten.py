@@ -9,7 +9,7 @@ from zrc.datamodel.models import (
     Adres, Buurt, Gemeente, GemeentelijkeOpenbareRuimte, Huishouden,
     Inrichtingselement, Kunstwerkdeel, MaatschappelijkeActiviteit, OpenbareRuimte,
     Pand, Spoorbaandeel, Terreindeel, Waterdeel, Wegdeel, Wijk, Woonplaats, Overige,
-    TerreinGebouwdObject, WozDeelobject, WozWaarde, WozObjectNummer, ZakelijkRecht,
+    TerreinGebouwdObject, WozDeelobject, WozWaarde, WozObject, ZakelijkRecht,
     ZakelijkRechtHeeftAlsGerechtigde, KadastraleOnroerendeZaak
 )
 from .base_serializers import RolNietNatuurlijkPersoonSerializer, RolNatuurlijkPersoonSerializer
@@ -93,11 +93,11 @@ class ObjectKunstwerkdeelSerializer(serializers.ModelSerializer):
             'naam',
         )
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-            value_display_mapping = add_choice_values_help_text(TyperingKunstwerk)
-            self.fields['type'].help_text += f"\n\n{value_display_mapping}"
+        value_display_mapping = add_choice_values_help_text(TyperingKunstwerk)
+        self.fields['type'].help_text += f"\n\n{value_display_mapping}"
 
 
 class ObjectMaatschappelijkeActiviteitSerializer(serializers.ModelSerializer):
@@ -140,7 +140,7 @@ class ObjectSpoorbaandeelSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
 
         value_display_mapping = add_choice_values_help_text(TypeSpoorbaan)
-        self.fields['type_waterdeel'].help_text += f"\n\n{value_display_mapping}"
+        self.fields['type'].help_text += f"\n\n{value_display_mapping}"
 
 
 class ObjectTerreindeelSerializer(serializers.ModelSerializer):
@@ -217,15 +217,15 @@ class ObjectTerreinGebouwdObjectSerializer(NestedGegevensGroepMixin, serializers
 
 class AanduidingWozObjectSerializer(GegevensGroepSerializer):
     class Meta:
-        model = WozObjectNummer
+        model = WozObject
         gegevensgroep = 'aanduiding_WOZ_object'
 
 
-class ObjectWozObjectNummerSerializer(NestedGegevensGroepMixin, serializers.ModelSerializer):
+class ObjectWozObjectSerializer(NestedGegevensGroepMixin, serializers.ModelSerializer):
     aanduiding_WOZ_object = AanduidingWozObjectSerializer(required=False, allow_null=True)
 
     class Meta:
-        model = WozObjectNummer
+        model = WozObject
         fields = (
             'wozobject_nummer',
             'aanduiding_WOZ_object',
@@ -233,7 +233,7 @@ class ObjectWozObjectNummerSerializer(NestedGegevensGroepMixin, serializers.Mode
 
 
 class ObjectWozDeelobjectSerializer(serializers.ModelSerializer):
-    is_onderdeel_van = ObjectWozObjectNummerSerializer(required=False)
+    is_onderdeel_van = ObjectWozObjectSerializer(required=False)
 
     class Meta:
         model = WozDeelobject
@@ -244,7 +244,7 @@ class ObjectWozDeelobjectSerializer(serializers.ModelSerializer):
 
 
 class ObjectWozWaardeSerializer(serializers.ModelSerializer):
-    is_voor = ObjectWozObjectNummerSerializer(required=False)
+    is_voor = ObjectWozObjectSerializer(required=False)
 
     class Meta:
         model = WozWaarde
