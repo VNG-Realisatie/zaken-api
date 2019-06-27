@@ -106,8 +106,9 @@ def sync_informatieobject_relation(sender, instance: ZaakInformatieObject=None, 
         else:
             cache.set('zios_marked_for_delete', [instance.uuid])
 
-        sync_delete(instance)
-
-        marked_zios = cache.get('zios_marked_for_delete')
-        marked_zios.remove(instance.uuid)
-        cache.set('zios_marked_for_delete', marked_zios)
+        try:
+            sync_delete(instance)
+        finally:
+            marked_zios = cache.get('zios_marked_for_delete')
+            marked_zios.remove(instance.uuid)
+            cache.set('zios_marked_for_delete', marked_zios)
