@@ -79,6 +79,13 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | relatieomschrijving | Omschrijving van de betrekking tussen de ZAAK en het OBJECT. | string | nee | C​R​U​D |
 | type | Beschrijft het type object gerelateerd aan de zaak | string | ja | C​R​U​D |
 
+## ZakelijkRechtHeeftAlsGerechtigde
+
+Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/zakelijkrechtheeftalsgerechtigde)
+
+| Attribuut | Omschrijving | Type | Verplicht | CRUD* |
+| --- | --- | --- | --- | --- |
+
 ## ZaakKenmerk
 
 Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/zaakkenmerk)
