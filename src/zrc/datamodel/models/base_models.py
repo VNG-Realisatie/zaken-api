@@ -5,7 +5,6 @@ from datetime import date
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
 from django.contrib.postgres.fields import ArrayField
-from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
@@ -17,7 +16,7 @@ from vng_api_common.constants import (
 )
 from vng_api_common.descriptors import GegevensGroepType
 from vng_api_common.fields import (
-    BSNField, DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
+    DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.utils import (
@@ -27,7 +26,7 @@ from vng_api_common.utils import (
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from ..constants import (
-    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
+    AardZaakRelatie, BetalingsIndicatie
 )
 from ..query import ZaakQuerySet, ZaakRelatedQuerySet
 
@@ -387,7 +386,7 @@ class ZaakObject(models.Model):
         max_length=80, blank=True,
         help_text='Omschrijving van de betrekking tussen de ZAAK en het OBJECT.'
     )
-    object_type = models.CharField(
+    type = models.CharField(
         max_length=100,
         choices=ZaakobjectTypes.choices,
         help_text="Beschrijft het type object gerelateerd aan de zaak"
@@ -412,7 +411,7 @@ class ZaakObject(models.Model):
                 Client = import_string(settings.ZDS_CLIENT_CLASS)
                 client = Client.from_url(object_url)
                 client.auth = APICredential.get_auth(object_url)
-                self._object = client.retrieve(self.object_type.lower(), url=object_url)
+                self._object = client.retrieve(self.type.lower(), url=object_url)
         return self._object
 
     def unique_representation(self):
