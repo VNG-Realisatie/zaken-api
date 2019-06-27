@@ -269,6 +269,10 @@ class ZakelijkRechtHeeftAlsGerechtigdeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ZakelijkRechtHeeftAlsGerechtigde
+        fields = (
+            'natuurlijk_persoon',
+            'niet_natuurlijk_persoon',
+        )
 
 
 class ObjectZakelijkRechtSerializer(serializers.ModelSerializer):

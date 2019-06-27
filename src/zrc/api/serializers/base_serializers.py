@@ -13,7 +13,7 @@ from rest_framework.settings import api_settings
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import (
-    Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes
+    Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes, ZaakobjectTypes
 )
 from vng_api_common.models import APICredential
 from vng_api_common.polymorphism import Discriminator, PolymorphicSerializer
@@ -44,6 +44,14 @@ from ..validators import (
 )
 from .betrokkene import RolMedewerkerSerializer, RolNatuurlijkPersoonSerializer, \
     RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer, RolVestigingSerializer
+from .zaakobjecten import ObjectAdresSerializer, ObjectBuurtSerializer, \
+    ObjectGemeentelijkeOpenbareRuimteSerializer, ObjectGemeenteSerializer, ObjectHuishoudenSerializer, \
+    ObjectInrichtingselementSerializer, ObjectKadastraleOnroerendeZaakSerializer, ObjectKunstwerkdeelSerializer, \
+    ObjectMaatschappelijkeActiviteitSerializer, ObjectOpenbareRuimteSerializer, ObjectOverigeSerializer, \
+    ObjectPandSerializer, ObjectSpoorbaandeelSerializer, ObjectTerreindeelSerializer, \
+    ObjectTerreinGebouwdObjectSerializer, ObjectWaterdeelSerializer, ObjectWegdeelSerializer, \
+    ObjectWijkSerializer, ObjectWoonplaatsSerializer, ObjectWozDeelobjectSerializer, ObjectWozObjectSerializer, \
+    ObjectWozWaardeSerializer, ObjectZakelijkRechtSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -493,7 +501,46 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         return obj
 
 
-class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
+class ZaakObjectSerializer(PolymorphicSerializer):
+    discriminator = Discriminator(
+        discriminator_field='type',
+        mapping={
+            ZaakobjectTypes.adres: ObjectAdresSerializer(),
+            ZaakobjectTypes.besluit: None,
+            ZaakobjectTypes.buurt: ObjectBuurtSerializer(),
+            ZaakobjectTypes.enkelvoudigDocument: None,
+            ZaakobjectTypes.gemeente: ObjectGemeenteSerializer(),
+            ZaakobjectTypes.gemeentelijkeOpenbareRuimte: ObjectGemeentelijkeOpenbareRuimteSerializer(),
+            ZaakobjectTypes.huishouden: ObjectHuishoudenSerializer(),
+            ZaakobjectTypes.inrichtingselement: ObjectInrichtingselementSerializer(),
+            ZaakobjectTypes.kadastraleOnroerendeZaak: ObjectKadastraleOnroerendeZaakSerializer(),
+            ZaakobjectTypes.kunstwerkdeel: ObjectKunstwerkdeelSerializer(),
+            ZaakobjectTypes.maatschappelijkeActiviteit: ObjectMaatschappelijkeActiviteitSerializer(),
+            ZaakobjectTypes.medewerker: RolMedewerkerSerializer(),
+            ZaakobjectTypes.natuurlijkPersoon: RolNatuurlijkPersoonSerializer(),
+            ZaakobjectTypes.nietNatuurlijkPersoon: RolNietNatuurlijkPersoonSerializer(),
+            ZaakobjectTypes.openbareRuimte: ObjectOpenbareRuimteSerializer(),
+            ZaakobjectTypes.organisatorischeEenheid: RolOrganisatorischeEenheidSerializer(),
+            ZaakobjectTypes.pand: ObjectPandSerializer(),
+            ZaakobjectTypes.spoorbaandeel: ObjectSpoorbaandeelSerializer(),
+            ZaakobjectTypes.status: None,
+            ZaakobjectTypes.terreindeel: ObjectTerreindeelSerializer(),
+            ZaakobjectTypes.terreinGebouwdObject: ObjectTerreinGebouwdObjectSerializer(),
+            ZaakobjectTypes.vestiging: RolVestigingSerializer(),
+            ZaakobjectTypes.waterdeel: ObjectWaterdeelSerializer(),
+            ZaakobjectTypes.wegdeel: ObjectWegdeelSerializer(),
+            ZaakobjectTypes.wijk: ObjectWijkSerializer(),
+            ZaakobjectTypes.woonplaats: ObjectWoonplaatsSerializer(),
+            ZaakobjectTypes.wozDeelobject: ObjectWozDeelobjectSerializer(),
+            ZaakobjectTypes.wozObject: ObjectWozObjectSerializer(),
+            ZaakobjectTypes.wozWaarde: ObjectWozWaardeSerializer(),
+            ZaakobjectTypes.zakelijkRecht: ObjectZakelijkRechtSerializer(),
+            ZaakobjectTypes.overige: ObjectOverigeSerializer(),
+        },
+        group_field='object_identificatie',
+        same_model=False
+    )
+
     class Meta:
         model = ZaakObject
         fields = (
@@ -510,9 +557,6 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             },
-            'type': {
-                'source': 'object_type',
-            }
         }
 
 
