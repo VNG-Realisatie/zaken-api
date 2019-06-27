@@ -161,7 +161,7 @@ class US153TestCase(JWTAuthMixin, APITestCase):
             'zaak': zaak['url'],
             'object': AVG_INZAGE_VERZOEK,
             'relatieomschrijving': 'Inzage verzoek horend bij deze zaak.',
-            'type': ZaakobjectTypes.avg_inzage_verzoek
+            'type': ZaakobjectTypes.adres
         }
         response = self.client.post(zaakobject_create_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)

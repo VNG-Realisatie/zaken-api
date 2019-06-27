@@ -9,7 +9,7 @@ from django.test import override_settings
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.constants import VertrouwelijkheidsAanduiding, ZaakobjectTypes
 from vng_api_common.tests import (
     JWTAuthMixin, get_operation_url, get_validation_errors
 )
@@ -154,7 +154,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         data = {
             'zaak': zaak_url,
             'object': OBJECT_MET_ADRES,
-            'type': 'VerblijfsObject',
+            'type': ZaakobjectTypes.adres,
             'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
         }
 
@@ -171,7 +171,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
                 'object': OBJECT_MET_ADRES,
-                'type': 'VerblijfsObject',
+                'objectIdentificatie': None,
+                'type': ZaakobjectTypes.adres,
                 'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
             }
         )
@@ -213,7 +214,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         data = {
             'zaak': zaak_url,
             'object': STADSDEEL,
-            'type': 'VerblijfsObject',
+            'type': ZaakobjectTypes.adres,
             'relatieomschrijving': 'Afgeleid gebied',
         }
 
@@ -230,7 +231,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
                 'object': STADSDEEL,
-                'type': 'VerblijfsObject',
+                'objectIdentificatie': None,
+                'type': ZaakobjectTypes.adres,
                 'relatieomschrijving': 'Afgeleid gebied',
             }
         )
