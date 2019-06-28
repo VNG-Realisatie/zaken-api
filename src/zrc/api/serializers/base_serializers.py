@@ -557,7 +557,35 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             },
+            'object': {
+                'required': False,
+            }
         }
+
+    def validate(self, attrs):
+        validated_attrs = super().validate(attrs)
+        object = validated_attrs.get('object', None)
+        object_identificatie = validated_attrs.get('object_identificatie', None)
+
+        if not object and not object_identificatie:
+            raise serializers.ValidationError(
+                _("betrokkene or betrokkeneIdentificatie must be provided"),
+                code='invalid-zaakobject')
+
+        return validated_attrs
+
+    @transaction.atomic
+    def create(self, validated_data):
+        group_data = validated_data.pop('object_identificatie', None)
+        zaakobject = super().create(validated_data)
+
+        if group_data:
+            group_serializer = self.discriminator.mapping[validated_data['type']]
+            serializer = group_serializer.get_fields()['object_identificatie']
+            group_data['zaakobject'] = zaakobject
+            serializer.create(group_data)
+
+        return zaakobject
 
 
 class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
