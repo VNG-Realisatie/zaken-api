@@ -25,11 +25,14 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import BetalingsIndicatie, GeslachtsAanduiding
+from zrc.datamodel.constants import (
+    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding
+)
 from zrc.datamodel.models import (
     KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, Resultaat, Rol, Status, Vestiging, Zaak,
-    ZaakBesluit, ZaakEigenschap, ZaakInformatieObject, ZaakKenmerk, ZaakObject
+    OrganisatorischeEenheid, RelevanteZaakRelatie, Resultaat, Rol, Status,
+    Vestiging, Zaak, ZaakBesluit, ZaakEigenschap, ZaakInformatieObject,
+    ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
@@ -187,6 +190,22 @@ class OpschortingSerializer(GegevensGroepSerializer):
         }
 
 
+class RelevanteZaakSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RelevanteZaakRelatie
+        fields = ('url', 'aard_relatie',)
+        extra_kwargs = {
+            'url': {
+                'validators': [
+                    URLValidator(
+                        get_auth=get_auth,
+                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
+                    )
+                ]
+            }
+        }
+
+
 class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMixin,
                      serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
@@ -231,6 +250,16 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         lookup_url_kwarg='uuid',
         lookup_field='uuid',
         help_text=_("Indien geen resultaat bekend is, dan is de waarde 'null'")
+    )
+
+    relevante_andere_zaken = RelevanteZaakSerializer(
+        many=True, required=False,
+        help_text=_(
+            "Een lijst van objecten met ieder twee elementen:\n"
+            "* `zaak` - een url naar een andere `Zaak`\n"
+            "* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, "
+            "waarbij de onderstaande waardes toegestaan zijn."
+        )
     )
 
     class Meta:
@@ -310,16 +339,6 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                 'queryset': Zaak.objects.all(),
                 'validators': [NotSelfValidator(), HoofdzaakValidator()],
             },
-            'relevante_andere_zaken': {
-                'child': serializers.URLField(
-                    label=_("URL naar andere zaak"),
-                    max_length=255,
-                    validators=[URLValidator(
-                        get_auth=get_auth,
-                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
-                    )]
-                )
-            },
             'laatste_betaaldatum': {
                 'validators': [UntilNowValidator()]
             }
@@ -332,6 +351,9 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
 
         value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
         self.fields['betalingsindicatie'].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(AardZaakRelatie)
+        self.fields['relevante_andere_zaken'].help_text += f"\n\n{value_display_mapping}"
 
     def _get_zaaktype(self, zaaktype_url: str) -> dict:
         if not hasattr(self, '_zaaktype'):

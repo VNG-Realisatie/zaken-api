@@ -23,7 +23,9 @@ from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.utils import get_uuid_from_path, request_object_attribute
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
+from .constants import (
+    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
+)
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -185,11 +187,6 @@ class Zaak(APIMixin, models.Model):
                     "het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak.")
     )
 
-    relevante_andere_zaken = ArrayField(
-        models.URLField(_("URL naar andere zaak"), max_length=1000),
-        blank=True, default=list
-    )
-
     # Archiving
     archiefnominatie = models.CharField(
         _("archiefnominatie"), max_length=40, null=True, blank=True,
@@ -234,6 +231,15 @@ class Zaak(APIMixin, models.Model):
 
     def unique_representation(self):
         return f"{self.bronorganisatie} - {self.identificatie}"
+
+
+class RelevanteZaakRelatie(models.Model):
+    """
+    Registreer een ZAAK als relevant voor een andere ZAAK
+    """
+    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE, related_name='relevante_andere_zaken')
+    url = models.URLField(_("URL naar zaak"), max_length=1000)
+    aard_relatie = models.CharField(max_length=20, choices=AardZaakRelatie.choices)
 
 
 class Status(models.Model):
@@ -774,7 +780,7 @@ class Medewerker(models.Model):
     voorletters = models.CharField(
         max_length=20, blank=True,
         help_text='De verzameling letters die gevormd wordt door de eerste letter van '
-                   'alle in volgorde voorkomende voornamen.')
+                  'alle in volgorde voorkomende voornamen.')
     voorvoegsel_achternaam = models.CharField(
         max_length=10, blank=True,
         help_text='Dat deel van de geslachtsnaam dat voorkomt in Tabel 36 (GBA), '
