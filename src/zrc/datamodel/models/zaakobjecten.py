@@ -218,18 +218,18 @@ class TerreinGebouwdObject(models.Model):
         max_length=100, help_text='De unieke identificatie van het OBJECT'
     )
 
-    num_identificatie = models.CharField(max_length=100)
-    oao_identificatie = models.CharField(max_length=100)
-    wpl_woonplaats_naam = models.CharField(max_length=80)
+    num_identificatie = models.CharField(max_length=100, blank=True)
+    oao_identificatie = models.CharField(max_length=100, blank=True)
+    wpl_woonplaats_naam = models.CharField(max_length=80, blank=True)
     gor_openbare_ruimte_naam = models.CharField(
-        max_length=80, help_text='Een door het bevoegde gemeentelijke orgaan aan een '
-                                 'OPENBARE RUIMTE toegekende benaming'
+        max_length=80, blank=True,
+        help_text='Een door het bevoegde gemeentelijke orgaan aan een OPENBARE RUIMTE toegekende benaming'
     )
     aoa_postcode = models.CharField(max_length=7, blank=True)
-    aoa_huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)])
+    aoa_huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)], null=True)
     aoa_huisletter = models.CharField(max_length=1, blank=True)
     aoa_huisnummertoevoeging = models.CharField(max_length=4, blank=True)
-    ogo_locatie_aanduiding = models.CharField(max_length=100)
+    ogo_locatie_aanduiding = models.CharField(max_length=100, blank=True)
 
     adres_aanduiding_grp = GegevensGroepType({
         'num_identificatie': num_identificatie,
@@ -251,7 +251,7 @@ class TerreinGebouwdObject(models.Model):
 
 class WozDeelobject(models.Model):
     zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE)
-    nummer_WOZ_deel_object = models.CharField(
+    nummer_woz_deel_object = models.CharField(
         max_length=6, help_text='Uniek identificatienummer voor het deelobject binnen een WOZ-object.')
 
 
@@ -270,23 +270,23 @@ class WozObject(models.Model):
     woz_warde = models.OneToOneField(
         WozWaarde, on_delete=models.CASCADE, null=True, related_name='is_voor'
     )
-    wozobject_nummer = models.CharField(
+    woz_object_nummer = models.CharField(
         max_length=100, help_text='De unieke identificatie van het OBJECT'
     )
 
-    oao_identificatie = models.CharField(max_length=100)
-    wpl_woonplaats_naam = models.CharField(max_length=80)
+    oao_identificatie = models.CharField(max_length=100, blank=True)
+    wpl_woonplaats_naam = models.CharField(max_length=80, blank=True)
     gor_openbare_ruimte_naam = models.CharField(
-        max_length=80, help_text='Een door het bevoegde gemeentelijke orgaan aan een '
-                                 'OPENBARE RUIMTE toegekende benaming'
+        max_length=80, blank=True,
+        help_text='Een door het bevoegde gemeentelijke orgaan aan een OPENBARE RUIMTE toegekende benaming'
     )
     aoa_postcode = models.CharField(max_length=7, blank=True)
-    aoa_huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)])
+    aoa_huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)], null=True)
     aoa_huisletter = models.CharField(max_length=1, blank=True)
     aoa_huisnummertoevoeging = models.CharField(max_length=4, blank=True)
-    locatie_omschrijving = models.CharField(max_length=1000)
+    locatie_omschrijving = models.CharField(max_length=1000, blank=True)
 
-    aanduiding_WOZ_object = GegevensGroepType({
+    aanduiding_woz_object = GegevensGroepType({
         'oao_identificatie': oao_identificatie,
         'wpl_woonplaats_naam': wpl_woonplaats_naam,
         'aoa_postcode': aoa_postcode,
@@ -324,6 +324,11 @@ class KadastraleOnroerendeZaak(models.Model):
     kadastrale_aanduiding = models.CharField(
         max_length=1000, help_text='De typering van de kadastrale aanduiding van een onroerende zaak conform Kadaster'
     )
+
+    def clean(self):
+        super().clean()
+        if self.zaakobject is None and self.zakelijk_recht is None :
+            raise ValidationError('Relations to ZaakObject or ZakelijkRecht models should be set')
 
 
 class ZakelijkRechtHeeftAlsGerechtigde(models.Model):

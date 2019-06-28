@@ -101,7 +101,7 @@ class TerreinGebouwdObjectAdmin(admin.ModelAdmin):
 
 @admin.register(WozDeelobject)
 class WozDeelobjectAdmin(admin.ModelAdmin):
-    list_display = ['zaakobject', 'nummer_WOZ_deel_object']
+    list_display = ['zaakobject', 'nummer_woz_deel_object']
 
 
 @admin.register(WozWaarde)
@@ -111,7 +111,7 @@ class WozWaardeAdmin(admin.ModelAdmin):
 
 @admin.register(WozObject)
 class WozObjectAdmin(admin.ModelAdmin):
-    list_display = ['woz_deelobject', 'woz_warde', 'wozobject_nummer']
+    list_display = ['woz_deelobject', 'woz_warde', 'woz_object_nummer']
 
 
 @admin.register(ZakelijkRecht)

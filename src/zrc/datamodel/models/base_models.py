@@ -380,7 +380,7 @@ class ZaakObject(models.Model):
     zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE)
     object = models.URLField(
         help_text='URL naar de resource die het OBJECT beschrijft.',
-        max_length=1000
+        max_length=1000, blank=True
     )
     relatieomschrijving = models.CharField(
         max_length=80, blank=True,
@@ -415,7 +415,9 @@ class ZaakObject(models.Model):
         return self._object
 
     def unique_representation(self):
-        return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.object)}"
+        if self.object:
+            return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.object)}"
+        return f"({self.zaak.unique_representation()}) - {self.relatieomschrijving}"
 
 
 class ZaakEigenschap(models.Model):
