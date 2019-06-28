@@ -1,7 +1,9 @@
 import logging
 
 from rest_framework import serializers
-from vng_api_common.serializers import GegevensGroepSerializer, NestedGegevensGroepMixin, add_choice_values_help_text
+from vng_api_common.serializers import GegevensGroepSerializer, NestedGegevensGroepMixin, \
+    add_choice_values_help_text
+from drf_writable_nested import NestedCreateMixin
 from zrc.datamodel.constants import TyperingWater, TyperingInrichtingselement, \
     TyperingKunstwerk, TypeSpoorbaan
 
@@ -57,14 +59,6 @@ class ObjectGemeentelijkeOpenbareRuimteSerializer(serializers.ModelSerializer):
         fields = (
             'identificatie',
             'openbare_ruimte_naam',
-        )
-
-
-class ObjectHuishoudenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Huishouden
-        fields = (
-            'nummer',
         )
 
 
@@ -202,6 +196,17 @@ class AdresAanduidingGrpSerializer(GegevensGroepSerializer):
     class Meta:
         model = TerreinGebouwdObject
         gegevensgroep = 'adres_aanduiding_grp'
+        extra_kwargs = {
+            'aoa_postcode': {
+                'allow_blank': True
+            },
+            'aoa_huisletter': {
+                'allow_blank': True
+            },
+            'aoa_huisnummertoevoeging': {
+                'allow_blank': True
+            }
+        }
 
 
 class ObjectTerreinGebouwdObjectSerializer(NestedGegevensGroepMixin, serializers.ModelSerializer):
@@ -215,20 +220,51 @@ class ObjectTerreinGebouwdObjectSerializer(NestedGegevensGroepMixin, serializers
         )
 
 
+class ObjectHuishoudenSerializer(serializers.ModelSerializer):
+    is_gehuisvest_in = ObjectTerreinGebouwdObjectSerializer(required=False, allow_null=True)
+
+    class Meta:
+        model = Huishouden
+        fields = (
+            'nummer',
+            'is_gehuisvest_in',
+        )
+
+    def create(self, validated_data):
+        terrein_gebouwd_data = validated_data.pop('is_gehuisvest_in', None)
+        huishouden = super().create(validated_data)
+
+        if terrein_gebouwd_data:
+            terrein_gebouwd_data['huishouden'] = huishouden
+            ObjectTerreinGebouwdObjectSerializer().create(terrein_gebouwd_data)
+        return huishouden
+
+
 class AanduidingWozObjectSerializer(GegevensGroepSerializer):
     class Meta:
         model = WozObject
-        gegevensgroep = 'aanduiding_WOZ_object'
+        gegevensgroep = 'aanduiding_woz_object'
+        extra_kwargs = {
+            'aoa_postcode': {
+                'allow_blank': True
+            },
+            'aoa_huisletter': {
+                'allow_blank': True
+            },
+            'aoa_huisnummertoevoeging': {
+                'allow_blank': True
+            }
+        }
 
 
 class ObjectWozObjectSerializer(NestedGegevensGroepMixin, serializers.ModelSerializer):
-    aanduiding_WOZ_object = AanduidingWozObjectSerializer(required=False, allow_null=True)
+    aanduiding_woz_object = AanduidingWozObjectSerializer(required=False, allow_null=True)
 
     class Meta:
         model = WozObject
         fields = (
-            'wozobject_nummer',
-            'aanduiding_WOZ_object',
+            'woz_object_nummer',
+            'aanduiding_woz_object',
         )
 
 
@@ -238,9 +274,18 @@ class ObjectWozDeelobjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = WozDeelobject
         fields = (
-            'nummer_WOZ_deel_object',
+            'nummer_woz_deel_object',
             'is_onderdeel_van',
         )
+
+    def create(self, validated_data):
+        woz_object_data = validated_data.pop('is_onderdeel_van', None)
+        woz_deelobject = super().create(validated_data)
+
+        if woz_object_data:
+            woz_object_data['woz_deelobject'] = woz_deelobject
+            ObjectWozObjectSerializer().create(woz_object_data)
+        return woz_deelobject
 
 
 class ObjectWozWaardeSerializer(serializers.ModelSerializer):
@@ -253,6 +298,15 @@ class ObjectWozWaardeSerializer(serializers.ModelSerializer):
             'is_voor',
         )
 
+    def create(self, validated_data):
+        woz_object_data = validated_data.pop('is_voor', None)
+        woz_warde = super().create(validated_data)
+
+        if woz_object_data:
+            woz_object_data['woz_warde'] = woz_warde
+            ObjectWozObjectSerializer().create(woz_object_data)
+        return woz_warde
+
 
 class ObjectKadastraleOnroerendeZaakSerializer(serializers.ModelSerializer):
     class Meta:
@@ -264,8 +318,8 @@ class ObjectKadastraleOnroerendeZaakSerializer(serializers.ModelSerializer):
 
 
 class ZakelijkRechtHeeftAlsGerechtigdeSerializer(serializers.ModelSerializer):
-    natuurlijk_persoon = RolNatuurlijkPersoonSerializer(required=False)
-    niet_natuurlijk_persoon = RolNietNatuurlijkPersoonSerializer(required=False)
+    natuurlijk_persoon = RolNatuurlijkPersoonSerializer(required=False, source='natuurlijkpersoon')
+    niet_natuurlijk_persoon = RolNietNatuurlijkPersoonSerializer(required=False, source='nietnatuurlijkpersoon')
 
     class Meta:
         model = ZakelijkRechtHeeftAlsGerechtigde
@@ -273,6 +327,21 @@ class ZakelijkRechtHeeftAlsGerechtigdeSerializer(serializers.ModelSerializer):
             'natuurlijk_persoon',
             'niet_natuurlijk_persoon',
         )
+
+    def create(self, validated_data):
+        natuurlijk_persoon_data = validated_data.pop('natuurlijkpersoon', None)
+        niet_natuurlijk_persoon_data = validated_data.pop('nietnatuurlijkpersoon', None)
+        heeft_als_gerechtigde = super().create(validated_data)
+
+        if natuurlijk_persoon_data:
+            natuurlijk_persoon_data['zakelijk_rechtHeeft_als_gerechtigde'] = heeft_als_gerechtigde
+            RolNatuurlijkPersoonSerializer().create(natuurlijk_persoon_data)
+
+        if niet_natuurlijk_persoon_data:
+            niet_natuurlijk_persoon_data['zakelijk_rechtHeeft_als_gerechtigde'] = heeft_als_gerechtigde
+            RolNietNatuurlijkPersoonSerializer().create(niet_natuurlijk_persoon_data)
+
+        return heeft_als_gerechtigde
 
 
 class ObjectZakelijkRechtSerializer(serializers.ModelSerializer):
@@ -287,6 +356,20 @@ class ObjectZakelijkRechtSerializer(serializers.ModelSerializer):
             'heeft_betrekking_op',
             'heeft_als_gerechtigde',
         )
+
+    def create(self, validated_data):
+        heeft_betrekking_op_data = validated_data.pop('heeft_betrekking_op', None)
+        heeft_als_gerechtigde_data = validated_data.pop('heeft_als_gerechtigde', None)
+        zakelijk_recht = super().create(validated_data)
+
+        if heeft_betrekking_op_data:
+            heeft_betrekking_op_data['zakelijk_recht'] = zakelijk_recht
+            ObjectKadastraleOnroerendeZaakSerializer().create(heeft_betrekking_op_data)
+
+        if heeft_als_gerechtigde_data:
+            heeft_als_gerechtigde_data['zakelijk_recht'] = zakelijk_recht
+            ZakelijkRechtHeeftAlsGerechtigdeSerializer().create(heeft_als_gerechtigde_data)
+        return zakelijk_recht
 
 
 class ObjectOverigeSerializer(serializers.ModelSerializer):
