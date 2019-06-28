@@ -1,3 +1,5 @@
+from django.apps import apps
+
 from django_filters import filters
 from vng_api_common.filtersets import FilterSet
 
@@ -6,9 +8,8 @@ from zrc.datamodel.models import (
 )
 
 
-def get_help_text(model_string, field_name):
-    from django.apps import apps
-    ModelClass = apps.get_model(*model_string.split('.', 1), False)
+def get_help_text(model_string: str, field_name: str) -> str:
+    ModelClass = apps.get_model(model_string, require_ready=False)
     field = ModelClass._meta.get_field(field_name)
     return field.help_text
 
@@ -29,21 +30,37 @@ class ZaakFilter(FilterSet):
 
 class RolFilter(FilterSet):
     betrokkene_identificatie__natuurlijk_persoon__inp_bsn = filters.CharFilter(
-        field_name='natuurlijkpersoon__inp_bsn', help_text=get_help_text('datamodel.NatuurlijkPersoon', 'inp_bsn'))
+        field_name='natuurlijkpersoon__inp_bsn',
+        help_text=get_help_text('datamodel.NatuurlijkPersoon', 'inp_bsn')
+    )
     betrokkene_identificatie__natuurlijk_persoon__anp_identificatie = filters.CharFilter(
-        field_name='natuurlijkpersoon__anp_identificatie', help_text=get_help_text('datamodel.NatuurlijkPersoon', 'anp_identificatie'))
+        field_name='natuurlijkpersoon__anp_identificatie',
+        help_text=get_help_text('datamodel.NatuurlijkPersoon', 'anp_identificatie')
+    )
     betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer = filters.CharFilter(
-        field_name='natuurlijkpersoon__inp_a_nummer', help_text=get_help_text('datamodel.NatuurlijkPersoon', 'inp_a_nummer'))
+        field_name='natuurlijkpersoon__inp_a_nummer',
+        help_text=get_help_text('datamodel.NatuurlijkPersoon', 'inp_a_nummer')
+    )
     betrokkene_identificatie__niet_natuurlijk_persoon__inn_nnp_id = filters.CharFilter(
-        field_name='nietnatuurlijkpersoon__inn_nnp_id', help_text=get_help_text('datamodel.NietNatuurlijkPersoon', 'inn_nnp_id'))
+        field_name='nietnatuurlijkpersoon__inn_nnp_id',
+        help_text=get_help_text('datamodel.NietNatuurlijkPersoon', 'inn_nnp_id')
+    )
     betrokkene_identificatie__niet_natuurlijk_persoon__ann_identificatie = filters.CharFilter(
-        field_name='nietnatuurlijkpersoon__ann_identificatie', help_text=get_help_text('datamodel.NietNatuurlijkPersoon', 'ann_identificatie'))
+        field_name='nietnatuurlijkpersoon__ann_identificatie',
+        help_text=get_help_text('datamodel.NietNatuurlijkPersoon', 'ann_identificatie')
+    )
     betrokkene_identificatie__vestiging__vestigings_nummer = filters.CharFilter(
-        field_name='vestiging__vestigings_nummer', help_text=get_help_text('datamodel.Vestiging', 'vestigings_nummer'))
+        field_name='vestiging__vestigings_nummer',
+        help_text=get_help_text('datamodel.Vestiging', 'vestigings_nummer')
+    )
     betrokkene_identificatie__vestiging__identificatie = filters.CharFilter(
-        field_name='organisatorischeeenheid__identificatie', help_text=get_help_text('datamodel.OrganisatorischeEenheid', 'identificatie'))
+        field_name='organisatorischeeenheid__identificatie',
+        help_text=get_help_text('datamodel.OrganisatorischeEenheid', 'identificatie')
+    )
     betrokkene_identificatie__medewerker__identificatie = filters.CharFilter(
-        field_name='medewerker__identificatie', help_text=get_help_text('datamodel.Medewerker', 'identificatie'))
+        field_name='medewerker__identificatie',
+        help_text=get_help_text('datamodel.Medewerker', 'identificatie')
+    )
 
     class Meta:
         model = Rol
