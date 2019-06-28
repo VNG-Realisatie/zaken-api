@@ -50,6 +50,9 @@ COPY ./bin/runtests.sh /runtests.sh
 # Stage 3.3 - Copy source code
 COPY --from=frontend-build /app/src/zrc/static/css /app/src/zrc/static/css
 COPY ./src /app/src
+ARG COMMIT_HASH
+ENV GIT_SHA=${COMMIT_HASH}
+
 RUN mkdir /app/log && rm /app/src/zrc/conf/test.py
 CMD ["/runtests.sh"]
 
@@ -78,6 +81,8 @@ RUN mkdir /app/log
 
 COPY --from=frontend-build /app/src/zrc/static/css /app/src/zrc/static/css
 COPY ./src /app/src
+ARG COMMIT_HASH
+ENV GIT_SHA=${COMMIT_HASH}
 
 ENV DJANGO_SETTINGS_MODULE=zrc.conf.docker
 
