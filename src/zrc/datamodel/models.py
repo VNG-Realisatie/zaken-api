@@ -20,10 +20,15 @@ from vng_api_common.fields import (
     BSNField, DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential, APIMixin
-from vng_api_common.utils import get_uuid_from_path, request_object_attribute
+from vng_api_common.utils import (
+    generate_unique_identification, get_uuid_from_path,
+    request_object_attribute
+)
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from .constants import BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
+from .constants import (
+    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding, SoortRechtsvorm
+)
 from .query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -185,11 +190,6 @@ class Zaak(APIMixin, models.Model):
                     "het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak.")
     )
 
-    relevante_andere_zaken = ArrayField(
-        models.URLField(_("URL naar andere zaak"), max_length=1000),
-        blank=True, default=list
-    )
-
     # Archiving
     archiefnominatie = models.CharField(
         _("archiefnominatie"), max_length=40, null=True, blank=True,
@@ -220,7 +220,7 @@ class Zaak(APIMixin, models.Model):
 
     def save(self, *args, **kwargs):
         if not self.identificatie:
-            self.identificatie = str(uuid.uuid4())
+            self.identificatie = generate_unique_identification(self, 'registratiedatum')
 
         if self.betalingsindicatie == BetalingsIndicatie.nvt and self.laatste_betaaldatum:
             self.laatste_betaaldatum = None
@@ -234,6 +234,15 @@ class Zaak(APIMixin, models.Model):
 
     def unique_representation(self):
         return f"{self.bronorganisatie} - {self.identificatie}"
+
+
+class RelevanteZaakRelatie(models.Model):
+    """
+    Registreer een ZAAK als relevant voor een andere ZAAK
+    """
+    zaak = models.ForeignKey('Zaak', on_delete=models.CASCADE, related_name='relevante_andere_zaken')
+    url = models.URLField(_("URL naar zaak"), max_length=1000)
+    aard_relatie = models.CharField(max_length=20, choices=AardZaakRelatie.choices)
 
 
 class Status(models.Model):
@@ -340,6 +349,11 @@ class Rol(models.Model):
         help_text='Algemeen gehanteerde benaming van de aard van de ROL'
     )
     roltoelichting = models.TextField(max_length=1000)
+
+    registratiedatum = models.DateTimeField(
+        "registratiedatum", auto_now_add=True,
+        help_text="De datum waarop dit object is geregistreerd."
+    )
 
     objects = ZaakRelatedQuerySet.as_manager()
 
@@ -609,20 +623,21 @@ class ZaakBesluit(models.Model):
 class NatuurlijkPersoon(models.Model):
     rol = models.OneToOneField(Rol, on_delete=models.CASCADE)
 
-    burgerservicenummer = BSNField(
+    inp_bsn = BSNField(
         blank=True,
         help_text='Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.'
     )
-    nummer_ander_natuurlijk_persoon = models.CharField(
+    anp_identificatie = models.CharField(
         max_length=17, blank=True,
         help_text='Het door de gemeente uitgegeven unieke nummer voor een ANDER NATUURLIJK PERSOON'
     )
-    a_nummer = models.CharField(
+    inp_a_nummer = models.CharField(
         max_length=10, blank=True,
+        help_text='Het administratienummer van de persoon, bedoeld in de Wet BRP',
         validators=[
             RegexValidator(
                 regex=r'^[1-9][0-9]{9}$',
-                message=_('inp.a-nummer must consist of 10 digits'),
+                message=_('inpA_nummer must consist of 10 digits'),
                 code='a-nummer-incorrect-format'
             )
         ]
@@ -667,13 +682,14 @@ class NatuurlijkPersoon(models.Model):
 class NietNatuurlijkPersoon(models.Model):
     rol = models.OneToOneField(Rol, on_delete=models.CASCADE)
 
-    rsin = RSINField(
+    inn_nnp_id = RSINField(
         blank=True,
         help_text='Het door een kamer toegekend uniek nummer voor de INGESCHREVEN NIET-NATUURLIJK PERSOON',
     )
 
-    nummer_ander_nietnatuurlijk_persoon = models.CharField(
-        max_length=17, help_text='Het door de gemeente uitgegeven uniekenummer voor een ANDER NIET-NATUURLIJK PERSOON')
+    ann_identificatie = models.CharField(
+        max_length=17, blank=True,
+        help_text='Het door de gemeente uitgegeven unieke nummer voor een ANDER NIET-NATUURLIJK PERSOON')
 
     statutaire_naam = models.TextField(
         max_length=500, blank=True,
@@ -681,7 +697,7 @@ class NietNatuurlijkPersoon(models.Model):
                   'in de vennootschapsovereenkomst is overeengekomen (Vennootschap onder firma of Commanditaire '
                   'vennootschap).')
 
-    rechtsvorm = models.CharField(
+    inn_rechtsvorm = models.CharField(
         max_length=30, choices=SoortRechtsvorm.choices, blank=True,
         help_text='De juridische vorm van de NIET-NATUURLIJK PERSOON.'
     )
@@ -769,7 +785,7 @@ class Medewerker(models.Model):
     voorletters = models.CharField(
         max_length=20, blank=True,
         help_text='De verzameling letters die gevormd wordt door de eerste letter van '
-                   'alle in volgorde voorkomende voornamen.')
+                  'alle in volgorde voorkomende voornamen.')
     voorvoegsel_achternaam = models.CharField(
         max_length=10, blank=True,
         help_text='Dat deel van de geslachtsnaam dat voorkomt in Tabel 36 (GBA), '

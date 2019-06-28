@@ -1,3 +1,4 @@
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import RolTypes
@@ -5,7 +6,9 @@ from vng_api_common.tests import (
     JWTAuthMixin, TypeCheckMixin, get_operation_url, get_validation_errors
 )
 
-from zrc.datamodel.models import NatuurlijkPersoon, NietNatuurlijkPersoon, Rol
+from zrc.datamodel.models import (
+    NatuurlijkPersoon, NietNatuurlijkPersoon, Rol, Vestiging
+)
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
 BETROKKENE = 'http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd'
@@ -15,6 +18,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
+    @freeze_time("2018-01-01")
     def test_read_rol_np(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
@@ -25,7 +29,8 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         )
         NatuurlijkPersoon.objects.create(
             rol=rol,
-            nummer_ander_natuurlijk_persoon='12345',
+            anp_identificatie='12345',
+            inp_a_nummer='1234567890'
         )
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_read', uuid=rol.uuid)
@@ -45,10 +50,11 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'betrokkeneType': RolTypes.natuurlijk_persoon,
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
+                'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': {
-                    'burgerservicenummer': '',
-                    'nummerAnderNatuurlijkPersoon': '12345',
-                    'aNummer': '',
+                    'inpBsn': '',
+                    'anpIdentificatie': '12345',
+                    'inpA_nummer': '1234567890',
                     'geslachtsnaam': '',
                     'voorvoegselGeslachtsnaam': '',
                     'voorletters': '',
@@ -61,6 +67,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             }
         )
 
+    @freeze_time("2018-01-01")
     def test_read_rol_nnp(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
@@ -71,7 +78,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         )
         NietNatuurlijkPersoon.objects.create(
             rol=rol,
-            nummer_ander_nietnatuurlijk_persoon='123456',
+            ann_identificatie='123456',
         )
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_read', uuid=rol.uuid)
@@ -91,11 +98,12 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'betrokkeneType': RolTypes.niet_natuurlijk_persoon,
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
+                'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': {
-                    'rsin': '',
-                    'nummerAnderNietnatuurlijkPersoon': '123456',
+                    'innNnpId': '',
+                    'annIdentificatie': '123456',
                     'statutaireNaam': '',
-                    'rechtsvorm': '',
+                    'innRechtsvorm': '',
                     'bezoekadres': '',
                     'subVerblijfBuitenland': ''
                 }
@@ -112,7 +120,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'rolomschrijving': 'Initiator',
             'roltoelichting': 'awerw',
             'betrokkeneIdentificatie': {
-                'nummerAnderNatuurlijkPersoon': '12345',
+                'anpIdentificatie': '12345',
                 }
         }
 
@@ -127,7 +135,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         natuurlijk_persoon = NatuurlijkPersoon.objects.get()
 
         self.assertEqual(rol.natuurlijkpersoon, natuurlijk_persoon)
-        self.assertEqual(natuurlijk_persoon.nummer_ander_natuurlijk_persoon, '12345')
+        self.assertEqual(natuurlijk_persoon.anp_identificatie, '12345')
 
     def test_create_rol_without_identificatie(self):
         url = get_operation_url('rol_create')
@@ -169,3 +177,52 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         validation_error = get_validation_errors(response, 'nonFieldErrors')
 
         self.assertEqual(validation_error['code'], 'invalid-betrokkene')
+
+    @freeze_time("2018-01-01")
+    def test_filter_rol_np_bsn(self):
+        zaak = ZaakFactory.create()
+        rol = RolFactory.create(
+            zaak=zaak,
+            betrokkene_type=RolTypes.natuurlijk_persoon,
+            betrokkene='',
+            rolomschrijving='Beslisser'
+        )
+        NatuurlijkPersoon.objects.create(
+            rol=rol,
+            inp_bsn='183068142',
+            inp_a_nummer='1234567890'
+        )
+
+        rol_2 = RolFactory.create(
+            zaak=zaak,
+            betrokkene_type=RolTypes.natuurlijk_persoon,
+            betrokkene='',
+            rolomschrijving='Beslisser'
+        )
+        NatuurlijkPersoon.objects.create(
+            rol=rol_2,
+            inp_bsn='650237481',
+            inp_a_nummer='2234567890'
+        )
+
+        rol_3 = RolFactory.create(
+            zaak=zaak,
+            betrokkene_type=RolTypes.vestiging,
+            betrokkene='',
+            rolomschrijving='Beslisser'
+        )
+        Vestiging.objects.create(
+            rol=rol_3,
+            vestigings_nummer='183068142'
+        )
+
+        url = get_operation_url('rol_list', uuid=rol.uuid)
+
+        response = self.client.get(url, {'betrokkeneIdentificatie__natuurlijkPersoon__inpBsn': '183068142'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+
+        data = response.json()
+
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['betrokkeneIdentificatie']['inpBsn'], '183068142')

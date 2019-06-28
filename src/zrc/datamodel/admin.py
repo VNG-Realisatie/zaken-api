@@ -2,8 +2,8 @@ from django.contrib import admin
 
 from .models import (
     KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, Resultaat, Rol, Status, Vestiging, Zaak,
-    ZaakEigenschap, ZaakInformatieObject, ZaakObject
+    OrganisatorischeEenheid, RelevanteZaakRelatie, Resultaat, Rol, Status,
+    Vestiging, Zaak, ZaakEigenschap, ZaakInformatieObject, ZaakObject
 )
 
 
@@ -36,6 +36,10 @@ class ResultaatInline(admin.TabularInline):
     model = Resultaat
 
 
+class RelevanteZaakRelatieInline(admin.TabularInline):
+    model = RelevanteZaakRelatie
+
+
 @admin.register(Zaak)
 class ZaakAdmin(admin.ModelAdmin):
     list_display = ['identificatie']
@@ -47,6 +51,7 @@ class ZaakAdmin(admin.ModelAdmin):
         ZaakEigenschapInline,
         RolInline,
         ResultaatInline,
+        RelevanteZaakRelatieInline,
     ]
 
 
@@ -95,12 +100,12 @@ class ResultaatAdmin(admin.ModelAdmin):
 # Betrokkene models
 @admin.register(NatuurlijkPersoon)
 class NatuurlijkPersoonAdmin(admin.ModelAdmin):
-    list_display = ['rol', 'burgerservicenummer']
+    list_display = ['rol', 'inp_bsn', 'anp_identificatie', 'inp_a_nummer']
 
 
 @admin.register(NietNatuurlijkPersoon)
 class NietNatuurlijkPersoonAdmin(admin.ModelAdmin):
-    list_display = ['rol', 'rsin']
+    list_display = ['rol', 'inn_nnp_id', 'ann_identificatie']
 
 
 @admin.register(OrganisatorischeEenheid)

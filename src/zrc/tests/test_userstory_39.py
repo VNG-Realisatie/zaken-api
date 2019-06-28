@@ -6,6 +6,7 @@ from datetime import date
 
 from django.test import override_settings
 
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
@@ -13,7 +14,7 @@ from vng_api_common.tests import (
     JWTAuthMixin, get_operation_url, get_validation_errors
 )
 
-from zrc.api.scopes import SCOPE_ZAKEN_CREATE
+from zrc.api.scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import KlantContact, Rol, Status, Zaak, ZaakObject
 from zrc.datamodel.tests.factories import ZaakFactory
 
@@ -33,7 +34,7 @@ STADSDEEL = f'https://example.com/rsgb/api/v1/wijkobjecten/{uuid.uuid4().hex}'
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US39TestCase(JWTAuthMixin, APITestCase):
 
-    scopes = [SCOPE_ZAKEN_CREATE]
+    scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 
     def test_create_zaak(self):
@@ -234,6 +235,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             }
         )
 
+    @freeze_time('2018-01-01')
     def test_zet_verantwoordelijk(self):
         url = get_operation_url('rol_create')
         betrokkene = f'https://example.com/orc/api/v1/vestigingen/waternet/{uuid.uuid4().hex}'
@@ -264,6 +266,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'betrokkeneType': 'Vestiging',
                 'rolomschrijving': 'Behandelaar',
                 'roltoelichting': 'Baggeren van gracht',
+                'registratiedatum': '2018-01-01T00:00:00Z',
                 'betrokkeneIdentificatie': None
             }
         )

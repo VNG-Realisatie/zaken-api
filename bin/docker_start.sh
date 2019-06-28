@@ -31,7 +31,7 @@ if [ -d $fixtures_dir ]; then
     for fixture in $(ls "$fixtures_dir/"*.json)
     do
         echo "Loading fixture $fixture"
-        src/manage.py loaddata $fixture
+        python src/manage.py loaddata $fixture
     done
 fi
 

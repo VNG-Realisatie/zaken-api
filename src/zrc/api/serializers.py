@@ -25,11 +25,14 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import BetalingsIndicatie, GeslachtsAanduiding
+from zrc.datamodel.constants import (
+    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding
+)
 from zrc.datamodel.models import (
     KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, Resultaat, Rol, Status, Vestiging, Zaak,
-    ZaakBesluit, ZaakEigenschap, ZaakInformatieObject, ZaakKenmerk, ZaakObject
+    OrganisatorischeEenheid, RelevanteZaakRelatie, Resultaat, Rol, Status,
+    Vestiging, Zaak, ZaakBesluit, ZaakEigenschap, ZaakInformatieObject,
+    ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
@@ -44,9 +47,7 @@ from .validators import (
 logger = logging.getLogger(__name__)
 
 
-# serializers for betrokkene identificatie data used in Rol api
 class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -56,9 +57,9 @@ class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
     class Meta:
         model = NatuurlijkPersoon
         fields = (
-            'burgerservicenummer',
-            'nummer_ander_natuurlijk_persoon',
-            'a_nummer',
+            'inp_bsn',
+            'anp_identificatie',
+            'inp_a_nummer',
             'geslachtsnaam',
             'voorvoegsel_geslachtsnaam',
             'voorletters',
@@ -74,10 +75,10 @@ class RolNietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
     class Meta:
         model = NietNatuurlijkPersoon
         fields = (
-            'rsin',
-            'nummer_ander_nietnatuurlijk_persoon',
+            'inn_nnp_id',
+            'ann_identificatie',
             'statutaire_naam',
-            'rechtsvorm',
+            'inn_rechtsvorm',
             'bezoekadres',
             'sub_verblijf_buitenland'
         )
@@ -154,6 +155,22 @@ class OpschortingSerializer(GegevensGroepSerializer):
         }
 
 
+class RelevanteZaakSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RelevanteZaakRelatie
+        fields = ('url', 'aard_relatie',)
+        extra_kwargs = {
+            'url': {
+                'validators': [
+                    URLValidator(
+                        get_auth=get_auth,
+                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
+                    )
+                ]
+            }
+        }
+
+
 class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMixin,
                      serializers.HyperlinkedModelSerializer):
     status = serializers.HyperlinkedRelatedField(
@@ -198,6 +215,16 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         lookup_url_kwarg='uuid',
         lookup_field='uuid',
         help_text=_("Indien geen resultaat bekend is, dan is de waarde 'null'")
+    )
+
+    relevante_andere_zaken = RelevanteZaakSerializer(
+        many=True, required=False,
+        help_text=_(
+            "Een lijst van objecten met ieder twee elementen:\n"
+            "* `zaak` - een url naar een andere `Zaak`\n"
+            "* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, "
+            "waarbij de onderstaande waardes toegestaan zijn."
+        )
     )
 
     class Meta:
@@ -277,16 +304,6 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                 'queryset': Zaak.objects.all(),
                 'validators': [NotSelfValidator(), HoofdzaakValidator()],
             },
-            'relevante_andere_zaken': {
-                'child': serializers.URLField(
-                    label=_("URL naar andere zaak"),
-                    max_length=255,
-                    validators=[URLValidator(
-                        get_auth=get_auth,
-                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
-                    )]
-                )
-            },
             'laatste_betaaldatum': {
                 'validators': [UntilNowValidator()]
             }
@@ -299,6 +316,9 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
 
         value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
         self.fields['betalingsindicatie'].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(AardZaakRelatie)
+        self.fields['relevante_andere_zaken'].help_text += f"\n\n{value_display_mapping}"
 
     def _get_zaaktype(self, zaaktype_url: str) -> dict:
         if not hasattr(self, '_zaaktype'):
@@ -442,6 +462,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             ) from exc
 
         # validate that all InformationObjects have indicatieGebruiksrecht set
+        # and are unlocked
         if validated_attrs['__is_eindstatus']:
             zaak = validated_attrs['zaak']
             zios = zaak.zaakinformatieobject_set.all()
@@ -453,6 +474,12 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                     scopes=['zds.scopes.zaaktypes.lezen']
                 )
                 informatieobject = client.retrieve('enkelvoudiginformatieobject', url=io_url)
+                if informatieobject['locked']:
+                    raise serializers.ValidationError(
+                        "Er zijn gerelateerde informatieobjecten die nog gelocked zijn."
+                        "Deze informatieobjecten moet eerst unlocked worden voordat de zaak afgesloten kan worden.",
+                        code='informatieobject-locked'
+                    )
                 if informatieobject['indicatieGebruiksrecht'] is None:
                     raise serializers.ValidationError(
                         "Er zijn gerelateerde informatieobjecten waarvoor `indicatieGebruiksrecht` nog niet "
@@ -701,6 +728,7 @@ class RolSerializer(PolymorphicSerializer):
             'betrokkene_type',
             'rolomschrijving',
             'roltoelichting',
+            'registratiedatum',
         )
         validators = [
             RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),

@@ -39,6 +39,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | betrokkeneType | Soort betrokkene | string | ja | C​R​U​D |
 | rolomschrijving | Algemeen gehanteerde benaming van de aard van de ROL | string | ja | C​R​U​D |
 | roltoelichting |  | string | ja | C​R​U​D |
+| registratiedatum | De datum waarop dit object is geregistreerd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## Status
 
@@ -122,7 +123,15 @@ De mapping van waarden naar weergave is als volgt:
 | selectielijstklasse | URL-referentie naar de categorie in de gehanteerde &#39;Selectielijst Archiefbescheiden&#39; die, gezien het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak. | string | nee | C​R​U​D |
 | hoofdzaak | De verwijzing naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er één is. | string | nee | C​R​U​D |
 | deelzaken |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
-| relevanteAndereZaken |  | array | nee | C​R​U​D |
+| relevanteAndereZaken | Een lijst van objecten met ieder twee elementen:
+* `zaak` - een url naar een andere `Zaak`
+* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, waarbij de onderstaande waardes toegestaan zijn.
+
+De mapping van waarden naar weergave is als volgt:
+
+* `vervolg` - De andere zaak gaf aanleiding tot het starten van de onderhanden zaak.
+* `onderwerp` - De andere zaak is relevant voor cq. is onderwerp van de onderhanden zaak.
+* `bijdrage` - Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage. | array | nee | C​R​U​D |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | kenmerken | Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`. | array | nee | C​R​U​D |
 | archiefnominatie | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. | string | nee | C​R​U​D |

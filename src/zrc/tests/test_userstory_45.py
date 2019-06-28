@@ -6,6 +6,7 @@ Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/45
 """
 import uuid
 
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import RolOmschrijving, RolTypes
@@ -13,7 +14,7 @@ from vng_api_common.tests import (
     JWTAuthMixin, TypeCheckMixin, get_operation_url
 )
 
-from zrc.api.scopes import SCOPE_ZAKEN_CREATE
+from zrc.api.scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
 WATERNET = f'https://waternet.nl/api/organisatorische-eenheid/{uuid.uuid4().hex}'
@@ -22,14 +23,14 @@ ZAAKTYPE = f'https://example.com/api/v1/zaaktype/{uuid.uuid4().hex}'
 
 class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
-    scopes = [SCOPE_ZAKEN_CREATE]
+    scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 
+    @freeze_time('2018-01-01')
     def test_zet_behandelaar(self):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_create')
-
         response = self.client.post(url, {
             'zaak': zaak_url,
             'betrokkene': WATERNET,
@@ -41,6 +42,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
 
         response_data = response.json()
+
         self.assertIn('url', response_data)
         del response_data['url']
         self.assertEqual(response_data, {
@@ -49,6 +51,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'betrokkeneType': RolTypes.organisatorische_eenheid,
             'rolomschrijving': RolOmschrijving.behandelaar,
             'roltoelichting': 'Verantwoordelijke behandelaar voor de melding',
+            'registratiedatum': '2018-01-01T00:00:00Z',
             'betrokkeneIdentificatie': None
         })
 
