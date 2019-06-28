@@ -20,7 +20,10 @@ from vng_api_common.fields import (
     BSNField, DaysDurationField, RSINField, VertrouwelijkheidsAanduidingField
 )
 from vng_api_common.models import APICredential, APIMixin
-from vng_api_common.utils import get_uuid_from_path, request_object_attribute
+from vng_api_common.utils import (
+    generate_unique_identification, get_uuid_from_path,
+    request_object_attribute
+)
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
 from .constants import (
@@ -217,7 +220,7 @@ class Zaak(APIMixin, models.Model):
 
     def save(self, *args, **kwargs):
         if not self.identificatie:
-            self.identificatie = str(uuid.uuid4())
+            self.identificatie = generate_unique_identification(self, 'registratiedatum')
 
         if self.betalingsindicatie == BetalingsIndicatie.nvt and self.laatste_betaaldatum:
             self.laatste_betaaldatum = None
