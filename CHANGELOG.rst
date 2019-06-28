@@ -2,6 +2,29 @@
 Wijzigingen
 ===========
 
+0.17.0 (2019-06-28)
+===================
+
+Third release towards release candidate
+
+* Included version information in Docker image, which is now displayed in the
+  footer. Version info is the git sha and API version number.
+* Enabled explicit OAS 3.x version test so that no more OAS 2.x is served
+* Bumped to latest vng-api-common
+* If no ``Zaak.identificatie`` is given, the generated identification is now
+  more human-readable.
+* Added filter parameters on ``betrokkeneIdentificatie``
+
+Breaking changes
+----------------
+
+* Added document validation when closing a ``Zaak``: all documents must be
+  unlocked
+* Renamed identifying fields of ``Rol.betrokkene``
+* Changed ``Zaak.relevanteAndereZaken`` from a list of URLs to a list of
+  objects (``url`` + ``aardRelatie``) so that more meta information can be
+  provided.
+
 0.17.0 (2019-06-18)
 ===================
 
