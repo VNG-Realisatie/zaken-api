@@ -60,4 +60,7 @@ class SoortRechtsvorm(DjangoChoices):
 class AardZaakRelatie(DjangoChoices):
     vervolg = ChoiceItem('vervolg', _("De andere zaak gaf aanleiding tot het starten van de onderhanden zaak."))
     onderwerp = ChoiceItem('onderwerp', _("De andere zaak is relevant voor cq. is onderwerp van de onderhanden zaak."))
-    bijdrage = ChoiceItem('bijdrage', _("Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage."))
+    bijdrage = ChoiceItem(
+        'bijdrage',
+        _("Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage.")
+    )
