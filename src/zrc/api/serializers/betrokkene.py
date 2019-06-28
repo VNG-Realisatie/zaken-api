@@ -2,10 +2,11 @@ import logging
 
 from rest_framework import serializers
 from vng_api_common.serializers import add_choice_values_help_text
+
 from zrc.datamodel.constants import GeslachtsAanduiding
 from zrc.datamodel.models import (
     Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, Vestiging,
+    OrganisatorischeEenheid, Vestiging
 )
 
 logger = logging.getLogger(__name__)

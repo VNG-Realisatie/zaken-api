@@ -5,11 +5,17 @@ from vng_api_common.tests import (
     JWTAuthMixin, get_operation_url, get_validation_errors
 )
 
-from zrc.datamodel.models import ZaakObject, Adres, Huishouden, Overige, WozDeelobject, \
-    WozWaarde, WozObject, ZakelijkRecht, TerreinGebouwdObject, Medewerker, \
-    ZakelijkRechtHeeftAlsGerechtigde, KadastraleOnroerendeZaak, NietNatuurlijkPersoon, NatuurlijkPersoon
+from zrc.datamodel.models import (
+    Adres, Huishouden, KadastraleOnroerendeZaak, Medewerker, NatuurlijkPersoon,
+    NietNatuurlijkPersoon, Overige, TerreinGebouwdObject, WozDeelobject,
+    WozObject, WozWaarde, ZaakObject, ZakelijkRecht,
+    ZakelijkRechtHeeftAlsGerechtigde
+)
 from zrc.datamodel.tests.factories import ZaakFactory, ZaakObjectFactory
-from ..serializers import ObjectZakelijkRechtSerializer, ZakelijkRechtHeeftAlsGerechtigdeSerializer
+
+from ..serializers import (
+    ObjectZakelijkRechtSerializer, ZakelijkRechtHeeftAlsGerechtigdeSerializer
+)
 
 OBJECT = 'http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd'
 

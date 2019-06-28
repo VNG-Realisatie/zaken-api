@@ -1,18 +1,16 @@
 import logging
-from django.core.exceptions import ValidationError
+
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from vng_api_common.fields import (
-    BSNField, RSINField
-)
+from vng_api_common.fields import BSNField, RSINField
+
+from ..constants import GeslachtsAanduiding, SoortRechtsvorm
 from .base_models import Rol, ZaakObject
 from .zaakobjecten import ZakelijkRechtHeeftAlsGerechtigde
-from ..constants import (
-    GeslachtsAanduiding, SoortRechtsvorm
-)
 
 logger = logging.getLogger(__name__)
 

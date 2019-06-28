@@ -42,16 +42,24 @@ from ..validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
 )
-from .betrokkene import RolMedewerkerSerializer, RolNatuurlijkPersoonSerializer, \
-    RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer, RolVestigingSerializer
-from .zaakobjecten import ObjectAdresSerializer, ObjectBuurtSerializer, \
-    ObjectGemeentelijkeOpenbareRuimteSerializer, ObjectGemeenteSerializer, ObjectHuishoudenSerializer, \
-    ObjectInrichtingselementSerializer, ObjectKadastraleOnroerendeZaakSerializer, ObjectKunstwerkdeelSerializer, \
-    ObjectMaatschappelijkeActiviteitSerializer, ObjectOpenbareRuimteSerializer, ObjectOverigeSerializer, \
-    ObjectPandSerializer, ObjectSpoorbaandeelSerializer, ObjectTerreindeelSerializer, \
-    ObjectTerreinGebouwdObjectSerializer, ObjectWaterdeelSerializer, ObjectWegdeelSerializer, \
-    ObjectWijkSerializer, ObjectWoonplaatsSerializer, ObjectWozDeelobjectSerializer, ObjectWozObjectSerializer, \
+from .betrokkene import (
+    RolMedewerkerSerializer, RolNatuurlijkPersoonSerializer,
+    RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer,
+    RolVestigingSerializer
+)
+from .zaakobjecten import (
+    ObjectAdresSerializer, ObjectBuurtSerializer,
+    ObjectGemeentelijkeOpenbareRuimteSerializer, ObjectGemeenteSerializer,
+    ObjectHuishoudenSerializer, ObjectInrichtingselementSerializer,
+    ObjectKadastraleOnroerendeZaakSerializer, ObjectKunstwerkdeelSerializer,
+    ObjectMaatschappelijkeActiviteitSerializer, ObjectOpenbareRuimteSerializer,
+    ObjectOverigeSerializer, ObjectPandSerializer,
+    ObjectSpoorbaandeelSerializer, ObjectTerreindeelSerializer,
+    ObjectTerreinGebouwdObjectSerializer, ObjectWaterdeelSerializer,
+    ObjectWegdeelSerializer, ObjectWijkSerializer, ObjectWoonplaatsSerializer,
+    ObjectWozDeelobjectSerializer, ObjectWozObjectSerializer,
     ObjectWozWaardeSerializer, ObjectZakelijkRechtSerializer
+)
 
 logger = logging.getLogger(__name__)
 

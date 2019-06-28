@@ -1,15 +1,17 @@
 import logging
+
+from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.db import models
-from django.core.exceptions import ValidationError
 
 from vng_api_common.descriptors import GegevensGroepType
 
-from django.contrib.postgres.fields import JSONField
-
-
+from ..constants import (
+    TyperingInrichtingselement, TyperingKunstwerk, TyperingWater,
+    TypeSpoorbaan
+)
 from .base_models import ZaakObject
-from ..constants import TyperingInrichtingselement, TyperingKunstwerk, TypeSpoorbaan, TyperingWater
 
 logger = logging.getLogger(__name__)
 

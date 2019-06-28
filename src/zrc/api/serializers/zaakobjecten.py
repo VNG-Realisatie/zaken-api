@@ -1,20 +1,28 @@
 import logging
 
-from rest_framework import serializers
-from vng_api_common.serializers import GegevensGroepSerializer, NestedGegevensGroepMixin, \
-    add_choice_values_help_text
 from drf_writable_nested import NestedCreateMixin
-from zrc.datamodel.constants import TyperingWater, TyperingInrichtingselement, \
-    TyperingKunstwerk, TypeSpoorbaan
+from rest_framework import serializers
+from vng_api_common.serializers import (
+    GegevensGroepSerializer, NestedGegevensGroepMixin,
+    add_choice_values_help_text
+)
 
+from zrc.datamodel.constants import (
+    TyperingInrichtingselement, TyperingKunstwerk, TyperingWater,
+    TypeSpoorbaan
+)
 from zrc.datamodel.models import (
     Adres, Buurt, Gemeente, GemeentelijkeOpenbareRuimte, Huishouden,
-    Inrichtingselement, Kunstwerkdeel, MaatschappelijkeActiviteit, OpenbareRuimte,
-    Pand, Spoorbaandeel, Terreindeel, Waterdeel, Wegdeel, Wijk, Woonplaats, Overige,
-    TerreinGebouwdObject, WozDeelobject, WozWaarde, WozObject, ZakelijkRecht,
-    ZakelijkRechtHeeftAlsGerechtigde, KadastraleOnroerendeZaak
+    Inrichtingselement, KadastraleOnroerendeZaak, Kunstwerkdeel,
+    MaatschappelijkeActiviteit, OpenbareRuimte, Overige, Pand, Spoorbaandeel,
+    Terreindeel, TerreinGebouwdObject, Waterdeel, Wegdeel, Wijk, Woonplaats,
+    WozDeelobject, WozObject, WozWaarde, ZakelijkRecht,
+    ZakelijkRechtHeeftAlsGerechtigde
 )
-from .base_serializers import RolNietNatuurlijkPersoonSerializer, RolNatuurlijkPersoonSerializer
+
+from .base_serializers import (
+    RolNatuurlijkPersoonSerializer, RolNietNatuurlijkPersoonSerializer
+)
 
 logger = logging.getLogger(__name__)
 

@@ -1,11 +1,12 @@
 from django.contrib import admin
 
 from ..models import (
-    Adres, Waterdeel, Pand, Buurt, OpenbareRuimte, Gemeente, GemeentelijkeOpenbareRuimte,
-    MaatschappelijkeActiviteit, Inrichtingselement, Kunstwerkdeel, Huishouden, Spoorbaandeel,
-    Terreindeel, WozObject, WozWaarde, WozDeelobject, Woonplaats, Wijk, Overige,
-    TerreinGebouwdObject, ZakelijkRechtHeeftAlsGerechtigde, ZakelijkRecht, Wegdeel,
-    KadastraleOnroerendeZaak
+    Adres, Buurt, Gemeente, GemeentelijkeOpenbareRuimte, Huishouden,
+    Inrichtingselement, KadastraleOnroerendeZaak, Kunstwerkdeel,
+    MaatschappelijkeActiviteit, OpenbareRuimte, Overige, Pand, Spoorbaandeel,
+    Terreindeel, TerreinGebouwdObject, Waterdeel, Wegdeel, Wijk, Woonplaats,
+    WozDeelobject, WozObject, WozWaarde, ZakelijkRecht,
+    ZakelijkRechtHeeftAlsGerechtigde
 )
 
 

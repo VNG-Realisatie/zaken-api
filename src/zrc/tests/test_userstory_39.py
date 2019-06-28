@@ -9,7 +9,9 @@ from django.test import override_settings
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.constants import VertrouwelijkheidsAanduiding, ZaakobjectTypes
+from vng_api_common.constants import (
+    VertrouwelijkheidsAanduiding, ZaakobjectTypes
+)
 from vng_api_common.tests import (
     JWTAuthMixin, get_operation_url, get_validation_errors
 )
