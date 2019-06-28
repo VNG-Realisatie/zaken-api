@@ -7113,8 +7113,6 @@ components:
           - Feature
           - FeatureCollection
           - GeometryCollection
-      discriminator:
-        propertyName: type
       externalDocs:
         url: https://tools.ietf.org/html/rfc7946#section-3.1
     Point2D:
@@ -7240,6 +7238,8 @@ components:
     GeoJSONGeometry:
       title: GeoJSONGeometry
       type: object
+      discriminator:
+        propertyName: type
       oneOf:
       - $ref: '#/components/schemas/Point'
       - $ref: '#/components/schemas/MultiPoint'
@@ -7290,6 +7290,31 @@ components:
             van de zaak.
           type: string
           maxLength: 200
+    RelevanteZaak:
+      description: 'Een lijst van objecten met ieder twee elementen:
+
+        * `zaak` - een url naar een andere `Zaak`
+
+        * `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, waarbij
+        de onderstaande waardes toegestaan zijn.'
+      required:
+      - url
+      - aardRelatie
+      type: object
+      properties:
+        url:
+          title: URL naar zaak
+          type: string
+          format: uri
+          maxLength: 1000
+          minLength: 1
+        aardRelatie:
+          title: Aard relatie
+          type: string
+          enum:
+          - vervolg
+          - onderwerp
+          - bijdrage
     ZaakKenmerk:
       description: Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten
         beter kan via `ZaakObject`.
@@ -7521,9 +7546,7 @@ components:
             de onderhanden zaak een bijdrage.'
           type: array
           items:
-            type: object
-            additionalProperties:
-              type: string
+            $ref: '#/components/schemas/RelevanteZaak'
         status:
           title: Status
           description: Indien geen status bekend is, dan is de waarde 'null'
