@@ -2,7 +2,15 @@
 Wijzigingen
 ===========
 
-0.17.0 (2019-06-28)
+0.18.1 (2019-06-28)
+===================
+
+Small fixes:
+
+* Fix changelog version
+* Fix display of version information (git sha was missing)
+
+0.18.0 (2019-06-28)
 ===================
 
 Third release towards release candidate
