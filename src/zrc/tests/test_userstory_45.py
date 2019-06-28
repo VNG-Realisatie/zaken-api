@@ -14,7 +14,7 @@ from vng_api_common.tests import (
     JWTAuthMixin, TypeCheckMixin, get_operation_url
 )
 
-from zrc.api.scopes import SCOPE_ZAKEN_CREATE
+from zrc.api.scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
 WATERNET = f'https://waternet.nl/api/organisatorische-eenheid/{uuid.uuid4().hex}'
@@ -23,7 +23,7 @@ ZAAKTYPE = f'https://example.com/api/v1/zaaktype/{uuid.uuid4().hex}'
 
 class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
-    scopes = [SCOPE_ZAKEN_CREATE]
+    scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 
     @freeze_time('2018-01-01')
@@ -31,7 +31,6 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_create')
-
         response = self.client.post(url, {
             'zaak': zaak_url,
             'betrokkene': WATERNET,

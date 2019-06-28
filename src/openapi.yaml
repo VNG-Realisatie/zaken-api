@@ -1398,7 +1398,7 @@ paths:
   /rollen:
     get:
       operationId: rol_list
-      description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
+      description: Geef een lijst van gekoppelde ROLen aan ZAAKen.
       parameters:
       - name: zaak
         in: query
@@ -1426,6 +1426,58 @@ paths:
           - Vestiging
           - Organisatorische eenheid
           - Medewerker
+      - name: betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
+        in: query
+        description: Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene
+          bepalingen burgerservicenummer.
+        required: false
+        schema:
+          type: string
+      - name: betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
+        in: query
+        description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+          NATUURLIJK PERSOON
+        required: false
+        schema:
+          type: string
+      - name: betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer
+        in: query
+        description: Het administratienummer van de persoon, bedoeld in de Wet BRP
+        required: false
+        schema:
+          type: string
+      - name: betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
+        in: query
+        description: Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
+          NIET-NATUURLIJK PERSOON
+        required: false
+        schema:
+          type: string
+      - name: betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
+        in: query
+        description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+          NIET-NATUURLIJK PERSOON
+        required: false
+        schema:
+          type: string
+      - name: betrokkeneIdentificatie__vestiging__vestigingsNummer
+        in: query
+        description: Een korte unieke aanduiding van de Vestiging.
+        required: false
+        schema:
+          type: string
+      - name: betrokkeneIdentificatie__vestiging__identificatie
+        in: query
+        description: Een korte identificatie van de organisatorische eenheid.
+        required: false
+        schema:
+          type: string
+      - name: betrokkeneIdentificatie__medewerker__identificatie
+        in: query
+        description: Een korte unieke aanduiding van de MEDEWERKER.
+        required: false
+        schema:
+          type: string
       - name: rolomschrijving
         in: query
         description: Algemeen gehanteerde benaming van de aard van de ROL
@@ -1723,7 +1775,7 @@ paths:
       - rollen
       security:
       - JWT-Claims:
-        - zaken.aanmaken
+        - zaken.bijwerken
       requestBody:
         content:
           application/json:
@@ -1734,7 +1786,7 @@ paths:
   /rollen/{uuid}:
     get:
       operationId: rol_read
-      description: Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
+      description: Haal de details van de ROL op.
       responses:
         '200':
           description: ''
@@ -1861,6 +1913,131 @@ paths:
       security:
       - JWT-Claims:
         - zaken.lezen
+    delete:
+      operationId: rol_delete
+      description: Verwijder het RESULTAAT van een ZAAK.
+      responses:
+        '204':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+        '401':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '403':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '404':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '406':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '409':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '410':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '415':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '429':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+        '500':
+          description: ''
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Fout'
+      tags:
+      - rollen
+      security:
+      - JWT-Claims:
+        - zaken.bijwerken
     parameters:
     - name: uuid
       in: path
@@ -6719,7 +6896,7 @@ components:
           - Beslisser
           - Initiator
           - Klantcontacter
-          - "Zaakco\xF6rdinator"
+          - "Zaakco\xC3\xB6rdinator"
           - Mede-initiator
         roltoelichting:
           title: Roltoelichting
@@ -6738,20 +6915,21 @@ components:
       title: betrokkene_identificatie
       type: object
       properties:
-        inp.bsn:
-          title: Burgerservicenummer
+        inpBsn:
+          title: Inp bsn
           description: Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet
             algemene bepalingen burgerservicenummer.
           type: string
           maxLength: 9
-        anp.identificatie:
-          title: Nummer ander natuurlijk persoon
+        anpIdentificatie:
+          title: Anp identificatie
           description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
             NATUURLIJK PERSOON
           type: string
           maxLength: 17
-        inp.a-nummer:
-          title: A nummer
+        inpA_nummer:
+          title: Inp a nummer
+          description: Het administratienummer van de persoon, bedoeld in de Wet BRP
           type: string
           pattern: ^[1-9][0-9]{9}$
           maxLength: 10
@@ -6803,7 +6981,7 @@ components:
           description: De gegevens over het verblijf en adres van de NATUURLIJK PERSOON
           type: string
           maxLength: 1000
-        sub.verblijfBuitenland:
+        subVerblijfBuitenland:
           title: Sub verblijf buitenland
           description: De gegevens over het verblijf in het buitenland
           type: string
@@ -6815,23 +6993,20 @@ components:
           $ref: '#/components/schemas/RolNatuurlijkPersoon'
     RolNietNatuurlijkPersoon:
       title: betrokkene_identificatie
-      required:
-      - ann.identificatie
       type: object
       properties:
-        inn.nnpId:
-          title: Rsin
+        innNnpId:
+          title: Inn nnp id
           description: Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
             NIET-NATUURLIJK PERSOON
           type: string
           maxLength: 9
-        ann.identificatie:
-          title: Nummer ander nietnatuurlijk persoon
-          description: Het door de gemeente uitgegeven uniekenummer voor een ANDER
+        annIdentificatie:
+          title: Ann identificatie
+          description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
             NIET-NATUURLIJK PERSOON
           type: string
           maxLength: 17
-          minLength: 1
         statutaireNaam:
           title: Statutaire naam
           description: Naam van de niet-natuurlijke persoon zoals deze is vastgelegd
@@ -6839,8 +7014,8 @@ components:
             (Vennootschap onder firma of Commanditaire vennootschap).
           type: string
           maxLength: 500
-        inn.rechtsvorm:
-          title: Rechtsvorm
+        innRechtsvorm:
+          title: Inn rechtsvorm
           description: De juridische vorm van de NIET-NATUURLIJK PERSOON.
           type: string
           enum:
@@ -6868,7 +7043,7 @@ components:
           description: De gegevens over het adres van de NIET-NATUURLIJK PERSOON
           type: string
           maxLength: 1000
-        sub.verblijfBuitenland:
+        subVerblijfBuitenland:
           title: Sub verblijf buitenland
           description: De gegevens over het verblijf in het buitenland
           type: string
@@ -6899,7 +7074,7 @@ components:
           description: De gegevens over het verblijf en adres van de Vestiging
           type: string
           maxLength: 1000
-        sub.verblijfBuitenland:
+        subVerblijfBuitenland:
           title: Sub verblijf buitenland
           description: De gegevens over het verblijf in het buitenland
           type: string

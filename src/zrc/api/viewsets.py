@@ -515,12 +515,24 @@ class RolViewSet(NotificationCreateMixin,
                  CheckQueryParamsMixin,
                  ListFilterByAuthorizationsMixin,
                  mixins.CreateModelMixin,
+                 mixins.DestroyModelMixin,
                  viewsets.ReadOnlyModelViewSet):
     """
     Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
 
+    list:
+    Geef een lijst van gekoppelde ROLen aan ZAAKen.
+
+    retrieve:
+    Haal de details van de ROL op.
+
+    destroy:
+    Verwijder het RESULTAAT van een ZAAK.
+
     create:
     Koppel een BETROKKENE aan een ZAAK.
+
+
     """
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
@@ -531,7 +543,8 @@ class RolViewSet(NotificationCreateMixin,
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+        'destroy': SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC

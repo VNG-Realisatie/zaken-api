@@ -100,12 +100,12 @@ class ResultaatAdmin(admin.ModelAdmin):
 # Betrokkene models
 @admin.register(NatuurlijkPersoon)
 class NatuurlijkPersoonAdmin(admin.ModelAdmin):
-    list_display = ['rol', 'burgerservicenummer']
+    list_display = ['rol', 'inp_bsn', 'anp_identificatie', 'inp_a_nummer']
 
 
 @admin.register(NietNatuurlijkPersoon)
 class NietNatuurlijkPersoonAdmin(admin.ModelAdmin):
-    list_display = ['rol', 'rsin']
+    list_display = ['rol', 'inn_nnp_id', 'ann_identificatie']
 
 
 @admin.register(OrganisatorischeEenheid)

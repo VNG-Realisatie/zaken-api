@@ -623,20 +623,21 @@ class ZaakBesluit(models.Model):
 class NatuurlijkPersoon(models.Model):
     rol = models.OneToOneField(Rol, on_delete=models.CASCADE)
 
-    burgerservicenummer = BSNField(
+    inp_bsn = BSNField(
         blank=True,
         help_text='Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.'
     )
-    nummer_ander_natuurlijk_persoon = models.CharField(
+    anp_identificatie = models.CharField(
         max_length=17, blank=True,
         help_text='Het door de gemeente uitgegeven unieke nummer voor een ANDER NATUURLIJK PERSOON'
     )
-    a_nummer = models.CharField(
+    inp_a_nummer = models.CharField(
         max_length=10, blank=True,
+        help_text='Het administratienummer van de persoon, bedoeld in de Wet BRP',
         validators=[
             RegexValidator(
                 regex=r'^[1-9][0-9]{9}$',
-                message=_('inp.a-nummer must consist of 10 digits'),
+                message=_('inpA_nummer must consist of 10 digits'),
                 code='a-nummer-incorrect-format'
             )
         ]
@@ -681,13 +682,14 @@ class NatuurlijkPersoon(models.Model):
 class NietNatuurlijkPersoon(models.Model):
     rol = models.OneToOneField(Rol, on_delete=models.CASCADE)
 
-    rsin = RSINField(
+    inn_nnp_id = RSINField(
         blank=True,
         help_text='Het door een kamer toegekend uniek nummer voor de INGESCHREVEN NIET-NATUURLIJK PERSOON',
     )
 
-    nummer_ander_nietnatuurlijk_persoon = models.CharField(
-        max_length=17, help_text='Het door de gemeente uitgegeven uniekenummer voor een ANDER NIET-NATUURLIJK PERSOON')
+    ann_identificatie = models.CharField(
+        max_length=17, blank=True,
+        help_text='Het door de gemeente uitgegeven unieke nummer voor een ANDER NIET-NATUURLIJK PERSOON')
 
     statutaire_naam = models.TextField(
         max_length=500, blank=True,
@@ -695,7 +697,7 @@ class NietNatuurlijkPersoon(models.Model):
                   'in de vennootschapsovereenkomst is overeengekomen (Vennootschap onder firma of Commanditaire '
                   'vennootschap).')
 
-    rechtsvorm = models.CharField(
+    inn_rechtsvorm = models.CharField(
         max_length=30, choices=SoortRechtsvorm.choices, blank=True,
         help_text='De juridische vorm van de NIET-NATUURLIJK PERSOON.'
     )
