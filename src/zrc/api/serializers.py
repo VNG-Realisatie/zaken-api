@@ -40,8 +40,8 @@ from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from .auth import get_auth
 from .validators import (
-    HoofdzaakValidator, NotSelfValidator, RelevanteAndereZaakValidator,
-    RolOccurenceValidator, UniekeIdentificatieValidator
+    HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
+    UniekeIdentificatieValidator
 )
 
 logger = logging.getLogger(__name__)
