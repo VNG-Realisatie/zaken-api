@@ -8590,7 +8590,6 @@
         "ZaakObject": {
             "required": [
                 "zaak",
-                "object",
                 "type"
             ],
             "type": "object",
@@ -8611,8 +8610,7 @@
                     "description": "URL naar de resource die het OBJECT beschrijft.",
                     "type": "string",
                     "format": "uri",
-                    "maxLength": 1000,
-                    "minLength": 1
+                    "maxLength": 1000
                 },
                 "relatieomschrijving": {
                     "title": "Relatieomschrijving",
@@ -8894,6 +8892,94 @@
                 }
             ]
         },
+        "AdresAanduidingGrp": {
+            "title": "Adres aanduiding grp",
+            "required": [
+                "numIdentificatie",
+                "oaoIdentificatie",
+                "wplWoonplaatsNaam",
+                "gorOpenbareRuimteNaam",
+                "aoaPostcode",
+                "aoaHuisnummer",
+                "aoaHuisletter",
+                "aoaHuisnummertoevoeging",
+                "ogoLocatieAanduiding"
+            ],
+            "type": "object",
+            "properties": {
+                "numIdentificatie": {
+                    "title": "Num identificatie",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "oaoIdentificatie": {
+                    "title": "Oao identificatie",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "wplWoonplaatsNaam": {
+                    "title": "Wpl woonplaats naam",
+                    "type": "string",
+                    "maxLength": 80,
+                    "minLength": 1
+                },
+                "gorOpenbareRuimteNaam": {
+                    "title": "Gor openbare ruimte naam",
+                    "description": "Een door het bevoegde gemeentelijke orgaan aan een OPENBARE RUIMTE toegekende benaming",
+                    "type": "string",
+                    "maxLength": 80,
+                    "minLength": 1
+                },
+                "aoaPostcode": {
+                    "title": "Aoa postcode",
+                    "type": "string",
+                    "maxLength": 7
+                },
+                "aoaHuisnummer": {
+                    "title": "Aoa huisnummer",
+                    "type": "integer",
+                    "maximum": 99999,
+                    "minimum": 0
+                },
+                "aoaHuisletter": {
+                    "title": "Aoa huisletter",
+                    "type": "string",
+                    "maxLength": 1
+                },
+                "aoaHuisnummertoevoeging": {
+                    "title": "Aoa huisnummertoevoeging",
+                    "type": "string",
+                    "maxLength": 4
+                },
+                "ogoLocatieAanduiding": {
+                    "title": "Ogo locatie aanduiding",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                }
+            }
+        },
+        "ObjectTerreinGebouwdObject": {
+            "title": "Is gehuisvest in",
+            "required": [
+                "identificatie"
+            ],
+            "type": "object",
+            "properties": {
+                "identificatie": {
+                    "title": "Identificatie",
+                    "description": "De unieke identificatie van het OBJECT",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "adresAanduidingGrp": {
+                    "$ref": "#/definitions/AdresAanduidingGrp"
+                }
+            }
+        },
         "ObjectHuishouden": {
             "title": "object_identificatie",
             "required": [
@@ -8907,6 +8993,9 @@
                     "type": "string",
                     "maxLength": 12,
                     "minLength": 1
+                },
+                "isGehuisvestIn": {
+                    "$ref": "#/definitions/ObjectTerreinGebouwdObject"
                 }
             }
         },
@@ -9394,97 +9483,6 @@
                 }
             ]
         },
-        "AdresAanduidingGrp": {
-            "title": "Adres aanduiding grp",
-            "required": [
-                "numIdentificatie",
-                "oaoIdentificatie",
-                "wplWoonplaatsNaam",
-                "gorOpenbareRuimteNaam",
-                "aoaPostcode",
-                "aoaHuisnummer",
-                "aoaHuisletter",
-                "aoaHuisnummertoevoeging",
-                "ogoLocatieAanduiding"
-            ],
-            "type": "object",
-            "properties": {
-                "numIdentificatie": {
-                    "title": "Num identificatie",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                },
-                "oaoIdentificatie": {
-                    "title": "Oao identificatie",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                },
-                "wplWoonplaatsNaam": {
-                    "title": "Wpl woonplaats naam",
-                    "type": "string",
-                    "maxLength": 80,
-                    "minLength": 1
-                },
-                "gorOpenbareRuimteNaam": {
-                    "title": "Gor openbare ruimte naam",
-                    "description": "Een door het bevoegde gemeentelijke orgaan aan een OPENBARE RUIMTE toegekende benaming",
-                    "type": "string",
-                    "maxLength": 80,
-                    "minLength": 1
-                },
-                "aoaPostcode": {
-                    "title": "Aoa postcode",
-                    "type": "string",
-                    "maxLength": 7,
-                    "minLength": 1
-                },
-                "aoaHuisnummer": {
-                    "title": "Aoa huisnummer",
-                    "type": "integer",
-                    "maximum": 99999,
-                    "minimum": 0
-                },
-                "aoaHuisletter": {
-                    "title": "Aoa huisletter",
-                    "type": "string",
-                    "maxLength": 1,
-                    "minLength": 1
-                },
-                "aoaHuisnummertoevoeging": {
-                    "title": "Aoa huisnummertoevoeging",
-                    "type": "string",
-                    "maxLength": 4,
-                    "minLength": 1
-                },
-                "ogoLocatieAanduiding": {
-                    "title": "Ogo locatie aanduiding",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                }
-            }
-        },
-        "ObjectTerreinGebouwdObject": {
-            "title": "object_identificatie",
-            "required": [
-                "identificatie"
-            ],
-            "type": "object",
-            "properties": {
-                "identificatie": {
-                    "title": "Identificatie",
-                    "description": "De unieke identificatie van het OBJECT",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                },
-                "adresAanduidingGrp": {
-                    "$ref": "#/definitions/AdresAanduidingGrp"
-                }
-            }
-        },
         "object_identificatie_ObjectTerreinGebouwdObject": {
             "type": "object",
             "properties": {
@@ -9743,8 +9741,7 @@
                 "aoaPostcode": {
                     "title": "Aoa postcode",
                     "type": "string",
-                    "maxLength": 7,
-                    "minLength": 1
+                    "maxLength": 7
                 },
                 "gorOpenbareRuimteNaam": {
                     "title": "Gor openbare ruimte naam",
@@ -9762,14 +9759,12 @@
                 "aoaHuisletter": {
                     "title": "Aoa huisletter",
                     "type": "string",
-                    "maxLength": 1,
-                    "minLength": 1
+                    "maxLength": 1
                 },
                 "aoaHuisnummertoevoeging": {
                     "title": "Aoa huisnummertoevoeging",
                     "type": "string",
-                    "maxLength": 4,
-                    "minLength": 1
+                    "maxLength": 4
                 },
                 "locatieOmschrijving": {
                     "title": "Locatie omschrijving",
@@ -9782,18 +9777,18 @@
         "ObjectWozObject": {
             "title": "Is onderdeel van",
             "required": [
-                "wozobjectNummer"
+                "wozObjectNummer"
             ],
             "type": "object",
             "properties": {
-                "wozobjectNummer": {
-                    "title": "Wozobject nummer",
+                "wozObjectNummer": {
+                    "title": "Woz object nummer",
                     "description": "De unieke identificatie van het OBJECT",
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 1
                 },
-                "aanduiding_WOZ_object": {
+                "aanduidingWozObject": {
                     "$ref": "#/definitions/AanduidingWozObject"
                 }
             }
@@ -9801,12 +9796,12 @@
         "ObjectWozDeelobject": {
             "title": "object_identificatie",
             "required": [
-                "nummer_WOZ_deelObject"
+                "nummerWozDeelObject"
             ],
             "type": "object",
             "properties": {
-                "nummer_WOZ_deelObject": {
-                    "title": "Nummer WOZ deel object",
+                "nummerWozDeelObject": {
+                    "title": "Nummer woz deel object",
                     "description": "Uniek identificatienummer voor het deelobject binnen een WOZ-object.",
                     "type": "string",
                     "maxLength": 6,

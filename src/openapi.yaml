@@ -7235,7 +7235,6 @@ components:
     ZaakObject:
       required:
       - zaak
-      - object
       - type
       type: object
       properties:
@@ -7254,7 +7253,6 @@ components:
           type: string
           format: uri
           maxLength: 1000
-          minLength: 1
         relatieomschrijving:
           title: Relatieomschrijving
           description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
@@ -7464,6 +7462,78 @@ components:
       allOf:
       - $ref: '#/components/schemas/ZaakObject'
       - $ref: '#/components/schemas/object_identificatie_ObjectGemeentelijkeOpenbareRuimte'
+    AdresAanduidingGrp:
+      title: Adres aanduiding grp
+      required:
+      - numIdentificatie
+      - oaoIdentificatie
+      - wplWoonplaatsNaam
+      - gorOpenbareRuimteNaam
+      - aoaPostcode
+      - aoaHuisnummer
+      - aoaHuisletter
+      - aoaHuisnummertoevoeging
+      - ogoLocatieAanduiding
+      type: object
+      properties:
+        numIdentificatie:
+          title: Num identificatie
+          type: string
+          maxLength: 100
+          minLength: 1
+        oaoIdentificatie:
+          title: Oao identificatie
+          type: string
+          maxLength: 100
+          minLength: 1
+        wplWoonplaatsNaam:
+          title: Wpl woonplaats naam
+          type: string
+          maxLength: 80
+          minLength: 1
+        gorOpenbareRuimteNaam:
+          title: Gor openbare ruimte naam
+          description: Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
+            RUIMTE toegekende benaming
+          type: string
+          maxLength: 80
+          minLength: 1
+        aoaPostcode:
+          title: Aoa postcode
+          type: string
+          maxLength: 7
+        aoaHuisnummer:
+          title: Aoa huisnummer
+          type: integer
+          maximum: 99999
+          minimum: 0
+        aoaHuisletter:
+          title: Aoa huisletter
+          type: string
+          maxLength: 1
+        aoaHuisnummertoevoeging:
+          title: Aoa huisnummertoevoeging
+          type: string
+          maxLength: 4
+        ogoLocatieAanduiding:
+          title: Ogo locatie aanduiding
+          type: string
+          maxLength: 100
+          minLength: 1
+    ObjectTerreinGebouwdObject:
+      title: Is gehuisvest in
+      required:
+      - identificatie
+      type: object
+      properties:
+        identificatie:
+          title: Identificatie
+          description: De unieke identificatie van het OBJECT
+          type: string
+          maxLength: 100
+          minLength: 1
+        adresAanduidingGrp:
+          $ref: '#/components/schemas/AdresAanduidingGrp'
     ObjectHuishouden:
       title: object_identificatie
       required:
@@ -7477,6 +7547,8 @@ components:
           type: string
           maxLength: 12
           minLength: 1
+        isGehuisvestIn:
+          $ref: '#/components/schemas/ObjectTerreinGebouwdObject'
     object_identificatie_ObjectHuishouden:
       type: object
       properties:
@@ -7841,81 +7913,6 @@ components:
       allOf:
       - $ref: '#/components/schemas/ZaakObject'
       - $ref: '#/components/schemas/object_identificatie_ObjectTerreindeel'
-    AdresAanduidingGrp:
-      title: Adres aanduiding grp
-      required:
-      - numIdentificatie
-      - oaoIdentificatie
-      - wplWoonplaatsNaam
-      - gorOpenbareRuimteNaam
-      - aoaPostcode
-      - aoaHuisnummer
-      - aoaHuisletter
-      - aoaHuisnummertoevoeging
-      - ogoLocatieAanduiding
-      type: object
-      properties:
-        numIdentificatie:
-          title: Num identificatie
-          type: string
-          maxLength: 100
-          minLength: 1
-        oaoIdentificatie:
-          title: Oao identificatie
-          type: string
-          maxLength: 100
-          minLength: 1
-        wplWoonplaatsNaam:
-          title: Wpl woonplaats naam
-          type: string
-          maxLength: 80
-          minLength: 1
-        gorOpenbareRuimteNaam:
-          title: Gor openbare ruimte naam
-          description: Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
-            RUIMTE toegekende benaming
-          type: string
-          maxLength: 80
-          minLength: 1
-        aoaPostcode:
-          title: Aoa postcode
-          type: string
-          maxLength: 7
-          minLength: 1
-        aoaHuisnummer:
-          title: Aoa huisnummer
-          type: integer
-          maximum: 99999
-          minimum: 0
-        aoaHuisletter:
-          title: Aoa huisletter
-          type: string
-          maxLength: 1
-          minLength: 1
-        aoaHuisnummertoevoeging:
-          title: Aoa huisnummertoevoeging
-          type: string
-          maxLength: 4
-          minLength: 1
-        ogoLocatieAanduiding:
-          title: Ogo locatie aanduiding
-          type: string
-          maxLength: 100
-          minLength: 1
-    ObjectTerreinGebouwdObject:
-      title: object_identificatie
-      required:
-      - identificatie
-      type: object
-      properties:
-        identificatie:
-          title: Identificatie
-          description: De unieke identificatie van het OBJECT
-          type: string
-          maxLength: 100
-          minLength: 1
-        adresAanduidingGrp:
-          $ref: '#/components/schemas/AdresAanduidingGrp'
     object_identificatie_ObjectTerreinGebouwdObject:
       type: object
       properties:
@@ -8103,7 +8100,6 @@ components:
           title: Aoa postcode
           type: string
           maxLength: 7
-          minLength: 1
         gorOpenbareRuimteNaam:
           title: Gor openbare ruimte naam
           description: Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
@@ -8120,12 +8116,10 @@ components:
           title: Aoa huisletter
           type: string
           maxLength: 1
-          minLength: 1
         aoaHuisnummertoevoeging:
           title: Aoa huisnummertoevoeging
           type: string
           maxLength: 4
-          minLength: 1
         locatieOmschrijving:
           title: Locatie omschrijving
           type: string
@@ -8134,25 +8128,25 @@ components:
     ObjectWozObject:
       title: Is onderdeel van
       required:
-      - wozobjectNummer
+      - wozObjectNummer
       type: object
       properties:
-        wozobjectNummer:
-          title: Wozobject nummer
+        wozObjectNummer:
+          title: Woz object nummer
           description: De unieke identificatie van het OBJECT
           type: string
           maxLength: 100
           minLength: 1
-        aanduiding_WOZ_object:
+        aanduidingWozObject:
           $ref: '#/components/schemas/AanduidingWozObject'
     ObjectWozDeelobject:
       title: object_identificatie
       required:
-      - nummer_WOZ_deelObject
+      - nummerWozDeelObject
       type: object
       properties:
-        nummer_WOZ_deelObject:
-          title: Nummer WOZ deel object
+        nummerWozDeelObject:
+          title: Nummer woz deel object
           description: Uniek identificatienummer voor het deelobject binnen een WOZ-object.
           type: string
           maxLength: 6
