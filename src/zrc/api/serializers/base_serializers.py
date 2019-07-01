@@ -720,7 +720,7 @@ class RolSerializer(PolymorphicSerializer):
         mapping={
             RolTypes.natuurlijk_persoon: RolNatuurlijkPersoonSerializer(),
             RolTypes.niet_natuurlijk_persoon: RolNietNatuurlijkPersoonSerializer(),
-            RolTypes.vestiging:  RolVestigingSerializer(),
+            RolTypes.vestiging: RolVestigingSerializer(),
             RolTypes.organisatorische_eenheid: RolOrganisatorischeEenheidSerializer(),
             RolTypes.medewerker: RolMedewerkerSerializer()
         },
