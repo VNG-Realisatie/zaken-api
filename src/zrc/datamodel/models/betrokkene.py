@@ -15,7 +15,7 @@ from .zaakobjecten import ZakelijkRechtHeeftAlsGerechtigde
 logger = logging.getLogger(__name__)
 
 
-class RolZaakobjectRelationMixin(models.Model):
+class AbstractRolZaakobjectRelation(models.Model):
     rol = models.OneToOneField(Rol, on_delete=models.CASCADE, null=True)
     zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE, null=True)
 
@@ -28,7 +28,7 @@ class RolZaakobjectRelationMixin(models.Model):
         abstract = True
 
 
-class RolZaakobjectZakelijkRechtRelationMixin(models.Model):
+class AbstractRolZaakobjectZakelijkRechtRelation(models.Model):
     rol = models.OneToOneField(Rol, on_delete=models.CASCADE, null=True)
     zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE, null=True)
     zakelijk_rechtHeeft_als_gerechtigde = models.OneToOneField(
@@ -45,7 +45,7 @@ class RolZaakobjectZakelijkRechtRelationMixin(models.Model):
 
 
 # models for different betrokkene depend on Rol.betrokkene_type
-class NatuurlijkPersoon(RolZaakobjectZakelijkRechtRelationMixin):
+class NatuurlijkPersoon(AbstractRolZaakobjectZakelijkRechtRelation):
     inp_bsn = BSNField(
         blank=True,
         help_text='Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.'
@@ -102,7 +102,7 @@ class NatuurlijkPersoon(RolZaakobjectZakelijkRechtRelationMixin):
         verbose_name = 'natuurlijk persoon'
 
 
-class NietNatuurlijkPersoon(RolZaakobjectZakelijkRechtRelationMixin):
+class NietNatuurlijkPersoon(AbstractRolZaakobjectZakelijkRechtRelation):
     inn_nnp_id = RSINField(
         blank=True,
         help_text='Het door een kamer toegekend uniek nummer voor de INGESCHREVEN NIET-NATUURLIJK PERSOON',
@@ -135,7 +135,7 @@ class NietNatuurlijkPersoon(RolZaakobjectZakelijkRechtRelationMixin):
         verbose_name = 'niet-natuurlijk persoon'
 
 
-class Vestiging(RolZaakobjectRelationMixin):
+class Vestiging(AbstractRolZaakobjectRelation):
     """
     Een gebouw of complex van gebouwen waar duurzame uitoefening van de activiteiten
     van een onderneming of rechtspersoon plaatsvindt.
@@ -162,7 +162,7 @@ class Vestiging(RolZaakobjectRelationMixin):
         verbose_name = 'vestiging'
 
 
-class OrganisatorischeEenheid(RolZaakobjectRelationMixin):
+class OrganisatorischeEenheid(AbstractRolZaakobjectRelation):
     """
     Het deel van een functioneel afgebakend onderdeel binnen de organisatie
     dat haar activiteiten uitvoert binnen een VESTIGING VAN
@@ -185,7 +185,7 @@ class OrganisatorischeEenheid(RolZaakobjectRelationMixin):
         verbose_name = 'organisatorische eenheid'
 
 
-class Medewerker(RolZaakobjectRelationMixin):
+class Medewerker(AbstractRolZaakobjectRelation):
     """
     Een MEDEWERKER van de organisatie die zaken behandelt uit hoofde van
     zijn of haar functie binnen een ORGANISATORISCHE EENHEID.
