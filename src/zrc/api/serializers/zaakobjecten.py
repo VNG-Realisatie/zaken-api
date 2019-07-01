@@ -1,6 +1,5 @@
 import logging
 
-from drf_writable_nested import NestedCreateMixin
 from rest_framework import serializers
 from vng_api_common.serializers import (
     GegevensGroepSerializer, NestedGegevensGroepMixin,

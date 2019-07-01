@@ -3,13 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 from vng_api_common.validators import (
-    UniekeIdentificatieValidator as _UniekeIdentificatieValidator,
-    URLValidator
+    UniekeIdentificatieValidator as _UniekeIdentificatieValidator
 )
-
-from zrc.datamodel.constants import AardZaakRelatie
-
-from .auth import get_auth
 
 
 class RolOccurenceValidator:

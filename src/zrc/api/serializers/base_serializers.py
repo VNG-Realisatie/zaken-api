@@ -25,13 +25,10 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import (
-    AardZaakRelatie, BetalingsIndicatie
-)
+from zrc.datamodel.constants import AardZaakRelatie, BetalingsIndicatie
 from zrc.datamodel.models import (
-    KlantContact, RelevanteZaakRelatie, Resultaat, Rol, Status,
-    Zaak, ZaakBesluit, ZaakEigenschap, ZaakInformatieObject,
-    ZaakKenmerk, ZaakObject
+    KlantContact, RelevanteZaakRelatie, Resultaat, Rol, Status, Zaak,
+    ZaakBesluit, ZaakEigenschap, ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
