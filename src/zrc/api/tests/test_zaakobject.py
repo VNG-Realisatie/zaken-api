@@ -791,12 +791,12 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
         )
         NatuurlijkPersoon.objects.create(
             zakelijk_rechtHeeft_als_gerechtigde=heeft_als_gerechtigde,
-            nummer_ander_natuurlijk_persoon='12345',
-            a_nummer='1234567890'
+            anp_identificatie='12345',
+            inp_a_nummer='1234567890'
         )
         NietNatuurlijkPersoon.objects.create(
             zakelijk_rechtHeeft_als_gerechtigde=heeft_als_gerechtigde,
-            nummer_ander_nietnatuurlijk_persoon='123456',
+            ann_identificatie='123456',
         )
 
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
@@ -825,9 +825,9 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                     },
                     'heeftAlsGerechtigde': {
                         'natuurlijkPersoon': {
-                            'inp.bsn': '',
-                            'anp.identificatie': '12345',
-                            'inp.a-nummer': '1234567890',
+                            'inpBsn': '',
+                            'anpIdentificatie': '12345',
+                            'inpA_nummer': '1234567890',
                             'geslachtsnaam': '',
                             'voorvoegselGeslachtsnaam': '',
                             'voorletters': '',
@@ -835,15 +835,15 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                             'geslachtsaanduiding': '',
                             'geboortedatum': '',
                             'verblijfsadres': '',
-                            'sub.verblijfBuitenland': ''
+                            'subVerblijfBuitenland': ''
                         },
                         'nietNatuurlijkPersoon': {
-                            'inn.nnpId': '',
-                            'ann.identificatie': '123456',
+                            'innNnpId': '',
+                            'annIdentificatie': '123456',
                             'statutaireNaam': '',
-                            'inn.rechtsvorm': '',
+                            'innRechtsvorm': '',
                             'bezoekadres': '',
-                            'sub.verblijfBuitenland': ''
+                            'subVerblijfBuitenland': ''
                         }
                     }
                 }
@@ -867,13 +867,13 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                 },
                 'heeftAlsGerechtigde': {
                     'natuurlijkPersoon': {
-                        'inp.bsn': '',
-                        'anp.identificatie': '1234',
-                        'inp.a-nummer': '1234567890',
+                        'inpBsn': '',
+                        'anpIdentificatie': '1234',
+                        'inpA_nummer': '1234567890',
                     },
                     'nietNatuurlijkPersoon': {
-                        'inn.nnpId': '',
-                        'ann.identificatie': '123456',
+                        'innNnpId': '',
+                        'annIdentificatie': '123456',
                     }
                 }
             }
@@ -891,9 +891,9 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(zaakobject.zakelijkrecht, zakelijkrecht)
         self.assertEqual(zakelijkrecht.identificatie, '1111')
         self.assertEqual(zakelijkrecht.heeft_betrekking_op.kadastrale_identificatie, '1')
-        self.assertEqual(zakelijkrecht.heeft_als_gerechtigde.natuurlijkpersoon.nummer_ander_natuurlijk_persoon, '1234')
+        self.assertEqual(zakelijkrecht.heeft_als_gerechtigde.natuurlijkpersoon.anp_identificatie, '1234')
         self.assertEqual(
-            zakelijkrecht.heeft_als_gerechtigde.nietnatuurlijkpersoon.nummer_ander_nietnatuurlijk_persoon,
+            zakelijkrecht.heeft_als_gerechtigde.nietnatuurlijkpersoon.ann_identificatie,
             '123456'
         )
 
