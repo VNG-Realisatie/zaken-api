@@ -131,7 +131,7 @@ def get_brondatum(zaak: Zaak, afleidingswijze: str, datum_kenmerk: str=None,
                 _('Geen datumkenmerk aanwezig om het attribuut van het zaakobject te achterhalen voor het bepalen '
                   'van de brondatum.'))
 
-        for zaak_object in zaak.zaakobject_set.filter(object_type=objecttype):
+        for zaak_object in zaak.zaakobject_set.filter(type=objecttype):
             object = zaak_object._get_object()
             if datum_kenmerk in object:
                 try:

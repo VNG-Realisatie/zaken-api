@@ -2,6 +2,15 @@
 Wijzigingen
 ===========
 
+0.19.0 (2019-07-01)
+===================
+
+Added support for all kinds of ``Zaakobjecten``.
+
+Following the "Grenzen van het API landschap" design document,
+the possible RGBZ/RSGB objects that can be related to a ``Zaak`` have been
+implemented.
+
 0.18.2 (2019-06-28)
 ===================
 
