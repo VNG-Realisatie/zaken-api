@@ -13,7 +13,7 @@ from rest_framework.settings import api_settings
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import (
-    Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes
+    Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes, ZaakobjectTypes
 )
 from vng_api_common.models import APICredential
 from vng_api_common.polymorphism import Discriminator, PolymorphicSerializer
@@ -25,95 +25,40 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import (
-    AardZaakRelatie, BetalingsIndicatie, GeslachtsAanduiding
-)
+from zrc.datamodel.constants import AardZaakRelatie, BetalingsIndicatie
 from zrc.datamodel.models import (
-    KlantContact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, RelevanteZaakRelatie, Resultaat, Rol, Status,
-    Vestiging, Zaak, ZaakBesluit, ZaakEigenschap, ZaakInformatieObject,
-    ZaakKenmerk, ZaakObject
+    KlantContact, RelevanteZaakRelatie, Resultaat, Rol, Status, Zaak,
+    ZaakBesluit, ZaakEigenschap, ZaakInformatieObject, ZaakKenmerk, ZaakObject
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
-from .auth import get_auth
-from .validators import (
+from ..auth import get_auth
+from ..validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
 )
+from .betrokkene import (
+    RolMedewerkerSerializer, RolNatuurlijkPersoonSerializer,
+    RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer,
+    RolVestigingSerializer
+)
+from .zaakobjecten import (
+    ObjectAdresSerializer, ObjectBuurtSerializer,
+    ObjectGemeentelijkeOpenbareRuimteSerializer, ObjectGemeenteSerializer,
+    ObjectHuishoudenSerializer, ObjectInrichtingselementSerializer,
+    ObjectKadastraleOnroerendeZaakSerializer, ObjectKunstwerkdeelSerializer,
+    ObjectMaatschappelijkeActiviteitSerializer, ObjectOpenbareRuimteSerializer,
+    ObjectOverigeSerializer, ObjectPandSerializer,
+    ObjectSpoorbaandeelSerializer, ObjectTerreindeelSerializer,
+    ObjectTerreinGebouwdObjectSerializer, ObjectWaterdeelSerializer,
+    ObjectWegdeelSerializer, ObjectWijkSerializer, ObjectWoonplaatsSerializer,
+    ObjectWozDeelobjectSerializer, ObjectWozObjectSerializer,
+    ObjectWozWaardeSerializer, ObjectZakelijkRechtSerializer
+)
 
 logger = logging.getLogger(__name__)
-
-
-class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        value_display_mapping = add_choice_values_help_text(GeslachtsAanduiding)
-        self.fields['geslachtsaanduiding'].help_text += f"\n\n{value_display_mapping}"
-
-    class Meta:
-        model = NatuurlijkPersoon
-        fields = (
-            'inp_bsn',
-            'anp_identificatie',
-            'inp_a_nummer',
-            'geslachtsnaam',
-            'voorvoegsel_geslachtsnaam',
-            'voorletters',
-            'voornamen',
-            'geslachtsaanduiding',
-            'geboortedatum',
-            'verblijfsadres',
-            'sub_verblijf_buitenland'
-        )
-
-
-class RolNietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = NietNatuurlijkPersoon
-        fields = (
-            'inn_nnp_id',
-            'ann_identificatie',
-            'statutaire_naam',
-            'inn_rechtsvorm',
-            'bezoekadres',
-            'sub_verblijf_buitenland'
-        )
-
-
-class RolVestigingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Vestiging
-        fields = (
-            'vestigings_nummer',
-            'handelsnaam',
-            'verblijfsadres',
-            'sub_verblijf_buitenland'
-        )
-
-
-class RolOrganisatorischeEenheidSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrganisatorischeEenheid
-        fields = (
-            'identificatie',
-            'naam',
-            'is_gehuisvest_in'
-        )
-
-
-class RolMedewerkerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Medewerker
-        fields = (
-            'identificatie',
-            'achternaam',
-            'voorletters',
-            'voorvoegsel_achternaam'
-        )
 
 
 # Zaak API
@@ -561,7 +506,46 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         return obj
 
 
-class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
+class ZaakObjectSerializer(PolymorphicSerializer):
+    discriminator = Discriminator(
+        discriminator_field='type',
+        mapping={
+            ZaakobjectTypes.adres: ObjectAdresSerializer(),
+            ZaakobjectTypes.besluit: None,
+            ZaakobjectTypes.buurt: ObjectBuurtSerializer(),
+            ZaakobjectTypes.enkelvoudigDocument: None,
+            ZaakobjectTypes.gemeente: ObjectGemeenteSerializer(),
+            ZaakobjectTypes.gemeentelijkeOpenbareRuimte: ObjectGemeentelijkeOpenbareRuimteSerializer(),
+            ZaakobjectTypes.huishouden: ObjectHuishoudenSerializer(),
+            ZaakobjectTypes.inrichtingselement: ObjectInrichtingselementSerializer(),
+            ZaakobjectTypes.kadastraleOnroerendeZaak: ObjectKadastraleOnroerendeZaakSerializer(),
+            ZaakobjectTypes.kunstwerkdeel: ObjectKunstwerkdeelSerializer(),
+            ZaakobjectTypes.maatschappelijkeActiviteit: ObjectMaatschappelijkeActiviteitSerializer(),
+            ZaakobjectTypes.medewerker: RolMedewerkerSerializer(),
+            ZaakobjectTypes.natuurlijkPersoon: RolNatuurlijkPersoonSerializer(),
+            ZaakobjectTypes.nietNatuurlijkPersoon: RolNietNatuurlijkPersoonSerializer(),
+            ZaakobjectTypes.openbareRuimte: ObjectOpenbareRuimteSerializer(),
+            ZaakobjectTypes.organisatorischeEenheid: RolOrganisatorischeEenheidSerializer(),
+            ZaakobjectTypes.pand: ObjectPandSerializer(),
+            ZaakobjectTypes.spoorbaandeel: ObjectSpoorbaandeelSerializer(),
+            ZaakobjectTypes.status: None,
+            ZaakobjectTypes.terreindeel: ObjectTerreindeelSerializer(),
+            ZaakobjectTypes.terreinGebouwdObject: ObjectTerreinGebouwdObjectSerializer(),
+            ZaakobjectTypes.vestiging: RolVestigingSerializer(),
+            ZaakobjectTypes.waterdeel: ObjectWaterdeelSerializer(),
+            ZaakobjectTypes.wegdeel: ObjectWegdeelSerializer(),
+            ZaakobjectTypes.wijk: ObjectWijkSerializer(),
+            ZaakobjectTypes.woonplaats: ObjectWoonplaatsSerializer(),
+            ZaakobjectTypes.wozDeelobject: ObjectWozDeelobjectSerializer(),
+            ZaakobjectTypes.wozObject: ObjectWozObjectSerializer(),
+            ZaakobjectTypes.wozWaarde: ObjectWozWaardeSerializer(),
+            ZaakobjectTypes.zakelijkRecht: ObjectZakelijkRechtSerializer(),
+            ZaakobjectTypes.overige: ObjectOverigeSerializer(),
+        },
+        group_field='object_identificatie',
+        same_model=False
+    )
+
     class Meta:
         model = ZaakObject
         fields = (
@@ -578,10 +562,35 @@ class ZaakObjectSerializer(serializers.HyperlinkedModelSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             },
-            'type': {
-                'source': 'object_type',
+            'object': {
+                'required': False,
             }
         }
+
+    def validate(self, attrs):
+        validated_attrs = super().validate(attrs)
+        object = validated_attrs.get('object', None)
+        object_identificatie = validated_attrs.get('object_identificatie', None)
+
+        if not object and not object_identificatie:
+            raise serializers.ValidationError(
+                _("betrokkene or betrokkeneIdentificatie must be provided"),
+                code='invalid-zaakobject')
+
+        return validated_attrs
+
+    @transaction.atomic
+    def create(self, validated_data):
+        group_data = validated_data.pop('object_identificatie', None)
+        zaakobject = super().create(validated_data)
+
+        if group_data:
+            group_serializer = self.discriminator.mapping[validated_data['type']]
+            serializer = group_serializer.get_fields()['object_identificatie']
+            group_data['zaakobject'] = zaakobject
+            serializer.create(group_data)
+
+        return zaakobject
 
 
 class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -711,7 +720,7 @@ class RolSerializer(PolymorphicSerializer):
         mapping={
             RolTypes.natuurlijk_persoon: RolNatuurlijkPersoonSerializer(),
             RolTypes.niet_natuurlijk_persoon: RolNietNatuurlijkPersoonSerializer(),
-            RolTypes.vestiging:  RolVestigingSerializer(),
+            RolTypes.vestiging: RolVestigingSerializer(),
             RolTypes.organisatorische_eenheid: RolOrganisatorischeEenheidSerializer(),
             RolTypes.medewerker: RolMedewerkerSerializer()
         },

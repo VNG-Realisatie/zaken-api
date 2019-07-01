@@ -81,13 +81,13 @@ class US169TestCase(JWTAuthMixin, APITestCase):
         response = self.client.post(zo_create_url, {
             'zaak': zaak_url,
             'object': MOR,
-            'type': 'MeldingOpenbareRuimte',
+            'type': ZaakobjectTypes.adres,
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak = Zaak.objects.get()
         melding = zaak.zaakobject_set.get()
-        self.assertEqual(melding.object_type, ZaakobjectTypes.melding_openbare_ruimte)
+        self.assertEqual(melding.type, ZaakobjectTypes.adres)
 
         # toevoegen initiator
         # BRP kan/moet bevraagd worden met NAW -> INITIATOR url is resultaat

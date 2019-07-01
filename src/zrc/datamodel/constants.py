@@ -64,3 +64,50 @@ class AardZaakRelatie(DjangoChoices):
         'bijdrage',
         _("Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage.")
     )
+
+
+# for zaaokbject models
+class TyperingInrichtingselement(DjangoChoices):
+    bak = ChoiceItem('Bak', 'Bak')
+    bord = ChoiceItem('Bord', 'Bord')
+    installatie = ChoiceItem('Installatie', 'Installatie')
+    kast = ChoiceItem('Kast', 'Kast')
+    mast = ChoiceItem('Mast', 'Mast')
+    paal = ChoiceItem('Paal', 'Paal')
+    sensor = ChoiceItem('Sensor', 'Sensor')
+    straatmeubilair = ChoiceItem('Straatmeubilair', 'Straatmeubilair')
+    waterinrichtingselement = ChoiceItem('Waterinrichtingselement', 'Waterinrichtingselement')
+    weginrichtingselement = ChoiceItem('Weginrichtingselement', 'Weginrichtingselement')
+
+
+class TyperingKunstwerk(DjangoChoices):
+    keermuur = ('Keermuur', 'Keermuur')
+    overkluizing = ('Overkluizing', 'Overkluizing')
+    duiker = ('Duiker', 'Duiker')
+    faunavoorziening = ('Faunavoorziening', 'Faunavoorziening')
+    vispassage = ('Vispassage', 'Vispassage')
+    bodemval = ('Bodemval', 'Bodemval')
+    coupure = ('Coupure', 'Coupure')
+    ponton = ('Ponton', 'Ponton')
+    voorde = ('Voorde', 'Voorde')
+    hoogspanningsmast = ('Hoogspanningsmast', 'Hoogspanningsmast')
+    gemaal = ('Gemaal', 'Gemaal')
+    perron = ('Perron', 'Perron')
+    sluis = ('Sluis', 'Sluis')
+    strekdam = ('Strekdam', 'Strekdam')
+    steiger = ('Steiger', 'Steiger')
+    stuw = ('Stuw', 'Stuw')
+
+
+class TyperingWater(DjangoChoices):
+    zee = ('Zee', 'Zee')
+    waterloop = ('Waterloop', 'Waterloop')
+    watervlakte = ('Watervlakte', 'Watervlakte')
+    greppel_droge_sloot = ('Greppel, droge sloot', 'Greppel, droge sloot')
+
+
+class TypeSpoorbaan(DjangoChoices):
+    breedspoor = ChoiceItem('breedspoor')
+    normaalspoor = ChoiceItem('normaalspoor')
+    smalspoor = ChoiceItem('smalspoor')
+    spoorbaan = ChoiceItem('spoorbaan')

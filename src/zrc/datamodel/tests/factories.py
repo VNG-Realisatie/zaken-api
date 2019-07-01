@@ -40,7 +40,7 @@ class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
 class ZaakObjectFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     object = factory.Faker('url')
-    object_type = factory.fuzzy.FuzzyChoice(choices=ObjectTypes.values)
+    type = factory.fuzzy.FuzzyChoice(choices=ObjectTypes.values)
 
     class Meta:
         model = 'datamodel.ZaakObject'
