@@ -171,6 +171,13 @@
                 },
                 "tags": [
                     "klantcontacten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "post": {
@@ -359,6 +366,13 @@
                 },
                 "tags": [
                     "klantcontacten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.bijwerken"
+                        ]
+                    }
                 ]
             },
             "parameters": []
@@ -512,6 +526,13 @@
                 },
                 "tags": [
                     "klantcontacten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
                 ]
             },
             "parameters": [

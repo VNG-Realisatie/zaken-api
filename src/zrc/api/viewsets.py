@@ -484,7 +484,7 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
 
 
 class KlantContactViewSet(NotificationCreateMixin,
-                          # ListFilterByAuthorizationsMixin,
+                          ListFilterByAuthorizationsMixin,
                           AuditTrailCreateMixin,
                           mixins.CreateModelMixin,
                           viewsets.ReadOnlyModelViewSet):
@@ -506,6 +506,12 @@ class KlantContactViewSet(NotificationCreateMixin,
     queryset = KlantContact.objects.all()
     serializer_class = KlantContactSerializer
     lookup_field = 'uuid'
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
+    required_scopes = {
+        'list': SCOPE_ZAKEN_ALLES_LEZEN,
+        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
+        'create': SCOPE_ZAKEN_BIJWERKEN,
+    }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
