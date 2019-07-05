@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from ..models import (
     Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, Vestiging, SubVerblijfBuitenland
+    OrganisatorischeEenheid, SubVerblijfBuitenland, Vestiging
 )
 
 

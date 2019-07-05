@@ -7,7 +7,8 @@ from vng_api_common.tests import (
 )
 
 from zrc.datamodel.models import (
-    NatuurlijkPersoon, NietNatuurlijkPersoon, Rol, Vestiging, Adres, SubVerblijfBuitenland
+    Adres, NatuurlijkPersoon, NietNatuurlijkPersoon, Rol,
+    SubVerblijfBuitenland, Vestiging
 )
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 

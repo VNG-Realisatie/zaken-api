@@ -4,7 +4,6 @@ from rest_framework import serializers
 
 from zrc.datamodel.models import Adres
 
-
 logger = logging.getLogger(__name__)
 
 

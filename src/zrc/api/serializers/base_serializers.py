@@ -39,16 +39,16 @@ from ..validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
 )
+from .adres_serializers import ObjectAdresSerializer
 from .betrokkene import (
     RolMedewerkerSerializer, RolNatuurlijkPersoonSerializer,
     RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer,
     RolVestigingSerializer
 )
-from .adres_serializers import ObjectAdresSerializer
 from .zaakobjecten import (
-    ObjectBuurtSerializer,
-    ObjectGemeentelijkeOpenbareRuimteSerializer, ObjectGemeenteSerializer,
-    ObjectHuishoudenSerializer, ObjectInrichtingselementSerializer,
+    ObjectBuurtSerializer, ObjectGemeentelijkeOpenbareRuimteSerializer,
+    ObjectGemeenteSerializer, ObjectHuishoudenSerializer,
+    ObjectInrichtingselementSerializer,
     ObjectKadastraleOnroerendeZaakSerializer, ObjectKunstwerkdeelSerializer,
     ObjectMaatschappelijkeActiviteitSerializer, ObjectOpenbareRuimteSerializer,
     ObjectOverigeSerializer, ObjectPandSerializer,

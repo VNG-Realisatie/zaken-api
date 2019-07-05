@@ -16,10 +16,12 @@ from zrc.datamodel.models import (
     ZakelijkRechtHeeftAlsGerechtigde
 )
 
+from .adres_serializers import (
+    TerreinGebouwdObjectAdresSerializer, WozObjectAdresSerializer
+)
 from .base_serializers import (
     RolNatuurlijkPersoonSerializer, RolNietNatuurlijkPersoonSerializer
 )
-from .adres_serializers import WozObjectAdresSerializer, TerreinGebouwdObjectAdresSerializer
 
 logger = logging.getLogger(__name__)
 

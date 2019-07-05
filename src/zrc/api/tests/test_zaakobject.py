@@ -9,7 +9,7 @@ from zrc.datamodel.models import (
     Adres, Huishouden, KadastraleOnroerendeZaak, Medewerker, NatuurlijkPersoon,
     NietNatuurlijkPersoon, Overige, TerreinGebouwdObject, WozDeelobject,
     WozObject, WozWaarde, ZaakObject, ZakelijkRecht,
-    ZakelijkRechtHeeftAlsGerechtigde, Adres
+    ZakelijkRechtHeeftAlsGerechtigde
 )
 from zrc.datamodel.tests.factories import ZaakFactory, ZaakObjectFactory
 
