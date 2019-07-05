@@ -7,14 +7,14 @@ from vng_api_common.tests import (
 )
 
 from zrc.datamodel.models import (
-    NatuurlijkPersoon, NietNatuurlijkPersoon, Rol, Vestiging
+    NatuurlijkPersoon, NietNatuurlijkPersoon, Rol, Vestiging, Adres
 )
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
 BETROKKENE = 'http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd'
 
 
-class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
+class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
@@ -27,10 +27,18 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             betrokkene='http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd',
             rolomschrijving='Beslisser'
         )
-        NatuurlijkPersoon.objects.create(
+        naturlijkperson = NatuurlijkPersoon.objects.create(
             rol=rol,
             anp_identificatie='12345',
             inp_a_nummer='1234567890'
+        )
+        Adres.objects.create(
+            natuurlijkpersoon=naturlijkperson,
+            identificatie='123',
+            postcode='1111',
+            wpl_woonplaats_naam='test city',
+            gor_openbare_ruimte_naam='test',
+            huisnummer=1
         )
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_read', uuid=rol.uuid)
@@ -61,7 +69,16 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                     'voornamen': '',
                     'geslachtsaanduiding': '',
                     'geboortedatum': '',
-                    'verblijfsadres': '',
+                    'verblijfsadres': {
+                        'aoaIdentificatie': '123',
+                        'wplWoonplaatsNaam': 'test city',
+                        'gorOpenbareRuimteNaam': 'test',
+                        'aoaPostcode': '1111',
+                        'aoaHuisnummer': 1,
+                        'aoaHuisletter': '',
+                        'aoaHuisnummertoevoeging': '',
+                        'inpLocatiebeschrijving': ''
+                    },
                     'subVerblijfBuitenland': ''
                 }
             }
@@ -121,7 +138,14 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'roltoelichting': 'awerw',
             'betrokkeneIdentificatie': {
                 'anpIdentificatie': '12345',
-                }
+                'verblijfsadres': {
+                    'aoaIdentificatie': '123',
+                    'wplWoonplaatsNaam': 'test city',
+                    'gorOpenbareRuimteNaam': 'test',
+                    'aoaPostcode': '1111',
+                    'aoaHuisnummer': 1,
+                },
+            }
         }
 
         response = self.client.post(url, data)
@@ -133,9 +157,12 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
         rol = Rol.objects.get()
         natuurlijk_persoon = NatuurlijkPersoon.objects.get()
+        adres = Adres.objects.get()
 
         self.assertEqual(rol.natuurlijkpersoon, natuurlijk_persoon)
         self.assertEqual(natuurlijk_persoon.anp_identificatie, '12345')
+        self.assertEqual(natuurlijk_persoon.verblijfsadres, adres)
+        self.assertEqual(adres.identificatie, '123')
 
     def test_create_rol_without_identificatie(self):
         url = get_operation_url('rol_create')
