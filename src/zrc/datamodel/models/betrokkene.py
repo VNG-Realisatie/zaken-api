@@ -89,10 +89,6 @@ class NatuurlijkPersoon(AbstractRolZaakobjectZakelijkRechtRelation):
     geboortedatum = models.CharField(
         max_length=18, blank=True
     )
-    verblijfsadres = models.CharField(
-        max_length=1000, blank=True,
-        help_text='De gegevens over het verblijf en adres van de NATUURLIJK PERSOON',
-    )
     sub_verblijf_buitenland = models.CharField(
         max_length=1000, blank=True,
         help_text='De gegevens over het verblijf in het buitenland'
@@ -148,11 +144,6 @@ class Vestiging(AbstractRolZaakobjectRelation):
         models.TextField(max_length=625, blank=True),
         default=list,
         help_text='De naam van de vestiging waaronder gehandeld wordt.')
-
-    verblijfsadres = models.CharField(
-        max_length=1000, blank=True,
-        help_text='De gegevens over het verblijf en adres van de Vestiging',
-    )
     sub_verblijf_buitenland = models.CharField(
         max_length=1000, blank=True,
         help_text='De gegevens over het verblijf in het buitenland'
