@@ -8,11 +8,14 @@ from zrc.datamodel.models import (
     Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
     OrganisatorischeEenheid, Vestiging
 )
+from .adres_serializers import VerblijfsAdresSerializer
 
 logger = logging.getLogger(__name__)
 
 
 class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
+    verblijfsadres = VerblijfsAdresSerializer(required=False, allow_null=True)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -35,6 +38,15 @@ class RolNatuurlijkPersoonSerializer(serializers.ModelSerializer):
             'sub_verblijf_buitenland'
         )
 
+    def create(self, validated_data):
+        verblijfsadres_data = validated_data.pop('verblijfsadres', None)
+        natuurlijkpersoon = super().create(validated_data)
+
+        if verblijfsadres_data:
+            verblijfsadres_data['natuurlijkpersoon'] = natuurlijkpersoon
+            VerblijfsAdresSerializer().create(verblijfsadres_data)
+        return natuurlijkpersoon
+
 
 class RolNietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,6 +62,8 @@ class RolNietNatuurlijkPersoonSerializer(serializers.ModelSerializer):
 
 
 class RolVestigingSerializer(serializers.ModelSerializer):
+    verblijfsadres = VerblijfsAdresSerializer(required=False, allow_null=True)
+
     class Meta:
         model = Vestiging
         fields = (
@@ -58,6 +72,15 @@ class RolVestigingSerializer(serializers.ModelSerializer):
             'verblijfsadres',
             'sub_verblijf_buitenland'
         )
+
+    def create(self, validated_data):
+        verblijfsadres_data = validated_data.pop('verblijfsadres', None)
+        natuurlijkpersoon = super().create(validated_data)
+
+        if verblijfsadres_data:
+            verblijfsadres_data['natuurlijkpersoon'] = natuurlijkpersoon
+            VerblijfsAdresSerializer().create(verblijfsadres_data)
+        return natuurlijkpersoon
 
 
 class RolOrganisatorischeEenheidSerializer(serializers.ModelSerializer):

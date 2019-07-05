@@ -1,17 +1,14 @@
 import logging
 
 from rest_framework import serializers
-from vng_api_common.serializers import (
-    GegevensGroepSerializer, NestedGegevensGroepMixin,
-    add_choice_values_help_text
-)
+from vng_api_common.serializers import add_choice_values_help_text
 
 from zrc.datamodel.constants import (
     TyperingInrichtingselement, TyperingKunstwerk, TyperingWater,
     TypeSpoorbaan
 )
 from zrc.datamodel.models import (
-    Adres, Buurt, Gemeente, GemeentelijkeOpenbareRuimte, Huishouden,
+    Buurt, Gemeente, GemeentelijkeOpenbareRuimte, Huishouden,
     Inrichtingselement, KadastraleOnroerendeZaak, Kunstwerkdeel,
     MaatschappelijkeActiviteit, OpenbareRuimte, Overige, Pand, Spoorbaandeel,
     Terreindeel, TerreinGebouwdObject, Waterdeel, Wegdeel, Wijk, Woonplaats,
@@ -22,22 +19,9 @@ from zrc.datamodel.models import (
 from .base_serializers import (
     RolNatuurlijkPersoonSerializer, RolNietNatuurlijkPersoonSerializer
 )
+from .adres_serializers import WozObjectAdresSerializer, TerreinGebouwdObjectAdresSerializer
 
 logger = logging.getLogger(__name__)
-
-
-class ObjectAdresSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Adres
-        fields = (
-            'identificatie',
-            'wpl_woonplaats_naam',
-            'gor_openbare_ruimte_naam',
-            'huisnummer',
-            'huisletter',
-            'huisnummertoevoeging',
-            'postcode',
-        )
 
 
 class ObjectBuurtSerializer(serializers.ModelSerializer):
@@ -199,25 +183,8 @@ class ObjectWoonplaatsSerializer(serializers.ModelSerializer):
         )
 
 
-class AdresAanduidingGrpSerializer(GegevensGroepSerializer):
-    class Meta:
-        model = TerreinGebouwdObject
-        gegevensgroep = 'adres_aanduiding_grp'
-        extra_kwargs = {
-            'aoa_postcode': {
-                'allow_blank': True
-            },
-            'aoa_huisletter': {
-                'allow_blank': True
-            },
-            'aoa_huisnummertoevoeging': {
-                'allow_blank': True
-            }
-        }
-
-
-class ObjectTerreinGebouwdObjectSerializer(NestedGegevensGroepMixin, serializers.ModelSerializer):
-    adres_aanduiding_grp = AdresAanduidingGrpSerializer(required=False, allow_null=True)
+class ObjectTerreinGebouwdObjectSerializer(serializers.ModelSerializer):
+    adres_aanduiding_grp = TerreinGebouwdObjectAdresSerializer(required=False, allow_null=True)
 
     class Meta:
         model = TerreinGebouwdObject
@@ -225,6 +192,15 @@ class ObjectTerreinGebouwdObjectSerializer(NestedGegevensGroepMixin, serializers
             'identificatie',
             'adres_aanduiding_grp',
         )
+
+    def create(self, validated_data):
+        adres_data = validated_data.pop('adres_aanduiding_grp', None)
+        terreingebouwdobject = super().create(validated_data)
+
+        if adres_data:
+            adres_data['terreingebouwdobject'] = terreingebouwdobject
+            TerreinGebouwdObjectAdresSerializer().create(adres_data)
+        return terreingebouwdobject
 
 
 class ObjectHuishoudenSerializer(serializers.ModelSerializer):
@@ -247,25 +223,8 @@ class ObjectHuishoudenSerializer(serializers.ModelSerializer):
         return huishouden
 
 
-class AanduidingWozObjectSerializer(GegevensGroepSerializer):
-    class Meta:
-        model = WozObject
-        gegevensgroep = 'aanduiding_woz_object'
-        extra_kwargs = {
-            'aoa_postcode': {
-                'allow_blank': True
-            },
-            'aoa_huisletter': {
-                'allow_blank': True
-            },
-            'aoa_huisnummertoevoeging': {
-                'allow_blank': True
-            }
-        }
-
-
-class ObjectWozObjectSerializer(NestedGegevensGroepMixin, serializers.ModelSerializer):
-    aanduiding_woz_object = AanduidingWozObjectSerializer(required=False, allow_null=True)
+class ObjectWozObjectSerializer(serializers.ModelSerializer):
+    aanduiding_woz_object = WozObjectAdresSerializer(required=False, allow_null=True)
 
     class Meta:
         model = WozObject
@@ -273,6 +232,15 @@ class ObjectWozObjectSerializer(NestedGegevensGroepMixin, serializers.ModelSeria
             'woz_object_nummer',
             'aanduiding_woz_object',
         )
+
+    def create(self, validated_data):
+        adres_data = validated_data.pop('aanduiding_woz_object', None)
+        wozobject = super().create(validated_data)
+
+        if adres_data:
+            adres_data['wozobject'] = wozobject
+            WozObjectAdresSerializer().create(adres_data)
+        return wozobject
 
 
 class ObjectWozDeelobjectSerializer(serializers.ModelSerializer):

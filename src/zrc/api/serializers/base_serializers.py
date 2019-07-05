@@ -44,8 +44,9 @@ from .betrokkene import (
     RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer,
     RolVestigingSerializer
 )
+from .adres_serializers import ObjectAdresSerializer
 from .zaakobjecten import (
-    ObjectAdresSerializer, ObjectBuurtSerializer,
+    ObjectBuurtSerializer,
     ObjectGemeentelijkeOpenbareRuimteSerializer, ObjectGemeenteSerializer,
     ObjectHuishoudenSerializer, ObjectInrichtingselementSerializer,
     ObjectKadastraleOnroerendeZaakSerializer, ObjectKunstwerkdeelSerializer,
