@@ -7,7 +7,7 @@ from vng_api_common.tests import (
 )
 
 from zrc.datamodel.models import (
-    NatuurlijkPersoon, NietNatuurlijkPersoon, Rol, Vestiging, Adres
+    NatuurlijkPersoon, NietNatuurlijkPersoon, Rol, Vestiging, Adres, SubVerblijfBuitenland
 )
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
@@ -39,6 +39,12 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             wpl_woonplaats_naam='test city',
             gor_openbare_ruimte_naam='test',
             huisnummer=1
+        )
+        SubVerblijfBuitenland.objects.create(
+            natuurlijkpersoon=naturlijkperson,
+            lnd_landcode='UK',
+            lnd_landnaam='United Kingdom',
+            sub_adres_buitenland_1='some uk adres'
         )
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_read', uuid=rol.uuid)
@@ -79,7 +85,13 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                         'aoaHuisnummertoevoeging': '',
                         'inpLocatiebeschrijving': ''
                     },
-                    'subVerblijfBuitenland': ''
+                    'subVerblijfBuitenland': {
+                        'lndLandcode': 'UK',
+                        'lndLandnaam': 'United Kingdom',
+                        'subAdresBuitenland_1': 'some uk adres',
+                        'subAdresBuitenland_2': '',
+                        'subAdresBuitenland_3': ''
+                    }
                 }
             }
         )
@@ -93,9 +105,15 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             betrokkene=BETROKKENE,
             rolomschrijving='Beslisser'
         )
-        NietNatuurlijkPersoon.objects.create(
+        nietnaturlijkperson = NietNatuurlijkPersoon.objects.create(
             rol=rol,
             ann_identificatie='123456',
+        )
+        SubVerblijfBuitenland.objects.create(
+            nietnatuurlijkpersoon=nietnaturlijkperson,
+            lnd_landcode='UK',
+            lnd_landnaam='United Kingdom',
+            sub_adres_buitenland_1='some uk adres'
         )
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('rol_read', uuid=rol.uuid)
@@ -122,7 +140,83 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                     'statutaireNaam': '',
                     'innRechtsvorm': '',
                     'bezoekadres': '',
-                    'subVerblijfBuitenland': ''
+                    'subVerblijfBuitenland': {
+                        'lndLandcode': 'UK',
+                        'lndLandnaam': 'United Kingdom',
+                        'subAdresBuitenland_1': 'some uk adres',
+                        'subAdresBuitenland_2': '',
+                        'subAdresBuitenland_3': ''
+                    }
+                }
+            }
+        )
+
+    @freeze_time("2018-01-01")
+    def test_read_rol_vestiging(self):
+        zaak = ZaakFactory.create()
+        rol = RolFactory.create(
+            zaak=zaak,
+            betrokkene_type=RolTypes.vestiging,
+            betrokkene=BETROKKENE,
+            rolomschrijving='Beslisser'
+        )
+        vestiging = Vestiging.objects.create(
+            rol=rol,
+            vestigings_nummer='123456',
+        )
+        Adres.objects.create(
+            vestiging=vestiging,
+            identificatie='123',
+            postcode='1111',
+            wpl_woonplaats_naam='test city',
+            gor_openbare_ruimte_naam='test',
+            huisnummer=1
+        )
+        SubVerblijfBuitenland.objects.create(
+            vestiging=vestiging,
+            lnd_landcode='UK',
+            lnd_landnaam='United Kingdom',
+            sub_adres_buitenland_1='some uk adres'
+        )
+        zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
+        url = get_operation_url('rol_read', uuid=rol.uuid)
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+
+        self.assertEqual(
+            data,
+            {
+                'url': f'http://testserver{url}',
+                'zaak': f'http://testserver{zaak_url}',
+                'betrokkene': BETROKKENE,
+                'betrokkeneType': RolTypes.vestiging,
+                'rolomschrijving': 'Beslisser',
+                'roltoelichting': '',
+                'registratiedatum': '2018-01-01T00:00:00Z',
+                'betrokkeneIdentificatie': {
+                    'vestigingsNummer': '123456',
+                    'handelsnaam': [],
+                    'verblijfsadres': {
+                        'aoaIdentificatie': '123',
+                        'wplWoonplaatsNaam': 'test city',
+                        'gorOpenbareRuimteNaam': 'test',
+                        'aoaPostcode': '1111',
+                        'aoaHuisnummer': 1,
+                        'aoaHuisletter': '',
+                        'aoaHuisnummertoevoeging': '',
+                        'inpLocatiebeschrijving': ''
+                    },
+                    'subVerblijfBuitenland': {
+                        'lndLandcode': 'UK',
+                        'lndLandnaam': 'United Kingdom',
+                        'subAdresBuitenland_1': 'some uk adres',
+                        'subAdresBuitenland_2': '',
+                        'subAdresBuitenland_3': ''
+                    }
                 }
             }
         )
@@ -145,6 +239,11 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                     'aoaPostcode': '1111',
                     'aoaHuisnummer': 1,
                 },
+                'subVerblijfBuitenland': {
+                    'lndLandcode': 'UK',
+                    'lndLandnaam': 'United Kingdom',
+                    'subAdresBuitenland_1': 'some uk adres',
+                }
             }
         }
 
@@ -158,11 +257,14 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         rol = Rol.objects.get()
         natuurlijk_persoon = NatuurlijkPersoon.objects.get()
         adres = Adres.objects.get()
+        verblijf_buitenland = SubVerblijfBuitenland.objects.get()
 
         self.assertEqual(rol.natuurlijkpersoon, natuurlijk_persoon)
         self.assertEqual(natuurlijk_persoon.anp_identificatie, '12345')
         self.assertEqual(natuurlijk_persoon.verblijfsadres, adres)
         self.assertEqual(adres.identificatie, '123')
+        self.assertEqual(natuurlijk_persoon.sub_verblijf_buitenland, verblijf_buitenland)
+        self.assertEqual(verblijf_buitenland.lnd_landcode, 'UK')
 
     def test_create_rol_without_identificatie(self):
         url = get_operation_url('rol_create')

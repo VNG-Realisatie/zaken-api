@@ -857,7 +857,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                             'geslachtsaanduiding': '',
                             'geboortedatum': '',
                             'verblijfsadres': None,
-                            'subVerblijfBuitenland': ''
+                            'subVerblijfBuitenland': None
                         },
                         'nietNatuurlijkPersoon': {
                             'innNnpId': '',
@@ -865,7 +865,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                             'statutaireNaam': '',
                             'innRechtsvorm': '',
                             'bezoekadres': '',
-                            'subVerblijfBuitenland': ''
+                            'subVerblijfBuitenland': None
                         }
                     }
                 }
