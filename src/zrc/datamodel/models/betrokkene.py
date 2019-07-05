@@ -89,10 +89,6 @@ class NatuurlijkPersoon(AbstractRolZaakobjectZakelijkRechtRelation):
     geboortedatum = models.CharField(
         max_length=18, blank=True
     )
-    sub_verblijf_buitenland = models.CharField(
-        max_length=1000, blank=True,
-        help_text='De gegevens over het verblijf in het buitenland'
-    )
 
     class Meta:
         verbose_name = 'natuurlijk persoon'
@@ -122,10 +118,6 @@ class NietNatuurlijkPersoon(AbstractRolZaakobjectZakelijkRechtRelation):
         max_length=1000, blank=True,
         help_text='De gegevens over het adres van de NIET-NATUURLIJK PERSOON',
     )
-    sub_verblijf_buitenland = models.CharField(
-        max_length=1000, blank=True,
-        help_text='De gegevens over het verblijf in het buitenland'
-    )
 
     class Meta:
         verbose_name = 'niet-natuurlijk persoon'
@@ -144,10 +136,6 @@ class Vestiging(AbstractRolZaakobjectRelation):
         models.TextField(max_length=625, blank=True),
         default=list,
         help_text='De naam van de vestiging waaronder gehandeld wordt.')
-    sub_verblijf_buitenland = models.CharField(
-        max_length=1000, blank=True,
-        help_text='De gegevens over het verblijf in het buitenland'
-    )
 
     class Meta:
         verbose_name = 'vestiging'
@@ -199,3 +187,35 @@ class Medewerker(AbstractRolZaakobjectRelation):
 
     class Meta:
         verbose_name = 'medewerker'
+
+
+# models for nested objects
+class SubVerblijfBuitenland(models.Model):
+    """
+    Datamodel afwijking, model representatie van de Groepattribuutsoort 'Verblijf buitenland'
+    """
+    natuurlijkpersoon = models.OneToOneField(
+        NatuurlijkPersoon, on_delete=models.CASCADE, null=True, related_name='sub_verblijf_buitenland'
+    )
+    nietnatuurlijkpersoon = models.OneToOneField(
+        NietNatuurlijkPersoon, on_delete=models.CASCADE, null=True, related_name='sub_verblijf_buitenland'
+    )
+    vestiging = models.OneToOneField(
+        Vestiging, on_delete=models.CASCADE, null=True, related_name='sub_verblijf_buitenland'
+    )
+    lnd_landcode = models.CharField(
+        max_length=4,
+        help_text='De code, behorende bij de landnaam, zoals opgenomen in de Land/Gebied-tabel van de BRP.'
+    )
+    lnd_landnaam = models.CharField(
+        max_length=40, help_text='De naam van het land, zoals opgenomen in de Land/Gebied-tabel van de BRP.'
+    )
+    sub_adres_buitenland_1 = models.CharField(max_length=35, blank=True)
+    sub_adres_buitenland_2 = models.CharField(max_length=35, blank=True)
+    sub_adres_buitenland_3 = models.CharField(max_length=35, blank=True)
+
+    def clean(self):
+        super().clean()
+        if self.natuurlijkpersoon is None and self.nietnatuurlijkpersoon is None and self.vestiging is None:
+            raise ValidationError('Relations to NatuurlijkPersoon, NietNatuurlijkPersoon or Vestiging '
+                                  'models should be set')
