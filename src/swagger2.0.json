@@ -8194,6 +8194,103 @@
             },
             "discriminator": "betrokkeneType"
         },
+        "VerblijfsAdres": {
+            "title": "Verblijfsadres",
+            "required": [
+                "aoaIdentificatie",
+                "wplWoonplaatsNaam",
+                "gorOpenbareRuimteNaam",
+                "aoaHuisnummer"
+            ],
+            "type": "object",
+            "properties": {
+                "aoaIdentificatie": {
+                    "title": "Aoa identificatie",
+                    "description": "De unieke identificatie van het OBJECT",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "wplWoonplaatsNaam": {
+                    "title": "Wpl woonplaats naam",
+                    "type": "string",
+                    "maxLength": 80,
+                    "minLength": 1
+                },
+                "gorOpenbareRuimteNaam": {
+                    "title": "Gor openbare ruimte naam",
+                    "description": "Een door het bevoegde gemeentelijke orgaan aan een OPENBARE RUIMTE toegekende benaming",
+                    "type": "string",
+                    "maxLength": 80,
+                    "minLength": 1
+                },
+                "aoaPostcode": {
+                    "title": "Aoa postcode",
+                    "type": "string",
+                    "maxLength": 7
+                },
+                "aoaHuisnummer": {
+                    "title": "Aoa huisnummer",
+                    "type": "integer",
+                    "maximum": 99999,
+                    "minimum": 0
+                },
+                "aoaHuisletter": {
+                    "title": "Aoa huisletter",
+                    "type": "string",
+                    "maxLength": 1
+                },
+                "aoaHuisnummertoevoeging": {
+                    "title": "Aoa huisnummertoevoeging",
+                    "type": "string",
+                    "maxLength": 4
+                },
+                "inpLocatiebeschrijving": {
+                    "title": "Inp locatiebeschrijving",
+                    "type": "string",
+                    "maxLength": 1000
+                }
+            }
+        },
+        "SubVerblijfBuitenland": {
+            "title": "Sub verblijf buitenland",
+            "required": [
+                "lndLandcode",
+                "lndLandnaam"
+            ],
+            "type": "object",
+            "properties": {
+                "lndLandcode": {
+                    "title": "Lnd landcode",
+                    "description": "De code, behorende bij de landnaam, zoals opgenomen in de Land/Gebied-tabel van de BRP.",
+                    "type": "string",
+                    "maxLength": 4,
+                    "minLength": 1
+                },
+                "lndLandnaam": {
+                    "title": "Lnd landnaam",
+                    "description": "De naam van het land, zoals opgenomen in de Land/Gebied-tabel van de BRP.",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 1
+                },
+                "subAdresBuitenland_1": {
+                    "title": "Sub adres buitenland 1",
+                    "type": "string",
+                    "maxLength": 35
+                },
+                "subAdresBuitenland_2": {
+                    "title": "Sub adres buitenland 2",
+                    "type": "string",
+                    "maxLength": 35
+                },
+                "subAdresBuitenland_3": {
+                    "title": "Sub adres buitenland 3",
+                    "type": "string",
+                    "maxLength": 35
+                }
+            }
+        },
         "RolNatuurlijkPersoon": {
             "title": "betrokkene_identificatie",
             "type": "object",
@@ -8256,16 +8353,10 @@
                     "maxLength": 18
                 },
                 "verblijfsadres": {
-                    "title": "Verblijfsadres",
-                    "description": "De gegevens over het verblijf en adres van de NATUURLIJK PERSOON",
-                    "type": "string",
-                    "maxLength": 1000
+                    "$ref": "#/definitions/VerblijfsAdres"
                 },
                 "subVerblijfBuitenland": {
-                    "title": "Sub verblijf buitenland",
-                    "description": "De gegevens over het verblijf in het buitenland",
-                    "type": "string",
-                    "maxLength": 1000
+                    "$ref": "#/definitions/SubVerblijfBuitenland"
                 }
             }
         },
@@ -8343,10 +8434,7 @@
                     "maxLength": 1000
                 },
                 "subVerblijfBuitenland": {
-                    "title": "Sub verblijf buitenland",
-                    "description": "De gegevens over het verblijf in het buitenland",
-                    "type": "string",
-                    "maxLength": 1000
+                    "$ref": "#/definitions/SubVerblijfBuitenland"
                 }
             }
         },
@@ -8389,16 +8477,10 @@
                     }
                 },
                 "verblijfsadres": {
-                    "title": "Verblijfsadres",
-                    "description": "De gegevens over het verblijf en adres van de Vestiging",
-                    "type": "string",
-                    "maxLength": 1000
+                    "$ref": "#/definitions/VerblijfsAdres"
                 },
                 "subVerblijfBuitenland": {
-                    "title": "Sub verblijf buitenland",
-                    "description": "De gegevens over het verblijf in het buitenland",
-                    "type": "string",
-                    "maxLength": 1000
+                    "$ref": "#/definitions/SubVerblijfBuitenland"
                 }
             }
         },
@@ -8913,29 +8995,24 @@
                 }
             ]
         },
-        "AdresAanduidingGrp": {
+        "TerreinGebouwdObjectAdres": {
             "title": "Adres aanduiding grp",
             "required": [
-                "numIdentificatie",
                 "oaoIdentificatie",
                 "wplWoonplaatsNaam",
                 "gorOpenbareRuimteNaam",
-                "aoaPostcode",
-                "aoaHuisnummer",
-                "aoaHuisletter",
-                "aoaHuisnummertoevoeging",
-                "ogoLocatieAanduiding"
+                "aoaHuisnummer"
             ],
             "type": "object",
             "properties": {
                 "numIdentificatie": {
                     "title": "Num identificatie",
                     "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
+                    "maxLength": 100
                 },
                 "oaoIdentificatie": {
                     "title": "Oao identificatie",
+                    "description": "De unieke identificatie van het OBJECT",
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 1
@@ -8977,8 +9054,7 @@
                 "ogoLocatieAanduiding": {
                     "title": "Ogo locatie aanduiding",
                     "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
+                    "maxLength": 100
                 }
             }
         },
@@ -8997,7 +9073,7 @@
                     "minLength": 1
                 },
                 "adresAanduidingGrp": {
-                    "$ref": "#/definitions/AdresAanduidingGrp"
+                    "$ref": "#/definitions/TerreinGebouwdObjectAdres"
                 }
             }
         },
@@ -9733,22 +9809,19 @@
                 }
             ]
         },
-        "AanduidingWozObject": {
+        "WozObjectAdres": {
             "title": "Aanduiding woz object",
             "required": [
-                "oaoIdentificatie",
+                "aoaIdentificatie",
                 "wplWoonplaatsNaam",
-                "aoaPostcode",
                 "gorOpenbareRuimteNaam",
-                "aoaHuisnummer",
-                "aoaHuisletter",
-                "aoaHuisnummertoevoeging",
-                "locatieOmschrijving"
+                "aoaHuisnummer"
             ],
             "type": "object",
             "properties": {
-                "oaoIdentificatie": {
-                    "title": "Oao identificatie",
+                "aoaIdentificatie": {
+                    "title": "Aoa identificatie",
+                    "description": "De unieke identificatie van het OBJECT",
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 1
@@ -9759,17 +9832,17 @@
                     "maxLength": 80,
                     "minLength": 1
                 },
-                "aoaPostcode": {
-                    "title": "Aoa postcode",
-                    "type": "string",
-                    "maxLength": 7
-                },
                 "gorOpenbareRuimteNaam": {
                     "title": "Gor openbare ruimte naam",
                     "description": "Een door het bevoegde gemeentelijke orgaan aan een OPENBARE RUIMTE toegekende benaming",
                     "type": "string",
                     "maxLength": 80,
                     "minLength": 1
+                },
+                "aoaPostcode": {
+                    "title": "Aoa postcode",
+                    "type": "string",
+                    "maxLength": 7
                 },
                 "aoaHuisnummer": {
                     "title": "Aoa huisnummer",
@@ -9790,8 +9863,7 @@
                 "locatieOmschrijving": {
                     "title": "Locatie omschrijving",
                     "type": "string",
-                    "maxLength": 1000,
-                    "minLength": 1
+                    "maxLength": 1000
                 }
             }
         },
@@ -9810,7 +9882,7 @@
                     "minLength": 1
                 },
                 "aanduidingWozObject": {
-                    "$ref": "#/definitions/AanduidingWozObject"
+                    "$ref": "#/definitions/WozObjectAdres"
                 }
             }
         },
