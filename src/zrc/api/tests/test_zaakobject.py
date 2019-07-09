@@ -13,7 +13,6 @@ from zrc.datamodel.models import (
 )
 from zrc.datamodel.tests.factories import ZaakFactory, ZaakObjectFactory
 
-
 OBJECT = 'http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd'
 
 

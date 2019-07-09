@@ -32,7 +32,7 @@ from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
     ResultaatFilter, RolFilter, StatusFilter, ZaakFilter,
-    ZaakInformatieObjectFilter
+    ZaakInformatieObjectFilter, ZaakObjectFilter
 )
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
@@ -332,6 +332,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     """
     queryset = ZaakObject.objects.all()
     serializer_class = ZaakObjectSerializer
+    filterset_class = ZaakObjectFilter
     lookup_field = 'uuid'
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
