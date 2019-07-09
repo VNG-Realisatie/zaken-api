@@ -8190,6 +8190,14 @@
                     "type": "string",
                     "format": "date-time",
                     "readOnly": true
+                },
+                "indicatieMachtiging": {
+                    "title": "Indicatie machtiging",
+                    "type": "string",
+                    "enum": [
+                        "gemachtigde",
+                        "machtiginggever"
+                    ]
                 }
             },
             "discriminator": "betrokkeneType"
@@ -9228,10 +9236,26 @@
             "properties": {
                 "type": {
                     "title": "Type",
-                    "description": "Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.\n\nDe mapping van waarden naar weergave is als volgt:\n\n",
+                    "description": "Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `Keermuur` - Keermuur\n* `Overkluizing` - Overkluizing\n* `Duiker` - Duiker\n* `Faunavoorziening` - Faunavoorziening\n* `Vispassage` - Vispassage\n* `Bodemval` - Bodemval\n* `Coupure` - Coupure\n* `Ponton` - Ponton\n* `Voorde` - Voorde\n* `Hoogspanningsmast` - Hoogspanningsmast\n* `Gemaal` - Gemaal\n* `Perron` - Perron\n* `Sluis` - Sluis\n* `Strekdam` - Strekdam\n* `Steiger` - Steiger\n* `Stuw` - Stuw",
                     "type": "string",
-                    "maxLength": 40,
-                    "minLength": 1
+                    "enum": [
+                        "Keermuur",
+                        "Overkluizing",
+                        "Duiker",
+                        "Faunavoorziening",
+                        "Vispassage",
+                        "Bodemval",
+                        "Coupure",
+                        "Ponton",
+                        "Voorde",
+                        "Hoogspanningsmast",
+                        "Gemaal",
+                        "Perron",
+                        "Sluis",
+                        "Strekdam",
+                        "Steiger",
+                        "Stuw"
+                    ]
                 },
                 "identificatie": {
                     "title": "Identificatie",
@@ -9628,10 +9652,14 @@
             "properties": {
                 "typeWaterdeel": {
                     "title": "Type waterdeel",
-                    "description": "Specificatie van het soort water\n\nDe mapping van waarden naar weergave is als volgt:\n\n",
+                    "description": "Specificatie van het soort water\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `Zee` - Zee\n* `Waterloop` - Waterloop\n* `Watervlakte` - Watervlakte\n* `Greppel, droge sloot` - Greppel, droge sloot",
                     "type": "string",
-                    "maxLength": 50,
-                    "minLength": 1
+                    "enum": [
+                        "Zee",
+                        "Waterloop",
+                        "Watervlakte",
+                        "Greppel, droge sloot"
+                    ]
                 },
                 "identificatie": {
                     "title": "Identificatie",
