@@ -4127,7 +4127,64 @@
             "get": {
                 "operationId": "zaakobject_list",
                 "description": "Geef een lijst van ZAAKOBJECTrelaties terug.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "zaak",
+                        "in": "query",
+                        "description": "URL naar de/het gerelateerde zaak",
+                        "required": false,
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "URL naar de resource die het OBJECT beschrijft.",
+                        "required": false,
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Beschrijft het type object gerelateerd aan de zaak",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "adres",
+                            "besluit",
+                            "buurt",
+                            "enkelvoudigDocument",
+                            "gemeente",
+                            "gemeentelijkeOpenbareRuimte",
+                            "huishouden",
+                            "inrichtingselement",
+                            "kadastraleOnroerendeZaak",
+                            "kunstwerkdeel",
+                            "maatschappelijkeActiviteit",
+                            "medewerker",
+                            "natuurlijkPersoon",
+                            "nietNatuurlijkPersoon",
+                            "openbareRuimte",
+                            "organisatorischeEenheid",
+                            "pand",
+                            "spoorbaandeel",
+                            "status",
+                            "terreindeel",
+                            "terreinGebouwdObject",
+                            "vestiging",
+                            "waterdeel",
+                            "wegdeel",
+                            "wijk",
+                            "woonplaats",
+                            "wozDeelobject",
+                            "wozObject",
+                            "wozWaarde",
+                            "zakelijkRecht",
+                            "overige"
+                        ]
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -4136,6 +4193,20 @@
                             "items": {
                                 "$ref": "#/definitions/ZaakObject"
                             }
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
                         },
                         "headers": {
                             "API-version": {
