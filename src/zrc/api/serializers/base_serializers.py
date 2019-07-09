@@ -739,6 +739,7 @@ class RolSerializer(PolymorphicSerializer):
             'rolomschrijving',
             'roltoelichting',
             'registratiedatum',
+            'indicatie_machtiging',
         )
         validators = [
             RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),

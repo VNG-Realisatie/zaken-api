@@ -24,7 +24,7 @@ from vng_api_common.utils import (
 )
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from ..constants import AardZaakRelatie, BetalingsIndicatie
+from ..constants import AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
 from ..query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -349,6 +349,9 @@ class Rol(models.Model):
     registratiedatum = models.DateTimeField(
         "registratiedatum", auto_now_add=True,
         help_text="De datum waarop dit object is geregistreerd."
+    )
+    indicatie_machtiging = models.CharField(
+        max_length=40, choices=IndicatieMachtiging.choices, blank=True
     )
 
     objects = ZaakRelatedQuerySet.as_manager()
