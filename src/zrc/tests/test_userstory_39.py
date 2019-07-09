@@ -271,6 +271,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'rolomschrijving': 'Behandelaar',
                 'roltoelichting': 'Baggeren van gracht',
                 'registratiedatum': '2018-01-01T00:00:00Z',
+                'indicatieMachtiging': '',
                 'betrokkeneIdentificatie': None
             }
         )
