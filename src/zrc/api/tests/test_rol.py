@@ -6,12 +6,12 @@ from vng_api_common.tests import (
     JWTAuthMixin, TypeCheckMixin, get_operation_url, get_validation_errors
 )
 
+from zrc.datamodel.constants import IndicatieMachtiging
 from zrc.datamodel.models import (
     Adres, NatuurlijkPersoon, NietNatuurlijkPersoon, Rol,
     SubVerblijfBuitenland, Vestiging
 )
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
-from zrc.datamodel.constants import IndicatieMachtiging
 
 BETROKKENE = 'http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd'
 
