@@ -40,7 +40,12 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | rolomschrijving | Algemeen gehanteerde benaming van de aard van de ROL | string | ja | C​R​U​D |
 | roltoelichting |  | string | ja | C​R​U​D |
 | registratiedatum | De datum waarop dit object is geregistreerd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| indicatieMachtiging |  | string | nee | C​R​U​D |
+| indicatieMachtiging | Indicatie_machtiging
+
+De mapping van waarden naar weergave is als volgt:
+
+* `gemachtigde` - De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen
+* `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen | string | nee | C​R​U​D |
 
 ## SubVerblijfBuitenland
 

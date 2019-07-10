@@ -25,7 +25,9 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import AardZaakRelatie, BetalingsIndicatie
+from zrc.datamodel.constants import (
+    AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
+)
 from zrc.datamodel.models import (
     KlantContact, RelevanteZaakRelatie, Resultaat, Rol, Status, Zaak,
     ZaakBesluit, ZaakEigenschap, ZaakInformatieObject, ZaakKenmerk, ZaakObject
@@ -781,6 +783,12 @@ class RolSerializer(PolymorphicSerializer):
             serializer.create(group_data)
 
         return rol
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(IndicatieMachtiging)
+        self.fields['indicatie_machtiging'].help_text += f"\n\n{value_display_mapping}"
 
 
 class ResultaatSerializer(serializers.HyperlinkedModelSerializer):

@@ -353,7 +353,8 @@ class Rol(models.Model):
         help_text="De datum waarop dit object is geregistreerd."
     )
     indicatie_machtiging = models.CharField(
-        max_length=40, choices=IndicatieMachtiging.choices, blank=True
+        max_length=40, choices=IndicatieMachtiging.choices, blank=True,
+        help_text="Indicatie_machtiging"
     )
 
     objects = ZaakRelatedQuerySet.as_manager()

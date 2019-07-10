@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='rol',
             name='indicatie_machtiging',
-            field=models.CharField(blank=True, choices=[('gemachtigde', 'De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen'), ('machtiginggever', 'De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen')], max_length=40),
+            field=models.CharField(blank=True, choices=[('gemachtigde', 'De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen'), ('machtiginggever', 'De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen')], help_text='Indicatie_machtiging', max_length=40),
         ),
         migrations.AlterField(
             model_name='kunstwerkdeel',
