@@ -81,29 +81,29 @@ class TyperingInrichtingselement(DjangoChoices):
 
 
 class TyperingKunstwerk(DjangoChoices):
-    keermuur = ('Keermuur', 'Keermuur')
-    overkluizing = ('Overkluizing', 'Overkluizing')
-    duiker = ('Duiker', 'Duiker')
-    faunavoorziening = ('Faunavoorziening', 'Faunavoorziening')
-    vispassage = ('Vispassage', 'Vispassage')
-    bodemval = ('Bodemval', 'Bodemval')
-    coupure = ('Coupure', 'Coupure')
-    ponton = ('Ponton', 'Ponton')
-    voorde = ('Voorde', 'Voorde')
-    hoogspanningsmast = ('Hoogspanningsmast', 'Hoogspanningsmast')
-    gemaal = ('Gemaal', 'Gemaal')
-    perron = ('Perron', 'Perron')
-    sluis = ('Sluis', 'Sluis')
-    strekdam = ('Strekdam', 'Strekdam')
-    steiger = ('Steiger', 'Steiger')
-    stuw = ('Stuw', 'Stuw')
+    keermuur = ChoiceItem('Keermuur', 'Keermuur')
+    overkluizing = ChoiceItem('Overkluizing', 'Overkluizing')
+    duiker = ChoiceItem('Duiker', 'Duiker')
+    faunavoorziening = ChoiceItem('Faunavoorziening', 'Faunavoorziening')
+    vispassage = ChoiceItem('Vispassage', 'Vispassage')
+    bodemval = ChoiceItem('Bodemval', 'Bodemval')
+    coupure = ChoiceItem('Coupure', 'Coupure')
+    ponton = ChoiceItem('Ponton', 'Ponton')
+    voorde = ChoiceItem('Voorde', 'Voorde')
+    hoogspanningsmast = ChoiceItem('Hoogspanningsmast', 'Hoogspanningsmast')
+    gemaal = ChoiceItem('Gemaal', 'Gemaal')
+    perron = ChoiceItem('Perron', 'Perron')
+    sluis = ChoiceItem('Sluis', 'Sluis')
+    strekdam = ChoiceItem('Strekdam', 'Strekdam')
+    steiger = ChoiceItem('Steiger', 'Steiger')
+    stuw = ChoiceItem('Stuw', 'Stuw')
 
 
 class TyperingWater(DjangoChoices):
-    zee = ('Zee', 'Zee')
-    waterloop = ('Waterloop', 'Waterloop')
-    watervlakte = ('Watervlakte', 'Watervlakte')
-    greppel_droge_sloot = ('Greppel, droge sloot', 'Greppel, droge sloot')
+    zee = ChoiceItem('Zee', 'Zee')
+    waterloop = ChoiceItem('Waterloop', 'Waterloop')
+    watervlakte = ChoiceItem('Watervlakte', 'Watervlakte')
+    greppel_droge_sloot = ChoiceItem('Greppel, droge sloot', 'Greppel, droge sloot')
 
 
 class TypeSpoorbaan(DjangoChoices):
@@ -111,3 +111,10 @@ class TypeSpoorbaan(DjangoChoices):
     normaalspoor = ChoiceItem('normaalspoor')
     smalspoor = ChoiceItem('smalspoor')
     spoorbaan = ChoiceItem('spoorbaan')
+
+
+class IndicatieMachtiging(DjangoChoices):
+    gemachtigde = ChoiceItem('gemachtigde', _("De betrokkene in de rol bij de zaak is door een andere betrokkene bij "
+                                              "dezelfde zaak gemachtigd om namens hem of haar te handelen"))
+    machtiginggever = ChoiceItem('machtiginggever', _("De betrokkene in de rol bij de zaak heeft een andere betrokkene "
+                                                      "bij dezelfde zaak gemachtigd om namens hem of haar te handelen"))

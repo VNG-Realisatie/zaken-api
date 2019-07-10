@@ -6,6 +6,7 @@ from vng_api_common.tests import (
     JWTAuthMixin, TypeCheckMixin, get_operation_url, get_validation_errors
 )
 
+from zrc.datamodel.constants import IndicatieMachtiging
 from zrc.datamodel.models import (
     Adres, NatuurlijkPersoon, NietNatuurlijkPersoon, Rol,
     SubVerblijfBuitenland, Vestiging
@@ -26,7 +27,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.natuurlijk_persoon,
             betrokkene='http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd',
-            rolomschrijving='Beslisser'
+            rolomschrijving='Beslisser',
+            indicatie_machtiging=IndicatieMachtiging.gemachtigde
         )
         naturlijkperson = NatuurlijkPersoon.objects.create(
             rol=rol,
@@ -66,6 +68,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
                 'registratiedatum': '2018-01-01T00:00:00Z',
+                'indicatieMachtiging': 'gemachtigde',
                 'betrokkeneIdentificatie': {
                     'inpBsn': '',
                     'anpIdentificatie': '12345',
@@ -104,7 +107,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.niet_natuurlijk_persoon,
             betrokkene=BETROKKENE,
-            rolomschrijving='Beslisser'
+            rolomschrijving='Beslisser',
+            indicatie_machtiging=IndicatieMachtiging.gemachtigde
         )
         nietnaturlijkperson = NietNatuurlijkPersoon.objects.create(
             rol=rol,
@@ -135,6 +139,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
                 'registratiedatum': '2018-01-01T00:00:00Z',
+                'indicatieMachtiging': 'gemachtigde',
                 'betrokkeneIdentificatie': {
                     'innNnpId': '',
                     'annIdentificatie': '123456',
@@ -159,7 +164,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.vestiging,
             betrokkene=BETROKKENE,
-            rolomschrijving='Beslisser'
+            rolomschrijving='Beslisser',
+            indicatie_machtiging=IndicatieMachtiging.gemachtigde
         )
         vestiging = Vestiging.objects.create(
             rol=rol,
@@ -198,6 +204,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'rolomschrijving': 'Beslisser',
                 'roltoelichting': '',
                 'registratiedatum': '2018-01-01T00:00:00Z',
+                'indicatieMachtiging': 'gemachtigde',
                 'betrokkeneIdentificatie': {
                     'vestigingsNummer': '123456',
                     'handelsnaam': [],

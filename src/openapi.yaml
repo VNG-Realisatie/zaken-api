@@ -6983,6 +6983,23 @@ components:
           type: string
           format: date-time
           readOnly: true
+        indicatieMachtiging:
+          title: Indicatie machtiging
+          description: 'Indicatie_machtiging
+
+
+            De mapping van waarden naar weergave is als volgt:
+
+
+            * `gemachtigde` - De betrokkene in de rol bij de zaak is door een andere
+            betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen
+
+            * `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere
+            betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen'
+          type: string
+          enum:
+          - gemachtigde
+          - machtiginggever
       discriminator:
         propertyName: betrokkeneType
     VerblijfsAdres:
@@ -7807,10 +7824,55 @@ components:
             De mapping van waarden naar weergave is als volgt:
 
 
-            '
+            * `Keermuur` - Keermuur
+
+            * `Overkluizing` - Overkluizing
+
+            * `Duiker` - Duiker
+
+            * `Faunavoorziening` - Faunavoorziening
+
+            * `Vispassage` - Vispassage
+
+            * `Bodemval` - Bodemval
+
+            * `Coupure` - Coupure
+
+            * `Ponton` - Ponton
+
+            * `Voorde` - Voorde
+
+            * `Hoogspanningsmast` - Hoogspanningsmast
+
+            * `Gemaal` - Gemaal
+
+            * `Perron` - Perron
+
+            * `Sluis` - Sluis
+
+            * `Strekdam` - Strekdam
+
+            * `Steiger` - Steiger
+
+            * `Stuw` - Stuw'
           type: string
-          maxLength: 40
-          minLength: 1
+          enum:
+          - Keermuur
+          - Overkluizing
+          - Duiker
+          - Faunavoorziening
+          - Vispassage
+          - Bodemval
+          - Coupure
+          - Ponton
+          - Voorde
+          - Hoogspanningsmast
+          - Gemaal
+          - Perron
+          - Sluis
+          - Strekdam
+          - Steiger
+          - Stuw
         identificatie:
           title: Identificatie
           description: De unieke identificatie van het OBJECT
@@ -8082,10 +8144,19 @@ components:
             De mapping van waarden naar weergave is als volgt:
 
 
-            '
+            * `Zee` - Zee
+
+            * `Waterloop` - Waterloop
+
+            * `Watervlakte` - Watervlakte
+
+            * `Greppel, droge sloot` - Greppel, droge sloot'
           type: string
-          maxLength: 50
-          minLength: 1
+          enum:
+          - Zee
+          - Waterloop
+          - Watervlakte
+          - Greppel, droge sloot
         identificatie:
           title: Identificatie
           description: De unieke identificatie van het OBJECT
