@@ -341,7 +341,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE,
+        'create': SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -416,7 +416,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE,
+        'create': SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
         'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         'destroy': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN | SCOPE_ZAKEN_ALLES_VERWIJDEREN,

@@ -2828,7 +2828,7 @@ paths:
       - zaakinformatieobjecten
       security:
       - JWT-Claims:
-        - zaken.aanmaken
+        - (zaken.aanmaken | zaken.bijwerken)
     parameters: []
   /zaakinformatieobjecten/{uuid}:
     get:
@@ -3806,7 +3806,7 @@ paths:
       - zaakobjecten
       security:
       - JWT-Claims:
-        - zaken.aanmaken
+        - (zaken.aanmaken | zaken.bijwerken)
     parameters: []
   /zaakobjecten/{uuid}:
     get:

@@ -3369,7 +3369,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.aanmaken"
+                            "(zaken.aanmaken | zaken.bijwerken)"
                         ]
                     }
                 ]
@@ -4530,7 +4530,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.aanmaken"
+                            "(zaken.aanmaken | zaken.bijwerken)"
                         ]
                     }
                 ]
