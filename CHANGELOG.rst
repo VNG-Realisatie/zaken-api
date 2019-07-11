@@ -2,6 +2,31 @@
 Wijzigingen
 ===========
 
+0.20.0 (2019-07-11)
+===================
+
+Prepare for release candidate
+
+* Added auth on ``/api/v1/klantcontacten``
+* Build ``develop`` branch as well now, so that it can be deployed to a test
+  environment
+* Added ``indicatieMachtiging`` attribute
+* Added filters to ``ZaakObject`` API
+* ``Zaak.productenOfDiensten`` is no longer a required field in the admin
+* Updated to latest drf-yasg and vng-api-common
+* Added management command to update URL references after domain migration
+* Scope ``zaken.bijwerken`` also allows you to create ``ZaakObject`` and
+  ``ZaakInformatieObject`` now
+
+Breaking changes
+----------------
+
+* Reworked adres-fields from ``Betrokkene`` to ``Adres`` model, instead of a
+  text field
+* Made ``Zaak.identificatie``, ``Zaak.zaaktype`` and ``Resultaat.resultaatType``
+  immutable
+
+
 0.19.1 (2019-07-02)
 ===================
 
