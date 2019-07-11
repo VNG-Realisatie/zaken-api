@@ -25,7 +25,9 @@ from vng_api_common.validators import (
     IsImmutableValidator, ResourceValidator, UntilNowValidator, URLValidator
 )
 
-from zrc.datamodel.constants import AardZaakRelatie, BetalingsIndicatie
+from zrc.datamodel.constants import (
+    AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
+)
 from zrc.datamodel.models import (
     KlantContact, RelevanteZaakRelatie, Resultaat, Rol, Status, Zaak,
     ZaakBesluit, ZaakEigenschap, ZaakInformatieObject, ZaakKenmerk, ZaakObject
@@ -39,15 +41,16 @@ from ..validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
 )
+from .adres_serializers import ObjectAdresSerializer
 from .betrokkene import (
     RolMedewerkerSerializer, RolNatuurlijkPersoonSerializer,
     RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer,
     RolVestigingSerializer
 )
 from .zaakobjecten import (
-    ObjectAdresSerializer, ObjectBuurtSerializer,
-    ObjectGemeentelijkeOpenbareRuimteSerializer, ObjectGemeenteSerializer,
-    ObjectHuishoudenSerializer, ObjectInrichtingselementSerializer,
+    ObjectBuurtSerializer, ObjectGemeentelijkeOpenbareRuimteSerializer,
+    ObjectGemeenteSerializer, ObjectHuishoudenSerializer,
+    ObjectInrichtingselementSerializer,
     ObjectKadastraleOnroerendeZaakSerializer, ObjectKunstwerkdeelSerializer,
     ObjectMaatschappelijkeActiviteitSerializer, ObjectOpenbareRuimteSerializer,
     ObjectOverigeSerializer, ObjectPandSerializer,
@@ -224,9 +227,12 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             'zaakgeometrie': {
                 'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
             },
+            'identificatie': {
+                'validators': [IsImmutableValidator()],
+            },
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
-                'validators': [URLValidator(get_auth=get_auth)],
+                'validators': [URLValidator(get_auth=get_auth), IsImmutableValidator()],
             },
             'einddatum': {
                 'read_only': True
@@ -738,6 +744,7 @@ class RolSerializer(PolymorphicSerializer):
             'rolomschrijving',
             'roltoelichting',
             'registratiedatum',
+            'indicatie_machtiging',
         )
         validators = [
             RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),
@@ -780,6 +787,12 @@ class RolSerializer(PolymorphicSerializer):
 
         return rol
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(IndicatieMachtiging)
+        self.fields['indicatie_machtiging'].help_text += f"\n\n{value_display_mapping}"
+
 
 class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -801,6 +814,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [
                     # TODO: Add shape-validator when we know the shape.
                     URLValidator(get_auth=get_auth),
+                    IsImmutableValidator(),
                 ],
             }
         }

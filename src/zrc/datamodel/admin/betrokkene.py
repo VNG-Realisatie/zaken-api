@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from ..models import (
     Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, Vestiging
+    OrganisatorischeEenheid, SubVerblijfBuitenland, Vestiging
 )
 
 
@@ -30,3 +30,8 @@ class VestigingAdmin(admin.ModelAdmin):
 @admin.register(Medewerker)
 class MedewerkerAdmin(admin.ModelAdmin):
     list_display = ['rol', 'zaakobject', 'identificatie']
+
+
+@admin.register(SubVerblijfBuitenland)
+class SubVerblijfBuitenlandAdmin(admin.ModelAdmin):
+    list_display = ['natuurlijkpersoon', 'nietnatuurlijkpersoon', 'vestiging', 'lnd_landcode']

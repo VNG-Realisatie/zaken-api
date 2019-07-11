@@ -24,7 +24,10 @@ SWAGGER_SETTINGS.update({
             # 'in': 'header'
             # 'type': 'apiKey',
         }
-    }
+    },
+    'DEFAULT_FIELD_INSPECTORS': (
+        'vng_api_common.inspectors.geojson.GeometryFieldInspector',
+    ) + BASE_SWAGGER_SETTINGS['DEFAULT_FIELD_INSPECTORS'],
 })
 
 GEMMA_URL_INFORMATIEMODEL_VERSIE = '1.0'

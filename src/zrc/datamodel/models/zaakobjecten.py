@@ -5,8 +5,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.db import models
 
-from vng_api_common.descriptors import GegevensGroepType
-
 from ..constants import (
     TyperingInrichtingselement, TyperingKunstwerk, TyperingWater,
     TypeSpoorbaan
@@ -14,22 +12,6 @@ from ..constants import (
 from .base_models import ZaakObject
 
 logger = logging.getLogger(__name__)
-
-
-class Adres(models.Model):
-    zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE)
-    identificatie = models.CharField(
-        max_length=100, help_text='De unieke identificatie van het OBJECT'
-    )
-    wpl_woonplaats_naam = models.CharField(max_length=80)
-    gor_openbare_ruimte_naam = models.CharField(
-        max_length=80, help_text='Een door het bevoegde gemeentelijke orgaan aan een '
-                                 'OPENBARE RUIMTE toegekende benaming'
-    )
-    huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)])
-    huisletter = models.CharField(max_length=1, blank=True)
-    huisnummertoevoeging = models.CharField(max_length=4, blank=True)
-    postcode = models.CharField(max_length=7, blank=True)
 
 
 class Buurt(models.Model):
@@ -220,31 +202,6 @@ class TerreinGebouwdObject(models.Model):
         max_length=100, help_text='De unieke identificatie van het OBJECT'
     )
 
-    num_identificatie = models.CharField(max_length=100, blank=True)
-    oao_identificatie = models.CharField(max_length=100, blank=True)
-    wpl_woonplaats_naam = models.CharField(max_length=80, blank=True)
-    gor_openbare_ruimte_naam = models.CharField(
-        max_length=80, blank=True,
-        help_text='Een door het bevoegde gemeentelijke orgaan aan een OPENBARE RUIMTE toegekende benaming'
-    )
-    aoa_postcode = models.CharField(max_length=7, blank=True)
-    aoa_huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)], null=True)
-    aoa_huisletter = models.CharField(max_length=1, blank=True)
-    aoa_huisnummertoevoeging = models.CharField(max_length=4, blank=True)
-    ogo_locatie_aanduiding = models.CharField(max_length=100, blank=True)
-
-    adres_aanduiding_grp = GegevensGroepType({
-        'num_identificatie': num_identificatie,
-        'oao_identificatie': oao_identificatie,
-        'wpl_woonplaats_naam': wpl_woonplaats_naam,
-        'gor_openbare_ruimte_naam': gor_openbare_ruimte_naam,
-        'aoa_postcode': aoa_postcode,
-        'aoa_huisnummer': aoa_huisnummer,
-        'aoa_huisletter': aoa_huisletter,
-        'aoa_huisnummertoevoeging': aoa_huisnummertoevoeging,
-        'ogo_locatie_aanduiding': ogo_locatie_aanduiding
-    })
-
     def clean(self):
         super().clean()
         if self.zaakobject is None and self.huishouden is None:
@@ -275,29 +232,6 @@ class WozObject(models.Model):
     woz_object_nummer = models.CharField(
         max_length=100, help_text='De unieke identificatie van het OBJECT'
     )
-
-    oao_identificatie = models.CharField(max_length=100, blank=True)
-    wpl_woonplaats_naam = models.CharField(max_length=80, blank=True)
-    gor_openbare_ruimte_naam = models.CharField(
-        max_length=80, blank=True,
-        help_text='Een door het bevoegde gemeentelijke orgaan aan een OPENBARE RUIMTE toegekende benaming'
-    )
-    aoa_postcode = models.CharField(max_length=7, blank=True)
-    aoa_huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)], null=True)
-    aoa_huisletter = models.CharField(max_length=1, blank=True)
-    aoa_huisnummertoevoeging = models.CharField(max_length=4, blank=True)
-    locatie_omschrijving = models.CharField(max_length=1000, blank=True)
-
-    aanduiding_woz_object = GegevensGroepType({
-        'oao_identificatie': oao_identificatie,
-        'wpl_woonplaats_naam': wpl_woonplaats_naam,
-        'aoa_postcode': aoa_postcode,
-        'gor_openbare_ruimte_naam': gor_openbare_ruimte_naam,
-        'aoa_huisnummer': aoa_huisnummer,
-        'aoa_huisletter': aoa_huisletter,
-        'aoa_huisnummertoevoeging': aoa_huisnummertoevoeging,
-        'locatie_omschrijving': locatie_omschrijving
-    })
 
     def clean(self):
         super().clean()
@@ -335,3 +269,43 @@ class KadastraleOnroerendeZaak(models.Model):
 
 class ZakelijkRechtHeeftAlsGerechtigde(models.Model):
     zakelijk_recht = models.OneToOneField(ZakelijkRecht, on_delete=models.CASCADE, related_name='heeft_als_gerechtigde')
+
+
+class Adres(models.Model):
+    zaakobject = models.OneToOneField(ZaakObject, on_delete=models.CASCADE, null=True)
+    natuurlijkpersoon = models.OneToOneField(
+        'datamodel.NatuurlijkPersoon', on_delete=models.CASCADE, null=True, related_name='verblijfsadres'
+    )
+    vestiging = models.OneToOneField(
+        'datamodel.Vestiging', on_delete=models.CASCADE, null=True, related_name='verblijfsadres'
+    )
+    wozobject = models.OneToOneField(
+        WozObject, on_delete=models.CASCADE, null=True, related_name='aanduiding_woz_object'
+    )
+    terreingebouwdobject = models.OneToOneField(
+        TerreinGebouwdObject, on_delete=models.CASCADE, null=True, related_name='adres_aanduiding_grp'
+    )
+
+    identificatie = models.CharField(
+        max_length=100, help_text='De unieke identificatie van het OBJECT'
+    )
+    wpl_woonplaats_naam = models.CharField(max_length=80)
+    gor_openbare_ruimte_naam = models.CharField(
+        max_length=80, help_text='Een door het bevoegde gemeentelijke orgaan aan een '
+                                 'OPENBARE RUIMTE toegekende benaming'
+    )
+    huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)])
+    huisletter = models.CharField(max_length=1, blank=True)
+    huisnummertoevoeging = models.CharField(max_length=4, blank=True)
+    postcode = models.CharField(max_length=7, blank=True)
+
+    num_identificatie = models.CharField(max_length=100, blank=True)
+    locatie_omschrijving = models.CharField(max_length=1000, blank=True)
+    locatie_aanduiding = models.CharField(max_length=100, blank=True)
+
+    def clean(self):
+        super().clean()
+        if self.zaakobject is None and self.wozobject is None and self.terreingebouwdobject is None \
+                and self.natuurlijkpersoon is None and self.vestiging is None:
+            raise ValidationError('Relations to ZaakObject, WozObject, NatuurlijkPersoon, '
+                                  'Vestiging or TerreinGebouwdObject models should be set')

@@ -13,10 +13,6 @@ from zrc.datamodel.models import (
 )
 from zrc.datamodel.tests.factories import ZaakFactory, ZaakObjectFactory
 
-from ..serializers import (
-    ObjectZakelijkRechtSerializer, ZakelijkRechtHeeftAlsGerechtigdeSerializer
-)
-
 OBJECT = 'http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd'
 
 
@@ -194,15 +190,18 @@ class ZaakObjectHuishoudenTestCase(JWTAuthMixin, APITestCase):
             zaakobject=zaakobject,
             nummer='123456',
         )
-        TerreinGebouwdObject.objects.create(
+        terreingebouwdobject = TerreinGebouwdObject.objects.create(
+            huishouden=huishouden,
             identificatie='1',
+        )
+        Adres.objects.create(
+            terreingebouwdobject=terreingebouwdobject,
             num_identificatie='1',
-            oao_identificatie='a',
+            identificatie='a',
             wpl_woonplaats_naam='test city',
             gor_openbare_ruimte_naam='test space',
-            aoa_huisnummer='11',
-            ogo_locatie_aanduiding='test',
-            huishouden=huishouden
+            huisnummer='11',
+            locatie_aanduiding='test'
         )
 
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
@@ -280,7 +279,7 @@ class ZaakObjectHuishoudenTestCase(JWTAuthMixin, APITestCase):
 
         self.assertEqual(zaakobject.huishouden, huishouden)
         self.assertEqual(huishouden.nummer, '123456')
-        self.assertEqual(huishouden.is_gehuisvest_in.oao_identificatie, 'a')
+        self.assertEqual(huishouden.is_gehuisvest_in.adres_aanduiding_grp.identificatie, 'a')
 
 
 class ZaakObjectMedewerkerTestCase(JWTAuthMixin, APITestCase):
@@ -373,17 +372,19 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
             type=ZaakobjectTypes.terreinGebouwdObject
         )
 
-        TerreinGebouwdObject.objects.create(
-            identificatie='12345',
+        terreingebouwdobject = TerreinGebouwdObject.objects.create(
+            zaakobject=zaakobject,
+            identificatie='12345'
+        )
+        Adres.objects.create(
+            terreingebouwdobject=terreingebouwdobject,
             num_identificatie='1',
-            oao_identificatie='a',
+            identificatie='123',
             wpl_woonplaats_naam='test city',
             gor_openbare_ruimte_naam='test space',
-            aoa_huisnummer='11',
-            ogo_locatie_aanduiding='test',
-            zaakobject=zaakobject
+            huisnummer='11',
+            locatie_aanduiding='test'
         )
-
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         url = get_operation_url('zaakobject_read', uuid=zaakobject.uuid)
 
@@ -405,7 +406,7 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
                     'identificatie': '12345',
                     'adresAanduidingGrp': {
                         'numIdentificatie': '1',
-                        'oaoIdentificatie': 'a',
+                        'oaoIdentificatie': '123',
                         'wplWoonplaatsNaam': 'test city',
                         'gorOpenbareRuimteNaam': 'test space',
                         'aoaPostcode': '',
@@ -450,10 +451,12 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
 
         zaakobject = ZaakObject.objects.get()
         terrein_gebouwd = TerreinGebouwdObject.objects.get()
+        adres = Adres.objects.get()
 
         self.assertEqual(zaakobject.terreingebouwdobject, terrein_gebouwd)
         self.assertEqual(terrein_gebouwd.identificatie, '12345')
-        self.assertEqual(terrein_gebouwd.oao_identificatie, 'a')
+        self.assertEqual(terrein_gebouwd.adres_aanduiding_grp, adres)
+        self.assertEqual(adres.identificatie, 'a')
 
 
 class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
@@ -470,14 +473,17 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
             type=ZaakobjectTypes.wozObject
         )
 
-        WozObject.objects.create(
+        wozobject = WozObject.objects.create(
+            zaakobject=zaakobject,
             woz_object_nummer='12345',
-            oao_identificatie='a',
+        )
+        Adres.objects.create(
+            wozobject=wozobject,
+            identificatie='a',
             wpl_woonplaats_naam='test city',
             gor_openbare_ruimte_naam='test space',
-            aoa_huisnummer='11',
+            huisnummer='11',
             locatie_omschrijving='test',
-            zaakobject=zaakobject
         )
 
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
@@ -500,7 +506,7 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
                 'objectIdentificatie': {
                     'wozObjectNummer': '12345',
                     'aanduidingWozObject': {
-                        'oaoIdentificatie': 'a',
+                        'aoaIdentificatie': 'a',
                         'wplWoonplaatsNaam': 'test city',
                         'aoaPostcode': '',
                         'gorOpenbareRuimteNaam': 'test space',
@@ -524,7 +530,7 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
             'objectIdentificatie': {
                 'wozObjectNummer': '12345',
                 'aanduidingWozObject': {
-                    'oaoIdentificatie': 'a',
+                    'aoaIdentificatie': 'a',
                     'wplWoonplaatsNaam': 'test city',
                     'aoaPostcode': '',
                     'gorOpenbareRuimteNaam': 'test space',
@@ -544,10 +550,12 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
 
         zaakobject = ZaakObject.objects.get()
         wozobject = WozObject.objects.get()
+        adres = Adres.objects.get()
 
         self.assertEqual(zaakobject.wozobject, wozobject)
         self.assertEqual(wozobject.woz_object_nummer, '12345')
-        self.assertEqual(wozobject.oao_identificatie, 'a')
+        self.assertEqual(wozobject.aanduiding_woz_object, adres)
+        self.assertEqual(adres.identificatie, 'a')
 
 
 class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
@@ -569,14 +577,17 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
             nummer_woz_deel_object='12345'
         )
 
-        WozObject.objects.create(
-            woz_object_nummer='1',
-            oao_identificatie='a',
+        wozobject = WozObject.objects.create(
+            woz_deelobject=woz_deel_object,
+            woz_object_nummer='1'
+        )
+        Adres.objects.create(
+            wozobject=wozobject,
+            identificatie='a',
             wpl_woonplaats_naam='test city',
             gor_openbare_ruimte_naam='test space',
-            aoa_huisnummer='11',
+            huisnummer='11',
             locatie_omschrijving='test',
-            woz_deelobject=woz_deel_object
         )
 
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
@@ -601,7 +612,7 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
                     'isOnderdeelVan': {
                         'wozObjectNummer': '1',
                         'aanduidingWozObject': {
-                            'oaoIdentificatie': 'a',
+                            'aoaIdentificatie': 'a',
                             'wplWoonplaatsNaam': 'test city',
                             'aoaPostcode': '',
                             'gorOpenbareRuimteNaam': 'test space',
@@ -628,7 +639,7 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
                 'isOnderdeelVan': {
                     'wozObjectNummer': '1',
                     'aanduidingWozObject': {
-                        'oaoIdentificatie': 'a',
+                        'aoaIdentificatie': 'a',
                         'wplWoonplaatsNaam': 'test city',
                         'aoaPostcode': '',
                         'gorOpenbareRuimteNaam': 'test space',
@@ -649,10 +660,12 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
 
         zaakobject = ZaakObject.objects.get()
         wozdeelobject = WozDeelobject.objects.get()
+        adres = Adres.objects.get()
 
         self.assertEqual(zaakobject.wozdeelobject, wozdeelobject)
         self.assertEqual(wozdeelobject.nummer_woz_deel_object, '12345')
-        self.assertEqual(wozdeelobject.is_onderdeel_van.oao_identificatie, 'a')
+        self.assertEqual(wozdeelobject.is_onderdeel_van.aanduiding_woz_object, adres)
+        self.assertEqual(adres.identificatie, 'a')
 
 
 class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
@@ -674,14 +687,17 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
             waardepeildatum='2019'
         )
 
-        WozObject.objects.create(
-            woz_object_nummer='1',
-            oao_identificatie='a',
+        wozobject = WozObject.objects.create(
+            woz_warde=woz_warde,
+            woz_object_nummer='1'
+        )
+        Adres.objects.create(
+            wozobject=wozobject,
+            identificatie='a',
             wpl_woonplaats_naam='test city',
             gor_openbare_ruimte_naam='test space',
-            aoa_huisnummer='11',
+            huisnummer='11',
             locatie_omschrijving='test',
-            woz_warde=woz_warde
         )
 
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
@@ -706,7 +722,7 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
                     'isVoor': {
                         'wozObjectNummer': '1',
                         'aanduidingWozObject': {
-                            'oaoIdentificatie': 'a',
+                            'aoaIdentificatie': 'a',
                             'wplWoonplaatsNaam': 'test city',
                             'aoaPostcode': '',
                             'gorOpenbareRuimteNaam': 'test space',
@@ -733,7 +749,7 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
                 'isVoor': {
                     'wozObjectNummer': '1',
                     'aanduidingWozObject': {
-                        'oaoIdentificatie': 'a',
+                        'aoaIdentificatie': 'a',
                         'wplWoonplaatsNaam': 'test city',
                         'aoaPostcode': '',
                         'gorOpenbareRuimteNaam': 'test space',
@@ -754,10 +770,12 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
 
         zaakobject = ZaakObject.objects.get()
         wozwaarde = WozWaarde.objects.get()
+        adres = Adres.objects.get()
 
         self.assertEqual(zaakobject.wozwaarde, wozwaarde)
         self.assertEqual(wozwaarde.waardepeildatum, '2019')
-        self.assertEqual(wozwaarde.is_voor.oao_identificatie, 'a')
+        self.assertEqual(wozwaarde.is_voor.aanduiding_woz_object, adres)
+        self.assertEqual(adres.identificatie, 'a')
 
 
 class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
@@ -834,8 +852,8 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                             'voornamen': '',
                             'geslachtsaanduiding': '',
                             'geboortedatum': '',
-                            'verblijfsadres': '',
-                            'subVerblijfBuitenland': ''
+                            'verblijfsadres': None,
+                            'subVerblijfBuitenland': None
                         },
                         'nietNatuurlijkPersoon': {
                             'innNnpId': '',
@@ -843,7 +861,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                             'statutaireNaam': '',
                             'innRechtsvorm': '',
                             'bezoekadres': '',
-                            'subVerblijfBuitenland': ''
+                            'subVerblijfBuitenland': None
                         }
                     }
                 }

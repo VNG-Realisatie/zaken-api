@@ -52,6 +52,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'rolomschrijving': RolOmschrijving.behandelaar,
             'roltoelichting': 'Verantwoordelijke behandelaar voor de melding',
             'registratiedatum': '2018-01-01T00:00:00Z',
+            'indicatieMachtiging': '',
             'betrokkeneIdentificatie': None
         })
 

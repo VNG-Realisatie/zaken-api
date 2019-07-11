@@ -20,12 +20,13 @@ from vng_api_common.fields import (
 )
 from vng_api_common.models import APICredential, APIMixin
 from vng_api_common.utils import (
-    generate_unique_identification, get_uuid_from_path,
-    request_object_attribute
+    generate_unique_identification, request_object_attribute
 )
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from ..constants import AardZaakRelatie, BetalingsIndicatie
+from ..constants import (
+    AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
+)
 from ..query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -122,7 +123,8 @@ class Zaak(APIMixin, models.Model):
         help_text=_("De producten en/of diensten die door de zaak worden voortgebracht. "
                     "Dit zijn URLs naar de resources zoals die door de producten- "
                     "en dienstencatalogus-API wordt ontsloten. "
-                    "De producten/diensten moeten bij het zaaktype vermeld zijn.")
+                    "De producten/diensten moeten bij het zaaktype vermeld zijn."),
+        blank=True,
     )
 
     communicatiekanaal = models.URLField(
@@ -351,6 +353,10 @@ class Rol(models.Model):
         "registratiedatum", auto_now_add=True,
         help_text="De datum waarop dit object is geregistreerd."
     )
+    indicatie_machtiging = models.CharField(
+        max_length=40, choices=IndicatieMachtiging.choices, blank=True,
+        help_text="Indicatie_machtiging"
+    )
 
     objects = ZaakRelatedQuerySet.as_manager()
 
@@ -359,9 +365,11 @@ class Rol(models.Model):
         verbose_name_plural = "Rollen"
 
     def unique_representation(self):
-        if self.betrokkene:
-            return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.betrokkene)}"
-        return f"({self.zaak.unique_representation()}) - {self.roltoelichting}"
+        if self.betrokkene == '':
+            return f"({self.zaak.unique_representation()}) - {self.roltoelichting}"
+
+        betrokkene = self.betrokkene.rstrip('/') if self.betrokkene.endswith('/') else self.betrokkene
+        return f"({self.zaak.unique_representation()}) - {betrokkene.rsplit('/')[-1]}"
 
 
 class ZaakObject(models.Model):
@@ -413,9 +421,11 @@ class ZaakObject(models.Model):
         return self._object
 
     def unique_representation(self):
-        if self.object:
-            return f"({self.zaak.unique_representation()}) - {get_uuid_from_path(self.object)}"
-        return f"({self.zaak.unique_representation()}) - {self.relatieomschrijving}"
+        if self.object == '':
+            return f"({self.zaak.unique_representation()}) - {self.relatieomschrijving}"
+
+        object = self.object.rstrip('/') if self.object.endswith('/') else self.object
+        return f"({self.zaak.unique_representation()}) - {object.rsplit('/')[-1]}"
 
 
 class ZaakEigenschap(models.Model):
