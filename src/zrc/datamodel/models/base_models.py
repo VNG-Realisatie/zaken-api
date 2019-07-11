@@ -123,7 +123,8 @@ class Zaak(APIMixin, models.Model):
         help_text=_("De producten en/of diensten die door de zaak worden voortgebracht. "
                     "Dit zijn URLs naar de resources zoals die door de producten- "
                     "en dienstencatalogus-API wordt ontsloten. "
-                    "De producten/diensten moeten bij het zaaktype vermeld zijn.")
+                    "De producten/diensten moeten bij het zaaktype vermeld zijn."),
+        blank=True,
     )
 
     communicatiekanaal = models.URLField(

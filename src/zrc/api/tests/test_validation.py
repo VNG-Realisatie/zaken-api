@@ -7,12 +7,16 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
-from vng_api_common.validators import ResourceValidator, URLValidator
+from vng_api_common.validators import (
+    IsImmutableValidator, ResourceValidator, URLValidator
+)
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import AardZaakRelatie, BetalingsIndicatie
 from zrc.datamodel.models import ZaakInformatieObject
-from zrc.datamodel.tests.factories import ZaakFactory
+from zrc.datamodel.tests.factories import (
+    ResultaatFactory, StatusFactory, ZaakFactory
+)
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
 from ..scopes import (
@@ -250,9 +254,7 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
 
 class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
-
-    scopes = [SCOPE_ZAKEN_BIJWERKEN]
-    zaaktype = 'https://example.com/foo/bar'
+    heeft_alle_autorisaties = True
 
     def test_validate_verlenging(self):
         """
@@ -316,6 +318,32 @@ class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
             with self.subTest(field=field):
                 error = get_validation_errors(response, field)
                 self.assertEqual(error['code'], 'required')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_not_allowed_to_change_zaaktype(self):
+        zaak = ZaakFactory.create()
+        url = reverse(zaak)
+
+        response = self.client.patch(url, {
+            "zaaktype": "https://ander.zaaktype.nl/foo/bar",
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        validation_error = get_validation_errors(response, 'zaaktype')
+        self.assertEqual(validation_error['code'], IsImmutableValidator.code)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_not_allowed_to_change_identificatie(self):
+        zaak = ZaakFactory.create(identificatie='gibberish')
+        url = reverse(zaak)
+
+        response = self.client.patch(url, {
+            "identificatie": "new value",
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        validation_error = get_validation_errors(response, 'identificatie')
+        self.assertEqual(validation_error['code'], IsImmutableValidator.code)
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -439,3 +467,37 @@ class FilterValidationTests(JWTAuthMixin, APITestCase):
             with self.subTest(query_param=key, value=value):
                 response = self.client.get(url, {key: value})
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class StatusValidationTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_not_allowed_to_change_status_type(self):
+        _status = StatusFactory.create()
+        url = reverse(_status)
+
+        response = self.client.patch(url, {
+            "statusType": "https://ander.status_type.nl/foo/bar",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        # validation_error = get_validation_errors(response, 'statusType')
+        # self.assertEqual(validation_error['code'], IsImmutableValidator.code)
+
+
+class ResultaatValidationTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_not_allowed_to_change_resultaat_type(self):
+        resultaat = ResultaatFactory.create()
+        url = reverse(resultaat)
+
+        response = self.client.patch(url, {
+            "resultaatType": "https://ander.resultaat_type.nl/foo/bar",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        validation_error = get_validation_errors(response, 'resultaatType')
+        self.assertEqual(validation_error['code'], IsImmutableValidator.code)

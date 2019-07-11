@@ -40,7 +40,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -57,7 +57,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -71,7 +71,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -85,7 +85,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -99,7 +99,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -113,7 +113,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -127,7 +127,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -141,7 +141,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -155,7 +155,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -217,7 +217,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/KlantContact"
                         },
@@ -238,7 +238,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -252,7 +252,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -266,7 +266,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -280,7 +280,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -294,7 +294,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -308,7 +308,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -322,7 +322,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -336,7 +336,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -350,7 +350,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -384,7 +384,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/KlantContact"
                         },
@@ -398,7 +398,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -412,7 +412,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -426,7 +426,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -440,7 +440,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -454,7 +454,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -468,7 +468,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -482,7 +482,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -496,7 +496,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -510,7 +510,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -571,7 +571,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -588,7 +588,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -602,7 +602,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -616,7 +616,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -630,7 +630,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -644,7 +644,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -658,7 +658,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -672,7 +672,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -686,7 +686,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -700,7 +700,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -762,7 +762,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/Resultaat"
                         },
@@ -783,7 +783,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -797,7 +797,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -811,7 +811,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -825,7 +825,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -839,7 +839,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -853,7 +853,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -867,7 +867,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -881,7 +881,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -895,7 +895,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -929,7 +929,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Resultaat"
                         },
@@ -943,7 +943,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -957,7 +957,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -971,7 +971,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -985,7 +985,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -999,7 +999,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1013,7 +1013,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1027,7 +1027,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1041,7 +1041,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1055,7 +1055,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1083,7 +1083,7 @@
             "put": {
                 "operationId": "resultaat_update",
                 "summary": "Wijzig het RESULTAAT van een ZAAK.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
+                "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- het RESULTAATTYPE mag niet gewijzigd worden",
                 "parameters": [
                     {
                         "name": "data",
@@ -1117,7 +1117,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Resultaat"
                         },
@@ -1131,7 +1131,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -1145,7 +1145,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1159,7 +1159,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1173,7 +1173,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1187,7 +1187,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1201,7 +1201,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1215,7 +1215,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1229,7 +1229,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1243,7 +1243,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1257,7 +1257,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1285,7 +1285,7 @@
             "patch": {
                 "operationId": "resultaat_partial_update",
                 "summary": "Wijzig het RESULTAAT van een ZAAK.",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
+                "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- het RESULTAATTYPE mag niet gewijzigd worden",
                 "parameters": [
                     {
                         "name": "data",
@@ -1319,7 +1319,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Resultaat"
                         },
@@ -1333,7 +1333,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -1347,7 +1347,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1361,7 +1361,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1375,7 +1375,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1389,7 +1389,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1403,7 +1403,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1417,7 +1417,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1431,7 +1431,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1445,7 +1445,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1459,7 +1459,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1512,7 +1512,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "",
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {
@@ -1523,7 +1523,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1537,7 +1537,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1551,7 +1551,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1565,7 +1565,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1579,7 +1579,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1593,7 +1593,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1607,7 +1607,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1621,7 +1621,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1635,7 +1635,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1782,7 +1782,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -1799,7 +1799,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -1813,7 +1813,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1827,7 +1827,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1841,7 +1841,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1855,7 +1855,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1869,7 +1869,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1883,7 +1883,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1897,7 +1897,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1911,7 +1911,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -1972,7 +1972,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/Rol"
                         },
@@ -1993,7 +1993,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -2007,7 +2007,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2021,7 +2021,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2035,7 +2035,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2049,7 +2049,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2063,7 +2063,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2077,7 +2077,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2091,7 +2091,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2105,7 +2105,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2139,7 +2139,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Rol"
                         },
@@ -2153,7 +2153,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2167,7 +2167,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2181,7 +2181,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2195,7 +2195,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2209,7 +2209,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2223,7 +2223,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2237,7 +2237,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2251,7 +2251,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2265,7 +2265,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2296,7 +2296,7 @@
                 "parameters": [],
                 "responses": {
                     "204": {
-                        "description": "",
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {
@@ -2307,7 +2307,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2321,7 +2321,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2335,7 +2335,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2349,7 +2349,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2363,7 +2363,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2377,7 +2377,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2391,7 +2391,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2405,7 +2405,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2419,7 +2419,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2480,7 +2480,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -2497,7 +2497,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -2511,7 +2511,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2525,7 +2525,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2539,7 +2539,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2553,7 +2553,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2567,7 +2567,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2581,7 +2581,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2595,7 +2595,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2609,7 +2609,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2671,7 +2671,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/Status"
                         },
@@ -2692,7 +2692,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -2706,7 +2706,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2720,7 +2720,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2734,7 +2734,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2748,7 +2748,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2762,7 +2762,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2776,7 +2776,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2790,7 +2790,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2804,7 +2804,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2838,7 +2838,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Status"
                         },
@@ -2852,7 +2852,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2866,7 +2866,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2880,7 +2880,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2894,7 +2894,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2908,7 +2908,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2922,7 +2922,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2936,7 +2936,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2950,7 +2950,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -2964,7 +2964,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3025,7 +3025,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -3042,7 +3042,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -3056,7 +3056,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3070,7 +3070,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3084,7 +3084,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3098,7 +3098,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3112,7 +3112,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3126,7 +3126,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3140,7 +3140,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3154,7 +3154,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3216,7 +3216,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/ZaakInformatieObject"
                         },
@@ -3237,7 +3237,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -3251,7 +3251,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3265,7 +3265,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3279,7 +3279,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3293,7 +3293,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3307,7 +3307,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3321,7 +3321,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3335,7 +3335,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3349,7 +3349,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3369,7 +3369,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.aanmaken"
+                            "(zaken.aanmaken | zaken.bijwerken)"
                         ]
                     }
                 ]
@@ -3383,7 +3383,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ZaakInformatieObject"
                         },
@@ -3397,7 +3397,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3411,7 +3411,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3425,7 +3425,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3439,7 +3439,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3453,7 +3453,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3467,7 +3467,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3481,7 +3481,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3495,7 +3495,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3509,7 +3509,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3570,7 +3570,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ZaakInformatieObject"
                         },
@@ -3584,7 +3584,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -3598,7 +3598,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3612,7 +3612,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3626,7 +3626,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3640,7 +3640,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3654,7 +3654,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3668,7 +3668,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3682,7 +3682,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3696,7 +3696,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3710,7 +3710,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3771,7 +3771,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ZaakInformatieObject"
                         },
@@ -3785,7 +3785,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -3799,7 +3799,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3813,7 +3813,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3827,7 +3827,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3841,7 +3841,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3855,7 +3855,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3869,7 +3869,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3883,7 +3883,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3897,7 +3897,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3911,7 +3911,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3964,7 +3964,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "",
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {
@@ -3975,7 +3975,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -3989,7 +3989,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4003,7 +4003,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4017,7 +4017,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4031,7 +4031,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4045,7 +4045,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4059,7 +4059,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4073,7 +4073,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4087,7 +4087,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4187,7 +4187,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -4204,7 +4204,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -4218,7 +4218,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4232,7 +4232,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4246,7 +4246,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4260,7 +4260,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4274,7 +4274,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4288,7 +4288,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4302,7 +4302,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4316,7 +4316,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4377,7 +4377,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/ZaakObject"
                         },
@@ -4398,7 +4398,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -4412,7 +4412,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4426,7 +4426,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4440,7 +4440,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4454,7 +4454,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4468,7 +4468,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4482,7 +4482,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4496,7 +4496,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4510,7 +4510,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4530,7 +4530,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.aanmaken"
+                            "(zaken.aanmaken | zaken.bijwerken)"
                         ]
                     }
                 ]
@@ -4544,7 +4544,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ZaakObject"
                         },
@@ -4558,7 +4558,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4572,7 +4572,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4586,7 +4586,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4600,7 +4600,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4614,7 +4614,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4628,7 +4628,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4642,7 +4642,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4656,7 +4656,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4670,7 +4670,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4865,7 +4865,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "required": [
                                 "count",
@@ -4911,7 +4911,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -4925,7 +4925,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4939,7 +4939,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4953,7 +4953,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4967,7 +4967,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4981,7 +4981,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -4995,7 +4995,7 @@
                         }
                     },
                     "412": {
-                        "description": "",
+                        "description": "Precondition failed",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5009,7 +5009,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5023,7 +5023,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5037,7 +5037,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5119,7 +5119,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/Zaak"
                         },
@@ -5140,7 +5140,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -5154,7 +5154,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5168,7 +5168,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5182,7 +5182,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5196,7 +5196,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5210,7 +5210,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5224,7 +5224,7 @@
                         }
                     },
                     "412": {
-                        "description": "",
+                        "description": "Precondition failed",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5238,7 +5238,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5252,7 +5252,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5266,7 +5266,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5337,7 +5337,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "required": [
                                 "count",
@@ -5383,7 +5383,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -5397,7 +5397,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5411,7 +5411,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5425,7 +5425,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5439,7 +5439,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5453,7 +5453,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5467,7 +5467,7 @@
                         }
                     },
                     "412": {
-                        "description": "",
+                        "description": "Precondition failed",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5481,7 +5481,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5495,7 +5495,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5509,7 +5509,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5564,7 +5564,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Zaak"
                         },
@@ -5585,7 +5585,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5599,7 +5599,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5613,7 +5613,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5627,7 +5627,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5641,7 +5641,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5655,7 +5655,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5669,7 +5669,7 @@
                         }
                     },
                     "412": {
-                        "description": "",
+                        "description": "Precondition failed",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5683,7 +5683,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5697,7 +5697,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5711,7 +5711,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5739,7 +5739,7 @@
             "put": {
                 "operationId": "zaak_update",
                 "summary": "Werk een zaak bij.",
-                "description": "**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
+                "description": "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -5793,7 +5793,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Zaak"
                         },
@@ -5814,7 +5814,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -5828,7 +5828,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5842,7 +5842,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5856,7 +5856,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5870,7 +5870,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5884,7 +5884,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5898,7 +5898,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5912,7 +5912,7 @@
                         }
                     },
                     "412": {
-                        "description": "",
+                        "description": "Precondition failed",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5926,7 +5926,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5940,7 +5940,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5954,7 +5954,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -5982,7 +5982,7 @@
             "patch": {
                 "operationId": "zaak_partial_update",
                 "summary": "Werk een zaak bij.",
-                "description": "**Er wordt gevalideerd op**\n- `zaaktype` moet een geldige URL zijn.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
+                "description": "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -6036,7 +6036,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Zaak"
                         },
@@ -6057,7 +6057,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -6071,7 +6071,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6085,7 +6085,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6099,7 +6099,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6113,7 +6113,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6127,7 +6127,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6141,7 +6141,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6155,7 +6155,7 @@
                         }
                     },
                     "412": {
-                        "description": "",
+                        "description": "Precondition failed",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6169,7 +6169,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6183,7 +6183,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6197,7 +6197,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6251,7 +6251,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "",
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {
@@ -6262,7 +6262,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6276,7 +6276,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6290,7 +6290,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6304,7 +6304,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6318,7 +6318,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6332,7 +6332,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6346,7 +6346,7 @@
                         }
                     },
                     "412": {
-                        "description": "",
+                        "description": "Precondition failed",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6360,7 +6360,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6374,7 +6374,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6388,7 +6388,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6431,7 +6431,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -6448,7 +6448,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6462,7 +6462,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6476,7 +6476,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6490,7 +6490,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6504,7 +6504,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6518,7 +6518,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6532,7 +6532,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6546,7 +6546,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6589,7 +6589,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/AuditTrail"
                         },
@@ -6603,7 +6603,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6617,7 +6617,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6631,7 +6631,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6645,7 +6645,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6659,7 +6659,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6673,7 +6673,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6687,7 +6687,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6701,7 +6701,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6715,7 +6715,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6766,7 +6766,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -6783,7 +6783,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6797,7 +6797,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6811,7 +6811,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6825,7 +6825,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6839,7 +6839,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6853,7 +6853,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6867,7 +6867,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6881,7 +6881,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6942,7 +6942,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/ZaakBesluit"
                         },
@@ -6963,7 +6963,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -6977,7 +6977,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -6991,7 +6991,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7005,7 +7005,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7019,7 +7019,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7033,7 +7033,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7047,7 +7047,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7061,7 +7061,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7075,7 +7075,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7118,7 +7118,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ZaakBesluit"
                         },
@@ -7132,7 +7132,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7146,7 +7146,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7160,7 +7160,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7174,7 +7174,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7188,7 +7188,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7202,7 +7202,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7216,7 +7216,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7230,7 +7230,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7244,7 +7244,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7297,7 +7297,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "",
+                        "description": "No content",
                         "headers": {
                             "API-version": {
                                 "schema": {
@@ -7308,7 +7308,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7322,7 +7322,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7336,7 +7336,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7350,7 +7350,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7364,7 +7364,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7378,7 +7378,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7392,7 +7392,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7406,7 +7406,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7420,7 +7420,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7471,7 +7471,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -7488,7 +7488,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7502,7 +7502,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7516,7 +7516,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7530,7 +7530,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7544,7 +7544,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7558,7 +7558,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7572,7 +7572,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7586,7 +7586,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7647,7 +7647,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "",
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/ZaakEigenschap"
                         },
@@ -7668,7 +7668,7 @@
                         }
                     },
                     "400": {
-                        "description": "",
+                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/ValidatieFout"
                         },
@@ -7682,7 +7682,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7696,7 +7696,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7710,7 +7710,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7724,7 +7724,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7738,7 +7738,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7752,7 +7752,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7766,7 +7766,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7780,7 +7780,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7823,7 +7823,7 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ZaakEigenschap"
                         },
@@ -7837,7 +7837,7 @@
                         }
                     },
                     "401": {
-                        "description": "",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7851,7 +7851,7 @@
                         }
                     },
                     "403": {
-                        "description": "",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7865,7 +7865,7 @@
                         }
                     },
                     "404": {
-                        "description": "",
+                        "description": "Not_found",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7879,7 +7879,7 @@
                         }
                     },
                     "406": {
-                        "description": "",
+                        "description": "Not acceptable",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7893,7 +7893,7 @@
                         }
                     },
                     "409": {
-                        "description": "",
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7907,7 +7907,7 @@
                         }
                     },
                     "410": {
-                        "description": "",
+                        "description": "Gone",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7921,7 +7921,7 @@
                         }
                     },
                     "415": {
-                        "description": "",
+                        "description": "Unsupported media type",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7935,7 +7935,7 @@
                         }
                     },
                     "429": {
-                        "description": "",
+                        "description": "Too many requests",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -7949,7 +7949,7 @@
                         }
                     },
                     "500": {
-                        "description": "",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/Fout"
                         },
@@ -8004,9 +8004,12 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "zaak": {
                     "title": "Zaak",
@@ -8170,9 +8173,12 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "zaak": {
                     "title": "Zaak",
@@ -8206,9 +8212,12 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "zaak": {
                     "title": "Zaak",
@@ -8684,9 +8693,12 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "zaak": {
                     "title": "Zaak",
@@ -8724,9 +8736,12 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "informatieobject": {
                     "title": "Informatieobject",
@@ -8779,9 +8794,12 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "zaak": {
                     "title": "Zaak",
@@ -10539,9 +10557,12 @@
             "properties": {
                 "url": {
                     "title": "Url",
+                    "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "maxLength": 1000,
+                    "minLength": 1
                 },
                 "identificatie": {
                     "title": "Identificatie",

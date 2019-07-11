@@ -10,7 +10,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
 | identificatie | De unieke aanduiding van een KLANTCONTACT | string | nee | C​R​U​D |
 | datumtijd | De datum en het tijdstip waarop het KLANTCONTACT begint | string | ja | C​R​U​D |
@@ -22,7 +22,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
 | resultaatType | URL naar het resultaattype uit het ZTC. | string | ja | C​R​U​D |
 | toelichting | Een toelichting op wat het resultaat van de zaak inhoudt. | string | nee | C​R​U​D |
@@ -33,7 +33,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
 | betrokkene | Een betrokkene gerelateerd aan een zaak | string | nee | C​R​U​D |
 | betrokkeneType | Soort betrokkene | string | ja | C​R​U​D |
@@ -65,7 +65,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
 | statusType | URL naar het statustype uit het ZTC. | string | ja | C​R​U​D |
 | datumStatusGezet | De datum waarop de ZAAK de status heeft verkregen. | string | ja | C​R​U​D |
@@ -77,7 +77,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | informatieobject | URL-referentie naar het informatieobject in het DRC, waar ook de relatieinformatie opgevraagd kan worden. | string | ja | C​R​U​D |
 | zaak |  | string | ja | C​R​U​D |
 | aardRelatieWeergave |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
@@ -91,7 +91,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
 | object | URL naar de resource die het OBJECT beschrijft. | string | nee | C​R​U​D |
 | relatieomschrijving | Omschrijving van de betrekking tussen de ZAAK en het OBJECT. | string | nee | C​R​U​D |
@@ -119,7 +119,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | identificatie | De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK. | string | nee | C​R​U​D |
 | bronorganisatie | Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef | string | ja | C​R​U​D |
 | omschrijving | Een korte omschrijving van de zaak. | string | nee | C​R​U​D |

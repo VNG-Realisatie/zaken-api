@@ -105,7 +105,8 @@ class ZaakViewSet(NotificationViewSetMixin,
     Werk een zaak bij.
 
     **Er wordt gevalideerd op**
-    - `zaaktype` moet een geldige URL zijn.
+    - `zaaktype` mag niet gewijzigd worden.
+    - `identificatie` mag niet gewijzigd worden.
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
       "nvt" is.
@@ -129,7 +130,8 @@ class ZaakViewSet(NotificationViewSetMixin,
     Werk een zaak bij.
 
     **Er wordt gevalideerd op**
-    - `zaaktype` moet een geldige URL zijn.
+    - `zaaktype` mag niet gewijzigd worden.
+    - `identificatie` mag niet gewijzigd worden.
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
       "nvt" is.
@@ -339,7 +341,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE,
+        'create': SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -414,7 +416,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
         'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE,
+        'create': SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
         'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         'destroy': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
@@ -586,14 +588,14 @@ class ResultaatViewSet(NotificationViewSetMixin,
 
     **Er wordt gevalideerd op**
     - geldigheid URL naar de ZAAK
-    - geldigheid URL naar het RESULTAATTYPE
+    - het RESULTAATTYPE mag niet gewijzigd worden
 
     partial_update:
     Wijzig het RESULTAAT van een ZAAK.
 
     **Er wordt gevalideerd op**
     - geldigheid URL naar de ZAAK
-    - geldigheid URL naar het RESULTAATTYPE
+    - het RESULTAATTYPE mag niet gewijzigd worden
 
     destroy:
     Verwijder het RESULTAAT van een ZAAK.
