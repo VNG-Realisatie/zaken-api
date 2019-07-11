@@ -227,9 +227,12 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             'zaakgeometrie': {
                 'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
             },
+            'identificatie': {
+                'validators': [IsImmutableValidator()],
+            },
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
-                'validators': [URLValidator(get_auth=get_auth)],
+                'validators': [URLValidator(get_auth=get_auth), IsImmutableValidator()],
             },
             'einddatum': {
                 'read_only': True
@@ -811,6 +814,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': [
                     # TODO: Add shape-validator when we know the shape.
                     URLValidator(get_auth=get_auth),
+                    IsImmutableValidator(),
                 ],
             }
         }
