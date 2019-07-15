@@ -369,7 +369,7 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak,
             object='',
-            type=ZaakobjectTypes.terreinGebouwdObject
+            type=ZaakobjectTypes.terrein_gebouwd_object
         )
 
         terreingebouwdobject = TerreinGebouwdObject.objects.create(
@@ -401,7 +401,7 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
-                'type': ZaakobjectTypes.terreinGebouwdObject,
+                'type': ZaakobjectTypes.terrein_gebouwd_object,
                 'objectIdentificatie': {
                     'identificatie': '12345',
                     'adresAanduidingGrp': {
@@ -425,7 +425,7 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
-            'type': ZaakobjectTypes.terreinGebouwdObject,
+            'type': ZaakobjectTypes.terrein_gebouwd_object,
             'relatieomschrijving': 'test',
             'objectIdentificatie': {
                 'identificatie': '12345',
@@ -470,7 +470,7 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak,
             object='',
-            type=ZaakobjectTypes.wozObject
+            type=ZaakobjectTypes.woz_object
         )
 
         wozobject = WozObject.objects.create(
@@ -502,7 +502,7 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
-                'type': ZaakobjectTypes.wozObject,
+                'type': ZaakobjectTypes.woz_object,
                 'objectIdentificatie': {
                     'wozObjectNummer': '12345',
                     'aanduidingWozObject': {
@@ -525,7 +525,7 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
-            'type': ZaakobjectTypes.wozObject,
+            'type': ZaakobjectTypes.woz_object,
             'relatieomschrijving': 'test',
             'objectIdentificatie': {
                 'wozObjectNummer': '12345',
@@ -569,7 +569,7 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak,
             object='',
-            type=ZaakobjectTypes.wozDeelobject
+            type=ZaakobjectTypes.woz_deelobject
         )
 
         woz_deel_object = WozDeelobject.objects.create(
@@ -606,7 +606,7 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
-                'type': ZaakobjectTypes.wozDeelobject,
+                'type': ZaakobjectTypes.woz_deelobject,
                 'objectIdentificatie': {
                     'nummerWozDeelObject': '12345',
                     'isOnderdeelVan': {
@@ -632,7 +632,7 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
-            'type': ZaakobjectTypes.wozDeelobject,
+            'type': ZaakobjectTypes.woz_deelobject,
             'relatieomschrijving': 'test',
             'objectIdentificatie': {
                 'nummerWozDeelObject': '12345',
@@ -679,7 +679,7 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak,
             object='',
-            type=ZaakobjectTypes.wozWaarde
+            type=ZaakobjectTypes.woz_waarde
         )
 
         woz_warde = WozWaarde.objects.create(
@@ -716,7 +716,7 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
-                'type': ZaakobjectTypes.wozWaarde,
+                'type': ZaakobjectTypes.woz_waarde,
                 'objectIdentificatie': {
                     'waardepeildatum': '2019',
                     'isVoor': {
@@ -742,7 +742,7 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
-            'type': ZaakobjectTypes.wozWaarde,
+            'type': ZaakobjectTypes.woz_waarde,
             'relatieomschrijving': 'test',
             'objectIdentificatie': {
                 'waardepeildatum': '2019',
@@ -789,7 +789,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak,
             object='',
-            type=ZaakobjectTypes.zakelijkRecht
+            type=ZaakobjectTypes.zakelijk_recht
         )
 
         zakelijk_recht = ZakelijkRecht.objects.create(
@@ -833,7 +833,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
-                'type': ZaakobjectTypes.zakelijkRecht,
+                'type': ZaakobjectTypes.zakelijk_recht,
                 'objectIdentificatie': {
                     'identificatie': '12345',
                     'avgAard': 'test',
@@ -874,7 +874,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
-            'type': ZaakobjectTypes.zakelijkRecht,
+            'type': ZaakobjectTypes.zakelijk_recht,
             'relatieomschrijving': 'test',
             'objectIdentificatie': {
                 'identificatie': '1111',

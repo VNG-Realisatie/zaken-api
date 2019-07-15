@@ -236,7 +236,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         data = {
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'rolomschrijving': 'Initiator',
+            'rolomschrijving': 'initiator',
             'roltoelichting': 'awerw',
             'betrokkeneIdentificatie': {
                 'anpIdentificatie': '12345',
@@ -282,7 +282,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene': BETROKKENE,
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'rolomschrijving': 'Initiator',
+            'rolomschrijving': 'initiator',
             'roltoelichting': 'awerw',
         }
 
@@ -303,7 +303,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         data = {
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'rolomschrijving': 'Initiator',
+            'rolomschrijving': 'initiator',
             'roltoelichting': 'awerw',
         }
 
