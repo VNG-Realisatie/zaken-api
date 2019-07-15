@@ -2,6 +2,13 @@
 Wijzigingen
 ===========
 
+0.21.0 (2019-07-15)
+===================
+
+Breaking changes release
+
+* Made enums consistent - everything is snake_case now
+
 0.20.0 (2019-07-11)
 ===================
 

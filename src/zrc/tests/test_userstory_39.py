@@ -248,8 +248,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         data = {
             'zaak': zaak_url,
             'betrokkene': betrokkene,
-            'betrokkeneType': 'Vestiging',
-            'rolomschrijving': 'Behandelaar',
+            'betrokkeneType': 'vestiging',
+            'rolomschrijving': 'behandelaar',
             'roltoelichting': 'Baggeren van gracht',
         }
 
@@ -267,8 +267,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
                 'betrokkene': betrokkene,
-                'betrokkeneType': 'Vestiging',
-                'rolomschrijving': 'Behandelaar',
+                'betrokkeneType': 'vestiging',
+                'rolomschrijving': 'behandelaar',
                 'roltoelichting': 'Baggeren van gracht',
                 'registratiedatum': '2018-01-01T00:00:00Z',
                 'indicatieMachtiging': '',

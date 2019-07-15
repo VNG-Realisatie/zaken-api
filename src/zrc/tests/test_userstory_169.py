@@ -97,7 +97,7 @@ class US169TestCase(JWTAuthMixin, APITestCase):
             'zaak': zaak_url,
             'betrokkene': INITIATOR,
             'betrokkene_type': RolTypes.natuurlijk_persoon,  # 'Natuurlijk persoon'
-            'rolomschrijving': 'Initiator',
+            'rolomschrijving': 'initiator',
             'roltoelichting': 'initiele melder',
         })
 
@@ -111,7 +111,7 @@ class US169TestCase(JWTAuthMixin, APITestCase):
             'zaak': zaak_url,
             'betrokkene': BEHANDELAAR,
             'betrokkene_type': RolTypes.vestiging,  # 'Vestiging'
-            'rolomschrijving': 'Behandelaar',
+            'rolomschrijving': 'behandelaar',
             'roltoelichting': 'behandelaar',
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
