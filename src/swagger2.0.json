@@ -1699,11 +1699,11 @@
                         "required": false,
                         "type": "string",
                         "enum": [
-                            "Natuurlijk persoon",
-                            "Niet-natuurlijk persoon",
-                            "Vestiging",
-                            "Organisatorische eenheid",
-                            "Medewerker"
+                            "natuurlijk_persoon",
+                            "niet_natuurlijk_persoon",
+                            "vestiging",
+                            "organisatorische_eenheid",
+                            "medewerker"
                         ]
                     },
                     {
@@ -1769,14 +1769,14 @@
                         "required": false,
                         "type": "string",
                         "enum": [
-                            "Adviseur",
-                            "Behandelaar",
-                            "Belanghebbende",
-                            "Beslisser",
-                            "Initiator",
-                            "Klantcontacter",
-                            "Zaakco\u00f6rdinator",
-                            "Mede-initiator"
+                            "adviseur",
+                            "behandelaar",
+                            "belanghebbende",
+                            "beslisser",
+                            "initiator",
+                            "klantcontacter",
+                            "zaakcoordinator",
+                            "mede_initiator"
                         ]
                     }
                 ],
@@ -4154,33 +4154,33 @@
                             "adres",
                             "besluit",
                             "buurt",
-                            "enkelvoudigDocument",
+                            "enkelvoudig_document",
                             "gemeente",
-                            "gemeentelijkeOpenbareRuimte",
+                            "gemeentelijke_openbare_ruimte",
                             "huishouden",
                             "inrichtingselement",
-                            "kadastraleOnroerendeZaak",
+                            "kadastrale_onroerende_zaak",
                             "kunstwerkdeel",
-                            "maatschappelijkeActiviteit",
+                            "maatschappelijke_activiteit",
                             "medewerker",
-                            "natuurlijkPersoon",
-                            "nietNatuurlijkPersoon",
-                            "openbareRuimte",
-                            "organisatorischeEenheid",
+                            "natuurlijk_persoon",
+                            "niet_natuurlijk_persoon",
+                            "openbare_ruimte",
+                            "organisatorische_eenheid",
                             "pand",
                             "spoorbaandeel",
                             "status",
                             "terreindeel",
-                            "terreinGebouwdObject",
+                            "terrein_gebouwd_object",
                             "vestiging",
                             "waterdeel",
                             "wegdeel",
                             "wijk",
                             "woonplaats",
-                            "wozDeelobject",
-                            "wozObject",
-                            "wozWaarde",
-                            "zakelijkRecht",
+                            "woz_deelobject",
+                            "woz_object",
+                            "woz_waarde",
+                            "zakelijk_recht",
                             "overige"
                         ]
                     }
@@ -6744,7 +6744,7 @@
                 {
                     "name": "uuid",
                     "in": "path",
-                    "description": "Unieke identificatie van de audit regel",
+                    "description": "Unieke identificatie van de audit regel.",
                     "required": true,
                     "type": "string",
                     "format": "uuid"
@@ -8236,11 +8236,11 @@
                     "description": "Soort betrokkene",
                     "type": "string",
                     "enum": [
-                        "Natuurlijk persoon",
-                        "Niet-natuurlijk persoon",
-                        "Vestiging",
-                        "Organisatorische eenheid",
-                        "Medewerker"
+                        "natuurlijk_persoon",
+                        "niet_natuurlijk_persoon",
+                        "vestiging",
+                        "organisatorische_eenheid",
+                        "medewerker"
                     ]
                 },
                 "rolomschrijving": {
@@ -8248,14 +8248,14 @@
                     "description": "Algemeen gehanteerde benaming van de aard van de ROL",
                     "type": "string",
                     "enum": [
-                        "Adviseur",
-                        "Behandelaar",
-                        "Belanghebbende",
-                        "Beslisser",
-                        "Initiator",
-                        "Klantcontacter",
-                        "Zaakco\u00f6rdinator",
-                        "Mede-initiator"
+                        "adviseur",
+                        "behandelaar",
+                        "belanghebbende",
+                        "beslisser",
+                        "initiator",
+                        "klantcontacter",
+                        "zaakcoordinator",
+                        "mede_initiator"
                     ]
                 },
                 "roltoelichting": {
@@ -8273,7 +8273,7 @@
                 },
                 "indicatieMachtiging": {
                     "title": "Indicatie machtiging",
-                    "description": "Indicatie_machtiging\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `gemachtigde` - De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen\n* `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen",
+                    "description": "Indicatie_machtiging\n\nUitleg bij mogelijke waarden:\n\n* `gemachtigde` - De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen\n* `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen",
                     "type": "string",
                     "enum": [
                         "gemachtigde",
@@ -8428,7 +8428,7 @@
                 },
                 "geslachtsaanduiding": {
                     "title": "Geslachtsaanduiding",
-                    "description": "Een aanduiding die aangeeft of de persoon een man of een vrouw is, of dat het geslacht nog onbekend is.\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `M` - Man\n* `V` - Vrouw\n* `O` - Onbekend",
+                    "description": "Een aanduiding die aangeeft of de persoon een man of een vrouw is, of dat het geslacht nog onbekend is.\n\nUitleg bij mogelijke waarden:\n\n* `M` - Man\n* `V` - Vrouw\n* `O` - Onbekend",
                     "type": "string",
                     "enum": [
                         "M",
@@ -8457,7 +8457,7 @@
                 }
             }
         },
-        "Natuurlijk persoon": {
+        "natuurlijk_persoon": {
             "type": "object",
             "allOf": [
                 {
@@ -8535,7 +8535,7 @@
                 }
             }
         },
-        "Niet-natuurlijk persoon": {
+        "niet_natuurlijk_persoon": {
             "type": "object",
             "allOf": [
                 {
@@ -8581,7 +8581,7 @@
                 }
             }
         },
-        "Vestiging": {
+        "vestiging": {
             "type": "object",
             "allOf": [
                 {
@@ -8623,7 +8623,7 @@
                 }
             }
         },
-        "Organisatorische eenheid": {
+        "organisatorische_eenheid": {
             "type": "object",
             "allOf": [
                 {
@@ -8672,7 +8672,7 @@
                 }
             }
         },
-        "Medewerker": {
+        "medewerker": {
             "type": "object",
             "allOf": [
                 {
@@ -8827,33 +8827,33 @@
                         "adres",
                         "besluit",
                         "buurt",
-                        "enkelvoudigDocument",
+                        "enkelvoudig_document",
                         "gemeente",
-                        "gemeentelijkeOpenbareRuimte",
+                        "gemeentelijke_openbare_ruimte",
                         "huishouden",
                         "inrichtingselement",
-                        "kadastraleOnroerendeZaak",
+                        "kadastrale_onroerende_zaak",
                         "kunstwerkdeel",
-                        "maatschappelijkeActiviteit",
+                        "maatschappelijke_activiteit",
                         "medewerker",
-                        "natuurlijkPersoon",
-                        "nietNatuurlijkPersoon",
-                        "openbareRuimte",
-                        "organisatorischeEenheid",
+                        "natuurlijk_persoon",
+                        "niet_natuurlijk_persoon",
+                        "openbare_ruimte",
+                        "organisatorische_eenheid",
                         "pand",
                         "spoorbaandeel",
                         "status",
                         "terreindeel",
-                        "terreinGebouwdObject",
+                        "terrein_gebouwd_object",
                         "vestiging",
                         "waterdeel",
                         "wegdeel",
                         "wijk",
                         "woonplaats",
-                        "wozDeelobject",
-                        "wozObject",
-                        "wozWaarde",
-                        "zakelijkRecht",
+                        "woz_deelobject",
+                        "woz_object",
+                        "woz_waarde",
+                        "zakelijk_recht",
                         "overige"
                     ]
                 }
@@ -8999,7 +8999,7 @@
                 }
             ]
         },
-        "enkelvoudigDocument": {
+        "enkelvoudig_document": {
             "type": "object",
             "allOf": [
                 {
@@ -9082,7 +9082,7 @@
                 }
             }
         },
-        "gemeentelijkeOpenbareRuimte": {
+        "gemeentelijke_openbare_ruimte": {
             "type": "object",
             "allOf": [
                 {
@@ -9223,7 +9223,7 @@
             "properties": {
                 "type": {
                     "title": "Type",
-                    "description": "Specificatie van de aard van het inrichtingselement.\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `Bak` - Bak\n* `Bord` - Bord\n* `Installatie` - Installatie\n* `Kast` - Kast\n* `Mast` - Mast\n* `Paal` - Paal\n* `Sensor` - Sensor\n* `Straatmeubilair` - Straatmeubilair\n* `Waterinrichtingselement` - Waterinrichtingselement\n* `Weginrichtingselement` - Weginrichtingselement",
+                    "description": "Specificatie van de aard van het inrichtingselement.\n\nUitleg bij mogelijke waarden:\n\n* `Bak` - Bak\n* `Bord` - Bord\n* `Installatie` - Installatie\n* `Kast` - Kast\n* `Mast` - Mast\n* `Paal` - Paal\n* `Sensor` - Sensor\n* `Straatmeubilair` - Straatmeubilair\n* `Waterinrichtingselement` - Waterinrichtingselement\n* `Weginrichtingselement` - Weginrichtingselement",
                     "type": "string",
                     "enum": [
                         "Bak",
@@ -9304,7 +9304,7 @@
                 }
             }
         },
-        "kadastraleOnroerendeZaak": {
+        "kadastrale_onroerende_zaak": {
             "type": "object",
             "allOf": [
                 {
@@ -9326,7 +9326,7 @@
             "properties": {
                 "type": {
                     "title": "Type",
-                    "description": "Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `Keermuur` - Keermuur\n* `Overkluizing` - Overkluizing\n* `Duiker` - Duiker\n* `Faunavoorziening` - Faunavoorziening\n* `Vispassage` - Vispassage\n* `Bodemval` - Bodemval\n* `Coupure` - Coupure\n* `Ponton` - Ponton\n* `Voorde` - Voorde\n* `Hoogspanningsmast` - Hoogspanningsmast\n* `Gemaal` - Gemaal\n* `Perron` - Perron\n* `Sluis` - Sluis\n* `Strekdam` - Strekdam\n* `Steiger` - Steiger\n* `Stuw` - Stuw",
+                    "description": "Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.\n\nUitleg bij mogelijke waarden:\n\n* `Keermuur` - Keermuur\n* `Overkluizing` - Overkluizing\n* `Duiker` - Duiker\n* `Faunavoorziening` - Faunavoorziening\n* `Vispassage` - Vispassage\n* `Bodemval` - Bodemval\n* `Coupure` - Coupure\n* `Ponton` - Ponton\n* `Voorde` - Voorde\n* `Hoogspanningsmast` - Hoogspanningsmast\n* `Gemaal` - Gemaal\n* `Perron` - Perron\n* `Sluis` - Sluis\n* `Strekdam` - Strekdam\n* `Steiger` - Steiger\n* `Stuw` - Stuw",
                     "type": "string",
                     "enum": [
                         "Keermuur",
@@ -9413,7 +9413,7 @@
                 }
             }
         },
-        "maatschappelijkeActiviteit": {
+        "maatschappelijke_activiteit": {
             "type": "object",
             "allOf": [
                 {
@@ -9432,17 +9432,6 @@
                 }
             }
         },
-        "medewerker": {
-            "type": "object",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/ZaakObject"
-                },
-                {
-                    "$ref": "#/definitions/object_identificatie_RolMedewerker"
-                }
-            ]
-        },
         "object_identificatie_RolNatuurlijkPersoon": {
             "type": "object",
             "properties": {
@@ -9451,17 +9440,6 @@
                 }
             }
         },
-        "natuurlijkPersoon": {
-            "type": "object",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/ZaakObject"
-                },
-                {
-                    "$ref": "#/definitions/object_identificatie_RolNatuurlijkPersoon"
-                }
-            ]
-        },
         "object_identificatie_RolNietNatuurlijkPersoon": {
             "type": "object",
             "properties": {
@@ -9469,17 +9447,6 @@
                     "$ref": "#/definitions/RolNietNatuurlijkPersoon"
                 }
             }
-        },
-        "nietNatuurlijkPersoon": {
-            "type": "object",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/ZaakObject"
-                },
-                {
-                    "$ref": "#/definitions/object_identificatie_RolNietNatuurlijkPersoon"
-                }
-            ]
         },
         "ObjectOpenbareRuimte": {
             "title": "object_identificatie",
@@ -9520,7 +9487,7 @@
                 }
             }
         },
-        "openbareRuimte": {
+        "openbare_ruimte": {
             "type": "object",
             "allOf": [
                 {
@@ -9538,17 +9505,6 @@
                     "$ref": "#/definitions/RolOrganisatorischeEenheid"
                 }
             }
-        },
-        "organisatorischeEenheid": {
-            "type": "object",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/ZaakObject"
-                },
-                {
-                    "$ref": "#/definitions/object_identificatie_RolOrganisatorischeEenheid"
-                }
-            ]
         },
         "ObjectPand": {
             "title": "object_identificatie",
@@ -9595,7 +9551,7 @@
             "properties": {
                 "type": {
                     "title": "Type",
-                    "description": "Specificatie van het soort Spoorbaan\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `breedspoor` - breedspoor\n* `normaalspoor` - normaalspoor\n* `smalspoor` - smalspoor\n* `spoorbaan` - spoorbaan",
+                    "description": "Specificatie van het soort Spoorbaan\n\nUitleg bij mogelijke waarden:\n\n* `breedspoor` - breedspoor\n* `normaalspoor` - normaalspoor\n* `smalspoor` - smalspoor\n* `spoorbaan` - spoorbaan",
                     "type": "string",
                     "enum": [
                         "breedspoor",
@@ -9702,7 +9658,7 @@
                 }
             }
         },
-        "terreinGebouwdObject": {
+        "terrein_gebouwd_object": {
             "type": "object",
             "allOf": [
                 {
@@ -9721,17 +9677,6 @@
                 }
             }
         },
-        "vestiging": {
-            "type": "object",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/ZaakObject"
-                },
-                {
-                    "$ref": "#/definitions/object_identificatie_RolVestiging"
-                }
-            ]
-        },
         "ObjectWaterdeel": {
             "title": "object_identificatie",
             "required": [
@@ -9742,7 +9687,7 @@
             "properties": {
                 "typeWaterdeel": {
                     "title": "Type waterdeel",
-                    "description": "Specificatie van het soort water\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `Zee` - Zee\n* `Waterloop` - Waterloop\n* `Watervlakte` - Watervlakte\n* `Greppel, droge sloot` - Greppel, droge sloot",
+                    "description": "Specificatie van het soort water\n\nUitleg bij mogelijke waarden:\n\n* `Zee` - Zee\n* `Waterloop` - Waterloop\n* `Watervlakte` - Watervlakte\n* `Greppel, droge sloot` - Greppel, droge sloot",
                     "type": "string",
                     "enum": [
                         "Zee",
@@ -10031,7 +9976,7 @@
                 }
             }
         },
-        "wozDeelobject": {
+        "woz_deelobject": {
             "type": "object",
             "allOf": [
                 {
@@ -10050,7 +9995,7 @@
                 }
             }
         },
-        "wozObject": {
+        "woz_object": {
             "type": "object",
             "allOf": [
                 {
@@ -10088,7 +10033,7 @@
                 }
             }
         },
-        "wozWaarde": {
+        "woz_waarde": {
             "type": "object",
             "allOf": [
                 {
@@ -10149,7 +10094,7 @@
                 }
             }
         },
-        "zakelijkRecht": {
+        "zakelijk_recht": {
             "type": "object",
             "allOf": [
                 {
@@ -10668,18 +10613,18 @@
                     "type": "string",
                     "enum": [
                         "openbaar",
-                        "beperkt openbaar",
+                        "beperkt_openbaar",
                         "intern",
                         "zaakvertrouwelijk",
                         "vertrouwelijk",
                         "confidentieel",
                         "geheim",
-                        "zeer geheim"
+                        "zeer_geheim"
                     ]
                 },
                 "betalingsindicatie": {
                     "title": "Betalingsindicatie",
-                    "description": "Indicatie of de, met behandeling van de zaak gemoeide, kosten betaald zijn door de desbetreffende betrokkene.\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `nvt` - Er is geen sprake van te betalen, met de zaak gemoeide, kosten.\n* `nog_niet` - De met de zaak gemoeide kosten zijn (nog) niet betaald.\n* `gedeeltelijk` - De met de zaak gemoeide kosten zijn gedeeltelijk betaald.\n* `geheel` - De met de zaak gemoeide kosten zijn geheel betaald.",
+                    "description": "Indicatie of de, met behandeling van de zaak gemoeide, kosten betaald zijn door de desbetreffende betrokkene.\n\nUitleg bij mogelijke waarden:\n\n* `nvt` - Er is geen sprake van te betalen, met de zaak gemoeide, kosten.\n* `nog_niet` - De met de zaak gemoeide kosten zijn (nog) niet betaald.\n* `gedeeltelijk` - De met de zaak gemoeide kosten zijn gedeeltelijk betaald.\n* `geheel` - De met de zaak gemoeide kosten zijn geheel betaald.",
                     "type": "string",
                     "enum": [
                         "nvt",
@@ -10734,7 +10679,7 @@
                     "uniqueItems": true
                 },
                 "relevanteAndereZaken": {
-                    "description": "Een lijst van objecten met ieder twee elementen:\n* `zaak` - een url naar een andere `Zaak`\n* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, waarbij de onderstaande waardes toegestaan zijn.\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `vervolg` - De andere zaak gaf aanleiding tot het starten van de onderhanden zaak.\n* `onderwerp` - De andere zaak is relevant voor cq. is onderwerp van de onderhanden zaak.\n* `bijdrage` - Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage.",
+                    "description": "Een lijst van objecten met ieder twee elementen:\n* `zaak` - een url naar een andere `Zaak`\n* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, waarbij de onderstaande waardes toegestaan zijn.\n\nUitleg bij mogelijke waarden:\n\n* `vervolg` - De andere zaak gaf aanleiding tot het starten van de onderhanden zaak.\n* `onderwerp` - De andere zaak is relevant voor cq. is onderwerp van de onderhanden zaak.\n* `bijdrage` - Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage.",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/RelevanteZaak"
@@ -10913,12 +10858,12 @@
             "properties": {
                 "oud": {
                     "title": "Oud",
-                    "description": "Volledige JSON body van het object zoals dat bestond voordat de actie heeft plaatsgevonden",
+                    "description": "Volledige JSON body van het object zoals dat bestond voordat de actie heeft plaatsgevonden.",
                     "type": "object"
                 },
                 "nieuw": {
                     "title": "Nieuw",
-                    "description": "Volledige JSON body van het object na de actie",
+                    "description": "Volledige JSON body van het object na de actie.",
                     "type": "object"
                 }
             }
@@ -10938,70 +10883,70 @@
             "properties": {
                 "uuid": {
                     "title": "Uuid",
-                    "description": "Unieke identificatie van de audit regel",
+                    "description": "Unieke identificatie van de audit regel.",
                     "type": "string",
                     "format": "uuid"
                 },
                 "bron": {
                     "title": "Bron",
-                    "description": "De naam van het component waar de wijziging in is gedaan\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `AC` - Autorisatiecomponent\n* `NRC` - Notificatierouteringcomponent\n* `ZRC` - Zaakregistratiecomponent\n* `ZTC` - Zaaktypecatalogus\n* `DRC` - Documentregistratiecomponent\n* `BRC` - Besluitregistratiecomponent",
+                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisatiecomponent\n* `nrc` - Notificatierouteringcomponent\n* `zrc` - Zaakregistratiecomponent\n* `ztc` - Zaaktypecatalogus\n* `drc` - Documentregistratiecomponent\n* `brc` - Besluitregistratiecomponent",
                     "type": "string",
                     "enum": [
-                        "AC",
-                        "NRC",
-                        "ZRC",
-                        "ZTC",
-                        "DRC",
-                        "BRC"
+                        "ac",
+                        "nrc",
+                        "zrc",
+                        "ztc",
+                        "drc",
+                        "brc"
                     ]
                 },
                 "applicatieId": {
                     "title": "Applicatie id",
-                    "description": "Unieke identificatie van de applicatie, binnen de organisatie",
+                    "description": "Unieke identificatie van de applicatie, binnen de organisatie.",
                     "type": "string",
                     "maxLength": 100
                 },
                 "applicatieWeergave": {
                     "title": "Applicatie weergave",
-                    "description": "Vriendelijke naam van de applicatie",
+                    "description": "Vriendelijke naam van de applicatie.",
                     "type": "string",
                     "maxLength": 200
                 },
                 "gebruikersId": {
                     "title": "Gebruikers id",
-                    "description": "Unieke identificatie van de gebruiker die binnen de organisatie herleid kan worden naar een persoon",
+                    "description": "Unieke identificatie van de gebruiker die binnen de organisatie herleid kan worden naar een persoon.",
                     "type": "string",
                     "maxLength": 255
                 },
                 "gebruikersWeergave": {
                     "title": "Gebruikers weergave",
-                    "description": "Vriendelijke naam van de gebruiker",
+                    "description": "Vriendelijke naam van de gebruiker.",
                     "type": "string",
                     "maxLength": 255
                 },
                 "actie": {
                     "title": "Actie",
-                    "description": "De uitgevoerde handeling\n\nDe bekende waardes voor dit veld zijn hieronder aangegeven,                         maar andere waardes zijn ook toegestaan\n\nDe mapping van waarden naar weergave is als volgt:\n\n* `create` - aangemaakt\n* `list` - opgehaald\n* `retrieve` - opgehaald\n* `destroy` - verwijderd\n* `update` - bijgewerkt\n* `partial_update` - deels bijgewerkt",
+                    "description": "De uitgevoerde handeling.\n\nDe bekende waardes voor dit veld zijn hieronder aangegeven,                         maar andere waardes zijn ook toegestaan\n\nUitleg bij mogelijke waarden:\n\n* `create` - Object aangemaakt\n* `list` - Lijst van objecten opgehaald\n* `retrieve` - Object opgehaald\n* `destroy` - Object verwijderd\n* `update` - Object bijgewerkt\n* `partial_update` - Object deels bijgewerkt",
                     "type": "string",
                     "maxLength": 50,
                     "minLength": 1
                 },
                 "actieWeergave": {
                     "title": "Actie weergave",
-                    "description": "Vriendelijke naam van de actie",
+                    "description": "Vriendelijke naam van de actie.",
                     "type": "string",
                     "maxLength": 200
                 },
                 "resultaat": {
                     "title": "Resultaat",
-                    "description": "HTTP status code van de API response van de uitgevoerde handeling",
+                    "description": "HTTP status code van de API response van de uitgevoerde handeling.",
                     "type": "integer",
                     "maximum": 599,
                     "minimum": 100
                 },
                 "hoofdObject": {
                     "title": "Hoofd object",
-                    "description": "De URL naar het hoofdobject van een component",
+                    "description": "De URL naar het hoofdobject van een component.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -11009,14 +10954,14 @@
                 },
                 "resource": {
                     "title": "Resource",
-                    "description": "Het type resource waarop de actie gebeurde",
+                    "description": "Het type resource waarop de actie gebeurde.",
                     "type": "string",
                     "maxLength": 50,
                     "minLength": 1
                 },
                 "resourceUrl": {
                     "title": "Resource url",
-                    "description": "De URL naar het object",
+                    "description": "De URL naar het object.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -11024,19 +10969,19 @@
                 },
                 "toelichting": {
                     "title": "Toelichting",
-                    "description": "Toelichting waarom de handeling is uitgevoerd",
+                    "description": "Toelichting waarom de handeling is uitgevoerd.",
                     "type": "string"
                 },
                 "resourceWeergave": {
                     "title": "Resource weergave",
-                    "description": "Vriendelijke identificatie van het object",
+                    "description": "Vriendelijke identificatie van het object.",
                     "type": "string",
                     "maxLength": 200,
                     "minLength": 1
                 },
                 "aanmaakdatum": {
                     "title": "Aanmaakdatum",
-                    "description": "De datum waarop de handeling is gedaan",
+                    "description": "De datum waarop de handeling is gedaan.",
                     "type": "string",
                     "format": "date-time",
                     "readOnly": true
