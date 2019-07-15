@@ -42,7 +42,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | registratiedatum | De datum waarop dit object is geregistreerd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | indicatieMachtiging | Indicatie_machtiging
 
-De mapping van waarden naar weergave is als volgt:
+Uitleg bij mogelijke waarden:
 
 * `gemachtigde` - De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen
 * `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen | string | nee | C​R​U​D |
@@ -137,7 +137,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | vertrouwelijkheidaanduiding | Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is. Optioneel - indien geen waarde gekozen wordt, dan wordt de waarde van het ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een waarde teruggeeft. | string | nee | C​R​U​D |
 | betalingsindicatie | Indicatie of de, met behandeling van de zaak gemoeide, kosten betaald zijn door de desbetreffende betrokkene.
 
-De mapping van waarden naar weergave is als volgt:
+Uitleg bij mogelijke waarden:
 
 * `nvt` - Er is geen sprake van te betalen, met de zaak gemoeide, kosten.
 * `nog_niet` - De met de zaak gemoeide kosten zijn (nog) niet betaald.
@@ -152,7 +152,7 @@ De mapping van waarden naar weergave is als volgt:
 * `zaak` - een url naar een andere `Zaak`
 * `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, waarbij de onderstaande waardes toegestaan zijn.
 
-De mapping van waarden naar weergave is als volgt:
+Uitleg bij mogelijke waarden:
 
 * `vervolg` - De andere zaak gaf aanleiding tot het starten van de onderhanden zaak.
 * `onderwerp` - De andere zaak is relevant voor cq. is onderwerp van de onderhanden zaak.
@@ -170,41 +170,41 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
-| uuid | Unieke identificatie van de audit regel | string | nee | C​R​U​D |
-| bron | De naam van het component waar de wijziging in is gedaan
+| uuid | Unieke identificatie van de audit regel. | string | nee | C​R​U​D |
+| bron | De naam van het component waar de wijziging in is gedaan.
 
-De mapping van waarden naar weergave is als volgt:
+Uitleg bij mogelijke waarden:
 
-* `AC` - Autorisatiecomponent
-* `NRC` - Notificatierouteringcomponent
-* `ZRC` - Zaakregistratiecomponent
-* `ZTC` - Zaaktypecatalogus
-* `DRC` - Documentregistratiecomponent
-* `BRC` - Besluitregistratiecomponent | string | ja | C​R​U​D |
-| applicatieId | Unieke identificatie van de applicatie, binnen de organisatie | string | nee | C​R​U​D |
-| applicatieWeergave | Vriendelijke naam van de applicatie | string | nee | C​R​U​D |
-| gebruikersId | Unieke identificatie van de gebruiker die binnen de organisatie herleid kan worden naar een persoon | string | nee | C​R​U​D |
-| gebruikersWeergave | Vriendelijke naam van de gebruiker | string | nee | C​R​U​D |
-| actie | De uitgevoerde handeling
+* `ac` - Autorisatiecomponent
+* `nrc` - Notificatierouteringcomponent
+* `zrc` - Zaakregistratiecomponent
+* `ztc` - Zaaktypecatalogus
+* `drc` - Documentregistratiecomponent
+* `brc` - Besluitregistratiecomponent | string | ja | C​R​U​D |
+| applicatieId | Unieke identificatie van de applicatie, binnen de organisatie. | string | nee | C​R​U​D |
+| applicatieWeergave | Vriendelijke naam van de applicatie. | string | nee | C​R​U​D |
+| gebruikersId | Unieke identificatie van de gebruiker die binnen de organisatie herleid kan worden naar een persoon. | string | nee | C​R​U​D |
+| gebruikersWeergave | Vriendelijke naam van de gebruiker. | string | nee | C​R​U​D |
+| actie | De uitgevoerde handeling.
 
 De bekende waardes voor dit veld zijn hieronder aangegeven,                         maar andere waardes zijn ook toegestaan
 
-De mapping van waarden naar weergave is als volgt:
+Uitleg bij mogelijke waarden:
 
-* `create` - aangemaakt
-* `list` - opgehaald
-* `retrieve` - opgehaald
-* `destroy` - verwijderd
-* `update` - bijgewerkt
-* `partial_update` - deels bijgewerkt | string | ja | C​R​U​D |
-| actieWeergave | Vriendelijke naam van de actie | string | nee | C​R​U​D |
-| resultaat | HTTP status code van de API response van de uitgevoerde handeling | integer | ja | C​R​U​D |
-| hoofdObject | De URL naar het hoofdobject van een component | string | ja | C​R​U​D |
-| resource | Het type resource waarop de actie gebeurde | string | ja | C​R​U​D |
-| resourceUrl | De URL naar het object | string | ja | C​R​U​D |
-| toelichting | Toelichting waarom de handeling is uitgevoerd | string | nee | C​R​U​D |
-| resourceWeergave | Vriendelijke identificatie van het object | string | ja | C​R​U​D |
-| aanmaakdatum | De datum waarop de handeling is gedaan | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+* `create` - Object aangemaakt
+* `list` - Lijst van objecten opgehaald
+* `retrieve` - Object opgehaald
+* `destroy` - Object verwijderd
+* `update` - Object bijgewerkt
+* `partial_update` - Object deels bijgewerkt | string | ja | C​R​U​D |
+| actieWeergave | Vriendelijke naam van de actie. | string | nee | C​R​U​D |
+| resultaat | HTTP status code van de API response van de uitgevoerde handeling. | integer | ja | C​R​U​D |
+| hoofdObject | De URL naar het hoofdobject van een component. | string | ja | C​R​U​D |
+| resource | Het type resource waarop de actie gebeurde. | string | ja | C​R​U​D |
+| resourceUrl | De URL naar het object. | string | ja | C​R​U​D |
+| toelichting | Toelichting waarom de handeling is uitgevoerd. | string | nee | C​R​U​D |
+| resourceWeergave | Vriendelijke identificatie van het object. | string | ja | C​R​U​D |
+| aanmaakdatum | De datum waarop de handeling is gedaan. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## ZaakBesluit
 
