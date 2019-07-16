@@ -36,7 +36,8 @@
         "/klantcontacten": {
             "get": {
                 "operationId": "klantcontact_list",
-                "description": "Geef een lijst van KLANTCONTACTen.",
+                "summary": "Alle KLANTCONTACTen opvragen.",
+                "description": "Alle KLANTCONTACTen opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -182,7 +183,7 @@
             },
             "post": {
                 "operationId": "klantcontact_create",
-                "summary": "Registreer een klantcontact bij een ZAAK.",
+                "summary": "Maak een KLANTCONTACT bij een ZAAK aan.",
                 "description": "Indien geen identificatie gegeven is, dan wordt deze automatisch\ngegenereerd.",
                 "parameters": [
                     {
@@ -380,7 +381,8 @@
         "/klantcontacten/{uuid}": {
             "get": {
                 "operationId": "klantcontact_read",
-                "description": "Opvragen en bewerken van KLANTCONTACTen.",
+                "summary": "Een specifiek KLANTCONTACT bij een ZAAK opvragen.",
+                "description": "Een specifiek KLANTCONTACT bij een ZAAK opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -549,8 +551,8 @@
         "/resultaten": {
             "get": {
                 "operationId": "resultaat_list",
-                "summary": "Geef een lijst van RESULTAATen van ZAAKen.",
-                "description": "Optioneel kan je de queryparameters gebruiken om de resultaten te\nfilteren.",
+                "summary": "Alle RESULTAATen van ZAAKen opvragen.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.",
                 "parameters": [
                     {
                         "name": "zaak",
@@ -727,7 +729,7 @@
             },
             "post": {
                 "operationId": "resultaat_create",
-                "summary": "Voeg een RESULTAAT voor een ZAAK toe.",
+                "summary": "Maak een RESULTAAT bij een ZAAK aan.",
                 "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het RESULTAATTYPE",
                 "parameters": [
                     {
@@ -925,7 +927,8 @@
         "/resultaten/{uuid}": {
             "get": {
                 "operationId": "resultaat_read",
-                "description": "Haal de details van het RESULTAAT op.",
+                "summary": "Een specifiek RESULTAAT opvragen.",
+                "description": "Een specifiek RESULTAAT opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -1082,7 +1085,7 @@
             },
             "put": {
                 "operationId": "resultaat_update",
-                "summary": "Wijzig het RESULTAAT van een ZAAK.",
+                "summary": "Werk een RESULTAAT in zijn geheel bij.",
                 "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- het RESULTAATTYPE mag niet gewijzigd worden",
                 "parameters": [
                     {
@@ -1284,7 +1287,7 @@
             },
             "patch": {
                 "operationId": "resultaat_partial_update",
-                "summary": "Wijzig het RESULTAAT van een ZAAK.",
+                "summary": "Werk een RESULTAAT deels bij.",
                 "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- het RESULTAATTYPE mag niet gewijzigd worden",
                 "parameters": [
                     {
@@ -1486,7 +1489,8 @@
             },
             "delete": {
                 "operationId": "resultaat_delete",
-                "description": "Verwijder het RESULTAAT van een ZAAK.",
+                "summary": "Verwijder een RESULTAAT van een ZAAK.",
+                "description": "Verwijder een RESULTAAT van een ZAAK.",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -1674,7 +1678,8 @@
         "/rollen": {
             "get": {
                 "operationId": "rol_list",
-                "description": "Geef een lijst van gekoppelde ROLen aan ZAAKen.",
+                "summary": "Allen ROLlen bij ZAAKen opvragen.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.",
                 "parameters": [
                     {
                         "name": "zaak",
@@ -1938,7 +1943,8 @@
             },
             "post": {
                 "operationId": "rol_create",
-                "description": "Koppel een BETROKKENE aan een ZAAK.",
+                "summary": "Maak een ROL aan bij een ZAAK.",
+                "description": "Maak een ROL aan bij een ZAAK.",
                 "parameters": [
                     {
                         "name": "data",
@@ -2135,7 +2141,8 @@
         "/rollen/{uuid}": {
             "get": {
                 "operationId": "rol_read",
-                "description": "Haal de details van de ROL op.",
+                "summary": "Een specifieke ROL bij een ZAAK opvragen.",
+                "description": "Een specifieke ROL bij een ZAAK opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -2292,7 +2299,8 @@
             },
             "delete": {
                 "operationId": "rol_delete",
-                "description": "Verwijder het RESULTAAT van een ZAAK.",
+                "summary": "Verwijder een ROL van een ZAAK.",
+                "description": "Verwijder een ROL van een ZAAK.",
                 "parameters": [],
                 "responses": {
                     "204": {
@@ -2458,8 +2466,8 @@
         "/statussen": {
             "get": {
                 "operationId": "status_list",
-                "summary": "Geef een lijst van STATUSsen van ZAAKen.",
-                "description": "Optioneel kan je de queryparameters gebruiken om de resultaten te\nfilteren.",
+                "summary": "Alle STATUSsen van ZAAKen opvragen.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.",
                 "parameters": [
                     {
                         "name": "zaak",
@@ -2636,7 +2644,7 @@
             },
             "post": {
                 "operationId": "status_create",
-                "summary": "Voeg een nieuwe STATUS voor een ZAAK toe.",
+                "summary": "Maak een STATUS aan voor een ZAAK.",
                 "description": "**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK\n- geldigheid URL naar het STATUSTYPE\n- indien het de eindstatus betreft, dan moet het attribuut\n  `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die aan\n  de zaak gerelateerd zijn\n\n**Opmerkingen**\n- Indien het statustype de eindstatus is (volgens het ZTC), dan wordt de\n  zaak afgesloten door de einddatum te zetten.",
                 "parameters": [
                     {
@@ -2834,7 +2842,8 @@
         "/statussen/{uuid}": {
             "get": {
                 "operationId": "status_read",
-                "description": "Haal de details van een zaakstatus op.",
+                "summary": "Een specifieke STATUS van een ZAAK opvragen.",
+                "description": "Een specifieke STATUS van een ZAAK opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -3003,7 +3012,7 @@
         "/zaakinformatieobjecten": {
             "get": {
                 "operationId": "zaakinformatieobject_list",
-                "summary": "Geef een lijst van relaties tussen INFORMATIEOBJECTen en ZAAKen.",
+                "summary": "Alle ZAAKINFORMATIEOBJECTen opvragen.",
                 "description": "Deze lijst kan gefilterd wordt met querystringparameters.",
                 "parameters": [
                     {
@@ -3181,8 +3190,8 @@
             },
             "post": {
                 "operationId": "zaakinformatieobject_create",
-                "summary": "Registreer een INFORMATIEOBJECT bij een ZAAK. Er worden twee types van\nrelaties met andere objecten gerealiseerd:",
-                "description": "**Er wordt gevalideerd op**\n- geldigheid zaak URL\n- geldigheid informatieobject URL\n- de combinatie informatieobject en zaak moet uniek zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,\n  echter zonder de relatie-informatie.\n\n\nRegistreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT",
+                "summary": "Maak een ZAAKINFORMATIEOBJECT aan.",
+                "description": "Er worden twee types van\nrelaties met andere objecten gerealiseerd:\n\n**Er wordt gevalideerd op**\n- geldigheid zaak URL\n- geldigheid informatieobject URL\n- de combinatie informatieobject en zaak moet uniek zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,\n  echter zonder de relatie-informatie.\n\n\nRegistreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT",
                 "parameters": [
                     {
                         "name": "data",
@@ -3379,7 +3388,8 @@
         "/zaakinformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "zaakinformatieobject_read",
-                "description": "Geef de details van een relatie tussen een INFORMATIEOBJECT en een ZAAK.",
+                "summary": "Een specifiek ZAAKINFORMATIEOBJECT opvragen.",
+                "description": "Een specifiek ZAAKINFORMATIEOBJECT opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -3536,7 +3546,8 @@
             },
             "put": {
                 "operationId": "zaakinformatieobject_update",
-                "description": "Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\n**Er wordt gevalideerd op**\n- informatieobject URL en zaak URL mogen niet veranderen",
+                "summary": "Werk een ZAAKINFORMATIEOBJECT in zijn geheel bij.",
+                "description": "Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\n**Er wordt gevalideerd op**\n- informatieobject URL en zaak URL mogen niet veranderen",
                 "parameters": [
                     {
                         "name": "data",
@@ -3737,7 +3748,8 @@
             },
             "patch": {
                 "operationId": "zaakinformatieobject_partial_update",
-                "description": "Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\n**Er wordt gevalideerd op**\n- informatieobject URL en zaak URL mogen niet veranderen",
+                "summary": "Werk een ZAAKINFORMATIEOBJECT in deels bij.",
+                "description": "Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\n**Er wordt gevalideerd op**\n- informatieobject URL en zaak URL mogen niet veranderen",
                 "parameters": [
                     {
                         "name": "data",
@@ -3938,7 +3950,8 @@
             },
             "delete": {
                 "operationId": "zaakinformatieobject_delete",
-                "description": "Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT. De gespiegelde\nrelatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je\nniets te doen.",
+                "summary": "Verwijder een ZAAKINFORMATIEOBJECT.",
+                "description": "De gespiegelde relatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je\nniets te doen.",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -4126,7 +4139,8 @@
         "/zaakobjecten": {
             "get": {
                 "operationId": "zaakobject_list",
-                "description": "Geef een lijst van ZAAKOBJECTrelaties terug.",
+                "summary": "Alle ZAAKOBJECTen opvragen.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.",
                 "parameters": [
                     {
                         "name": "zaak",
@@ -4343,7 +4357,8 @@
             },
             "post": {
                 "operationId": "zaakobject_create",
-                "description": "Registreer een ZAAKOBJECT relatie.",
+                "summary": "Maak een ZAAKOBJECT aan.",
+                "description": "Maak een ZAAKOBJECT aan.",
                 "parameters": [
                     {
                         "name": "data",
@@ -4540,7 +4555,8 @@
         "/zaakobjecten/{uuid}": {
             "get": {
                 "operationId": "zaakobject_read",
-                "description": "Geef de details van een ZAAKOBJECT relatie.",
+                "summary": "Een specifiek ZAAKOBJECT opvragen.",
+                "description": "Een specifiek ZAAKOBJECT opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -4709,8 +4725,8 @@
         "/zaken": {
             "get": {
                 "operationId": "zaak_list",
-                "summary": "Geef een lijst van ZAAKen.",
-                "description": "Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.\n\nOptioneel kan je de queryparameters gebruiken om zaken te filteren.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.",
+                "summary": "Alle ZAAKen opvragen.",
+                "description": "Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.\n\nDeze lijst kan gefilterd wordt met query-string parameters.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -5539,7 +5555,8 @@
         "/zaken/{uuid}": {
             "get": {
                 "operationId": "zaak_read",
-                "description": "Haal de details van een ZAAK op.",
+                "summary": "Een specifieke ZAAK opvragen.",
+                "description": "Een specifieke ZAAK opvragen.",
                 "parameters": [
                     {
                         "name": "Accept-Crs",
@@ -5738,7 +5755,7 @@
             },
             "put": {
                 "operationId": "zaak_update",
-                "summary": "Werk een zaak bij.",
+                "summary": "Werk een ZAAK in zijn geheel bij.",
                 "description": "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
                 "parameters": [
                     {
@@ -5981,7 +5998,7 @@
             },
             "patch": {
                 "operationId": "zaak_partial_update",
-                "summary": "Werk een zaak bij.",
+                "summary": "Werk een ZAAK deels bij.",
                 "description": "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
                 "parameters": [
                     {
@@ -6224,7 +6241,7 @@
             },
             "delete": {
                 "operationId": "zaak_delete",
-                "summary": "Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.",
+                "summary": "Verwijder een ZAAK.",
                 "description": "**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken van de verwijderde hoofzaak\n- `status` - alle statussen van de verwijderde zaak\n- `resultaat` - het resultaat van de verwijderde zaak\n- `rol` - alle rollen bij de zaak\n- `zaakobject` - alle zaakobjecten bij de zaak\n- `zaakeigenschap` - alle eigenschappen van de zaak\n- `zaakkenmerk` - alle kenmerken van de zaak\n- `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook\n  https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)\n- `klantcontact` - alle klantcontacten bij een zaak",
                 "parameters": [
                     {
@@ -6427,7 +6444,8 @@
         "/zaken/{zaak_uuid}/audittrail": {
             "get": {
                 "operationId": "audittrail_list",
-                "description": "Geef een lijst van AUDITTRAILS die horen bij de huidige Zaak.",
+                "summary": "Alle audit trail regels behorend bij de ZAAK.",
+                "description": "Alle audit trail regels behorend bij de ZAAK.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -6585,7 +6603,8 @@
         "/zaken/{zaak_uuid}/audittrail/{uuid}": {
             "get": {
                 "operationId": "audittrail_read",
-                "description": "Haal de details van een AUDITTRAIL op.",
+                "summary": "Een specifieke audit trail regel opvragen.",
+                "description": "Een specifieke audit trail regel opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -6762,7 +6781,8 @@
         "/zaken/{zaak_uuid}/besluiten": {
             "get": {
                 "operationId": "zaakbesluit_list",
-                "description": "Provides a list of relations between Zaak and Besluit objects",
+                "summary": "Alle ZAAKBESLUITen opvragen.",
+                "description": "Alle ZAAKBESLUITen opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -6908,7 +6928,8 @@
             },
             "post": {
                 "operationId": "zaakbesluit_create",
-                "description": "",
+                "summary": "Maak een ZAAKBESLUIT aan.",
+                "description": "**Attentie:**\nDit endpoint dient niet aangesproken te worden door gebruikers.\nHet BRC gebruikt dit endpoint om relaties te synchroniseren, daarom is dit\nendpoint in het ZRC geimplementeerd.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK",
                 "parameters": [
                     {
                         "name": "data",
@@ -7114,7 +7135,8 @@
         "/zaken/{zaak_uuid}/besluiten/{uuid}": {
             "get": {
                 "operationId": "zaakbesluit_read",
-                "description": "Return Besluit which is linked with the current Zaak object",
+                "summary": "Een specifiek ZAAKBESLUIT opvragen.",
+                "description": "Een specifiek ZAAKBESLUIT opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -7271,7 +7293,8 @@
             },
             "delete": {
                 "operationId": "zaakbesluit_delete",
-                "description": "Remove relations between Zaak and Besluit objects",
+                "summary": "Verwijder een ZAAKBESLUIT.",
+                "description": "Verwijder een ZAAKBESLUIT.",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -7467,7 +7490,8 @@
         "/zaken/{zaak_uuid}/zaakeigenschappen": {
             "get": {
                 "operationId": "zaakeigenschap_list",
-                "description": "Geef een collectie van eigenschappen behorend bij een ZAAK.",
+                "summary": "Alle ZAAKEIGENSCHAPpen opvragen.",
+                "description": "Alle ZAAKEIGENSCHAPpen opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -7613,7 +7637,8 @@
             },
             "post": {
                 "operationId": "zaakeigenschap_create",
-                "description": "Registreer een eigenschap van een ZAAK.",
+                "summary": "Maak een ZAAKEIGENSCHAP aan.",
+                "description": "Maak een ZAAKEIGENSCHAP aan.",
                 "parameters": [
                     {
                         "name": "data",
@@ -7819,7 +7844,8 @@
         "/zaken/{zaak_uuid}/zaakeigenschappen/{uuid}": {
             "get": {
                 "operationId": "zaakeigenschap_read",
-                "description": "Geef de details van ZaakEigenschap voor een ZAAK.",
+                "summary": "Een specifieke ZAAKEIGENSCHAP opvragen.",
+                "description": "Een specifieke ZAAKEIGENSCHAP opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
