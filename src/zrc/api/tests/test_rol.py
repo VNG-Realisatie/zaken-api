@@ -1,10 +1,14 @@
+from unittest.mock import patch
+
+import requests_mock
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.constants import RolTypes
+from vng_api_common.constants import RolOmschrijving, RolTypes
 from vng_api_common.tests import (
     JWTAuthMixin, TypeCheckMixin, get_operation_url, get_validation_errors
 )
+from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import IndicatieMachtiging
 from zrc.datamodel.models import (
@@ -14,6 +18,14 @@ from zrc.datamodel.models import (
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
 BETROKKENE = 'http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd'
+ROLTYPE = "https://ztc.nl/roltypen/123"
+
+ROLTYPE_RESPONSE = {
+    "url": ROLTYPE,
+    "zaaktype": "https://ztc.nl/zaaktypen/123",
+    "omschrijving": RolOmschrijving.initiator,
+    "omschrijvingGeneriek": RolOmschrijving.initiator,
+}
 
 
 class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
@@ -241,16 +253,16 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             }
         )
 
-    def test_create_rol_with_identificatie(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_rol_with_identificatie(self, *mocks):
         url = get_operation_url('rol_create')
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'roltype': 'https://ztc.nl/roltypen/123',
-            'omschrijving': 'initiator',
-            'omschrijvingGeneriek': 'initiator',
+            'roltype': ROLTYPE,
             'roltoelichting': 'awerw',
             'betrokkeneIdentificatie': {
                 'anpIdentificatie': '12345',
@@ -269,7 +281,10 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             }
         }
 
-        response = self.client.post(url, data)
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Rol.objects.count(), 1)
@@ -288,7 +303,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(natuurlijk_persoon.sub_verblijf_buitenland, verblijf_buitenland)
         self.assertEqual(verblijf_buitenland.lnd_landcode, 'UK')
 
-    def test_create_rol_without_identificatie(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_rol_without_identificatie(self, *mocks):
         url = get_operation_url('rol_create')
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
@@ -296,13 +313,14 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene': BETROKKENE,
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'roltype': 'https://ztc.nl/roltypen/123',
-            'omschrijving': 'initiator',
-            'omschrijvingGeneriek': 'initiator',
+            'roltype': ROLTYPE,
             'roltoelichting': 'awerw',
         }
 
-        response = self.client.post(url, data)
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Rol.objects.count(), 1)
@@ -312,20 +330,23 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
         self.assertEqual(rol.betrokkene, BETROKKENE)
 
-    def test_create_rol_fail_validation(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_rol_fail_validation(self, *mocks):
         url = get_operation_url('rol_create')
         zaak = ZaakFactory.create()
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'roltype': 'https://ztc.nl/roltypen/123',
-            'omschrijving': 'initiator',
-            'omschrijvingGeneriek': 'initiator',
+            'roltype': ROLTYPE,
             'roltoelichting': 'awerw',
         }
 
-        response = self.client.post(url, data)
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

@@ -827,7 +827,9 @@ class RolSerializer(PolymorphicSerializer):
                 'validators': [
                     URLValidator(get_auth=get_auth),
                     IsImmutableValidator(),
-                    ResourceValidator('RolType', settings.ZTC_API_SPEC)
+                    ResourceValidator('RolType', settings.ZTC_API_SPEC),
+                    # TODO: add validator that checks RolType.zaaktype the same as
+                    # Zaak.zaaktype
                 ]
             }
         }

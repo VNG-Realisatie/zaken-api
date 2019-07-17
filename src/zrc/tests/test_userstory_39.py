@@ -3,18 +3,21 @@ Test the flow described in https://github.com/VNG-Realisatie/gemma-zaken/issues/
 """
 import uuid
 from datetime import date
+from unittest.mock import patch
 
 from django.test import override_settings
 
+import requests_mock
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import (
-    VertrouwelijkheidsAanduiding, ZaakobjectTypes
+    RolOmschrijving, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
 from vng_api_common.tests import (
     JWTAuthMixin, get_operation_url, get_validation_errors
 )
+from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import KlantContact, Rol, Status, Zaak, ZaakObject
@@ -31,6 +34,15 @@ FOTO = f'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid
 # file:///home/bbt/Downloads/2a.aansluitspecificatieskennisgevingen-gegevenswoordenboek-entiteitenv1.0.6.pdf
 # Stadsdeel is een WijkObject in het RSGB
 STADSDEEL = f'https://example.com/rsgb/api/v1/wijkobjecten/{uuid.uuid4().hex}'
+
+ROLTYPE = "https://ztc.nl/roltypen/123"
+
+ROLTYPE_RESPONSE = {
+    "url": ROLTYPE,
+    "zaaktype": ZAAKTYPE,
+    "omschrijving": RolOmschrijving.behandelaar,
+    "omschrijvingGeneriek": RolOmschrijving.behandelaar,
+}
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -245,8 +257,10 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             }
         )
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @freeze_time('2018-01-01')
-    def test_zet_verantwoordelijk(self):
+    def test_zet_verantwoordelijk(self, *mocks):
         url = get_operation_url('rol_create')
         betrokkene = f'https://example.com/orc/api/v1/vestigingen/waternet/{uuid.uuid4().hex}'
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
@@ -255,11 +269,15 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             'zaak': zaak_url,
             'betrokkene': betrokkene,
             'betrokkeneType': 'vestiging',
-            'rolomschrijving': 'behandelaar',
+            'roltype': ROLTYPE,
             'roltoelichting': 'Baggeren van gracht',
         }
 
-        response = self.client.post(url, data)
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()
@@ -275,7 +293,9 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'zaak': f"http://testserver{zaak_url}",
                 'betrokkene': betrokkene,
                 'betrokkeneType': 'vestiging',
-                'rolomschrijving': 'behandelaar',
+                'roltype': ROLTYPE,
+                'omschrijving': RolOmschrijving.behandelaar,
+                'omschrijvingGeneriek': RolOmschrijving.behandelaar,
                 'roltoelichting': 'Baggeren van gracht',
                 'registratiedatum': '2018-01-01T00:00:00Z',
                 'indicatieMachtiging': '',

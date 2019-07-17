@@ -8,15 +8,18 @@ Zie ook: test_userstory_39.py
 """
 from datetime import date
 from unittest import skip
+from unittest.mock import patch
 
 from django.test import override_settings
 
+import requests_mock
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import (
     RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
 from vng_api_common.tests import JWTAuthMixin, get_operation_url
+from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from zrc.datamodel.models import Zaak
@@ -32,6 +35,22 @@ INITIATOR = 'https://example.com/orc/api/v1/brp/natuurlijkepersonen/4bfc45ae-c04
 BEHANDELAAR = 'https://example.com/orc/api/v1/brp/organisatorische-eenheden/d6cbe447-0ff9-4df6-b3d2-68e093ddebbd'
 VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
+ROLTYPE = "https://ztc.nl/roltypen/123"
+ROLTYPE2 = "https://ztc.nl/roltypen/456"
+
+ROLTYPE_RESPONSE = {
+    "url": ROLTYPE,
+    "zaaktype": ZAAKTYPE,
+    "omschrijving": RolOmschrijving.initiator,
+    "omschrijvingGeneriek": RolOmschrijving.initiator,
+}
+ROLTYPE2_RESPONSE = {
+    "url": ROLTYPE2,
+    "zaaktype": ZAAKTYPE,
+    "omschrijving": RolOmschrijving.behandelaar,
+    "omschrijvingGeneriek": RolOmschrijving.behandelaar,
+}
+
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US169TestCase(JWTAuthMixin, APITestCase):
@@ -39,7 +58,9 @@ class US169TestCase(JWTAuthMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 
-    def test_create_melding(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_melding(self, *mocks):
         """
         Maak een zaak voor een melding.
         """
@@ -93,30 +114,38 @@ class US169TestCase(JWTAuthMixin, APITestCase):
         # BRP kan/moet bevraagd worden met NAW -> INITIATOR url is resultaat
         rol_create_url = get_operation_url('rol_create')
 
-        response = self.client.post(rol_create_url, {
-            'zaak': zaak_url,
-            'betrokkene': INITIATOR,
-            'betrokkene_type': RolTypes.natuurlijk_persoon,  # 'Natuurlijk persoon'
-            'rolomschrijving': 'initiator',
-            'roltoelichting': 'initiele melder',
-        })
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(rol_create_url, {
+                    'zaak': zaak_url,
+                    'betrokkene': INITIATOR,
+                    'betrokkene_type': RolTypes.natuurlijk_persoon,  # 'Natuurlijk persoon'
+                    'roltype': ROLTYPE,
+                    'roltoelichting': 'initiele melder',
+                })
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
-        initiator = zaak.rol_set.get(rolomschrijving=RolOmschrijving.initiator)
+        initiator = zaak.rol_set.get(omschrijving_generiek=RolOmschrijving.initiator)
         self.assertEqual(initiator.betrokkene, INITIATOR)
 
         # toevoegen behandelaar
-        response = self.client.post(rol_create_url, {
-            'zaak': zaak_url,
-            'betrokkene': BEHANDELAAR,
-            'betrokkene_type': RolTypes.vestiging,  # 'Vestiging'
-            'rolomschrijving': 'behandelaar',
-            'roltoelichting': 'behandelaar',
-        })
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE2, json=ROLTYPE2_RESPONSE)
+
+            with mock_client({ROLTYPE2: ROLTYPE2_RESPONSE}):
+                response = self.client.post(rol_create_url, {
+                    'zaak': zaak_url,
+                    'betrokkene': BEHANDELAAR,
+                    'betrokkene_type': RolTypes.vestiging,  # 'Vestiging'
+                    'roltype': ROLTYPE2,
+                    'roltoelichting': 'behandelaar',
+                })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
-        behandelaar = zaak.rol_set.get(rolomschrijving=RolOmschrijving.behandelaar)
+        behandelaar = zaak.rol_set.get(omschrijving_generiek=RolOmschrijving.behandelaar)
         self.assertEqual(behandelaar.betrokkene, BEHANDELAAR)
 
     @skip('LIST action for /rollen is not supported')
