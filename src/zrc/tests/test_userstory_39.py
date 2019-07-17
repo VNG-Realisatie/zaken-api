@@ -23,8 +23,8 @@ from zrc.datamodel.tests.factories import ZaakFactory
 from .utils import ZAAK_WRITE_KWARGS, isodatetime
 
 ZAAKTYPE = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}/zaaktypen/{uuid.uuid4().hex}'
-STATUS_TYPE = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}/zaaktypen/{uuid.uuid4().hex}/statustypen/{uuid.uuid4().hex}'
-STATUS_TYPE_OVERLAST_GECONSTATEERD = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}/zaaktypen/{uuid.uuid4().hex}/statustypen/{uuid.uuid4().hex}'
+STATUS_TYPE = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}/zaaktypen/{uuid.uuid4().hex}/statustypen/{uuid.uuid4().hex}'  # noqa
+STATUS_TYPE_OVERLAST_GECONSTATEERD = f'https://example.com/ztc/api/v1/catalogus/{uuid.uuid4().hex}/zaaktypen/{uuid.uuid4().hex}/statustypen/{uuid.uuid4().hex}'  # noqa
 VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 OBJECT_MET_ADRES = f'https://example.com/orc/api/v1/objecten/{uuid.uuid4().hex}'
 FOTO = f'https://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
@@ -139,6 +139,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             response_data,
             {
                 'url': f"http://testserver{detail_url}",
+                'uuid': str(status_.uuid),
                 'zaak': f"http://testserver{zaak_url}",
                 'statustype': STATUS_TYPE,
                 'datumStatusGezet': '2018-06-06T17:23:43Z',  # UTC
@@ -171,6 +172,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             response_data,
             {
                 'url': f"http://testserver{detail_url}",
+                'uuid': str(zaakobject.uuid),
                 'zaak': f"http://testserver{zaak_url}",
                 'object': OBJECT_MET_ADRES,
                 'objectIdentificatie': None,
@@ -203,6 +205,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             response_data,
             {
                 'url': f"http://testserver{detail_url}",
+                'uuid': str(klantcontact.uuid),
                 'zaak': f"http://testserver{zaak_url}",
                 'identificatie': klantcontact.identificatie,
                 'datumtijd': '2018-06-11T13:47:55Z',
@@ -232,6 +235,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             response_data,
             {
                 'url': f"http://testserver{detail_url}",
+                'uuid': str(zaakobject.uuid),
                 'zaak': f"http://testserver{zaak_url}",
                 'object': STADSDEEL,
                 'objectIdentificatie': None,
@@ -267,6 +271,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             response_data,
             {
                 'url': f"http://testserver{detail_url}",
+                'uuid': str(rol.uuid),
                 'zaak': f"http://testserver{zaak_url}",
                 'betrokkene': betrokkene,
                 'betrokkeneType': 'vestiging',

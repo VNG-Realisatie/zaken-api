@@ -74,6 +74,7 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         expected_response = content.copy()
         expected_response.update({
             'url': f'http://testserver{expected_url}',
+            'uuid': str(stored_object.uuid),
             'titel': titel,
             'beschrijving': beschrijving,
             'registratiedatum': '2018-09-19T10:25:19Z',
@@ -152,6 +153,7 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
 
         expected = {
             'url': f'http://testserver{zio_detail_url}',
+            'uuid': str(zio.uuid),
             'informatieobject': zio.informatieobject,
             'zaak': f'http://testserver{zaak_url}',
             'aardRelatieWeergave': RelatieAarden.labels[RelatieAarden.hoort_bij],

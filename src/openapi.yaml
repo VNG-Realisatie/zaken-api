@@ -6827,6 +6827,12 @@ components:
           readOnly: true
           maxLength: 1000
           minLength: 1
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
+          readOnly: true
         zaak:
           title: Zaak
           description: URL-referentie naar de ZAAK.
@@ -6966,6 +6972,12 @@ components:
           readOnly: true
           maxLength: 1000
           minLength: 1
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
+          readOnly: true
         zaak:
           title: Zaak
           description: URL-referentie naar de ZAAK.
@@ -7000,6 +7012,12 @@ components:
           readOnly: true
           maxLength: 1000
           minLength: 1
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
+          readOnly: true
         zaak:
           title: Zaak
           description: URL-referentie naar de ZAAK.
@@ -7047,7 +7065,7 @@ components:
             \ de uitkomst van een zaak noodzakelijk zijn.\n* `initiator` - (Initiator)\
             \ Aanleiding geven tot de start van een zaak ..\n* `klantcontacter` -\
             \ (Klantcontacter) Het eerste aanspreekpunt zijn voor vragen van burgers\
-            \ en bedrijven ..\n* `zaakcoordinator` - (Zaakco\xC3\xB6rdinator) Er voor\
+            \ en bedrijven ..\n* `zaakcoordinator` - (Zaakco\xF6rdinator) Er voor\
             \ zorg dragen dat de behandeling van de zaak in samenhang uitgevoerd wordt\
             \ conform de daarover gemaakte afspraken.\n* `mede_initiator` - Mede-initiator"
           type: string
@@ -7425,6 +7443,12 @@ components:
           readOnly: true
           maxLength: 1000
           minLength: 1
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
+          readOnly: true
         zaak:
           title: Zaak
           description: URL-referentie naar de ZAAK.
@@ -7463,6 +7487,12 @@ components:
           readOnly: true
           maxLength: 1000
           minLength: 1
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
+          readOnly: true
         informatieobject:
           title: Informatieobject
           description: URL-referentie naar het INFORMATIEOBJECT (in de Documenten
@@ -7517,6 +7547,12 @@ components:
           readOnly: true
           maxLength: 1000
           minLength: 1
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
+          readOnly: true
         zaak:
           title: Zaak
           description: URL-referentie naar de ZAAK.
@@ -7760,7 +7796,7 @@ components:
       properties:
         gemeenteNaam:
           title: Gemeente naam
-          description: "De offici\xC3\xABle door de gemeente vastgestelde gemeentenaam."
+          description: "De offici\xEBle door de gemeente vastgestelde gemeentenaam."
           type: string
           maxLength: 80
           minLength: 1
@@ -8894,6 +8930,12 @@ components:
           readOnly: true
           maxLength: 1000
           minLength: 1
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
+          readOnly: true
         identificatie:
           title: Identificatie
           description: De unieke identificatie van de ZAAK binnen de organisatie die
@@ -9061,7 +9103,7 @@ components:
           title: Is deelzaak van
           description: "URL-referentie naar de ZAAK, waarom verzocht is door de initiator\
             \ daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan\
-            \ de onderhavige ZAAK er \xC3\xA9\xC3\xA9n is."
+            \ de onderhavige ZAAK er \xE9\xE9n is."
           type: string
           format: uri
           nullable: true
@@ -9424,6 +9466,12 @@ components:
           type: string
           format: uri
           readOnly: true
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
+          readOnly: true
         besluit:
           title: Besluit
           description: URL-referentie naar het BESLUIT (in de Besluiten API), waar
@@ -9443,6 +9491,12 @@ components:
           title: Url
           type: string
           format: uri
+          readOnly: true
+        uuid:
+          title: Uuid
+          description: Unieke resource identifier (UUID4)
+          type: string
+          format: uuid
           readOnly: true
         zaak:
           title: Zaak

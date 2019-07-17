@@ -187,6 +187,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         model = Zaak
         fields = (
             'url',
+            'uuid',
             'identificatie',
             'bronorganisatie',
             'omschrijving',
@@ -231,6 +232,9 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'zaakgeometrie': {
                 'help_text': 'Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.'
@@ -383,6 +387,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         model = Status
         fields = (
             'url',
+            'uuid',
             'zaak',
             'statustype',
             'datum_status_gezet',
@@ -391,6 +396,9 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'zaak': {
                 'lookup_field': 'uuid',
@@ -567,6 +575,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
         model = ZaakObject
         fields = (
             'url',
+            'uuid',
             'zaak',
             'object',
             'object_type',
@@ -576,6 +585,9 @@ class ZaakObjectSerializer(PolymorphicSerializer):
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'zaak': {
                 'lookup_field': 'uuid',
@@ -645,6 +657,7 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         model = ZaakInformatieObject
         fields = (
             'url',
+            'uuid',
             'informatieobject',
             'zaak',
             'aard_relatie_weergave',
@@ -655,6 +668,9 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'informatieobject': {
                 # 'lookup_field': 'uuid',
@@ -691,6 +707,7 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
         model = ZaakEigenschap
         fields = (
             'url',
+            'uuid',
             'zaak',
             'eigenschap',
             'naam',
@@ -699,6 +716,9 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'zaak': {
                 'lookup_field': 'uuid',
@@ -736,6 +756,7 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
         model = KlantContact
         fields = (
             'url',
+            'uuid',
             'zaak',
             'identificatie',
             'datumtijd',
@@ -744,6 +765,9 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'identificatie': {
                 'required': False
@@ -772,6 +796,7 @@ class RolSerializer(PolymorphicSerializer):
         model = Rol
         fields = (
             'url',
+            'uuid',
             'zaak',
             'betrokkene',
             'betrokkene_type',
@@ -787,6 +812,9 @@ class RolSerializer(PolymorphicSerializer):
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'zaak': {
                 'lookup_field': 'uuid',
@@ -839,6 +867,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
         model = Resultaat
         fields = (
             'url',
+            'uuid',
             'zaak',
             'resultaattype',
             'toelichting'
@@ -846,6 +875,9 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'zaak': {
                 'lookup_field': 'uuid',
@@ -867,10 +899,17 @@ class ZaakBesluitSerializer(NestedHyperlinkedModelSerializer):
 
     class Meta:
         model = ZaakBesluit
-        fields = ('url', 'besluit',)
+        fields = (
+            'url',
+            'uuid',
+            'besluit',
+        )
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
+            },
+            'uuid': {
+                'read_only': True,
             },
             'zaak': {'lookup_field': 'uuid'},
             'besluit': {

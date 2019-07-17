@@ -8037,6 +8037,13 @@
                     "maxLength": 1000,
                     "minLength": 1
                 },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
+                },
                 "zaak": {
                     "title": "Zaak",
                     "description": "URL-referentie naar de ZAAK.",
@@ -8207,6 +8214,13 @@
                     "maxLength": 1000,
                     "minLength": 1
                 },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
+                },
                 "zaak": {
                     "title": "Zaak",
                     "description": "URL-referentie naar de ZAAK.",
@@ -8246,6 +8260,13 @@
                     "readOnly": true,
                     "maxLength": 1000,
                     "minLength": 1
+                },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
                 },
                 "zaak": {
                     "title": "Zaak",
@@ -8729,6 +8750,13 @@
                     "maxLength": 1000,
                     "minLength": 1
                 },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
+                },
                 "zaak": {
                     "title": "Zaak",
                     "description": "URL-referentie naar de ZAAK.",
@@ -8772,6 +8800,13 @@
                     "readOnly": true,
                     "maxLength": 1000,
                     "minLength": 1
+                },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
                 },
                 "informatieobject": {
                     "title": "Informatieobject",
@@ -8831,6 +8866,13 @@
                     "readOnly": true,
                     "maxLength": 1000,
                     "minLength": 1
+                },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
                 },
                 "zaak": {
                     "title": "Zaak",
@@ -10549,6 +10591,13 @@
                     "maxLength": 1000,
                     "minLength": 1
                 },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
+                },
                 "identificatie": {
                     "title": "Identificatie",
                     "description": "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.",
@@ -11046,6 +11095,13 @@
                     "format": "uri",
                     "readOnly": true
                 },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
+                    "readOnly": true
+                },
                 "besluit": {
                     "title": "Besluit",
                     "description": "URL-referentie naar het BESLUIT (in de Besluiten API), waar ook de relatieinformatie opgevraagd kan worden.",
@@ -11068,6 +11124,13 @@
                     "title": "Url",
                     "type": "string",
                     "format": "uri",
+                    "readOnly": true
+                },
+                "uuid": {
+                    "title": "Uuid",
+                    "description": "Unieke resource identifier (UUID4)",
+                    "type": "string",
+                    "format": "uuid",
                     "readOnly": true
                 },
                 "zaak": {
