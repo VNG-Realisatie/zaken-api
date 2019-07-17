@@ -1768,9 +1768,24 @@
                         "type": "string"
                     },
                     {
-                        "name": "rolomschrijving",
+                        "name": "roltype",
                         "in": "query",
-                        "description": "Algemeen gehanteerde benaming van de aard van de ROL",
+                        "description": "URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK.",
+                        "required": false,
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    {
+                        "name": "omschrijving",
+                        "in": "query",
+                        "description": "Omschrijving van de aard van de ROL, afgeleid uit het ROLTYPE.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "omschrijvingGeneriek",
+                        "in": "query",
+                        "description": "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.",
                         "required": false,
                         "type": "string",
                         "enum": [
@@ -8247,7 +8262,7 @@
             "required": [
                 "zaak",
                 "betrokkeneType",
-                "rolomschrijving",
+                "roltype",
                 "roltoelichting"
             ],
             "type": "object",
@@ -8293,20 +8308,27 @@
                         "medewerker"
                     ]
                 },
-                "rolomschrijving": {
-                    "title": "Rolomschrijving",
-                    "description": "Algemeen gehanteerde benaming van de aard van de ROL\n\nUitleg bij mogelijke waarden:\n\n* `adviseur` - (Adviseur) Kennis in dienst stellen van de behandeling van (een deel van) een zaak.\n* `behandelaar` - (Behandelaar) De vakinhoudelijke behandeling doen van (een deel van) een zaak.\n* `belanghebbende` - (Belanghebbende) Vanuit eigen en objectief belang rechtstreeks betrokken zijn bij de behandeling en/of de uitkomst van een zaak.\n* `beslisser` - (Beslisser) Nemen van besluiten die voor de uitkomst van een zaak noodzakelijk zijn.\n* `initiator` - (Initiator) Aanleiding geven tot de start van een zaak ..\n* `klantcontacter` - (Klantcontacter) Het eerste aanspreekpunt zijn voor vragen van burgers en bedrijven ..\n* `zaakcoordinator` - (Zaakco\u00f6rdinator) Er voor zorg dragen dat de behandeling van de zaak in samenhang uitgevoerd wordt conform de daarover gemaakte afspraken.\n* `mede_initiator` - Mede-initiator",
+                "roltype": {
+                    "title": "Roltype",
+                    "description": "URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK.",
                     "type": "string",
-                    "enum": [
-                        "adviseur",
-                        "behandelaar",
-                        "belanghebbende",
-                        "beslisser",
-                        "initiator",
-                        "klantcontacter",
-                        "zaakcoordinator",
-                        "mede_initiator"
-                    ]
+                    "format": "uri",
+                    "maxLength": 1000,
+                    "minLength": 1
+                },
+                "omschrijving": {
+                    "title": "Omschrijving",
+                    "description": "Omschrijving van de aard van de ROL, afgeleid uit het ROLTYPE.",
+                    "type": "string",
+                    "readOnly": true,
+                    "minLength": 1
+                },
+                "omschrijvingGeneriek": {
+                    "title": "Omschrijving generiek",
+                    "description": "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.\n\nUitleg bij mogelijke waarden:\n\n* `adviseur` - (Adviseur) Kennis in dienst stellen van de behandeling van (een deel van) een zaak.\n* `behandelaar` - (Behandelaar) De vakinhoudelijke behandeling doen van (een deel van) een zaak.\n* `belanghebbende` - (Belanghebbende) Vanuit eigen en objectief belang rechtstreeks betrokken zijn bij de behandeling en/of de uitkomst van een zaak.\n* `beslisser` - (Beslisser) Nemen van besluiten die voor de uitkomst van een zaak noodzakelijk zijn.\n* `initiator` - (Initiator) Aanleiding geven tot de start van een zaak ..\n* `klantcontacter` - (Klantcontacter) Het eerste aanspreekpunt zijn voor vragen van burgers en bedrijven ..\n* `zaakcoordinator` - (Zaakco\u00f6rdinator) Er voor zorg dragen dat de behandeling van de zaak in samenhang uitgevoerd wordt conform de daarover gemaakte afspraken.\n* `mede_initiator` - Mede-initiator",
+                    "type": "string",
+                    "readOnly": true,
+                    "minLength": 1
                 },
                 "roltoelichting": {
                     "title": "Roltoelichting",
