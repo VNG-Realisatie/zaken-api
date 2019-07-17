@@ -42,7 +42,7 @@ from ..validators import (
     HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
     UniekeIdentificatieValidator
 )
-from .adres_serializers import ObjectAdresSerializer
+from .address import ObjectAdresSerializer
 from .betrokkene import (
     RolMedewerkerSerializer, RolNatuurlijkPersoonSerializer,
     RolNietNatuurlijkPersoonSerializer, RolOrganisatorischeEenheidSerializer,

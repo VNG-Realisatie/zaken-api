@@ -32,6 +32,20 @@ from ..query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
 
+__all__ = [
+    "Zaak",
+    "RelevanteZaakRelatie",
+    "Status",
+    "Resultaat",
+    "Rol",
+    "ZaakObject",
+    "ZaakEigenschap",
+    "ZaakKenmerk",
+    "ZaakInformatieObject",
+    "KlantContact",
+    "ZaakBesluit",
+]
+
 
 class Zaak(APIMixin, models.Model):
     """

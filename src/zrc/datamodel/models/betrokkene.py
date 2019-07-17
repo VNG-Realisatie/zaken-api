@@ -9,10 +9,21 @@ from django.utils.translation import ugettext_lazy as _
 from vng_api_common.fields import BSNField, RSINField
 
 from ..constants import GeslachtsAanduiding, SoortRechtsvorm
-from .base_models import Rol, ZaakObject
+from .core import Rol, ZaakObject
 from .zaakobjecten import ZakelijkRechtHeeftAlsGerechtigde
 
 logger = logging.getLogger(__name__)
+
+__all__ = [
+    "AbstractRolZaakobjectRelation",
+    "AbstractRolZaakobjectZakelijkRechtRelation",
+    "NatuurlijkPersoon",
+    "NietNatuurlijkPersoon",
+    "Vestiging",
+    "OrganisatorischeEenheid",
+    "Medewerker",
+    "SubVerblijfBuitenland",
+]
 
 
 class AbstractRolZaakobjectRelation(models.Model):
