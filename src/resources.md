@@ -148,7 +148,7 @@ Uitleg bij mogelijke waarden:
 * `woz_waarde` - Woz waarde
 * `zakelijk_recht` - Zakelijk recht
 * `overige` - Overige | string | ja | C​R​U​D |
-| objectTypeOverige | Beschrijft het type OBJECT als er `objectType` de waarde &quot;overige&quot; heeft. | string | nee | C​R​U​D |
+| objectTypeOverige | Beschrijft het type OBJECT als `objectType` de waarde &quot;overige&quot; heeft. | string | nee | C​R​U​D |
 | relatieomschrijving | Omschrijving van de betrekking tussen de ZAAK en het OBJECT. | string | nee | C​R​U​D |
 
 ## ZakelijkRechtHeeftAlsGerechtigde

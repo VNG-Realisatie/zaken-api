@@ -3,7 +3,7 @@ from django.utils import timezone
 import factory
 import factory.fuzzy
 from vng_api_common.constants import (
-    ObjectTypes, RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding
+    RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
 
 
@@ -40,7 +40,8 @@ class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
 class ZaakObjectFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     object = factory.Faker('url')
-    object_type = factory.fuzzy.FuzzyChoice(choices=ObjectTypes.values)
+    # Excluded: overige
+    object_type = factory.fuzzy.FuzzyChoice(choices=list(ZaakobjectTypes.values)[:-1])
 
     class Meta:
         model = 'datamodel.ZaakObject'
