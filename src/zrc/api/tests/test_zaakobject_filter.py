@@ -11,12 +11,12 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     def test_filter_type(self):
-        zaakobject1 = ZaakObjectFactory.create(type=ZaakobjectTypes.besluit)
-        zaakobject2 = ZaakObjectFactory.create(type=ZaakobjectTypes.adres)
+        zaakobject1 = ZaakObjectFactory.create(object_type=ZaakobjectTypes.besluit)
+        zaakobject2 = ZaakObjectFactory.create(object_type=ZaakobjectTypes.adres)
         zaakobject1_url = get_operation_url('zaakobject_read', uuid=zaakobject1.uuid)
         url = get_operation_url('zaakobject_list')
 
-        response = self.client.get(url, {'type': ZaakobjectTypes.besluit})
+        response = self.client.get(url, {'objectType': ZaakobjectTypes.besluit})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

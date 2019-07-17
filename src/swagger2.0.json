@@ -4159,9 +4159,9 @@
                         "format": "uri"
                     },
                     {
-                        "name": "type",
+                        "name": "objectType",
                         "in": "query",
-                        "description": "Beschrijft het type `object` gerelateerd aan de ZAAK.",
+                        "description": "Beschrijft het type OBJECT gerelateerd aan de ZAAK. Als er geen passend type is, dan moet het type worden opgegeven onder `objectTypeOverige`.",
                         "required": false,
                         "type": "string",
                         "enum": [
@@ -4726,7 +4726,7 @@
             "get": {
                 "operationId": "zaak_list",
                 "summary": "Alle ZAAKen opvragen.",
-                "description": "Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.\n\nDeze lijst kan gefilterd wordt met query-string parameters.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.",
+                "description": "Deze lijst kan gefilterd wordt met query-string parameters.\n\n**Opmerking**\n- er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd\n  bent.",
                 "parameters": [
                     {
                         "name": "identificatie",
@@ -5756,7 +5756,7 @@
             "put": {
                 "operationId": "zaak_update",
                 "summary": "Werk een ZAAK in zijn geheel bij.",
-                "description": "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
+                "description": "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd\n  bent.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -5999,7 +5999,7 @@
             "patch": {
                 "operationId": "zaak_partial_update",
                 "summary": "Werk een ZAAK deels bij.",
-                "description": "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
+                "description": "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd\n  bent.\n- zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status` resource.",
                 "parameters": [
                     {
                         "name": "data",
@@ -8819,7 +8819,7 @@
         "ZaakObject": {
             "required": [
                 "zaak",
-                "type"
+                "objectType"
             ],
             "type": "object",
             "properties": {
@@ -8845,15 +8845,9 @@
                     "format": "uri",
                     "maxLength": 1000
                 },
-                "relatieomschrijving": {
-                    "title": "Relatieomschrijving",
-                    "description": "Omschrijving van de betrekking tussen de ZAAK en het OBJECT.",
-                    "type": "string",
-                    "maxLength": 80
-                },
-                "type": {
-                    "title": "Type",
-                    "description": "Beschrijft het type `object` gerelateerd aan de ZAAK.\n\nUitleg bij mogelijke waarden:\n\n* `adres` - Adres\n* `besluit` - Besluit\n* `buurt` - Buurt\n* `enkelvoudig_document` - Enkelvoudig document\n* `gemeente` - Gemeente\n* `gemeentelijke_openbare_ruimte` - Gemeentelijke openbare ruimte\n* `huishouden` - Huishouden\n* `inrichtingselement` - Inrichtingselement\n* `kadastrale_onroerende_zaak` - Kadastrale onroerende zaak\n* `kunstwerkdeel` - Kunstwerkdeel\n* `maatschappelijke_activiteit` - Maatschappelijke activiteit\n* `medewerker` - Medewerker\n* `natuurlijk_persoon` - Natuurlijk persoon\n* `niet_natuurlijk_persoon` - Niet-natuurlijk persoon\n* `openbare_ruimte` - Openbare ruimte\n* `organisatorische_eenheid` - Organisatorische eenheid\n* `pand` - Pand\n* `spoorbaandeel` - Spoorbaandeel\n* `status` - Status\n* `terreindeel` - Terreindeel\n* `terrein_gebouwd_object` - Terrein gebouwd object\n* `vestiging` - Vestiging\n* `waterdeel` - Waterdeel\n* `wegdeel` - Wegdeel\n* `wijk` - Wijk\n* `woonplaats` - Woonplaats\n* `woz_deelobject` - Woz deel object\n* `woz_object` - Woz object\n* `woz_waarde` - Woz waarde\n* `zakelijk_recht` - Zakelijk recht\n* `overige` - Overige",
+                "objectType": {
+                    "title": "Object type",
+                    "description": "Beschrijft het type OBJECT gerelateerd aan de ZAAK. Als er geen passend type is, dan moet het type worden opgegeven onder `objectTypeOverige`.\n\nUitleg bij mogelijke waarden:\n\n* `adres` - Adres\n* `besluit` - Besluit\n* `buurt` - Buurt\n* `enkelvoudig_document` - Enkelvoudig document\n* `gemeente` - Gemeente\n* `gemeentelijke_openbare_ruimte` - Gemeentelijke openbare ruimte\n* `huishouden` - Huishouden\n* `inrichtingselement` - Inrichtingselement\n* `kadastrale_onroerende_zaak` - Kadastrale onroerende zaak\n* `kunstwerkdeel` - Kunstwerkdeel\n* `maatschappelijke_activiteit` - Maatschappelijke activiteit\n* `medewerker` - Medewerker\n* `natuurlijk_persoon` - Natuurlijk persoon\n* `niet_natuurlijk_persoon` - Niet-natuurlijk persoon\n* `openbare_ruimte` - Openbare ruimte\n* `organisatorische_eenheid` - Organisatorische eenheid\n* `pand` - Pand\n* `spoorbaandeel` - Spoorbaandeel\n* `status` - Status\n* `terreindeel` - Terreindeel\n* `terrein_gebouwd_object` - Terrein gebouwd object\n* `vestiging` - Vestiging\n* `waterdeel` - Waterdeel\n* `wegdeel` - Wegdeel\n* `wijk` - Wijk\n* `woonplaats` - Woonplaats\n* `woz_deelobject` - Woz deel object\n* `woz_object` - Woz object\n* `woz_waarde` - Woz waarde\n* `zakelijk_recht` - Zakelijk recht\n* `overige` - Overige",
                     "type": "string",
                     "enum": [
                         "adres",
@@ -8888,9 +8882,22 @@
                         "zakelijk_recht",
                         "overige"
                     ]
+                },
+                "objectTypeOverige": {
+                    "title": "Object type overige",
+                    "description": "Beschrijft het type OBJECT als `objectType` de waarde \"overige\" heeft.",
+                    "type": "string",
+                    "pattern": "[a-z\\_]+",
+                    "maxLength": 100
+                },
+                "relatieomschrijving": {
+                    "title": "Relatieomschrijving",
+                    "description": "Omschrijving van de betrekking tussen de ZAAK en het OBJECT.",
+                    "type": "string",
+                    "maxLength": 80
                 }
             },
-            "discriminator": "type"
+            "discriminator": "objectType"
         },
         "ObjectAdres": {
             "title": "object_identificatie",

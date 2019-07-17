@@ -525,7 +525,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
 
 class ZaakObjectSerializer(PolymorphicSerializer):
     discriminator = Discriminator(
-        discriminator_field='type',
+        discriminator_field='object_type',
         mapping={
             ZaakobjectTypes.adres: ObjectAdresSerializer(),
             ZaakobjectTypes.besluit: None,
@@ -569,8 +569,9 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             'url',
             'zaak',
             'object',
+            'object_type',
+            'object_type_overige',
             'relatieomschrijving',
-            'type',
         )
         extra_kwargs = {
             'url': {
@@ -588,7 +589,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
         super().__init__(*args, **kwargs)
 
         value_display_mapping = add_choice_values_help_text(ZaakobjectTypes)
-        self.fields['type'].help_text += f"\n\n{value_display_mapping}"
+        self.fields['object_type'].help_text += f"\n\n{value_display_mapping}"
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
@@ -600,6 +601,22 @@ class ZaakObjectSerializer(PolymorphicSerializer):
                 _("betrokkene or betrokkeneIdentificatie must be provided"),
                 code='invalid-zaakobject')
 
+        object_type = validated_attrs.get('object_type', None)
+        object_type_overige = validated_attrs.get('object_type_overige', None)
+
+        if object_type == ZaakobjectTypes.overige and not object_type_overige:
+            raise serializers.ValidationError(
+                _('Als `objectType` de waarde "overige" heeft, moet '
+                  '`objectTypeOverige` van een waarde voorzien zijn.'),
+                code='missing-object-type-overige')
+
+        if object_type != ZaakobjectTypes.overige and object_type_overige:
+            raise serializers.ValidationError(
+                _('Als `objectType` niet de waarde "overige" heeft, mag '
+                  '`objectTypeOverige` niet van een waarde voorzien zijn.'),
+                code='invalid-object-type-overige-usage')
+
+
         return validated_attrs
 
     @transaction.atomic
@@ -608,7 +625,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
         zaakobject = super().create(validated_data)
 
         if group_data:
-            group_serializer = self.discriminator.mapping[validated_data['type']]
+            group_serializer = self.discriminator.mapping[validated_data['object_type']]
             serializer = group_serializer.get_fields()['object_identificatie']
             group_data['zaakobject'] = zaakobject
             serializer.create(group_data)

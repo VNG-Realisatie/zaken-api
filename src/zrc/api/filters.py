@@ -106,5 +106,5 @@ class ZaakObjectFilter(FilterSet):
         fields = (
             'zaak',
             'object',
-            'type',
+            'object_type',
         )

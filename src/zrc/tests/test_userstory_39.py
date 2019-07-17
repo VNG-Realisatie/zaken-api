@@ -156,7 +156,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         data = {
             'zaak': zaak_url,
             'object': OBJECT_MET_ADRES,
-            'type': ZaakobjectTypes.adres,
+            'objectType': ZaakobjectTypes.adres,
             'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
         }
 
@@ -174,7 +174,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'zaak': f"http://testserver{zaak_url}",
                 'object': OBJECT_MET_ADRES,
                 'objectIdentificatie': None,
-                'type': ZaakobjectTypes.adres,
+                'objectType': ZaakobjectTypes.adres,
+                'objectTypeOverige': '',
                 'relatieomschrijving': 'Het adres waar de overlast vastgesteld werd.',
             }
         )
@@ -216,7 +217,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         data = {
             'zaak': zaak_url,
             'object': STADSDEEL,
-            'type': ZaakobjectTypes.adres,
+            'objectType': ZaakobjectTypes.adres,
             'relatieomschrijving': 'Afgeleid gebied',
         }
 
@@ -234,7 +235,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'zaak': f"http://testserver{zaak_url}",
                 'object': STADSDEEL,
                 'objectIdentificatie': None,
-                'type': ZaakobjectTypes.adres,
+                'objectType': ZaakobjectTypes.adres,
+                'objectTypeOverige': '',
                 'relatieomschrijving': 'Afgeleid gebied',
             }
         )

@@ -600,7 +600,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                 'brondatumArchiefprocedure': {
                     'afleidingswijze': BrondatumArchiefprocedureAfleidingswijze.zaakobject,
                     'datumkenmerk': 'einddatum',
-                    'objecttype': zaak_object.type,
+                    'objecttype': zaak_object.object_type,
                     'procestermijn': None,
                 }
             },

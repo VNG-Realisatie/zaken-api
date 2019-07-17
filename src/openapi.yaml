@@ -3498,9 +3498,10 @@ paths:
         schema:
           type: string
           format: uri
-      - name: type
+      - name: objectType
         in: query
-        description: Beschrijft het type `object` gerelateerd aan de ZAAK.
+        description: Beschrijft het type OBJECT gerelateerd aan de ZAAK. Als er geen
+          passend type is, dan moet het type worden opgegeven onder `objectTypeOverige`.
         required: false
         schema:
           type: string
@@ -3970,10 +3971,9 @@ paths:
     get:
       operationId: zaak_list
       summary: Alle ZAAKen opvragen.
-      description: "Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.\n\
-        \nDeze lijst kan gefilterd wordt met query-string parameters.\n\n**Opmerkingen**\n\
-        - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT\n\
-        \  vervat zitten."
+      description: "Deze lijst kan gefilterd wordt met query-string parameters.\n\n\
+        **Opmerking**\n- er worden enkel zaken getoond van de zaaktypes waar u toe\
+        \ geautoriseerd\n  bent."
       parameters:
       - name: identificatie
         in: query
@@ -4875,11 +4875,11 @@ paths:
         \  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde\
         \ anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde\
         \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
-        \ heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes\
-        \ die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst\
-        \ niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden,\
-        \ doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus\
-        \ is.\n  Zie de `Status` resource."
+        \ heeft.\n\n**Opmerkingen**\n- er worden enkel zaken getoond van de zaaktypes\
+        \ waar u toe geautoriseerd\n  bent.\n- zaaktype zal in de toekomst niet-wijzigbaar\
+        \ gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door\
+        \ een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de\
+        \ `Status` resource."
       parameters:
       - name: Accept-Crs
         in: header
@@ -5093,11 +5093,11 @@ paths:
         \  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde\
         \ anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde\
         \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
-        \ heeft.\n\n**Opmerkingen**\n- je krijgt enkel zaken terug van de zaaktypes\
-        \ die in het autorisatie-JWT\n  vervat zitten.\n- zaaktype zal in de toekomst\
-        \ niet-wijzigbaar gemaakt worden.\n- indien een zaak heropend moet worden,\
-        \ doe dit dan door een nieuwe status\n  toe te voegen die NIET de eindstatus\
-        \ is. Zie de `Status` resource."
+        \ heeft.\n\n**Opmerkingen**\n- er worden enkel zaken getoond van de zaaktypes\
+        \ waar u toe geautoriseerd\n  bent.\n- zaaktype zal in de toekomst niet-wijzigbaar\
+        \ gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door\
+        \ een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status`\
+        \ resource."
       parameters:
       - name: Accept-Crs
         in: header
@@ -7505,7 +7505,7 @@ components:
     ZaakObject:
       required:
       - zaak
-      - type
+      - objectType
       type: object
       properties:
         url:
@@ -7528,14 +7528,10 @@ components:
           type: string
           format: uri
           maxLength: 1000
-        relatieomschrijving:
-          title: Relatieomschrijving
-          description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
-          type: string
-          maxLength: 80
-        type:
-          title: Type
-          description: 'Beschrijft het type `object` gerelateerd aan de ZAAK.
+        objectType:
+          title: Object type
+          description: 'Beschrijft het type OBJECT gerelateerd aan de ZAAK. Als er
+            geen passend type is, dan moet het type worden opgegeven onder `objectTypeOverige`.
 
 
             Uitleg bij mogelijke waarden:
@@ -7635,8 +7631,20 @@ components:
           - woz_waarde
           - zakelijk_recht
           - overige
+        objectTypeOverige:
+          title: Object type overige
+          description: Beschrijft het type OBJECT als `objectType` de waarde "overige"
+            heeft.
+          type: string
+          pattern: '[a-z\_]+'
+          maxLength: 100
+        relatieomschrijving:
+          title: Relatieomschrijving
+          description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
+          type: string
+          maxLength: 80
       discriminator:
-        propertyName: type
+        propertyName: objectType
     ObjectAdres:
       title: object_identificatie
       required:
