@@ -4,35 +4,45 @@ from drf_yasg import openapi
 
 from .kanalen import KANAAL_ZAKEN
 
-description = f"""Een API om een zaakregistratiecomponent te benaderen.
+description = f"""Een API om een zaakregistratiecomponent (ZRC) te benaderen.
 
-De `ZAAK` is het kernobject in deze API, waaraan verschillende andere
-resources gerelateerd zijn. De ZRC API werkt samen met andere ZGW API's, t.w.
-DRC, ZTC en BRC, om tot volledige functionaliteit te komen.
+De ZAAK is het kernobject in deze API, waaraan verschillende andere
+resources gerelateerd zijn. De Zaken API werkt samen met andere API's voor
+Zaakgericht werken om tot volledige functionaliteit te komen.
+
+**Afhankelijkheden**
+
+Deze API is afhankelijk van:
+
+* Catalogi API
+* Notificaties API
+* Documenten API *(optioneel)*
+* Besluiten API *(optioneel)*
+* Autorisaties API *(optioneel)*
 
 **Autorisatie**
 
 Deze API vereist autorisatie. Je kan de
-[token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken om JWT-tokens te
+[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te
 genereren.
 
 **Notificaties**
 
-Deze component publiceert notificaties op het kanaal `{KANAAL_ZAKEN.label}`.
+Deze API publiceert notificaties op het kanaal `{KANAAL_ZAKEN.label}`.
 
 **Handige links**
 
-* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)
-* ["Papieren" standaard](https://ref.tst.vng.cloud/standaard/)
+* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)
+* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)
 """
 
 info = openapi.Info(
-    title="Zaakregistratiecomponent (ZRC) API",
+    title=f"{settings.PROJECT_NAME} API",
     default_version=settings.API_VERSION,
     description=description,
     contact=openapi.Contact(
-        email="support@maykinmedia.nl",
-        url="https://github.com/VNG-Realisatie/gemma-zaken"
+        email="standaarden.ondersteuning@vng.nl",
+        url="https://zaakgerichtwerken.vng.cloud"
     ),
     license=openapi.License(
         name="EUPL 1.2",

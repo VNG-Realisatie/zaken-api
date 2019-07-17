@@ -13,7 +13,8 @@ from rest_framework.settings import api_settings
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import (
-    Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes, ZaakobjectTypes
+    Archiefnominatie, Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes,
+    ZaakobjectTypes
 )
 from vng_api_common.models import APICredential
 from vng_api_common.polymorphism import Discriminator, PolymorphicSerializer
@@ -118,6 +119,12 @@ class RelevanteZaakSerializer(serializers.ModelSerializer):
             }
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(AardZaakRelatie)
+        self.fields['aard_relatie'].help_text += f"\n\n{value_display_mapping}"
+
 
 class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMixin,
                      serializers.HyperlinkedModelSerializer):
@@ -137,7 +144,10 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                   "beter kan via `ZaakObject`."
     )
 
-    betalingsindicatie_weergave = serializers.CharField(source='get_betalingsindicatie_display', read_only=True)
+    betalingsindicatie_weergave = serializers.CharField(
+        source='get_betalingsindicatie_display', read_only=True,
+        help_text=_('Uitleg bij `betalingsindicatie`.')
+    )
 
     verlenging = VerlengingSerializer(
         required=False, allow_null=True,
@@ -154,7 +164,8 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         many=True,
         view_name='zaak-detail',
         lookup_url_kwarg='uuid',
-        lookup_field='uuid'
+        lookup_field='uuid',
+        help_text=_('URL-referenties naar deel ZAAKen.')
     )
 
     resultaat = serializers.HyperlinkedRelatedField(
@@ -162,16 +173,13 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         view_name='resultaat-detail',
         lookup_url_kwarg='uuid',
         lookup_field='uuid',
-        help_text=_("Indien geen resultaat bekend is, dan is de waarde 'null'")
+        help_text=_("URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde 'null'")
     )
 
     relevante_andere_zaken = RelevanteZaakSerializer(
         many=True, required=False,
         help_text=_(
-            "Een lijst van objecten met ieder twee elementen:\n"
-            "* `zaak` - een url naar een andere `Zaak`\n"
-            "* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, "
-            "waarbij de onderstaande waardes toegestaan zijn."
+            "Een lijst van relevante andere zaken."
         )
     )
 
@@ -268,8 +276,11 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
         value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
         self.fields['betalingsindicatie'].help_text += f"\n\n{value_display_mapping}"
 
-        value_display_mapping = add_choice_values_help_text(AardZaakRelatie)
-        self.fields['relevante_andere_zaken'].help_text += f"\n\n{value_display_mapping}"
+        value_display_mapping = add_choice_values_help_text(Archiefstatus)
+        self.fields['archiefstatus'].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(Archiefnominatie)
+        self.fields['archiefnominatie'].help_text += f"\n\n{value_display_mapping}"
 
     def _get_zaaktype(self, zaaktype_url: str) -> dict:
         if not hasattr(self, '_zaaktype'):
@@ -373,7 +384,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'url',
             'zaak',
-            'status_type',
+            'statustype',
             'datum_status_gezet',
             'statustoelichting'
         )
@@ -388,19 +399,19 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
-        status_type_url = validated_attrs['status_type']
+        statustype_url = validated_attrs['statustype']
 
         # dynamic so that it can be mocked in tests easily
         Client = import_string(settings.ZDS_CLIENT_CLASS)
-        client = Client.from_url(status_type_url)
+        client = Client.from_url(statustype_url)
         client.auth = APICredential.get_auth(
-            status_type_url,
+            statustype_url,
             scopes=['zds.scopes.zaaktypes.lezen']
         )
 
         try:
-            status_type = client.retrieve('statustype', url=status_type_url)
-            validated_attrs['__is_eindstatus'] = status_type['isEindstatus']
+            statustype = client.retrieve('statustype', url=statustype_url)
+            validated_attrs['__is_eindstatus'] = statustype['isEindstatus']
         except requests.HTTPError as exc:
             raise serializers.ValidationError(
                 exc.args[0],
@@ -572,6 +583,12 @@ class ZaakObjectSerializer(PolymorphicSerializer):
                 'required': False,
             }
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(ZaakobjectTypes)
+        self.fields['type'].help_text += f"\n\n{value_display_mapping}"
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
@@ -762,6 +779,18 @@ class RolSerializer(PolymorphicSerializer):
             }
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(IndicatieMachtiging)
+        self.fields['indicatie_machtiging'].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(RolTypes)
+        self.fields['betrokkene_type'].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(RolOmschrijving)
+        self.fields['rolomschrijving'].help_text += f"\n\n{value_display_mapping}"
+
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
         betrokkene = validated_attrs.get('betrokkene', None)
@@ -787,12 +816,6 @@ class RolSerializer(PolymorphicSerializer):
 
         return rol
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        value_display_mapping = add_choice_values_help_text(IndicatieMachtiging)
-        self.fields['indicatie_machtiging'].help_text += f"\n\n{value_display_mapping}"
-
 
 class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -800,7 +823,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'url',
             'zaak',
-            'resultaat_type',
+            'resultaattype',
             'toelichting'
         )
         extra_kwargs = {
@@ -810,7 +833,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             },
-            'resultaat_type': {
+            'resultaattype': {
                 'validators': [
                     # TODO: Add shape-validator when we know the shape.
                     URLValidator(get_auth=get_auth),

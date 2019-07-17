@@ -124,7 +124,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': zaak_url,
-            'statusType': STATUS_TYPE,
+            'statustype': STATUS_TYPE,
             'datumStatusGezet': isodatetime(2018, 6, 6, 17, 23, 43),
         }
 
@@ -140,7 +140,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             {
                 'url': f"http://testserver{detail_url}",
                 'zaak': f"http://testserver{zaak_url}",
-                'statusType': STATUS_TYPE,
+                'statustype': STATUS_TYPE,
                 'datumStatusGezet': '2018-06-06T17:23:43Z',  # UTC
                 'statustoelichting': '',
             }

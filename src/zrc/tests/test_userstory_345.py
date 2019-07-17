@@ -206,7 +206,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -238,7 +238,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
@@ -260,7 +260,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -292,7 +292,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
@@ -314,7 +314,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -349,7 +349,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
@@ -377,7 +377,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -409,7 +409,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
@@ -432,7 +432,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -463,7 +463,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
@@ -485,7 +485,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -515,7 +515,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
@@ -539,7 +539,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -570,7 +570,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
@@ -615,7 +615,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -628,7 +628,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         status_create_url = get_operation_url('status_create')
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 
@@ -650,7 +650,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -680,7 +680,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
         data = {
             'zaak': zaak_url,
-            'statusType': STATUSTYPE,
+            'statustype': STATUSTYPE,
             'datumStatusGezet': '2018-10-18T20:00:00Z',
         }
 

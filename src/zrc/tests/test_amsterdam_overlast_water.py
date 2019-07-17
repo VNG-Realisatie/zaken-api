@@ -120,19 +120,19 @@ class Application:
         with mock_client(responses):
             self.client.post(status_create_url, {
                 'zaak': self.references['zaak_url'],
-                'statusType': STATUSTYPE,
+                'statustype': STATUSTYPE,
                 'datumStatusGezet': created.isoformat(),
             })
 
             self.client.post(resultaat_create_url, {
                 'zaak': self.references['zaak_url'],
-                'resultaatType': RESULTAATTYPE,
+                'resultaattype': RESULTAATTYPE,
                 'toelichting': '',
             })
 
             self.client.post(status_create_url, {
                 'zaak': self.references['zaak_url'],
-                'statusType': STATUSTYPE_OVERLAST_GECONSTATEERD,
+                'statustype': STATUSTYPE_OVERLAST_GECONSTATEERD,
                 'datumStatusGezet': parser.parse(self.data['datetime_overlast']).isoformat(),
             })
 
@@ -200,14 +200,14 @@ class US39IntegrationTestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(zaak.status_set.count(), 2)
 
         last_status = zaak.status_set.order_by('-datum_status_gezet').first()
-        self.assertEqual(last_status.status_type, STATUSTYPE)
+        self.assertEqual(last_status.statustype, STATUSTYPE)
         self.assertEqual(
             last_status.datum_status_gezet,
             utcdatetime(2018, 5, 28, 7, 5, 8, 732587),
         )
 
         first_status = zaak.status_set.order_by('datum_status_gezet').first()
-        self.assertEqual(first_status.status_type, STATUSTYPE_OVERLAST_GECONSTATEERD)
+        self.assertEqual(first_status.statustype, STATUSTYPE_OVERLAST_GECONSTATEERD)
         self.assertEqual(
             first_status.datum_status_gezet,
             utcdatetime(2018, 5, 28, 6, 35, 11)

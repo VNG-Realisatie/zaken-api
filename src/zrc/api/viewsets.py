@@ -88,21 +88,21 @@ class ZaakViewSet(NotificationViewSetMixin,
       `status` de waarde "gearchiveerd" heeft.
 
     list:
-    Geef een lijst van ZAAKen.
+    Alle ZAAKen opvragen.
 
-    Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.
+    Deze lijst kan gefilterd wordt met query-string parameters.
 
-    Optioneel kan je de queryparameters gebruiken om zaken te filteren.
-
-    **Opmerkingen**
-    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
-      vervat zitten.
+    **Opmerking**
+    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
+      bent.
 
     retrieve:
-    Haal de details van een ZAAK op.
+    Een specifieke ZAAK opvragen.
+
+    Een specifieke ZAAK opvragen.
 
     update:
-    Werk een zaak bij.
+    Werk een ZAAK in zijn geheel bij.
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
@@ -119,15 +119,15 @@ class ZaakViewSet(NotificationViewSetMixin,
       `status` de waarde "gearchiveerd" heeft.
 
     **Opmerkingen**
-    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
-      vervat zitten.
+    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
+      bent.
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
       toe te voegen die NIET de eindstatus is.
       Zie de `Status` resource.
 
     partial_update:
-    Werk een zaak bij.
+    Werk een ZAAK deels bij.
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
@@ -144,14 +144,14 @@ class ZaakViewSet(NotificationViewSetMixin,
       `status` de waarde "gearchiveerd" heeft.
 
     **Opmerkingen**
-    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
-      vervat zitten.
+    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
+      bent.
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
       toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
 
     destroy:
-    Verwijdert een zaak, samen met alle gerelateerde resources binnen deze API.
+    Verwijder een ZAAK.
 
     **De gerelateerde resources zijn hierbij**
     - `zaak` - de deelzaken van de verwijderde hoofzaak
@@ -161,8 +161,8 @@ class ZaakViewSet(NotificationViewSetMixin,
     - `zaakobject` - alle zaakobjecten bij de zaak
     - `zaakeigenschap` - alle eigenschappen van de zaak
     - `zaakkenmerk` - alle kenmerken van de zaak
-    - `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook
-      https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
+    - `zaakinformatieobject` - dit moet door-cascaden naar de Documenten API,
+      zie ook: https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
     - `klantcontact` - alle klantcontacten bij een zaak
     """
     queryset = Zaak.objects.prefetch_related('deelzaken').order_by('-pk')
@@ -242,16 +242,17 @@ class StatusViewSet(NotificationCreateMixin,
     Opvragen en beheren van zaakstatussen.
 
     list:
-    Geef een lijst van STATUSsen van ZAAKen.
+    Alle STATUSsen van ZAAKen opvragen.
 
-    Optioneel kan je de queryparameters gebruiken om de resultaten te
-    filteren.
+    Deze lijst kan gefilterd wordt met query-string parameters.
 
     retrieve:
-    Haal de details van een zaakstatus op.
+    Een specifieke STATUS van een ZAAK opvragen.
+
+    Een specifieke STATUS van een ZAAK opvragen.
 
     create:
-    Voeg een nieuwe STATUS voor een ZAAK toe.
+    Maak een STATUS aan voor een ZAAK.
 
     **Er wordt gevalideerd op**
     - geldigheid URL naar de ZAAK
@@ -324,13 +325,19 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     Opvragen en bewerken van ZAAKOBJECTen.
 
     create:
-    Registreer een ZAAKOBJECT relatie.
+    Maak een ZAAKOBJECT aan.
+
+    Maak een ZAAKOBJECT aan.
 
     list:
-    Geef een lijst van ZAAKOBJECTrelaties terug.
+    Alle ZAAKOBJECTen opvragen.
+
+    Deze lijst kan gefilterd wordt met query-string parameters.
 
     retrieve:
-    Geef de details van een ZAAKOBJECT relatie.
+    Een specifiek ZAAKOBJECT opvragen.
+
+    Een specifiek ZAAKOBJECT opvragen.
     """
     queryset = ZaakObject.objects.all()
     serializer_class = ZaakObjectSerializer
@@ -354,10 +361,12 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   viewsets.ModelViewSet):
 
     """
-    Opvragen en bewerken van Zaak-Informatieobject relaties.
+    Opvragen en bewerken van ZAAK-INFORMATIEOBJECT relaties.
 
     create:
-    Registreer een INFORMATIEOBJECT bij een ZAAK. Er worden twee types van
+    Maak een ZAAK-INFORMATIEOBJECT relatie aan.
+
+    Er worden twee types van
     relaties met andere objecten gerealiseerd:
 
     **Er wordt gevalideerd op**
@@ -368,9 +377,8 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     **Opmerkingen**
     - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
       wordt ook door het systeem gezet.
-    - Bij het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,
+    - Bij het aanmaken wordt ook in de Documenten API de gespiegelde relatie aangemaakt,
       echter zonder de relatie-informatie.
-
 
     Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
 
@@ -379,31 +387,37 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
 
     list:
-    Geef een lijst van relaties tussen INFORMATIEOBJECTen en ZAAKen.
+    Alle ZAAK-INFORMATIEOBJECT relaties opvragen.
 
     Deze lijst kan gefilterd wordt met querystringparameters.
 
     retrieve:
-    Geef de details van een relatie tussen een INFORMATIEOBJECT en een ZAAK.
+    Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
+
+    Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
 
     update:
-    Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens
+    Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij.
+
+    Je mag enkel de gegevens
     van de relatie bewerken, en niet de relatie zelf aanpassen.
 
     **Er wordt gevalideerd op**
     - informatieobject URL en zaak URL mogen niet veranderen
 
     partial_update:
-    Update een INFORMATIEOBJECT bij een ZAAK. Je mag enkel de gegevens
+    Werk een ZAAK-INFORMATIEOBJECT relatie in deels bij.
+
+    Je mag enkel de gegevens
     van de relatie bewerken, en niet de relatie zelf aanpassen.
 
     **Er wordt gevalideerd op**
     - informatieobject URL en zaak URL mogen niet veranderen
 
     destroy:
-    Verwijdert de relatie tussen ZAAK en INFORMATIEOBJECT. De gespiegelde
-    relatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je
-    niets te doen.
+    Verwijder een ZAAK-INFORMATIEOBJECT relatie.
+
+    De gespiegelde relatie in de Documenten API wordt door de Zaken API verwijderd. Consumers kunnen dit niet handmatig doen..
     """
     queryset = ZaakInformatieObject.objects.all()
     filterset_class = ZaakInformatieObjectFilter
@@ -443,13 +457,19 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
     Opvragen en bewerken van ZAAKEIGENSCHAPpen
 
     create:
-    Registreer een eigenschap van een ZAAK.
+    Maak een ZAAKEIGENSCHAP aan.
+
+    Maak een ZAAKEIGENSCHAP aan.
 
     list:
-    Geef een collectie van eigenschappen behorend bij een ZAAK.
+    Alle ZAAKEIGENSCHAPpen opvragen.
+
+    Alle ZAAKEIGENSCHAPpen opvragen.
 
     retrieve:
-    Geef de details van ZaakEigenschap voor een ZAAK.
+    Een specifieke ZAAKEIGENSCHAP opvragen.
+
+    Een specifieke ZAAKEIGENSCHAP opvragen.
     """
     queryset = ZaakEigenschap.objects.all()
     serializer_class = ZaakEigenschapSerializer
@@ -495,16 +515,20 @@ class KlantContactViewSet(NotificationCreateMixin,
     Opvragen en bewerken van KLANTCONTACTen.
 
     create:
-    Registreer een klantcontact bij een ZAAK.
+    Maak een KLANTCONTACT bij een ZAAK aan.
 
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd.
 
     list:
-    Geef een lijst van KLANTCONTACTen.
+    Alle KLANTCONTACTen opvragen.
 
-    detail:
-    Geef de details van een klantcontact voor een ZAAK.
+    Alle KLANTCONTACTen opvragen.
+
+    retrieve:
+    Een specifiek KLANTCONTACT bij een ZAAK opvragen.
+
+    Een specifiek KLANTCONTACT bij een ZAAK opvragen.
     """
     queryset = KlantContact.objects.all()
     serializer_class = KlantContactSerializer
@@ -527,20 +551,27 @@ class RolViewSet(NotificationCreateMixin,
                  mixins.DestroyModelMixin,
                  viewsets.ReadOnlyModelViewSet):
     """
-    Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
+    Opvragen en bewerken van ROL relatie tussen een ZAAK en een BETROKKENE.
 
     list:
-    Geef een lijst van gekoppelde ROLen aan ZAAKen.
+    Alle ROLlen bij ZAAKen opvragen.
+
+    Deze lijst kan gefilterd wordt met query-string parameters.
 
     retrieve:
-    Haal de details van de ROL op.
+    Een specifieke ROL bij een ZAAK opvragen.
+
+    Een specifieke ROL bij een ZAAK opvragen.
 
     destroy:
-    Verwijder het RESULTAAT van een ZAAK.
+    Verwijder een ROL van een ZAAK.
+
+    Verwijder een ROL van een ZAAK.
 
     create:
-    Koppel een BETROKKENE aan een ZAAK.
+    Maak een ROL aan bij een ZAAK.
 
+    Maak een ROL aan bij een ZAAK.
 
     """
     queryset = Rol.objects.all()
@@ -568,37 +599,40 @@ class ResultaatViewSet(NotificationViewSetMixin,
     Opvragen en beheren van resultaten.
 
     list:
-    Geef een lijst van RESULTAATen van ZAAKen.
+    Alle RESULTAATen van ZAAKen opvragen.
 
-    Optioneel kan je de queryparameters gebruiken om de resultaten te
-    filteren.
+    Deze lijst kan gefilterd wordt met query-string parameters.
 
     retrieve:
-    Haal de details van het RESULTAAT op.
+    Een specifiek RESULTAAT opvragen.
+
+    Een specifiek RESULTAAT opvragen.
 
     create:
-    Voeg een RESULTAAT voor een ZAAK toe.
+    Maak een RESULTAAT bij een ZAAK aan.
 
     **Er wordt gevalideerd op**
     - geldigheid URL naar de ZAAK
     - geldigheid URL naar het RESULTAATTYPE
 
     update:
-    Wijzig het RESULTAAT van een ZAAK.
+    Werk een RESULTAAT in zijn geheel bij.
 
     **Er wordt gevalideerd op**
     - geldigheid URL naar de ZAAK
     - het RESULTAATTYPE mag niet gewijzigd worden
 
     partial_update:
-    Wijzig het RESULTAAT van een ZAAK.
+    Werk een RESULTAAT deels bij.
 
     **Er wordt gevalideerd op**
     - geldigheid URL naar de ZAAK
     - het RESULTAATTYPE mag niet gewijzigd worden
 
     destroy:
-    Verwijder het RESULTAAT van een ZAAK.
+    Verwijder een RESULTAAT van een ZAAK.
+
+    Verwijder een RESULTAAT van een ZAAK.
 
     """
     queryset = Resultaat.objects.all()
@@ -621,13 +655,17 @@ class ResultaatViewSet(NotificationViewSetMixin,
 
 class ZaakAuditTrailViewSet(AuditTrailViewSet):
     """
-    Opvragen van Audit trails horend bij een Zaak.
+    Opvragen van Audit trails horend bij een ZAAK.
 
     list:
-    Geef een lijst van AUDITTRAILS die horen bij de huidige Zaak.
+    Alle audit trail regels behorend bij de ZAAK.
+
+    Alle audit trail regels behorend bij de ZAAK.
 
     retrieve:
-    Haal de details van een AUDITTRAIL op.
+    Een specifieke audit trail regel opvragen.
+
+    Een specifieke audit trail regel opvragen.
     """
     main_resource_lookup_field = 'zaak_uuid'
 
@@ -644,25 +682,35 @@ class ZaakBesluitViewSet(NotificationCreateMixin,
     """
     Read and edit Zaak-Besluit relations.
 
-    create:
-    Attention: do't use this endpoint as a client
-
-    BRC uses this endpoint to synchronize relations. There for this endpoint
-    should be implemented in ZRC but not accessible for clients.
-
-    Register which Besluiten have Zaaken
-
-    **Validated on**
-    - correct Besluit URL
-
     list:
-    Provides a list of relations between Zaak and Besluit objects
+    Alle ZAAKBESLUITen opvragen.
+
+    Alle ZAAKBESLUITen opvragen.
 
     retrieve:
-    Return Besluit which is linked with the current Zaak object
+    Een specifiek ZAAKBESLUIT opvragen.
+
+    Een specifiek ZAAKBESLUIT opvragen.
+
+    create:
+    Maak een ZAAKBESLUIT aan.
+
+    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
+
+    De Besluiten API gebruikt dit endpoint om relaties te synchroniseren,
+    daarom is dit endpoint in de Zaken API geimplementeerd.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de ZAAK
 
     destroy:
-    Remove relations between Zaak and Besluit objects
+    Verwijder een ZAAKBESLUIT.
+
+    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
+
+    De Besluiten API gebruikt dit endpoint om relaties te synchroniseren,
+    daarom is dit endpoint in de Zaken API geimplementeerd.
+
     """
     queryset = ZaakBesluit.objects.all()
     serializer_class = ZaakBesluitSerializer

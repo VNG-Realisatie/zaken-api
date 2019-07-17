@@ -26,12 +26,12 @@ class BrondatumCalculator:
             return
 
         resultaat = self._get_resultaat()
-        resultaat_type = self._get_resultaat_type(resultaat.resultaat_type)
-        archiefactietermijn = resultaat_type['archiefactietermijn']
+        resultaattype = self._get_resultaattype(resultaat.resultaattype)
+        archiefactietermijn = resultaattype['archiefactietermijn']
         if not archiefactietermijn:
             return
 
-        brondatum_archiefprocedure = resultaat_type['brondatumArchiefprocedure']
+        brondatum_archiefprocedure = resultaattype['brondatumArchiefprocedure']
         afleidingswijze = brondatum_archiefprocedure['afleidingswijze']
         datum_kenmerk = brondatum_archiefprocedure['datumkenmerk']
         objecttype = brondatum_archiefprocedure['objecttype']
@@ -49,21 +49,21 @@ class BrondatumCalculator:
 
     def get_archiefnominatie(self) -> str:
         resultaat = self._get_resultaat()
-        resultaat_type = self._get_resultaat_type(resultaat.resultaat_type)
-        return resultaat_type['archiefnominatie']
+        resultaattype = self._get_resultaattype(resultaat.resultaattype)
+        return resultaattype['archiefnominatie']
 
-    def _get_resultaat_type(self, resultaat_type_url: str):
-        if not hasattr(self, '_resultaat_type'):
-            self._resultaat_type = None
-            if resultaat_type_url:
+    def _get_resultaattype(self, resultaattype_url: str):
+        if not hasattr(self, '_resultaattype'):
+            self._resultaattype = None
+            if resultaattype_url:
                 Client = import_string(settings.ZDS_CLIENT_CLASS)
-                client = Client.from_url(resultaat_type_url)
+                client = Client.from_url(resultaattype_url)
                 client.auth = APICredential.get_auth(
-                    resultaat_type_url,
+                    resultaattype_url,
                     scopes=['zds.scopes.zaaktypes.lezen']
                 )
-                self._resultaat_type = client.retrieve('resultaattype', url=resultaat_type_url)
-        return self._resultaat_type
+                self._resultaattype = client.retrieve('resultaattype', url=resultaattype_url)
+        return self._resultaattype
 
     def _get_resultaat(self):
         if not hasattr(self, '_resultaat'):
