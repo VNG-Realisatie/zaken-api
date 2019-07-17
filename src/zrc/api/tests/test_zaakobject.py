@@ -972,7 +972,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
                 'relatieomschrijving': '',
                 'objectType': ZaakobjectTypes.overige,
                 'objectTypeOverige': '',
-            'objectIdentificatie': {
+                'objectIdentificatie': {
                     'overigeData': {
                         'someField': 'some value'
                     }
@@ -1041,6 +1041,8 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.json())
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'missing-object-type-overige')
 
     def test_create_zaakobject_with_overige_type(self):
         url = get_operation_url('zaakobject_create')
@@ -1057,3 +1059,5 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.json())
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'invalid-object-type-overige-usage')
