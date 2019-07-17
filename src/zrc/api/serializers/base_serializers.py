@@ -13,8 +13,9 @@ from rest_framework.settings import api_settings
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import (
-    Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes, ZaakobjectTypes,
-    Archiefnominatie)
+    Archiefnominatie, Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes,
+    ZaakobjectTypes
+)
 from vng_api_common.models import APICredential
 from vng_api_common.polymorphism import Discriminator, PolymorphicSerializer
 from vng_api_common.serializers import (
