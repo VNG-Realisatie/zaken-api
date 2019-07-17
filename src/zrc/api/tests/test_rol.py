@@ -27,7 +27,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.natuurlijk_persoon,
             betrokkene='http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd',
-            rolomschrijving='Beslisser',
+            omschrijving='Beslisser',
+            omschrijving_generiek='Beslisser',
             indicatie_machtiging=IndicatieMachtiging.gemachtigde
         )
         naturlijkperson = NatuurlijkPersoon.objects.create(
@@ -66,7 +67,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'zaak': f'http://testserver{zaak_url}',
                 'betrokkene': BETROKKENE,
                 'betrokkeneType': RolTypes.natuurlijk_persoon,
-                'rolomschrijving': 'Beslisser',
+                'roltype': rol.roltype,
+                'omschrijving': 'Beslisser',
+                'omschrijvingGeneriek': 'Beslisser',
                 'roltoelichting': '',
                 'registratiedatum': '2018-01-01T00:00:00Z',
                 'indicatieMachtiging': 'gemachtigde',
@@ -108,7 +111,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.niet_natuurlijk_persoon,
             betrokkene=BETROKKENE,
-            rolomschrijving='Beslisser',
+            omschrijving='Beslisser',
+            omschrijving_generiek='Beslisser',
             indicatie_machtiging=IndicatieMachtiging.gemachtigde
         )
         nietnaturlijkperson = NietNatuurlijkPersoon.objects.create(
@@ -138,7 +142,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'zaak': f'http://testserver{zaak_url}',
                 'betrokkene': BETROKKENE,
                 'betrokkeneType': RolTypes.niet_natuurlijk_persoon,
-                'rolomschrijving': 'Beslisser',
+                'roltype': rol.roltype,
+                'omschrijving': 'Beslisser',
+                'omschrijvingGeneriek': 'Beslisser',
                 'roltoelichting': '',
                 'registratiedatum': '2018-01-01T00:00:00Z',
                 'indicatieMachtiging': 'gemachtigde',
@@ -166,7 +172,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.vestiging,
             betrokkene=BETROKKENE,
-            rolomschrijving='Beslisser',
+            omschrijving='Beslisser',
+            omschrijving_generiek='Beslisser',
             indicatie_machtiging=IndicatieMachtiging.gemachtigde
         )
         vestiging = Vestiging.objects.create(
@@ -204,7 +211,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 'zaak': f'http://testserver{zaak_url}',
                 'betrokkene': BETROKKENE,
                 'betrokkeneType': RolTypes.vestiging,
-                'rolomschrijving': 'Beslisser',
+                'roltype': rol.roltype,
+                'omschrijving': 'Beslisser',
+                'omschrijvingGeneriek': 'Beslisser',
                 'roltoelichting': '',
                 'registratiedatum': '2018-01-01T00:00:00Z',
                 'indicatieMachtiging': 'gemachtigde',
@@ -239,7 +248,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         data = {
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'rolomschrijving': 'initiator',
+            'roltype': 'https://ztc.nl/roltypen/123',
+            'omschrijving': 'initiator',
+            'omschrijvingGeneriek': 'initiator',
             'roltoelichting': 'awerw',
             'betrokkeneIdentificatie': {
                 'anpIdentificatie': '12345',
@@ -285,7 +296,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene': BETROKKENE,
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'rolomschrijving': 'initiator',
+            'roltype': 'https://ztc.nl/roltypen/123',
+            'omschrijving': 'initiator',
+            'omschrijvingGeneriek': 'initiator',
             'roltoelichting': 'awerw',
         }
 
@@ -306,7 +319,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         data = {
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene_type': RolTypes.natuurlijk_persoon,
-            'rolomschrijving': 'initiator',
+            'roltype': 'https://ztc.nl/roltypen/123',
+            'omschrijving': 'initiator',
+            'omschrijvingGeneriek': 'initiator',
             'roltoelichting': 'awerw',
         }
 
@@ -325,7 +340,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.natuurlijk_persoon,
             betrokkene='',
-            rolomschrijving='Beslisser'
+            omschrijving='Beslisser',
+            omschrijving_generiek='Beslisser'
         )
         NatuurlijkPersoon.objects.create(
             rol=rol,
@@ -337,7 +353,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.natuurlijk_persoon,
             betrokkene='',
-            rolomschrijving='Beslisser'
+            omschrijving='Beslisser',
+            omschrijving_generiek='Beslisser'
         )
         NatuurlijkPersoon.objects.create(
             rol=rol_2,
@@ -349,7 +366,8 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaak=zaak,
             betrokkene_type=RolTypes.vestiging,
             betrokkene='',
-            rolomschrijving='Beslisser'
+            omschrijving='Beslisser',
+            omschrijving_generiek='Beslisser'
         )
         Vestiging.objects.create(
             rol=rol_3,

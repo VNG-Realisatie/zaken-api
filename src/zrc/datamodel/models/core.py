@@ -419,7 +419,7 @@ class Rol(models.Model):
         Client = import_string(settings.ZDS_CLIENT_CLASS)
         client = Client.from_url(self.roltype)
         client.auth = APICredential.get_auth(self.roltype)
-        roltype = client.retrieve(self.object_type.lower(), url=self.roltype)
+        roltype = client.retrieve("roltype", url=self.roltype)
 
         self.omschrijving = roltype["omschrijving"]
         self.omschrijving_generiek = roltype["omschrijvingGeneriek"]

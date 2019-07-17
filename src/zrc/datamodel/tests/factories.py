@@ -51,7 +51,9 @@ class RolFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     betrokkene = factory.Faker('url')
     betrokkene_type = factory.fuzzy.FuzzyChoice(RolTypes.values)
-    rolomschrijving = factory.fuzzy.FuzzyChoice(RolOmschrijving.values)
+    roltype = factory.Faker('url')
+    omschrijving = factory.Faker('word')
+    omschrijving_generiek = factory.fuzzy.FuzzyChoice(RolOmschrijving.values)
 
     class Meta:
         model = 'datamodel.Rol'

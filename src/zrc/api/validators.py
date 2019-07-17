@@ -1,7 +1,10 @@
+from django.conf import settings
 from django.db import models
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
+from vng_api_common.models import APICredential
 from vng_api_common.validators import (
     UniekeIdentificatieValidator as _UniekeIdentificatieValidator
 )
@@ -15,8 +18,8 @@ class RolOccurenceValidator:
     """
     message = _('There are already {num} `{value}` occurences')
 
-    def __init__(self, rolomschrijving: str, max_amount: int=1):
-        self.rolomschrijving = rolomschrijving
+    def __init__(self, omschrijving_generiek: str, max_amount: int=1):
+        self.omschrijving_generiek = omschrijving_generiek
         self.max_amount = max_amount
 
     def set_context(self, serializer):
@@ -28,24 +31,34 @@ class RolOccurenceValidator:
         self.instance = getattr(serializer, 'instance', None)
 
     def __call__(self, attrs):
-        if attrs['rolomschrijving'] != self.rolomschrijving:
+        roltype = attrs["roltype"]
+
+        Client = import_string(settings.ZDS_CLIENT_CLASS)
+        client = Client.from_url(roltype)
+        client.auth = APICredential.get_auth(roltype)
+        roltype = client.retrieve("roltype", url=roltype)
+
+        attrs["omschrijving"] = roltype["omschrijving"]
+        attrs["omschrijving_generiek"] = roltype["omschrijvingGeneriek"]
+
+        if attrs['omschrijving_generiek'] != self.omschrijving_generiek:
             return
 
-        is_noop_update = self.instance and self.instance.rolomschrijving == self.rolomschrijving
+        is_noop_update = self.instance and self.instance.omschrijving_generiek == self.omschrijving_generiek
         if is_noop_update:
             return
 
         existing = (
             attrs['zaak']
             .rol_set
-            .filter(rolomschrijving=self.rolomschrijving)
+            .filter(omschrijving_generiek=self.omschrijving_generiek)
             .count()
         )
 
         if existing >= self.max_amount:
-            message = self.message.format(num=existing, value=self.rolomschrijving)
+            message = self.message.format(num=existing, value=self.omschrijving_generiek)
             raise serializers.ValidationError({
-                'rolomschrijving': message
+                'roltype': message
             }, code='max-occurences')
 
 
