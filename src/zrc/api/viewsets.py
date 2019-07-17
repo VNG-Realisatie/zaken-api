@@ -90,13 +90,11 @@ class ZaakViewSet(NotificationViewSetMixin,
     list:
     Alle ZAAKen opvragen.
 
-    Deze lijst wordt standaard gepagineerd met 100 zaken per pagina.
-
     Deze lijst kan gefilterd wordt met query-string parameters.
 
-    **Opmerkingen**
-    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
-      vervat zitten.
+    **Opmerking**
+    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
+      bent.
 
     retrieve:
     Een specifieke ZAAK opvragen.
@@ -121,8 +119,8 @@ class ZaakViewSet(NotificationViewSetMixin,
       `status` de waarde "gearchiveerd" heeft.
 
     **Opmerkingen**
-    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
-      vervat zitten.
+    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
+      bent.
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
       toe te voegen die NIET de eindstatus is.
@@ -146,8 +144,8 @@ class ZaakViewSet(NotificationViewSetMixin,
       `status` de waarde "gearchiveerd" heeft.
 
     **Opmerkingen**
-    - je krijgt enkel zaken terug van de zaaktypes die in het autorisatie-JWT
-      vervat zitten.
+    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
+      bent.
     - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
       toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
