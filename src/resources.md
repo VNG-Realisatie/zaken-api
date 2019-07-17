@@ -113,8 +113,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
 | object | URL-referentie naar de resource die het OBJECT beschrijft. | string | nee | C​R​U​D |
-| relatieomschrijving | Omschrijving van de betrekking tussen de ZAAK en het OBJECT. | string | nee | C​R​U​D |
-| type | Beschrijft het type `object` gerelateerd aan de ZAAK.
+| objectType | Beschrijft het type OBJECT gerelateerd aan de ZAAK. Als er geen passend type is, dan moet het type worden opgegeven onder `objectTypeOverige`.
 
 Uitleg bij mogelijke waarden:
 
@@ -149,6 +148,8 @@ Uitleg bij mogelijke waarden:
 * `woz_waarde` - Woz waarde
 * `zakelijk_recht` - Zakelijk recht
 * `overige` - Overige | string | ja | C​R​U​D |
+| objectTypeOverige | Beschrijft het type OBJECT als er `objectType` de waarde &quot;overige&quot; heeft. | string | nee | C​R​U​D |
+| relatieomschrijving | Omschrijving van de betrekking tussen de ZAAK en het OBJECT. | string | nee | C​R​U​D |
 
 ## ZakelijkRechtHeeftAlsGerechtigde
 

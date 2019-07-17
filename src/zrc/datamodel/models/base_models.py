@@ -5,6 +5,7 @@ from datetime import date
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
@@ -409,10 +410,17 @@ class ZaakObject(models.Model):
         max_length=80, blank=True,
         help_text='Omschrijving van de betrekking tussen de ZAAK en het OBJECT.'
     )
-    type = models.CharField(
+    object_type = models.CharField(
         max_length=100,
         choices=ZaakobjectTypes.choices,
-        help_text="Beschrijft het type `object` gerelateerd aan de ZAAK."
+        help_text="Beschrijft het type OBJECT gerelateerd aan de ZAAK. Als er "
+                  "geen passend type is, dan moet het type worden opgegeven "
+                  "onder `objectTypeOverige`."
+    )
+    object_type_overige = models.CharField(
+        max_length=100, blank=True, validators=[RegexValidator('[a-z\_]+')],
+        help_text='Beschrijft het type OBJECT als `objectType` de waarde '
+                  '"overige" heeft.'
     )
 
     objects = ZaakRelatedQuerySet.as_manager()
@@ -434,7 +442,7 @@ class ZaakObject(models.Model):
                 Client = import_string(settings.ZDS_CLIENT_CLASS)
                 client = Client.from_url(object_url)
                 client.auth = APICredential.get_auth(object_url)
-                self._object = client.retrieve(self.type.lower(), url=object_url)
+                self._object = client.retrieve(self.object_type.lower(), url=object_url)
         return self._object
 
     def unique_representation(self):
