@@ -69,7 +69,9 @@ class RolFilter(FilterSet):
             'betrokkene_identificatie__vestiging__vestigings_nummer',
             'betrokkene_identificatie__vestiging__identificatie',
             'betrokkene_identificatie__medewerker__identificatie',
-            'rolomschrijving',
+            'roltype',
+            'omschrijving',
+            'omschrijving_generiek',
         )
 
 

@@ -372,9 +372,20 @@ class Rol(models.Model):
         help_text='Type van de `betrokkene`.'
     )
 
-    rolomschrijving = models.CharField(
-        max_length=80, choices=RolOmschrijving.choices,
-        help_text='Algemeen gehanteerde benaming van de aard van de ROL'
+    roltype = models.URLField(
+        help_text="URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK.",
+        max_length=1000
+    )
+    omschrijving = models.CharField(
+        _("omschrijving"), max_length=20,
+        editable=False, help_text=_("Omschrijving van de aard van de ROL, afgeleid uit "
+                                    "het ROLTYPE.")
+    )
+    omschrijving_generiek = models.CharField(
+        max_length=80,
+        choices=RolOmschrijving.choices,
+        help_text=_("Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE."),
+        editable=False
     )
     roltoelichting = models.TextField(max_length=1000)
 
@@ -392,6 +403,26 @@ class Rol(models.Model):
     class Meta:
         verbose_name = "Rol"
         verbose_name_plural = "Rollen"
+
+    def save(self, *args, **kwargs):
+        # derive text fields from RolType
+        assert self.roltype, "Roltype URL must be set"
+
+        self._derive_roltype_attributes()
+
+        super().save(*args, **kwargs)
+
+    def _derive_roltype_attributes(self):
+        if self.omschrijving and self.omschrijving_generiek:
+            return
+
+        Client = import_string(settings.ZDS_CLIENT_CLASS)
+        client = Client.from_url(self.roltype)
+        client.auth = APICredential.get_auth(self.roltype)
+        roltype = client.retrieve(self.object_type.lower(), url=self.roltype)
+
+        self.omschrijving = roltype["omschrijving"]
+        self.omschrijving_generiek = roltype["omschrijvingGeneriek"]
 
     def unique_representation(self):
         if self.betrokkene == '':
