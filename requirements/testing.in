@@ -7,5 +7,6 @@ isort
 pep8
 pylint
 pyquery
+requests-mock
 tblib
 webtest
