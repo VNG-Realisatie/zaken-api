@@ -10,6 +10,14 @@ from vng_api_common.validators import (
 )
 
 
+def fetch_object(resource: str, url: str) -> dict:
+    Client = import_string(settings.ZDS_CLIENT_CLASS)
+    client = Client.from_url(url)
+    client.auth = APICredential.get_auth(url)
+    obj = client.retrieve(resource, url=url)
+    return obj
+
+
 class RolOccurenceValidator:
     """
     Validate that max x occurences of a field occur for a related object.
@@ -31,12 +39,7 @@ class RolOccurenceValidator:
         self.instance = getattr(serializer, 'instance', None)
 
     def __call__(self, attrs):
-        roltype = attrs["roltype"]
-
-        Client = import_string(settings.ZDS_CLIENT_CLASS)
-        client = Client.from_url(roltype)
-        client.auth = APICredential.get_auth(roltype)
-        roltype = client.retrieve("roltype", url=roltype)
+        roltype = fetch_object("roltype", attrs["roltype"])
 
         attrs["omschrijving"] = roltype["omschrijving"]
         attrs["omschrijving_generiek"] = roltype["omschrijvingGeneriek"]
@@ -97,4 +100,24 @@ class HoofdzaakValidator:
 
     def __call__(self, obj: models.Model):
         if obj.hoofdzaak_id is not None:
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class CorrectZaaktypeValidator:
+    code = "zaaktype-mismatch"
+    message = _("De referentie hoort niet bij het zaaktype van de zaak.")
+
+    def __init__(self, url_field: str, zaak_field: str = "zaak", resource: str = None):
+        self.url_field = url_field
+        self.zaak_field = zaak_field
+        self.resource = resource or url_field
+
+    def __call__(self, attrs):
+        url = attrs.get(self.url_field)
+        zaak = attrs.get(self.zaak_field)
+        if not url or not zaak:
+            return
+
+        obj = fetch_object(self.resource, url)
+        if obj["zaaktype"] != zaak.zaaktype:
             raise serializers.ValidationError(self.message, code=self.code)

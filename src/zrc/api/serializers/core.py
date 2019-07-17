@@ -39,8 +39,8 @@ from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from ..auth import get_auth
 from ..validators import (
-    HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
-    UniekeIdentificatieValidator
+    CorrectZaaktypeValidator, HoofdzaakValidator, NotSelfValidator,
+    RolOccurenceValidator, UniekeIdentificatieValidator
 )
 from .address import ObjectAdresSerializer
 from .betrokkene import (
@@ -809,6 +809,7 @@ class RolSerializer(PolymorphicSerializer):
         validators = [
             RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),
             RolOccurenceValidator(RolOmschrijving.zaakcoordinator, max_amount=1),
+            CorrectZaaktypeValidator("roltype"),
         ]
         extra_kwargs = {
             'url': {
@@ -828,8 +829,6 @@ class RolSerializer(PolymorphicSerializer):
                     URLValidator(get_auth=get_auth),
                     IsImmutableValidator(),
                     ResourceValidator('RolType', settings.ZTC_API_SPEC),
-                    # TODO: add validator that checks RolType.zaaktype the same as
-                    # Zaak.zaaktype
                 ]
             }
         }

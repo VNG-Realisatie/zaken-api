@@ -17,12 +17,13 @@ from zrc.datamodel.models import (
 )
 from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
 
+ZAAKTYPE = "https://ztc.nl/zaaktypen/123"
 BETROKKENE = 'http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd'
 ROLTYPE = "https://ztc.nl/roltypen/123"
 
 ROLTYPE_RESPONSE = {
     "url": ROLTYPE,
-    "zaaktype": "https://ztc.nl/zaaktypen/123",
+    "zaaktype": ZAAKTYPE,
     "omschrijving": RolOmschrijving.initiator,
     "omschrijvingGeneriek": RolOmschrijving.initiator,
 }
@@ -257,7 +258,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_create_rol_with_identificatie(self, *mocks):
         url = get_operation_url('rol_create')
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
@@ -307,7 +308,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_create_rol_without_identificatie(self, *mocks):
         url = get_operation_url('rol_create')
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
@@ -334,7 +335,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_create_rol_fail_validation(self, *mocks):
         url = get_operation_url('rol_create')
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
         data = {
             'zaak': f'http://testserver{zaak_url}',
