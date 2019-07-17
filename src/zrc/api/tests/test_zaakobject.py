@@ -43,6 +43,7 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': OBJECT,
                 'objectType': ZaakobjectTypes.besluit,
@@ -125,6 +126,7 @@ class ZaakObjectAdresTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
@@ -220,6 +222,7 @@ class ZaakObjectHuishoudenTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
@@ -321,6 +324,7 @@ class ZaakObjectMedewerkerTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
@@ -405,6 +409,7 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
@@ -508,6 +513,7 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
@@ -614,6 +620,7 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
@@ -726,6 +733,7 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
@@ -845,6 +853,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',
@@ -967,6 +976,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(zaakobject.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'object': '',
                 'relatieomschrijving': '',

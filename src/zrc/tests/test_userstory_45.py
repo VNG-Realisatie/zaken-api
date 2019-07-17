@@ -45,6 +45,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
         self.assertIn('url', response_data)
         del response_data['url']
+        del response_data['uuid']
         self.assertEqual(response_data, {
             'zaak': f'http://testserver{zaak_url}',
             'betrokkene': WATERNET,

@@ -1,4 +1,4 @@
-from .adres_serializers import *  # noqa
-from .base_serializers import *  # noqa
+from .address import *  # noqa
 from .betrokkene import *  # noqa
+from .core import *  # noqa
 from .zaakobjecten import *  # noqa

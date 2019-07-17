@@ -62,6 +62,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(rol.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'betrokkene': BETROKKENE,
                 'betrokkeneType': RolTypes.natuurlijk_persoon,
@@ -133,6 +134,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(rol.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'betrokkene': BETROKKENE,
                 'betrokkeneType': RolTypes.niet_natuurlijk_persoon,
@@ -198,6 +200,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             data,
             {
                 'url': f'http://testserver{url}',
+                'uuid': str(rol.uuid),
                 'zaak': f'http://testserver{zaak_url}',
                 'betrokkene': BETROKKENE,
                 'betrokkeneType': RolTypes.vestiging,

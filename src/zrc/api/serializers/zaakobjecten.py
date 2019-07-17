@@ -16,10 +16,10 @@ from zrc.datamodel.models import (
     ZakelijkRechtHeeftAlsGerechtigde
 )
 
-from .adres_serializers import (
+from .address import (
     TerreinGebouwdObjectAdresSerializer, WozObjectAdresSerializer
 )
-from .base_serializers import (
+from .core import (
     RolNatuurlijkPersoonSerializer, RolNietNatuurlijkPersoonSerializer
 )
 
