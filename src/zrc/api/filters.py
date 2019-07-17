@@ -1,17 +1,10 @@
-from django.apps import apps
-
 from django_filters import filters
 from vng_api_common.filtersets import FilterSet
+from vng_api_common.utils import get_help_text
 
 from zrc.datamodel.models import (
     Resultaat, Rol, Status, Zaak, ZaakInformatieObject, ZaakObject
 )
-
-
-def get_help_text(model_string: str, field_name: str) -> str:
-    ModelClass = apps.get_model(model_string, require_ready=False)
-    field = ModelClass._meta.get_field(field_name)
-    return field.help_text
 
 
 class ZaakFilter(FilterSet):
@@ -85,7 +78,7 @@ class StatusFilter(FilterSet):
         model = Status
         fields = (
             'zaak',
-            'status_type',
+            'statustype',
         )
 
 
@@ -94,7 +87,7 @@ class ResultaatFilter(FilterSet):
         model = Resultaat
         fields = (
             'zaak',
-            'resultaat_type',
+            'resultaattype',
         )
 
 

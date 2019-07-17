@@ -58,7 +58,7 @@ class RolFactory(factory.django.DjangoModelFactory):
 
 class StatusFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
-    status_type = factory.Faker('url')
+    statustype = factory.Faker('url')
     datum_status_gezet = factory.Faker('date_time_this_month', tzinfo=timezone.utc)
 
     class Meta:
@@ -67,7 +67,7 @@ class StatusFactory(factory.django.DjangoModelFactory):
 
 class ResultaatFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
-    resultaat_type = factory.Faker('url')
+    resultaattype = factory.Faker('url')
 
     class Meta:
         model = 'datamodel.Resultaat'

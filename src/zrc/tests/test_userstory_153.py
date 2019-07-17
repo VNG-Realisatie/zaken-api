@@ -169,7 +169,7 @@ class US153TestCase(JWTAuthMixin, APITestCase):
         # Geef de Zaak een initiele Status
         data = {
             'zaak': zaak['url'],
-            'statusType': STATUS_TYPE,
+            'statustype': STATUS_TYPE,
             'datumStatusGezet': datetime.datetime.now().isoformat(),
         }
         response = self.client.post(status_create_url, data)

@@ -82,7 +82,7 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         url = reverse(Resultaat)
         resultaat_data = {
             'zaak': zaak_response['url'],
-            'resultaatType': RESULTAATTYPE
+            'resultaattype': RESULTAATTYPE
         }
         response = self.client.post(url, resultaat_data, **ZAAK_WRITE_KWARGS)
         resultaat_response = response.data

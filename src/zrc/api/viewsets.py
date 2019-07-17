@@ -163,8 +163,8 @@ class ZaakViewSet(NotificationViewSetMixin,
     - `zaakobject` - alle zaakobjecten bij de zaak
     - `zaakeigenschap` - alle eigenschappen van de zaak
     - `zaakkenmerk` - alle kenmerken van de zaak
-    - `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook
-      https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
+    - `zaakinformatieobject` - dit moet door-cascaden naar de Documenten API,
+      zie ook: https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
     - `klantcontact` - alle klantcontacten bij een zaak
     """
     queryset = Zaak.objects.prefetch_related('deelzaken').order_by('-pk')
@@ -363,10 +363,10 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   viewsets.ModelViewSet):
 
     """
-    Opvragen en bewerken van Zaak-Informatieobject relaties.
+    Opvragen en bewerken van ZAAK-INFORMATIEOBJECT relaties.
 
     create:
-    Maak een ZAAKINFORMATIEOBJECT aan.
+    Maak een ZAAK-INFORMATIEOBJECT relatie aan.
 
     Er worden twee types van
     relaties met andere objecten gerealiseerd:
@@ -379,9 +379,8 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     **Opmerkingen**
     - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
       wordt ook door het systeem gezet.
-    - Bij het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,
+    - Bij het aanmaken wordt ook in de Documenten API de gespiegelde relatie aangemaakt,
       echter zonder de relatie-informatie.
-
 
     Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
 
@@ -390,17 +389,17 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
 
     list:
-    Alle ZAAKINFORMATIEOBJECTen opvragen.
+    Alle ZAAK-INFORMATIEOBJECT relaties opvragen.
 
     Deze lijst kan gefilterd wordt met querystringparameters.
 
     retrieve:
-    Een specifiek ZAAKINFORMATIEOBJECT opvragen.
+    Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
 
-    Een specifiek ZAAKINFORMATIEOBJECT opvragen.
+    Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
 
     update:
-    Werk een ZAAKINFORMATIEOBJECT in zijn geheel bij.
+    Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij.
 
     Je mag enkel de gegevens
     van de relatie bewerken, en niet de relatie zelf aanpassen.
@@ -409,7 +408,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     - informatieobject URL en zaak URL mogen niet veranderen
 
     partial_update:
-    Werk een ZAAKINFORMATIEOBJECT in deels bij.
+    Werk een ZAAK-INFORMATIEOBJECT relatie in deels bij.
 
     Je mag enkel de gegevens
     van de relatie bewerken, en niet de relatie zelf aanpassen.
@@ -418,10 +417,9 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     - informatieobject URL en zaak URL mogen niet veranderen
 
     destroy:
-    Verwijder een ZAAKINFORMATIEOBJECT.
+    Verwijder een ZAAK-INFORMATIEOBJECT relatie.
 
-    De gespiegelde relatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je
-    niets te doen.
+    De gespiegelde relatie in de Documenten API wordt door de Zaken API verwijderd. Consumers kunnen dit niet handmatig doen..
     """
     queryset = ZaakInformatieObject.objects.all()
     filterset_class = ZaakInformatieObjectFilter
@@ -555,10 +553,10 @@ class RolViewSet(NotificationCreateMixin,
                  mixins.DestroyModelMixin,
                  viewsets.ReadOnlyModelViewSet):
     """
-    Opvragen en bewerken van ROLrelatie tussen een ZAAK en een BETROKKENE.
+    Opvragen en bewerken van ROL relatie tussen een ZAAK en een BETROKKENE.
 
     list:
-    Allen ROLlen bij ZAAKen opvragen.
+    Alle ROLlen bij ZAAKen opvragen.
 
     Deze lijst kan gefilterd wordt met query-string parameters.
 
@@ -699,10 +697,10 @@ class ZaakBesluitViewSet(NotificationCreateMixin,
     create:
     Maak een ZAAKBESLUIT aan.
 
-    **Attentie:**
-    Dit endpoint dient niet aangesproken te worden door gebruikers.
-    Het BRC gebruikt dit endpoint om relaties te synchroniseren, daarom is dit
-    endpoint in het ZRC geimplementeerd.
+    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
+
+    De Besluiten API gebruikt dit endpoint om relaties te synchroniseren,
+    daarom is dit endpoint in de Zaken API geimplementeerd.
 
     **Er wordt gevalideerd op**
     - geldigheid URL naar de ZAAK
@@ -710,7 +708,10 @@ class ZaakBesluitViewSet(NotificationCreateMixin,
     destroy:
     Verwijder een ZAAKBESLUIT.
 
-    Verwijder een ZAAKBESLUIT.
+    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
+
+    De Besluiten API gebruikt dit endpoint om relaties te synchroniseren,
+    daarom is dit endpoint in de Zaken API geimplementeerd.
 
     """
     queryset = ZaakBesluit.objects.all()

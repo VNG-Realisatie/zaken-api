@@ -459,7 +459,7 @@ class FilterValidationTests(JWTAuthMixin, APITestCase):
 
         invalid_filters = {
             'zaak': '123',  # must be a url
-            'statusType': '123',  # must be a url
+            'statustype': '123',  # must be a url
             'foo': 'bar',
         }
 
@@ -473,16 +473,16 @@ class StatusValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_not_allowed_to_change_status_type(self):
+    def test_not_allowed_to_change_statustype(self):
         _status = StatusFactory.create()
         url = reverse(_status)
 
         response = self.client.patch(url, {
-            "statusType": "https://ander.status_type.nl/foo/bar",
+            "statustype": "https://ander.statustype.nl/foo/bar",
         })
 
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        # validation_error = get_validation_errors(response, 'statusType')
+        # validation_error = get_validation_errors(response, 'statustype')
         # self.assertEqual(validation_error['code'], IsImmutableValidator.code)
 
 
@@ -490,14 +490,14 @@ class ResultaatValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_not_allowed_to_change_resultaat_type(self):
+    def test_not_allowed_to_change_resultaattype(self):
         resultaat = ResultaatFactory.create()
         url = reverse(resultaat)
 
         response = self.client.patch(url, {
-            "resultaatType": "https://ander.resultaat_type.nl/foo/bar",
+            "resultaattype": "https://ander.resultaattype.nl/foo/bar",
         })
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        validation_error = get_validation_errors(response, 'resultaatType')
+        validation_error = get_validation_errors(response, 'resultaattype')
         self.assertEqual(validation_error['code'], IsImmutableValidator.code)

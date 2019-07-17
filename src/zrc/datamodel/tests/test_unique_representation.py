@@ -46,8 +46,8 @@ class UniqueRepresentationTestCase(ZaakInformatieObjectSyncMixin, APITestCase):
             zaak__identificatie='5d940d52-ff5e-4b18-a769-977af9130c04',
         )
         responses = {
-            resultaat.resultaat_type: {
-                'url': resultaat.resultaat_type,
+            resultaat.resultaattype: {
+                'url': resultaat.resultaattype,
                 'omschrijving': "verleend",
             }
         }

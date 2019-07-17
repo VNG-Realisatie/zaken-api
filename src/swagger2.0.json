@@ -1,11 +1,11 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Zaakregistratiecomponent (ZRC) API",
-        "description": "Een API om een zaakregistratiecomponent te benaderen.\n\nDe `ZAAK` is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De ZRC API werkt samen met andere ZGW API's, t.w.\nDRC, ZTC en BRC, om tot volledige functionaliteit te komen.\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://ref.tst.vng.cloud/tokens/) gebruiken om JWT-tokens te\ngenereren.\n\n**Notificaties**\n\nDeze component publiceert notificaties op het kanaal `zaken`.\n\n**Handige links**\n\n* [Aan de slag](https://ref.tst.vng.cloud/ontwikkelaars/)\n* [\"Papieren\" standaard](https://ref.tst.vng.cloud/standaard/)\n",
+        "title": "Zaken API",
+        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n**Notificaties**\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n",
         "contact": {
-            "url": "https://github.com/VNG-Realisatie/gemma-zaken",
-            "email": "support@maykinmedia.nl"
+            "url": "https://zaakgerichtwerken.vng.cloud",
+            "email": "standaarden.ondersteuning@vng.nl"
         },
         "license": {
             "name": "EUPL 1.2",
@@ -563,9 +563,9 @@
                         "format": "uri"
                     },
                     {
-                        "name": "resultaatType",
+                        "name": "resultaattype",
                         "in": "query",
-                        "description": "URL naar het resultaattype uit het ZTC.",
+                        "description": "URL-referentie naar het RESULTAATTYPE (in de Catalogi API).",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -1678,7 +1678,7 @@
         "/rollen": {
             "get": {
                 "operationId": "rol_list",
-                "summary": "Allen ROLlen bij ZAAKen opvragen.",
+                "summary": "Alle ROLlen bij ZAAKen opvragen.",
                 "description": "Deze lijst kan gefilterd wordt met query-string parameters.",
                 "parameters": [
                     {
@@ -1692,7 +1692,7 @@
                     {
                         "name": "betrokkene",
                         "in": "query",
-                        "description": "Een betrokkene gerelateerd aan een zaak",
+                        "description": "URL-referentie naar een betrokkene gerelateerd aan de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -1700,7 +1700,7 @@
                     {
                         "name": "betrokkeneType",
                         "in": "query",
-                        "description": "Soort betrokkene",
+                        "description": "Type van de `betrokkene`.",
                         "required": false,
                         "type": "string",
                         "enum": [
@@ -2478,9 +2478,9 @@
                         "format": "uri"
                     },
                     {
-                        "name": "statusType",
+                        "name": "statustype",
                         "in": "query",
-                        "description": "URL naar het statustype uit het ZTC.",
+                        "description": "URL-referentie naar het STATUSTYPE (in de Catalogi API).",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -3012,7 +3012,7 @@
         "/zaakinformatieobjecten": {
             "get": {
                 "operationId": "zaakinformatieobject_list",
-                "summary": "Alle ZAAKINFORMATIEOBJECTen opvragen.",
+                "summary": "Alle ZAAK-INFORMATIEOBJECT relaties opvragen.",
                 "description": "Deze lijst kan gefilterd wordt met querystringparameters.",
                 "parameters": [
                     {
@@ -3026,7 +3026,7 @@
                     {
                         "name": "informatieobject",
                         "in": "query",
-                        "description": "URL-referentie naar het informatieobject in het DRC, waar ook de relatieinformatie opgevraagd kan worden.",
+                        "description": "URL-referentie naar het INFORMATIEOBJECT (in de Documenten API), waar ook de relatieinformatie opgevraagd kan worden.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -3190,8 +3190,8 @@
             },
             "post": {
                 "operationId": "zaakinformatieobject_create",
-                "summary": "Maak een ZAAKINFORMATIEOBJECT aan.",
-                "description": "Er worden twee types van\nrelaties met andere objecten gerealiseerd:\n\n**Er wordt gevalideerd op**\n- geldigheid zaak URL\n- geldigheid informatieobject URL\n- de combinatie informatieobject en zaak moet uniek zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij het aanmaken wordt ook in het DRC de gespiegelde relatie aangemaakt,\n  echter zonder de relatie-informatie.\n\n\nRegistreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT",
+                "summary": "Maak een ZAAK-INFORMATIEOBJECT relatie aan.",
+                "description": "Er worden twee types van\nrelaties met andere objecten gerealiseerd:\n\n**Er wordt gevalideerd op**\n- geldigheid zaak URL\n- geldigheid informatieobject URL\n- de combinatie informatieobject en zaak moet uniek zijn\n\n**Opmerkingen**\n- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`\n  wordt ook door het systeem gezet.\n- Bij het aanmaken wordt ook in de Documenten API de gespiegelde relatie aangemaakt,\n  echter zonder de relatie-informatie.\n\nRegistreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\n**Er wordt gevalideerd op**\n- geldigheid informatieobject URL\n- uniek zijn van relatie ZAAK-INFORMATIEOBJECT",
                 "parameters": [
                     {
                         "name": "data",
@@ -3388,8 +3388,8 @@
         "/zaakinformatieobjecten/{uuid}": {
             "get": {
                 "operationId": "zaakinformatieobject_read",
-                "summary": "Een specifiek ZAAKINFORMATIEOBJECT opvragen.",
-                "description": "Een specifiek ZAAKINFORMATIEOBJECT opvragen.",
+                "summary": "Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.",
+                "description": "Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -3546,7 +3546,7 @@
             },
             "put": {
                 "operationId": "zaakinformatieobject_update",
-                "summary": "Werk een ZAAKINFORMATIEOBJECT in zijn geheel bij.",
+                "summary": "Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij.",
                 "description": "Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\n**Er wordt gevalideerd op**\n- informatieobject URL en zaak URL mogen niet veranderen",
                 "parameters": [
                     {
@@ -3748,7 +3748,7 @@
             },
             "patch": {
                 "operationId": "zaakinformatieobject_partial_update",
-                "summary": "Werk een ZAAKINFORMATIEOBJECT in deels bij.",
+                "summary": "Werk een ZAAK-INFORMATIEOBJECT relatie in deels bij.",
                 "description": "Je mag enkel de gegevens\nvan de relatie bewerken, en niet de relatie zelf aanpassen.\n\n**Er wordt gevalideerd op**\n- informatieobject URL en zaak URL mogen niet veranderen",
                 "parameters": [
                     {
@@ -3950,8 +3950,8 @@
             },
             "delete": {
                 "operationId": "zaakinformatieobject_delete",
-                "summary": "Verwijder een ZAAKINFORMATIEOBJECT.",
-                "description": "De gespiegelde relatie in het DRC wordt door het ZRC verwijderd - als consumer hoef je\nniets te doen.",
+                "summary": "Verwijder een ZAAK-INFORMATIEOBJECT relatie.",
+                "description": "De gespiegelde relatie in de Documenten API wordt door de Zaken API verwijderd. Consumers kunnen dit niet handmatig doen..",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -4153,7 +4153,7 @@
                     {
                         "name": "object",
                         "in": "query",
-                        "description": "URL naar de resource die het OBJECT beschrijft.",
+                        "description": "URL-referentie naar de resource die het OBJECT beschrijft.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -4161,7 +4161,7 @@
                     {
                         "name": "type",
                         "in": "query",
-                        "description": "Beschrijft het type object gerelateerd aan de zaak",
+                        "description": "Beschrijft het type `object` gerelateerd aan de ZAAK.",
                         "required": false,
                         "type": "string",
                         "enum": [
@@ -4745,7 +4745,7 @@
                     {
                         "name": "zaaktype",
                         "in": "query",
-                        "description": "URL naar het zaaktype in de CATALOGUS waar deze voorkomt",
+                        "description": "URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -6242,7 +6242,7 @@
             "delete": {
                 "operationId": "zaak_delete",
                 "summary": "Verwijder een ZAAK.",
-                "description": "**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken van de verwijderde hoofzaak\n- `status` - alle statussen van de verwijderde zaak\n- `resultaat` - het resultaat van de verwijderde zaak\n- `rol` - alle rollen bij de zaak\n- `zaakobject` - alle zaakobjecten bij de zaak\n- `zaakeigenschap` - alle eigenschappen van de zaak\n- `zaakkenmerk` - alle kenmerken van de zaak\n- `zaakinformatieobject` - dit moet door-cascaden naar DRCs, zie ook\n  https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)\n- `klantcontact` - alle klantcontacten bij een zaak",
+                "description": "**De gerelateerde resources zijn hierbij**\n- `zaak` - de deelzaken van de verwijderde hoofzaak\n- `status` - alle statussen van de verwijderde zaak\n- `resultaat` - het resultaat van de verwijderde zaak\n- `rol` - alle rollen bij de zaak\n- `zaakobject` - alle zaakobjecten bij de zaak\n- `zaakeigenschap` - alle eigenschappen van de zaak\n- `zaakkenmerk` - alle kenmerken van de zaak\n- `zaakinformatieobject` - dit moet door-cascaden naar de Documenten API,\n  zie ook: https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)\n- `klantcontact` - alle klantcontacten bij een zaak",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -6929,7 +6929,7 @@
             "post": {
                 "operationId": "zaakbesluit_create",
                 "summary": "Maak een ZAAKBESLUIT aan.",
-                "description": "**Attentie:**\nDit endpoint dient niet aangesproken te worden door gebruikers.\nHet BRC gebruikt dit endpoint om relaties te synchroniseren, daarom is dit\nendpoint in het ZRC geimplementeerd.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK",
+                "description": "**LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**\n\nDe Besluiten API gebruikt dit endpoint om relaties te synchroniseren,\ndaarom is dit endpoint in de Zaken API geimplementeerd.\n\n**Er wordt gevalideerd op**\n- geldigheid URL naar de ZAAK",
                 "parameters": [
                     {
                         "name": "data",
@@ -7294,7 +7294,7 @@
             "delete": {
                 "operationId": "zaakbesluit_delete",
                 "summary": "Verwijder een ZAAKBESLUIT.",
-                "description": "Verwijder een ZAAKBESLUIT.",
+                "description": "**LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**\n\nDe Besluiten API gebruikt dit endpoint om relaties te synchroniseren,\ndaarom is dit endpoint in de Zaken API geimplementeerd.",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -8039,6 +8039,7 @@
                 },
                 "zaak": {
                     "title": "Zaak",
+                    "description": "URL-referentie naar de ZAAK.",
                     "type": "string",
                     "format": "uri"
                 },
@@ -8193,7 +8194,7 @@
         "Resultaat": {
             "required": [
                 "zaak",
-                "resultaatType"
+                "resultaattype"
             ],
             "type": "object",
             "properties": {
@@ -8208,12 +8209,13 @@
                 },
                 "zaak": {
                     "title": "Zaak",
+                    "description": "URL-referentie naar de ZAAK.",
                     "type": "string",
                     "format": "uri"
                 },
-                "resultaatType": {
+                "resultaattype": {
                     "title": "Resultaattype",
-                    "description": "URL naar het resultaattype uit het ZTC.",
+                    "description": "URL-referentie naar het RESULTAATTYPE (in de Catalogi API).",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -8247,19 +8249,20 @@
                 },
                 "zaak": {
                     "title": "Zaak",
+                    "description": "URL-referentie naar de ZAAK.",
                     "type": "string",
                     "format": "uri"
                 },
                 "betrokkene": {
                     "title": "Betrokkene",
-                    "description": "Een betrokkene gerelateerd aan een zaak",
+                    "description": "URL-referentie naar een betrokkene gerelateerd aan de ZAAK.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000
                 },
                 "betrokkeneType": {
                     "title": "Betrokkene type",
-                    "description": "Soort betrokkene",
+                    "description": "Type van de `betrokkene`.\n\nUitleg bij mogelijke waarden:\n\n* `natuurlijk_persoon` - Natuurlijk persoon\n* `niet_natuurlijk_persoon` - Niet-natuurlijk persoon\n* `vestiging` - Vestiging\n* `organisatorische_eenheid` - Organisatorische eenheid\n* `medewerker` - Medewerker",
                     "type": "string",
                     "enum": [
                         "natuurlijk_persoon",
@@ -8271,7 +8274,7 @@
                 },
                 "rolomschrijving": {
                     "title": "Rolomschrijving",
-                    "description": "Algemeen gehanteerde benaming van de aard van de ROL",
+                    "description": "Algemeen gehanteerde benaming van de aard van de ROL\n\nUitleg bij mogelijke waarden:\n\n* `adviseur` - (Adviseur) Kennis in dienst stellen van de behandeling van (een deel van) een zaak.\n* `behandelaar` - (Behandelaar) De vakinhoudelijke behandeling doen van (een deel van) een zaak.\n* `belanghebbende` - (Belanghebbende) Vanuit eigen en objectief belang rechtstreeks betrokken zijn bij de behandeling en/of de uitkomst van een zaak.\n* `beslisser` - (Beslisser) Nemen van besluiten die voor de uitkomst van een zaak noodzakelijk zijn.\n* `initiator` - (Initiator) Aanleiding geven tot de start van een zaak ..\n* `klantcontacter` - (Klantcontacter) Het eerste aanspreekpunt zijn voor vragen van burgers en bedrijven ..\n* `zaakcoordinator` - (Zaakco\u00f6rdinator) Er voor zorg dragen dat de behandeling van de zaak in samenhang uitgevoerd wordt conform de daarover gemaakte afspraken.\n* `mede_initiator` - Mede-initiator",
                     "type": "string",
                     "enum": [
                         "adviseur",
@@ -8299,7 +8302,7 @@
                 },
                 "indicatieMachtiging": {
                     "title": "Indicatie machtiging",
-                    "description": "Indicatie_machtiging\n\nUitleg bij mogelijke waarden:\n\n* `gemachtigde` - De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen\n* `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen",
+                    "description": "Indicatie machtiging\n\nUitleg bij mogelijke waarden:\n\n* `gemachtigde` - De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen\n* `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen",
                     "type": "string",
                     "enum": [
                         "gemachtigde",
@@ -8712,7 +8715,7 @@
         "Status": {
             "required": [
                 "zaak",
-                "statusType",
+                "statustype",
                 "datumStatusGezet"
             ],
             "type": "object",
@@ -8728,12 +8731,13 @@
                 },
                 "zaak": {
                     "title": "Zaak",
+                    "description": "URL-referentie naar de ZAAK.",
                     "type": "string",
                     "format": "uri"
                 },
-                "statusType": {
+                "statustype": {
                     "title": "Statustype",
-                    "description": "URL naar het statustype uit het ZTC.",
+                    "description": "URL-referentie naar het STATUSTYPE (in de Catalogi API).",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -8771,7 +8775,7 @@
                 },
                 "informatieobject": {
                     "title": "Informatieobject",
-                    "description": "URL-referentie naar het informatieobject in het DRC, waar ook de relatieinformatie opgevraagd kan worden.",
+                    "description": "URL-referentie naar het INFORMATIEOBJECT (in de Documenten API), waar ook de relatieinformatie opgevraagd kan worden.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -8779,6 +8783,7 @@
                 },
                 "zaak": {
                     "title": "Zaak",
+                    "description": "URL-referentie naar de ZAAK.",
                     "type": "string",
                     "format": "uri"
                 },
@@ -8829,12 +8834,13 @@
                 },
                 "zaak": {
                     "title": "Zaak",
+                    "description": "URL-referentie naar de ZAAK.",
                     "type": "string",
                     "format": "uri"
                 },
                 "object": {
                     "title": "Object",
-                    "description": "URL naar de resource die het OBJECT beschrijft.",
+                    "description": "URL-referentie naar de resource die het OBJECT beschrijft.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000
@@ -8847,7 +8853,7 @@
                 },
                 "type": {
                     "title": "Type",
-                    "description": "Beschrijft het type object gerelateerd aan de zaak",
+                    "description": "Beschrijft het type `object` gerelateerd aan de ZAAK.\n\nUitleg bij mogelijke waarden:\n\n* `adres` - Adres\n* `besluit` - Besluit\n* `buurt` - Buurt\n* `enkelvoudig_document` - Enkelvoudig document\n* `gemeente` - Gemeente\n* `gemeentelijke_openbare_ruimte` - Gemeentelijke openbare ruimte\n* `huishouden` - Huishouden\n* `inrichtingselement` - Inrichtingselement\n* `kadastrale_onroerende_zaak` - Kadastrale onroerende zaak\n* `kunstwerkdeel` - Kunstwerkdeel\n* `maatschappelijke_activiteit` - Maatschappelijke activiteit\n* `medewerker` - Medewerker\n* `natuurlijk_persoon` - Natuurlijk persoon\n* `niet_natuurlijk_persoon` - Niet-natuurlijk persoon\n* `openbare_ruimte` - Openbare ruimte\n* `organisatorische_eenheid` - Organisatorische eenheid\n* `pand` - Pand\n* `spoorbaandeel` - Spoorbaandeel\n* `status` - Status\n* `terreindeel` - Terreindeel\n* `terrein_gebouwd_object` - Terrein gebouwd object\n* `vestiging` - Vestiging\n* `waterdeel` - Waterdeel\n* `wegdeel` - Wegdeel\n* `wijk` - Wijk\n* `woonplaats` - Woonplaats\n* `woz_deelobject` - Woz deel object\n* `woz_object` - Woz object\n* `woz_waarde` - Woz waarde\n* `zakelijk_recht` - Zakelijk recht\n* `overige` - Overige",
                     "type": "string",
                     "enum": [
                         "adres",
@@ -10468,7 +10474,7 @@
             }
         },
         "RelevanteZaak": {
-            "description": "Een lijst van objecten met ieder twee elementen:\n* `zaak` - een url naar een andere `Zaak`\n* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, waarbij de onderstaande waardes toegestaan zijn.",
+            "description": "Een lijst van relevante andere zaken.",
             "required": [
                 "url",
                 "aardRelatie"
@@ -10476,7 +10482,7 @@
             "type": "object",
             "properties": {
                 "url": {
-                    "title": "URL naar zaak",
+                    "title": "URL-referentie naar de ZAAK.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -10484,6 +10490,7 @@
                 },
                 "aardRelatie": {
                     "title": "Aard relatie",
+                    "description": "Benamingen van de aard van de relaties van andere zaken tot (onderhanden) zaken.\n\nUitleg bij mogelijke waarden:\n\n* `vervolg` - De andere zaak gaf aanleiding tot het starten van de onderhanden zaak.\n* `onderwerp` - De andere zaak is relevant voor cq. is onderwerp van de onderhanden zaak.\n* `bijdrage` - Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage.",
                     "type": "string",
                     "enum": [
                         "vervolg",
@@ -10562,7 +10569,7 @@
                 },
                 "zaaktype": {
                     "title": "Zaaktype",
-                    "description": "URL naar het zaaktype in de CATALOGUS waar deze voorkomt",
+                    "description": "URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -10661,6 +10668,7 @@
                 },
                 "betalingsindicatieWeergave": {
                     "title": "Betalingsindicatie weergave",
+                    "description": "Uitleg bij `betalingsindicatie`.",
                     "type": "string",
                     "readOnly": true,
                     "minLength": 1
@@ -10690,14 +10698,16 @@
                 },
                 "hoofdzaak": {
                     "title": "Is deelzaak van",
-                    "description": "De verwijzing naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er \u00e9\u00e9n is.",
+                    "description": "URL-referentie naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er \u00e9\u00e9n is.",
                     "type": "string",
                     "format": "uri",
                     "x-nullable": true
                 },
                 "deelzaken": {
+                    "description": "URL-referenties naar deel ZAAKen.",
                     "type": "array",
                     "items": {
+                        "description": "URL-referenties naar deel ZAAKen.",
                         "type": "string",
                         "format": "uri"
                     },
@@ -10705,7 +10715,7 @@
                     "uniqueItems": true
                 },
                 "relevanteAndereZaken": {
-                    "description": "Een lijst van objecten met ieder twee elementen:\n* `zaak` - een url naar een andere `Zaak`\n* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, waarbij de onderstaande waardes toegestaan zijn.\n\nUitleg bij mogelijke waarden:\n\n* `vervolg` - De andere zaak gaf aanleiding tot het starten van de onderhanden zaak.\n* `onderwerp` - De andere zaak is relevant voor cq. is onderwerp van de onderhanden zaak.\n* `bijdrage` - Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage.",
+                    "description": "Een lijst van relevante andere zaken.",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/RelevanteZaak"
@@ -10727,7 +10737,7 @@
                 },
                 "archiefnominatie": {
                     "title": "Archiefnominatie",
-                    "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.",
+                    "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.\n\nUitleg bij mogelijke waarden:\n\n* `blijvend_bewaren` - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen worden naar een archiefbewaarplaats.\n* `vernietigen` - Het zaakdossier moet op of na de Archiefactiedatum vernietigd worden.",
                     "type": "string",
                     "enum": [
                         "blijvend_bewaren",
@@ -10737,7 +10747,7 @@
                 },
                 "archiefstatus": {
                     "title": "Archiefstatus",
-                    "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.",
+                    "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.\n\nUitleg bij mogelijke waarden:\n\n* `nog_te_archiveren` - De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd.\n* `gearchiveerd` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt.\n* `gearchiveerd_procestermijn_onbekend` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum kan nog niet bepaald worden.\n* `overgedragen` - De zaak cq. het zaakdossier is overgebracht naar een archiefbewaarplaats.",
                     "type": "string",
                     "enum": [
                         "nog_te_archiveren",
@@ -10755,7 +10765,7 @@
                 },
                 "resultaat": {
                     "title": "Resultaat",
-                    "description": "Indien geen resultaat bekend is, dan is de waarde 'null'",
+                    "description": "URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde 'null'",
                     "type": "string",
                     "format": "uri",
                     "readOnly": true
@@ -10794,7 +10804,7 @@
                 },
                 "zaaktype": {
                     "title": "Zaaktype",
-                    "description": "URL naar het zaaktype in de CATALOGUS waar deze voorkomt",
+                    "description": "URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt",
                     "type": "string",
                     "minLength": 1
                 },
@@ -11031,7 +11041,7 @@
                 },
                 "besluit": {
                     "title": "Besluit",
-                    "description": "URL-referentie naar het informatieobject in het BRC, waar ook de relatieinformatie opgevraagd kan worden.",
+                    "description": "URL-referentie naar het BESLUIT (in de Besluiten API), waar ook de relatieinformatie opgevraagd kan worden.",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -11060,7 +11070,7 @@
                 },
                 "eigenschap": {
                     "title": "Eigenschap",
-                    "description": "URL naar de eigenschap in het ZTC",
+                    "description": "URL-referentie naar de EIGENSCHAP (in de Catalogi API).",
                     "type": "string",
                     "format": "uri",
                     "maxLength": 1000,
@@ -11068,7 +11078,7 @@
                 },
                 "naam": {
                     "title": "Naam",
-                    "description": "De naam van de EIGENSCHAP (overgenomen uit ZTC).",
+                    "description": "De naam van de EIGENSCHAP (overgenomen uit de Catalogi API).",
                     "type": "string",
                     "readOnly": true,
                     "minLength": 1

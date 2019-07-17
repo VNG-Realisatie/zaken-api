@@ -148,7 +148,7 @@ class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
         with mock_client(responses):
             response = self.client.post(status_list_url, {
                 'zaak': zaak_url,
-                'statusType': STATUSTYPE,
+                'statustype': STATUSTYPE,
                 'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
             })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
@@ -160,7 +160,7 @@ class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
         resultaat_create_url = get_operation_url('resultaat_create')
         data = {
             'zaak': zaak_url,
-            'resultaatType': RESULTAATTYPE,
+            'resultaattype': RESULTAATTYPE,
             'toelichting': '',
         }
 
@@ -174,7 +174,7 @@ class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
         with mock_client(responses):
             response = self.client.post(status_list_url, {
                 'zaak': zaak_url,
-                'statusType': STATUSTYPE2,
+                'statustype': STATUSTYPE2,
                 'datumStatusGezet': datum_status_gezet.isoformat(),
             })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
@@ -216,7 +216,7 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         # initiele status
         response = self.client.post(status_list_url, {
             'zaak': zaak_url,
-            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
+            'statustype': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
             'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -224,7 +224,7 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         # extra status - mag niet, onafhankelijk van de data
         response = self.client.post(status_list_url, {
             'zaak': zaak_url,
-            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
+            'statustype': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
             'datumStatusGezet': isodatetime(2018, 10, 2, 10, 00, 00),
         })
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -242,7 +242,7 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         zaak = ZaakFactory.create(einddatum='2019-01-07', zaaktype=ZAAKTYPE)
         StatusFactory.create(
             zaak=zaak,
-            status_type='http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/2',
+            statustype='http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/2',
             datum_status_gezet='2019-01-07T12:51:41+0000',
         )
         zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
@@ -252,7 +252,7 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         datum_status_gezet = utcdatetime(2019, 1, 7, 12, 53, 25)
         response = self.client.post(status_list_url, {
             'zaak': zaak_url,
-            'statusType': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
+            'statustype': 'http://example.com/ztc/api/v1/catalogussen/1/zaaktypen/1/statustypen/1',
             'datumStatusGezet': datum_status_gezet.isoformat(),
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
