@@ -2,6 +2,14 @@
 Wijzigingen
 ===========
 
+1.0.0-rc1 (2019-07-18)
+======================
+
+Release candidate tag
+
+* Bumped to vng-api-common 1.0.0
+* Bumped version numbers to 1.0.0-rc
+
 0.21.0 (2019-07-15)
 ===================
 
