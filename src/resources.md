@@ -48,7 +48,9 @@ Uitleg bij mogelijke waarden:
 * `vestiging` - Vestiging
 * `organisatorische_eenheid` - Organisatorische eenheid
 * `medewerker` - Medewerker | string | ja | C​R​U​D |
-| rolomschrijving | Algemeen gehanteerde benaming van de aard van de ROL
+| roltype | URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK. | string | ja | C​R​U​D |
+| omschrijving | Omschrijving van de aard van de ROL, afgeleid uit het ROLTYPE. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| omschrijvingGeneriek | Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.
 
 Uitleg bij mogelijke waarden:
 
@@ -59,7 +61,7 @@ Uitleg bij mogelijke waarden:
 * `initiator` - (Initiator) Aanleiding geven tot de start van een zaak ..
 * `klantcontacter` - (Klantcontacter) Het eerste aanspreekpunt zijn voor vragen van burgers en bedrijven ..
 * `zaakcoordinator` - (Zaakcoördinator) Er voor zorg dragen dat de behandeling van de zaak in samenhang uitgevoerd wordt conform de daarover gemaakte afspraken.
-* `mede_initiator` - Mede-initiator | string | ja | C​R​U​D |
+* `mede_initiator` - Mede-initiator | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | roltoelichting |  | string | ja | C​R​U​D |
 | registratiedatum | De datum waarop dit object is geregistreerd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | indicatieMachtiging | Indicatie machtiging

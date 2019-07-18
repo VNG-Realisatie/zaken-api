@@ -1,10 +1,21 @@
+from django.conf import settings
 from django.db import models
+from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
+from vng_api_common.models import APICredential
 from vng_api_common.validators import (
     UniekeIdentificatieValidator as _UniekeIdentificatieValidator
 )
+
+
+def fetch_object(resource: str, url: str) -> dict:
+    Client = import_string(settings.ZDS_CLIENT_CLASS)
+    client = Client.from_url(url)
+    client.auth = APICredential.get_auth(url)
+    obj = client.retrieve(resource, url=url)
+    return obj
 
 
 class RolOccurenceValidator:
@@ -15,8 +26,8 @@ class RolOccurenceValidator:
     """
     message = _('There are already {num} `{value}` occurences')
 
-    def __init__(self, rolomschrijving: str, max_amount: int=1):
-        self.rolomschrijving = rolomschrijving
+    def __init__(self, omschrijving_generiek: str, max_amount: int=1):
+        self.omschrijving_generiek = omschrijving_generiek
         self.max_amount = max_amount
 
     def set_context(self, serializer):
@@ -28,24 +39,29 @@ class RolOccurenceValidator:
         self.instance = getattr(serializer, 'instance', None)
 
     def __call__(self, attrs):
-        if attrs['rolomschrijving'] != self.rolomschrijving:
+        roltype = fetch_object("roltype", attrs["roltype"])
+
+        attrs["omschrijving"] = roltype["omschrijving"]
+        attrs["omschrijving_generiek"] = roltype["omschrijvingGeneriek"]
+
+        if attrs['omschrijving_generiek'] != self.omschrijving_generiek:
             return
 
-        is_noop_update = self.instance and self.instance.rolomschrijving == self.rolomschrijving
+        is_noop_update = self.instance and self.instance.omschrijving_generiek == self.omschrijving_generiek
         if is_noop_update:
             return
 
         existing = (
             attrs['zaak']
             .rol_set
-            .filter(rolomschrijving=self.rolomschrijving)
+            .filter(omschrijving_generiek=self.omschrijving_generiek)
             .count()
         )
 
         if existing >= self.max_amount:
-            message = self.message.format(num=existing, value=self.rolomschrijving)
+            message = self.message.format(num=existing, value=self.omschrijving_generiek)
             raise serializers.ValidationError({
-                'rolomschrijving': message
+                'roltype': message
             }, code='max-occurences')
 
 
@@ -84,4 +100,24 @@ class HoofdzaakValidator:
 
     def __call__(self, obj: models.Model):
         if obj.hoofdzaak_id is not None:
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class CorrectZaaktypeValidator:
+    code = "zaaktype-mismatch"
+    message = _("De referentie hoort niet bij het zaaktype van de zaak.")
+
+    def __init__(self, url_field: str, zaak_field: str = "zaak", resource: str = None):
+        self.url_field = url_field
+        self.zaak_field = zaak_field
+        self.resource = resource or url_field
+
+    def __call__(self, attrs):
+        url = attrs.get(self.url_field)
+        zaak = attrs.get(self.zaak_field)
+        if not url or not zaak:
+            return
+
+        obj = fetch_object(self.resource, url)
+        if obj["zaaktype"] != zaak.zaaktype:
             raise serializers.ValidationError(self.message, code=self.code)

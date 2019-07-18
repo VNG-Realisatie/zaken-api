@@ -39,8 +39,8 @@ from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from ..auth import get_auth
 from ..validators import (
-    HoofdzaakValidator, NotSelfValidator, RolOccurenceValidator,
-    UniekeIdentificatieValidator
+    CorrectZaaktypeValidator, HoofdzaakValidator, NotSelfValidator,
+    RolOccurenceValidator, UniekeIdentificatieValidator
 )
 from .address import ObjectAdresSerializer
 from .betrokkene import (
@@ -628,7 +628,6 @@ class ZaakObjectSerializer(PolymorphicSerializer):
                   '`objectTypeOverige` niet van een waarde voorzien zijn.'),
                 code='invalid-object-type-overige-usage')
 
-
         return validated_attrs
 
     @transaction.atomic
@@ -800,7 +799,9 @@ class RolSerializer(PolymorphicSerializer):
             'zaak',
             'betrokkene',
             'betrokkene_type',
-            'rolomschrijving',
+            'roltype',
+            'omschrijving',
+            'omschrijving_generiek',
             'roltoelichting',
             'registratiedatum',
             'indicatie_machtiging',
@@ -808,6 +809,7 @@ class RolSerializer(PolymorphicSerializer):
         validators = [
             RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),
             RolOccurenceValidator(RolOmschrijving.zaakcoordinator, max_amount=1),
+            CorrectZaaktypeValidator("roltype"),
         ]
         extra_kwargs = {
             'url': {
@@ -821,6 +823,13 @@ class RolSerializer(PolymorphicSerializer):
             },
             'betrokkene': {
                 'required': False,
+            },
+            'roltype': {
+                'validators': [
+                    URLValidator(get_auth=get_auth),
+                    IsImmutableValidator(),
+                    ResourceValidator('RolType', settings.ZTC_API_SPEC),
+                ]
             }
         }
 
@@ -834,7 +843,7 @@ class RolSerializer(PolymorphicSerializer):
         self.fields['betrokkene_type'].help_text += f"\n\n{value_display_mapping}"
 
         value_display_mapping = add_choice_values_help_text(RolOmschrijving)
-        self.fields['rolomschrijving'].help_text += f"\n\n{value_display_mapping}"
+        self.fields['omschrijving_generiek'].help_text += f"\n\n{value_display_mapping}"
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
