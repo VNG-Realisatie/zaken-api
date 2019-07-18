@@ -58,7 +58,7 @@ info:
   license:
     name: EUPL 1.2
     url: https://opensource.org/licenses/EUPL-1.2
-  version: 1.0.0-alpha
+  version: 1.0.0-rc1
 security:
 - JWT-Claims: []
 paths:
@@ -391,7 +391,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -841,7 +841,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -1008,7 +1008,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -1177,7 +1177,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -1326,7 +1326,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -1869,7 +1869,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -1995,7 +1995,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -2450,7 +2450,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -2904,7 +2904,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -3074,7 +3074,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -3246,7 +3246,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -3396,7 +3396,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -3885,7 +3885,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -4777,7 +4777,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -4993,7 +4993,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -5211,7 +5211,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -5379,7 +5379,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -5659,7 +5659,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -6106,7 +6106,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -6258,7 +6258,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
@@ -6695,7 +6695,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
         '404':
-          description: Not_found
+          description: Not found
           headers:
             API-version:
               schema:
