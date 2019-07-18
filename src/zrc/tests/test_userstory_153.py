@@ -8,15 +8,18 @@ Zie ook: test_userstory_39.py, test_userstory_169.py
 """
 import datetime
 import uuid
+from unittest.mock import patch
 
 from django.test import override_settings
 
+import requests_mock
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import (
     RolOmschrijving, RolTypes, VertrouwelijkheidsAanduiding, ZaakobjectTypes
 )
 from vng_api_common.tests import JWTAuthMixin, get_operation_url
+from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
@@ -34,6 +37,15 @@ STATUS_TYPE = f'{ZAAKTYPE}/statustypen/1'
 VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 AVG_INZAGE_VERZOEK = f'https://www.example.com/orc/api/v1/avg/inzageverzoeken/{uuid.uuid4().hex}'
 BEHANDELAAR = f'https://www.example.com/orc/api/v1/brp/natuurlijkepersonen/{uuid.uuid4().hex}'
+
+ROLTYPE = "https://ztc.nl/roltypen/123"
+
+ROLTYPE_RESPONSE = {
+    "url": ROLTYPE,
+    "zaaktype": ZAAKTYPE,
+    "omschrijving": RolOmschrijving.behandelaar,
+    "omschrijvingGeneriek": RolOmschrijving.behandelaar,
+}
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -121,10 +133,12 @@ class US153TestCase(JWTAuthMixin, APITestCase):
         # All objects are deleted, and (re)created.
         self.assertFalse(kenmerk_1.pk in zaak.zaakkenmerk_set.values_list('pk', flat=True))
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @override_settings(
         ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
-    def test_full_flow(self):
+    def test_full_flow(self, *mocks):
         zaak_create_url = get_operation_url('zaak_create')
         zaakobject_create_url = get_operation_url('zaakobject_create')
         status_create_url = get_operation_url('status_create')
@@ -161,7 +175,7 @@ class US153TestCase(JWTAuthMixin, APITestCase):
             'zaak': zaak['url'],
             'object': AVG_INZAGE_VERZOEK,
             'relatieomschrijving': 'Inzage verzoek horend bij deze zaak.',
-            'type': ZaakobjectTypes.adres
+            'objectType': ZaakobjectTypes.adres
         }
         response = self.client.post(zaakobject_create_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
@@ -169,7 +183,7 @@ class US153TestCase(JWTAuthMixin, APITestCase):
         # Geef de Zaak een initiele Status
         data = {
             'zaak': zaak['url'],
-            'statusType': STATUS_TYPE,
+            'statustype': STATUS_TYPE,
             'datumStatusGezet': datetime.datetime.now().isoformat(),
         }
         response = self.client.post(status_create_url, data)
@@ -183,10 +197,13 @@ class US153TestCase(JWTAuthMixin, APITestCase):
             'zaak': zaak['url'],
             'betrokkene': BEHANDELAAR,
             'betrokkeneType': RolTypes.natuurlijk_persoon,
-            'rolomschrijving': RolOmschrijving.behandelaar,
+            'roltype': ROLTYPE,
             'roltoelichting': 'Initiele behandelaar die meerdere (deel)behandelaren kan aanwijzen.'
         }
-        response = self.client.post(rol_create_url, data)
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(rol_create_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         # Status wijzigingen...

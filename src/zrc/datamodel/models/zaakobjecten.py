@@ -9,9 +9,36 @@ from ..constants import (
     TyperingInrichtingselement, TyperingKunstwerk, TyperingWater,
     TypeSpoorbaan
 )
-from .base_models import ZaakObject
+from .core import ZaakObject
 
 logger = logging.getLogger(__name__)
+
+__all__ = [
+    "Buurt",
+    "Gemeente",
+    "GemeentelijkeOpenbareRuimte",
+    "Huishouden",
+    "Inrichtingselement",
+    "Kunstwerkdeel",
+    "MaatschappelijkeActiviteit",
+    "OpenbareRuimte",
+    "Pand",
+    "Spoorbaandeel",
+    "Terreindeel",
+    "Waterdeel",
+    "Wegdeel",
+    "Wijk",
+    "Woonplaats",
+    "Overige",
+    "TerreinGebouwdObject",
+    "WozDeelobject",
+    "WozWaarde",
+    "WozObject",
+    "ZakelijkRecht",
+    "KadastraleOnroerendeZaak",
+    "ZakelijkRechtHeeftAlsGerechtigde",
+    "Adres",
+]
 
 
 class Buurt(models.Model):

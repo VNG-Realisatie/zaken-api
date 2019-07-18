@@ -11,7 +11,8 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| zaak |  | string | ja | C​R​U​D |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
 | identificatie | De unieke aanduiding van een KLANTCONTACT | string | nee | C​R​U​D |
 | datumtijd | De datum en het tijdstip waarop het KLANTCONTACT begint | string | ja | C​R​U​D |
 | kanaal | Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt | string | nee | C​R​U​D |
@@ -23,8 +24,9 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| zaak |  | string | ja | C​R​U​D |
-| resultaatType | URL naar het resultaattype uit het ZTC. | string | ja | C​R​U​D |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
+| resultaattype | URL-referentie naar het RESULTAATTYPE (in de Catalogi API). | string | ja | C​R​U​D |
 | toelichting | Een toelichting op wat het resultaat van de zaak inhoudt. | string | nee | C​R​U​D |
 
 ## Rol
@@ -34,13 +36,35 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| zaak |  | string | ja | C​R​U​D |
-| betrokkene | Een betrokkene gerelateerd aan een zaak | string | nee | C​R​U​D |
-| betrokkeneType | Soort betrokkene | string | ja | C​R​U​D |
-| rolomschrijving | Algemeen gehanteerde benaming van de aard van de ROL | string | ja | C​R​U​D |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
+| betrokkene | URL-referentie naar een betrokkene gerelateerd aan de ZAAK. | string | nee | C​R​U​D |
+| betrokkeneType | Type van de `betrokkene`.
+
+Uitleg bij mogelijke waarden:
+
+* `natuurlijk_persoon` - Natuurlijk persoon
+* `niet_natuurlijk_persoon` - Niet-natuurlijk persoon
+* `vestiging` - Vestiging
+* `organisatorische_eenheid` - Organisatorische eenheid
+* `medewerker` - Medewerker | string | ja | C​R​U​D |
+| roltype | URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK. | string | ja | C​R​U​D |
+| omschrijving | Omschrijving van de aard van de ROL, afgeleid uit het ROLTYPE. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| omschrijvingGeneriek | Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.
+
+Uitleg bij mogelijke waarden:
+
+* `adviseur` - (Adviseur) Kennis in dienst stellen van de behandeling van (een deel van) een zaak.
+* `behandelaar` - (Behandelaar) De vakinhoudelijke behandeling doen van (een deel van) een zaak.
+* `belanghebbende` - (Belanghebbende) Vanuit eigen en objectief belang rechtstreeks betrokken zijn bij de behandeling en/of de uitkomst van een zaak.
+* `beslisser` - (Beslisser) Nemen van besluiten die voor de uitkomst van een zaak noodzakelijk zijn.
+* `initiator` - (Initiator) Aanleiding geven tot de start van een zaak ..
+* `klantcontacter` - (Klantcontacter) Het eerste aanspreekpunt zijn voor vragen van burgers en bedrijven ..
+* `zaakcoordinator` - (Zaakcoördinator) Er voor zorg dragen dat de behandeling van de zaak in samenhang uitgevoerd wordt conform de daarover gemaakte afspraken.
+* `mede_initiator` - Mede-initiator | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | roltoelichting |  | string | ja | C​R​U​D |
 | registratiedatum | De datum waarop dit object is geregistreerd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| indicatieMachtiging | Indicatie_machtiging
+| indicatieMachtiging | Indicatie machtiging
 
 Uitleg bij mogelijke waarden:
 
@@ -66,8 +90,9 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| zaak |  | string | ja | C​R​U​D |
-| statusType | URL naar het statustype uit het ZTC. | string | ja | C​R​U​D |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
+| statustype | URL-referentie naar het STATUSTYPE (in de Catalogi API). | string | ja | C​R​U​D |
 | datumStatusGezet | De datum waarop de ZAAK de status heeft verkregen. | string | ja | C​R​U​D |
 | statustoelichting | Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak. | string | nee | C​R​U​D |
 
@@ -78,8 +103,9 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| informatieobject | URL-referentie naar het informatieobject in het DRC, waar ook de relatieinformatie opgevraagd kan worden. | string | ja | C​R​U​D |
-| zaak |  | string | ja | C​R​U​D |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| informatieobject | URL-referentie naar het INFORMATIEOBJECT (in de Documenten API), waar ook de relatieinformatie opgevraagd kan worden. | string | ja | C​R​U​D |
+| zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
 | aardRelatieWeergave |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | titel | De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is. | string | nee | C​R​U​D |
 | beschrijving | Een op het object gerichte beschrijving van de inhoud vanhet INFORMATIEOBJECT. | string | nee | C​R​U​D |
@@ -92,10 +118,46 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| zaak |  | string | ja | C​R​U​D |
-| object | URL naar de resource die het OBJECT beschrijft. | string | nee | C​R​U​D |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
+| object | URL-referentie naar de resource die het OBJECT beschrijft. | string | nee | C​R​U​D |
+| objectType | Beschrijft het type OBJECT gerelateerd aan de ZAAK. Als er geen passend type is, dan moet het type worden opgegeven onder `objectTypeOverige`.
+
+Uitleg bij mogelijke waarden:
+
+* `adres` - Adres
+* `besluit` - Besluit
+* `buurt` - Buurt
+* `enkelvoudig_document` - Enkelvoudig document
+* `gemeente` - Gemeente
+* `gemeentelijke_openbare_ruimte` - Gemeentelijke openbare ruimte
+* `huishouden` - Huishouden
+* `inrichtingselement` - Inrichtingselement
+* `kadastrale_onroerende_zaak` - Kadastrale onroerende zaak
+* `kunstwerkdeel` - Kunstwerkdeel
+* `maatschappelijke_activiteit` - Maatschappelijke activiteit
+* `medewerker` - Medewerker
+* `natuurlijk_persoon` - Natuurlijk persoon
+* `niet_natuurlijk_persoon` - Niet-natuurlijk persoon
+* `openbare_ruimte` - Openbare ruimte
+* `organisatorische_eenheid` - Organisatorische eenheid
+* `pand` - Pand
+* `spoorbaandeel` - Spoorbaandeel
+* `status` - Status
+* `terreindeel` - Terreindeel
+* `terrein_gebouwd_object` - Terrein gebouwd object
+* `vestiging` - Vestiging
+* `waterdeel` - Waterdeel
+* `wegdeel` - Wegdeel
+* `wijk` - Wijk
+* `woonplaats` - Woonplaats
+* `woz_deelobject` - Woz deel object
+* `woz_object` - Woz object
+* `woz_waarde` - Woz waarde
+* `zakelijk_recht` - Zakelijk recht
+* `overige` - Overige | string | ja | C​R​U​D |
+| objectTypeOverige | Beschrijft het type OBJECT als `objectType` de waarde &quot;overige&quot; heeft. | string | nee | C​R​U​D |
 | relatieomschrijving | Omschrijving van de betrekking tussen de ZAAK en het OBJECT. | string | nee | C​R​U​D |
-| type | Beschrijft het type object gerelateerd aan de zaak | string | ja | C​R​U​D |
 
 ## ZakelijkRechtHeeftAlsGerechtigde
 
@@ -120,11 +182,12 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | identificatie | De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK. | string | nee | C​R​U​D |
 | bronorganisatie | Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef | string | ja | C​R​U​D |
 | omschrijving | Een korte omschrijving van de zaak. | string | nee | C​R​U​D |
 | toelichting | Een toelichting op de zaak. | string | nee | C​R​U​D |
-| zaaktype | URL naar het zaaktype in de CATALOGUS waar deze voorkomt | string | ja | C​R​U​D |
+| zaaktype | URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt | string | ja | C​R​U​D |
 | registratiedatum | De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt. | string | nee | C​R​U​D |
 | verantwoordelijkeOrganisatie | Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die eindverantwoordelijk is voor de behandeling van de zaak. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef | string | ja | C​R​U​D |
 | startdatum | De datum waarop met de uitvoering van de zaak is gestart | string | ja | C​R​U​D |
@@ -143,26 +206,30 @@ Uitleg bij mogelijke waarden:
 * `nog_niet` - De met de zaak gemoeide kosten zijn (nog) niet betaald.
 * `gedeeltelijk` - De met de zaak gemoeide kosten zijn gedeeltelijk betaald.
 * `geheel` - De met de zaak gemoeide kosten zijn geheel betaald. | string | nee | C​R​U​D |
-| betalingsindicatieWeergave |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| betalingsindicatieWeergave | Uitleg bij `betalingsindicatie`. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | laatsteBetaaldatum | De datum waarop de meest recente betaling is verwerkt van kosten die gemoeid zijn met behandeling van de zaak. | string | nee | C​R​U​D |
 | selectielijstklasse | URL-referentie naar de categorie in de gehanteerde &#39;Selectielijst Archiefbescheiden&#39; die, gezien het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak. | string | nee | C​R​U​D |
-| hoofdzaak | De verwijzing naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er één is. | string | nee | C​R​U​D |
-| deelzaken |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
-| relevanteAndereZaken | Een lijst van objecten met ieder twee elementen:
-* `zaak` - een url naar een andere `Zaak`
-* `aardRelatie` - beschrijving van de relatie tussen de twee `Zaak`en, waarbij de onderstaande waardes toegestaan zijn.
+| hoofdzaak | URL-referentie naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er één is. | string | nee | C​R​U​D |
+| deelzaken | URL-referenties naar deel ZAAKen. | array | nee | ~~C~~​R​~~U~~​~~D~~ |
+| relevanteAndereZaken | Een lijst van relevante andere zaken. | array | nee | C​R​U​D |
+| status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| kenmerken | Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`. | array | nee | C​R​U​D |
+| archiefnominatie | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.
 
 Uitleg bij mogelijke waarden:
 
-* `vervolg` - De andere zaak gaf aanleiding tot het starten van de onderhanden zaak.
-* `onderwerp` - De andere zaak is relevant voor cq. is onderwerp van de onderhanden zaak.
-* `bijdrage` - Aan het bereiken van de uitkomst van de andere zaak levert de onderhanden zaak een bijdrage. | array | nee | C​R​U​D |
-| status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| kenmerken | Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`. | array | nee | C​R​U​D |
-| archiefnominatie | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. | string | nee | C​R​U​D |
-| archiefstatus | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. | string | nee | C​R​U​D |
+* `blijvend_bewaren` - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen worden naar een archiefbewaarplaats.
+* `vernietigen` - Het zaakdossier moet op of na de Archiefactiedatum vernietigd worden. | string | nee | C​R​U​D |
+| archiefstatus | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.
+
+Uitleg bij mogelijke waarden:
+
+* `nog_te_archiveren` - De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd.
+* `gearchiveerd` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt.
+* `gearchiveerd_procestermijn_onbekend` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum kan nog niet bepaald worden.
+* `overgedragen` - De zaak cq. het zaakdossier is overgebracht naar een archiefbewaarplaats. | string | nee | C​R​U​D |
 | archiefactiedatum | De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan deze ZAAK indien nog leeg. | string | nee | C​R​U​D |
-| resultaat | Indien geen resultaat bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| resultaat | URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## AuditTrail
 
@@ -213,7 +280,8 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| besluit | URL-referentie naar het informatieobject in het BRC, waar ook de relatieinformatie opgevraagd kan worden. | string | ja | C​R​U​D |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| besluit | URL-referentie naar het BESLUIT (in de Besluiten API), waar ook de relatieinformatie opgevraagd kan worden. | string | ja | C​R​U​D |
 
 ## ZaakEigenschap
 
@@ -222,9 +290,10 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
 | url |  | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak |  | string | ja | C​R​U​D |
-| eigenschap | URL naar de eigenschap in het ZTC | string | ja | C​R​U​D |
-| naam | De naam van de EIGENSCHAP (overgenomen uit ZTC). | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| eigenschap | URL-referentie naar de EIGENSCHAP (in de Catalogi API). | string | ja | C​R​U​D |
+| naam | De naam van de EIGENSCHAP (overgenomen uit de Catalogi API). | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | waarde |  | string | ja | C​R​U​D |
 
 

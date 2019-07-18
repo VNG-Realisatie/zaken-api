@@ -5,7 +5,8 @@ factory_boy
 freezegun
 isort
 pep8
-pylint
+pylint<2.0
 pyquery
+requests-mock
 tblib
 webtest

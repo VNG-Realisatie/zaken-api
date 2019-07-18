@@ -9,7 +9,7 @@ from zrc.datamodel.models import (
     OrganisatorischeEenheid, SubVerblijfBuitenland, Vestiging
 )
 
-from .adres_serializers import VerblijfsAdresSerializer
+from .address import VerblijfsAdresSerializer
 
 logger = logging.getLogger(__name__)
 

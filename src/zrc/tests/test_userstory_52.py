@@ -50,6 +50,7 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             response_data,
             {
                 'url': f"http://testserver{detail_url}",
+                'uuid': str(zaakeigenschap.uuid),
                 'naam': 'foobar',
                 'zaak': f"http://testserver{zaak_url}",
                 'eigenschap': EIGENSCHAP_OBJECTTYPE,
