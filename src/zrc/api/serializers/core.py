@@ -244,7 +244,10 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             },
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
-                'validators': [URLValidator(get_auth=get_auth), IsImmutableValidator()],
+                'validators': [
+                    IsImmutableValidator(),
+                    ResourceValidator('ZaakType', settings.ZTC_API_SPEC, get_auth=get_auth)
+                ],
             },
             'einddatum': {
                 'read_only': True
