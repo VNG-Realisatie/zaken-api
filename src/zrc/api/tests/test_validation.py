@@ -77,6 +77,27 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_create_zaak_validate_incorrect_zaaktype_resource(self, *mocks):
+        responses = {
+            ZAAKTYPE: {
+                'some': 'incorrect property'
+            }
+        }
+        with mock_client(responses):
+            response = self.client.post(reverse('zaak-list'), {
+                'zaaktype': ZAAKTYPE,
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-12-24',
+                'startdatum': '2018-12-24',
+                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+            }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'zaaktype')
+        self.assertEqual(error['code'], 'invalid-resource')
+
     def test_validation_camelcase(self):
         url = reverse('zaak-list')
 
