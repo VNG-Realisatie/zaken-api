@@ -1,4 +1,5 @@
 from copy import deepcopy
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -42,7 +43,9 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         }
     }
 
-    def _create_zaak(self, **headers):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def _create_zaak(self, *mocks, **headers):
         url = reverse(Zaak)
 
         zaak_data = {
@@ -111,7 +114,9 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(resultaat_delete_audittrail.oud, resultaat_response)
         self.assertEqual(resultaat_delete_audittrail.nieuw, None)
 
-    def test_update_zaak_audittrails(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_zaak_audittrails(self, *mocks):
         zaak_data = self._create_zaak()
 
         modified_data = deepcopy(zaak_data)

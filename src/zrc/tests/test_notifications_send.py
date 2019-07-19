@@ -33,8 +33,10 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @patch('zds_client.Client.from_url')
-    def test_send_notif_create_zaak(self, mock_client):
+    def test_send_notif_create_zaak(self, mock_client, *mocks):
         """
         Check if notifications will be send when zaak is created
         """

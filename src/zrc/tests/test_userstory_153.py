@@ -58,7 +58,9 @@ class US153TestCase(JWTAuthMixin, APITestCase):
     ]
     zaaktype = ZAAKTYPE
 
-    def test_create_zaak_with_kenmerken(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_zaak_with_kenmerken(self, *mocks):
         zaak_create_url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
@@ -106,7 +108,9 @@ class US153TestCase(JWTAuthMixin, APITestCase):
             }
         )
 
-    def test_update_zaak_with_kenmerken(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_zaak_with_kenmerken(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         kenmerk_1 = zaak.zaakkenmerk_set.create(kenmerk='kenmerk 1', bron='bron 1')
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)

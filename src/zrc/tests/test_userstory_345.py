@@ -2,6 +2,7 @@
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/345
 """
 from datetime import date
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -50,7 +51,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     # TODO: Required for PATCH to work! This should work without or otherwise, why can I create a ZAAK without this?
     zaaktype = ZAAKTYPE
 
-    def test_create_zaak_causes_archiving_defaults(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_zaak_causes_archiving_defaults(self, *mocks):
         """
         Create ZAAK and validate default archive attributes
         """

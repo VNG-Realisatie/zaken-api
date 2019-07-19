@@ -63,11 +63,13 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(validation_error['name'], 'zaaktype')
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_validate_zaaktype_valid(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_validate_zaaktype_valid(self, *mocks):
         url = reverse('zaak-list')
 
         response = self.client.post(url, {
-            'zaaktype': 'https://example.com/foo/bar',
+            'zaaktype': ZAAKTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': '517439943',
@@ -77,6 +79,7 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create_zaak_validate_incorrect_zaaktype_resource(self, *mocks):
         responses = {
             ZAAKTYPE: {
@@ -170,11 +173,12 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, 'relevanteAndereZaken.0.url')
         self.assertEqual(validation_error['code'], URLValidator.code)
 
+    @patch('vng_api_common.validators.obj_has_shape', return_value=True)
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
         ALLOWED_HOSTS=[valid_testserver_url]
     )
-    def test_relevante_andere_zaken_valid_zaak_url(self):
+    def test_relevante_andere_zaken_valid_zaak_url(self, *mocks):
         url = reverse('zaak-list')
 
         zaak_body = {
@@ -212,7 +216,9 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_laatste_betaaldatum_betaalindicatie_nvt(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_laatste_betaaldatum_betaalindicatie_nvt(self, *mocks):
         """
         Assert that the field laatsteBetaaldatum may not be set for the NVT
         indication.
@@ -254,8 +260,10 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
             validation_error = get_validation_errors(response, 'laatsteBetaaldatum')
             self.assertEqual(validation_error['code'], 'betaling-nvt')
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_invalide_product_of_dienst(self):
+    def test_invalide_product_of_dienst(self, *mocks):
         url = reverse('zaak-list')
 
         with mock_client(RESPONSES):

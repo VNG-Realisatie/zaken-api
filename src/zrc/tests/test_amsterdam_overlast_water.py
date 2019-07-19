@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import override_settings
 
 from dateutil import parser
@@ -187,7 +189,9 @@ class US39IntegrationTestCase(JWTAuthMixin, APITestCase):
     ]
     zaaktype = ZAAKTYPE
 
-    def test_full_flow(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_full_flow(self, *mocks):
         app = Application(self.client, TEST_DATA)
 
         app.store_notification()

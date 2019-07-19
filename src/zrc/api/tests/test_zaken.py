@@ -1,5 +1,6 @@
 import unittest
 from datetime import date
+from unittest.mock import patch
 
 from django.contrib.gis.geos import Point
 from django.test import override_settings, tag
@@ -12,7 +13,9 @@ from vng_api_common.constants import (
     Archiefnominatie, BrondatumArchiefprocedureAfleidingswijze,
     VertrouwelijkheidsAanduiding
 )
-from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
+from vng_api_common.tests import (
+    JWTAuthMixin, get_operation_url, get_validation_errors, reverse
+)
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
@@ -82,7 +85,9 @@ class ApiStrategyTests(JWTAuthMixin, APITestCase):
             'EPSG:4326'
         )
 
-    def test_api_51_status_codes(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_api_51_status_codes(self, *mocks):
         with self.subTest(crud='create'):
             url = reverse('zaak-list')
 
@@ -265,7 +270,9 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertIsNone(zaak.einddatum)
 
-    def test_zaak_met_producten(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_zaak_met_producten(self, *mocks):
         url = reverse('zaak-list')
 
         responses = {
@@ -306,8 +313,10 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertEqual(len(zaak.producten_of_diensten), 2)
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @tag('mock_client')
-    def test_zaak_vertrouwelijkheidaanduiding_afgeleid(self):
+    def test_zaak_vertrouwelijkheidaanduiding_afgeleid(self, *mocks):
         """
         Assert that the default vertrouwelijkheidaanduiding is set.
         """
@@ -334,8 +343,10 @@ class ZakenTests(JWTAuthMixin, APITestCase):
             VertrouwelijkheidsAanduiding.zaakvertrouwelijk,
         )
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @tag('mock_client')
-    def test_zaak_vertrouwelijkheidaanduiding_expliciet(self):
+    def test_zaak_vertrouwelijkheidaanduiding_expliciet(self, *mocks):
         """
         Assert that the default vertrouwelijkheidaanduiding is set.
         """
@@ -418,8 +429,10 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertIsNone(response_data['previous'])
         self.assertIsNone(response_data['next'])
 
-    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_complex_geometry(self):
+    # @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_complex_geometry(self, *mocks):
         url = reverse('zaak-list')
 
         response = self.client.post(url, {
