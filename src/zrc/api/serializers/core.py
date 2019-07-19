@@ -826,9 +826,8 @@ class RolSerializer(PolymorphicSerializer):
             },
             'roltype': {
                 'validators': [
-                    URLValidator(get_auth=get_auth),
                     IsImmutableValidator(),
-                    ResourceValidator('RolType', settings.ZTC_API_SPEC),
+                    ResourceValidator('RolType', settings.ZTC_API_SPEC, get_auth=get_auth),
                 ]
             }
         }
