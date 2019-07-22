@@ -1,6 +1,7 @@
 import uuid
 from unittest import skip
 from unittest.mock import patch
+from freezegun import freeze_time
 
 from django.test import override_settings
 
@@ -304,6 +305,25 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, 'productenOfDiensten')
         self.assertEqual(validation_error['code'], 'invalid-products-services')
 
+    @freeze_time('2019-07-22')
+    def test_zaak_startdatum_cannot_be_in_future(self):
+        url = reverse('zaak-list')
+
+        with mock_client(RESPONSES):
+            response = self.client.post(url, {
+                'zaaktype': 'https://example.com/foo/bar',
+                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-12-24',
+                'startdatum': '2019-07-23',
+                'productenOfDiensten': ['https://example.com/product/999'],
+            }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'startdatum')
+        self.assertEqual(validation_error['code'], 'date-in-future')
 
 class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
@@ -557,7 +577,6 @@ class FilterValidationTests(JWTAuthMixin, APITestCase):
 class StatusValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_not_allowed_to_change_statustype(self):
         _status = StatusFactory.create()
         url = reverse(_status)
@@ -642,6 +661,27 @@ class StatusValidationTests(JWTAuthMixin, APITestCase):
 
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'zaaktype-mismatch')
+
+    @freeze_time('2019-07-22T12:00:00')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_status_datum_status_gezet_cannot_be_in_future(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('status-list')
+
+        with mock_client(RESPONSES):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'statustype': STATUSTYPE,
+                'datumStatusGezet': isodatetime(2019, 7, 22, 13, 00, 00),
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'datumStatusGezet')
+        self.assertEqual(validation_error['code'], 'date-in-future')
 
 
 class ResultaatValidationTests(JWTAuthMixin, APITestCase):
