@@ -42,7 +42,7 @@ from ..auth import get_auth
 from ..validators import (
     CorrectZaaktypeValidator, HoofdzaakValidator, NotSelfValidator,
     RolOccurenceValidator, UniekeIdentificatieValidator,
-    ZaaktypeInformatieobjecttypeRelationValidator
+    ZaaktypeInformatieobjecttypeRelationValidator, DateNotInFutureValidator
 )
 from .address import ObjectAdresSerializer
 from .betrokkene import (
@@ -251,6 +251,9 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                     ResourceValidator('ZaakType', settings.ZTC_API_SPEC, get_auth=get_auth)
                 ],
             },
+            'startdatum': {
+                'validators': [DateNotInFutureValidator()]
+            },
             'einddatum': {
                 'read_only': True
             },
@@ -414,6 +417,11 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             'statustype': {
                 'validators': [
                     ResourceValidator('StatusType', settings.ZTC_API_SPEC, get_auth=get_auth),
+                ]
+            },
+            'datum_status_gezet': {
+                'validators': [
+                    DateNotInFutureValidator()
                 ]
             }
         }
