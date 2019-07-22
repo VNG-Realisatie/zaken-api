@@ -1,3 +1,4 @@
+import uuid
 from unittest import skip
 from unittest.mock import patch
 
@@ -22,23 +23,38 @@ from zrc.tests.utils import ZAAK_WRITE_KWARGS, isodatetime
 from ..scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 )
+from .mixins import ZaakInformatieObjectSyncMixin
 
 ZAAKTYPE = 'https://example.com/foo/bar'
+ZAAKTYPE2 = 'https://ztc.com/zaaktypen/1234'
 STATUSTYPE = f'{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785'
+INFORMATIEOBJECT = f'http://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
+INFORMATIEOBJECT_TYPE = f'http://example.com/ztc/api/v1/informatieobjecttypen/{uuid.uuid4().hex}'
 
 RESPONSES = {
-    ZAAKTYPE: {
-        'url': ZAAKTYPE,
-        'productenOfDiensten': [
-            'https://example.com/product/123',
-        ]
-    },
     STATUSTYPE: {
         'url': STATUSTYPE,
         'zaaktype': ZAAKTYPE,
         'volgnummer': 1,
         'isEindstatus': False
     },
+    INFORMATIEOBJECT: {
+        'url': INFORMATIEOBJECT,
+        'informatieobjecttype': INFORMATIEOBJECT_TYPE
+    },
+    ZAAKTYPE: {
+        'url': ZAAKTYPE,
+        'informatieobjecttypen': [],
+        'productenOfDiensten': [
+            'https://example.com/product/123',
+        ]
+    },
+    ZAAKTYPE2: {
+        'url': ZAAKTYPE2,
+        'informatieobjecttypen': [
+            INFORMATIEOBJECT_TYPE
+        ]
+    }
 }
 
 
@@ -427,7 +443,7 @@ class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(error['code'], 'deelzaak-als-hoofdzaak')
 
 
-class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
+class ZaakInformatieObjectValidationTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     @override_settings(
@@ -450,6 +466,39 @@ class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, 'informatieobject')
         self.assertEqual(validation_error['code'], URLValidator.code)
         self.assertEqual(validation_error['name'], 'informatieobject')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_informatieobject_no_zaaktype_informatieobjecttype_relation(self):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse(zaak)
+
+        url = reverse(ZaakInformatieObject)
+
+        with mock_client(RESPONSES):
+            response = self.client.post(url, {
+                'zaak': zaak_url,
+                'informatieobject': INFORMATIEOBJECT
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(validation_error['code'], 'missing-zaaktype-informatieobjecttype-relation')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_informatieobject_create(self):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE2)
+        zaak_url = reverse(zaak)
+
+        url = reverse(ZaakInformatieObject)
+
+        with mock_client(RESPONSES):
+            response = self.client.post(url, {
+                'zaak': zaak_url,
+                'informatieobject': INFORMATIEOBJECT
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class FilterValidationTests(JWTAuthMixin, APITestCase):
