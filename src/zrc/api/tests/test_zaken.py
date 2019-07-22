@@ -1,5 +1,5 @@
 import unittest
-from datetime import datetime
+from datetime import date, datetime
 
 from django.contrib.gis.geos import Point
 from django.test import override_settings, tag
@@ -558,5 +558,5 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
         self.assertEqual(zaak.einddatum, datum_status_gezet.date())
         self.assertEqual(
             zaak.archiefactiedatum,
-            datetime.strptime('2020-05-03', '%Y-%m-%d').date() + relativedelta(years=10)
+            date(2030, 5, 3)     # 2020-05-03 + 10 years
         )
