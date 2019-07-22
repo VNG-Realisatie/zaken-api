@@ -40,6 +40,20 @@ ENKELVOUDIGINFORMATIEOBJECT = f'{DRC_ROOT}/enkelvoudiginformatieobjecten/8d4ad96
 
 VERANTWOORDELIJKE_ORGANISATIE = '517439943'
 
+BEGIN_STATUSTYPE_RESPONSE = {
+    'url': STATUSTYPE,
+    'zaaktype': ZAAKTYPE,
+    'volgnummer': 1,
+    'isEindstatus': False,
+}
+
+EIND_STATUSTYPE_RESPONSE = {
+    'url': STATUSTYPE,
+    'zaaktype': ZAAKTYPE,
+    'volgnummer': 2,
+    'isEindstatus': True,
+}
+
 
 @override_settings(
     LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
@@ -198,7 +212,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
 
-    def test_add_resultaat_on_zaak_causes_archiefnominatie_to_be_copied(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_causes_archiefnominatie_to_be_copied(self, *mocks):
         """
         Add RESULTAAT that causes `archiefnominatie` to be copied from RESULTAATTYPE.
         """
@@ -233,11 +249,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': None,
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
-            }
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
         data = {
             'zaak': zaak_url,
@@ -253,7 +265,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertEqual(zaak.archiefnominatie, Archiefnominatie.blijvend_bewaren)
 
-    def test_add_resultaat_on_zaak_without_einddatum(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_without_einddatum(self, *mocks):
         """
         Add RESULTAAT that causes `archiefactiedatum` to remain `None`.
         """
@@ -287,11 +301,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': None,
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 1,
-                'isEindstatus': False,
-            }
+            STATUSTYPE: BEGIN_STATUSTYPE_RESPONSE
         }
         data = {
             'zaak': zaak_url,
@@ -307,7 +317,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertIsNone(zaak.archiefactiedatum)
 
-    def test_add_resultaat_on_zaak_with_einddatum_causes_archiefactiedatum_to_be_set(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_einddatum_causes_archiefactiedatum_to_be_set(self, *mocks):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
@@ -344,11 +356,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': None,
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
-            }
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
         data = {
             'zaak': zaak_url,
@@ -364,7 +372,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertEqual(zaak.archiefactiedatum, date(2028, 10, 18))
 
-    def test_add_resultaat_on_zaak_with_eigenschap_causes_archiefactiedatum_to_be_set(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_eigenschap_causes_archiefactiedatum_to_be_set(self, *mocks):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
@@ -404,11 +414,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': None,
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
-            }
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
         data = {
             'zaak': zaak_url,
@@ -458,11 +464,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': None,
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
-            }
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
         data = {
             'zaak': zaak_url,
@@ -475,7 +477,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_add_resultaat_on_zaak_with_hoofdzaak_causes_archiefactiedatum_to_be_set(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_hoofdzaak_causes_archiefactiedatum_to_be_set(self, *mocks):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
@@ -510,11 +514,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': None,
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
-            }
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
         data = {
             'zaak': zaak_url,
@@ -530,7 +530,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertEqual(zaak.archiefactiedatum, date(2029, 1, 1))
 
-    def test_add_resultaat_on_zaak_with_ander_datumkenmerk_causes_archiefactiedatum_to_remain_empty(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_ander_datumkenmerk_causes_archiefactiedatum_to_remain_empty(self, *mocks):
         """
         Add RESULTAAT that causes `archiefactiedatum` to remain empty. It needs to be manually set based on the
         information in the RESULTAATTYPE.
@@ -565,11 +567,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': None,
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
-            }
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
         data = {
             'zaak': zaak_url,
@@ -585,7 +583,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertIsNone(zaak.archiefactiedatum)
 
-    def test_add_resultaat_on_zaak_with_zaakobject_causes_archiefactiedatum_to_be_set(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_zaakobject_causes_archiefactiedatum_to_be_set(self, *mocks):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
@@ -607,11 +607,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': None,
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
-            }
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
 
         # add resultaat
@@ -643,7 +639,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertEqual(zaak.archiefactiedatum, date(2029, 1, 1))
 
-    def test_add_resultaat_on_zaak_with_procestermijn_causes_archiefactiedatum_to_be_set(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_procestermijn_causes_archiefactiedatum_to_be_set(self, *mocks):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
@@ -675,11 +673,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                     'procestermijn': 'P5Y',
                 }
             },
-            STATUSTYPE: {
-                'url': STATUSTYPE,
-                'volgnummer': 2,
-                'isEindstatus': True,
-            }
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
         data = {
             'zaak': zaak_url,

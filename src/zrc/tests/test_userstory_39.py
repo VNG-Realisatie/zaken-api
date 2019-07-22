@@ -44,6 +44,15 @@ ROLTYPE_RESPONSE = {
     "omschrijvingGeneriek": RolOmschrijving.behandelaar,
 }
 
+STATUSTYPE_RESPONSE = {
+    STATUS_TYPE: {
+        'url': STATUS_TYPE,
+        'zaaktype': ZAAKTYPE,
+        'volgnummer': 1,
+        'isEindstatus': False
+    }
+}
+
 @patch("vng_api_common.validators.fetcher")
 @patch("vng_api_common.validators.obj_has_shape", return_value=True)
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -124,9 +133,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'bronorganisatie')
         self.assertEqual(error['code'], 'invalid')
 
-    @override_settings(
-        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
-    )
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_zet_zaakstatus(self, *mocks):
         """
         De actuele status van een zaak moet gezet worden bij het aanmaken
@@ -141,7 +149,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             'datumStatusGezet': isodatetime(2018, 6, 6, 17, 23, 43),
         }
 
-        response = self.client.post(url, data)
+        with mock_client(STATUSTYPE_RESPONSE):
+            response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()

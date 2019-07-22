@@ -47,6 +47,15 @@ ROLTYPE_RESPONSE = {
     "omschrijvingGeneriek": RolOmschrijving.behandelaar,
 }
 
+STATUSTYPE_RESPONSE = {
+    STATUS_TYPE: {
+        'url': STATUS_TYPE,
+        'zaaktype': ZAAKTYPE,
+        'volgnummer': 1,
+        'isEindstatus': False
+    }
+}
+
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US153TestCase(JWTAuthMixin, APITestCase):
@@ -190,7 +199,9 @@ class US153TestCase(JWTAuthMixin, APITestCase):
             'statustype': STATUS_TYPE,
             'datumStatusGezet': datetime.datetime.now().isoformat(),
         }
-        response = self.client.post(status_create_url, data)
+
+        with mock_client(STATUSTYPE_RESPONSE):
+            response = self.client.post(status_create_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         # Haal mogelijke rollen op uit ZTC...

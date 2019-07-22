@@ -514,6 +514,9 @@ class StatusValidationTests(JWTAuthMixin, APITestCase):
         # validation_error = get_validation_errors(response, 'statustype')
         # self.assertEqual(validation_error['code'], IsImmutableValidator.code)
 
+    def test_statustype_valid_resource(self):
+        pass
+
 
 class ResultaatValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True

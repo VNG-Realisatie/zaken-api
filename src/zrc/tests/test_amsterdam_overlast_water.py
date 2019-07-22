@@ -110,11 +110,13 @@ class Application:
             },
             STATUSTYPE: {
                 'url': STATUSTYPE,
+                'zaaktype': ZAAKTYPE,
                 'volgnummer': 1,
                 'isEindstatus': False,
             },
             STATUSTYPE_OVERLAST_GECONSTATEERD: {
                 'url': STATUSTYPE_OVERLAST_GECONSTATEERD,
+                'zaaktype': ZAAKTYPE,
                 'volgnummer': 2,
                 'isEindstatus': True,
             }
