@@ -774,3 +774,17 @@ class KlantContactValidationTests(JWTAuthMixin, APITestCase):
 
         validation_error = get_validation_errors(response, 'datumtijd')
         self.assertEqual(validation_error['code'], 'date-in-future')
+
+    def test_klantcontact_invalid_zaak(self):
+        list_url = reverse('klantcontact-list')
+
+        response = self.client.post(list_url, {
+            'zaak': 'some-wrong-value',
+            'datumtijd': '2019-07-22T12:00:00',
+            'kanaal': 'test'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'zaak')
+        self.assertEqual(validation_error['code'], 'object-does-not-exist')
