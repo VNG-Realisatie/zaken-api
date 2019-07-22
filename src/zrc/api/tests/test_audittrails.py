@@ -1,3 +1,4 @@
+import uuid
 from copy import deepcopy
 from unittest.mock import patch
 
@@ -22,7 +23,9 @@ DRC_ROOT = 'https://example.com/drc/api/v1'
 CATALOGUS = f'{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785'
-INFORMATIE_OBJECT = f'{DRC_ROOT}/enkelvoudiginformatieobjecten/1234'
+# INFORMATIE_OBJECT = f'{DRC_ROOT}/enkelvoudiginformatieobjecten/1234'
+INFORMATIEOBJECT = f'http://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
+INFORMATIEOBJECT_TYPE = f'http://example.com/ztc/api/v1/informatieobjecttypen/{uuid.uuid4().hex}'
 
 
 @override_settings(
@@ -34,11 +37,18 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     responses = {
+        INFORMATIEOBJECT: {
+            'url': INFORMATIEOBJECT,
+            'informatieobjecttype': INFORMATIEOBJECT_TYPE
+        },
         ZAAKTYPE: {
             'url': ZAAKTYPE,
             'productenOfDiensten': [
                 'https://example.com/product/123',
                 'https://example.com/dienst/123',
+            ],
+            'informatieobjecttypen': [
+                INFORMATIEOBJECT_TYPE
             ]
         }
     }
@@ -166,10 +176,11 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         url = reverse(ZaakInformatieObject)
 
-        response = self.client.post(url, {
-            'zaak': zaak_data['url'],
-            'informatieobject': INFORMATIE_OBJECT,
-        })
+        with mock_client(self.responses):
+            response = self.client.post(url, {
+                'zaak': zaak_data['url'],
+                'informatieobject': INFORMATIEOBJECT,
+            })
 
         zaakinformatieobject_response = response.data
 
