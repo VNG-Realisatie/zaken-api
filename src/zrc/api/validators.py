@@ -152,10 +152,10 @@ class DateNotInFutureValidator:
     code = "date-in-future"
     message = _("Deze datum mag niet in de toekomst zijn")
 
-    def __call__(self, attrs):
+    def __call__(self, value):
         now = timezone.now()
-        if type(attrs) == date:
+        if type(value) == date:
             now = now.date()
 
-        if attrs > now:
+        if value > now:
             raise serializers.ValidationError(self.message, code=self.code)

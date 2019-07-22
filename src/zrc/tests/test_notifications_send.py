@@ -47,8 +47,8 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': VERANTWOORDELIJKE_ORGANISATIE,
-            'registratiedatum': '2018-06-11',
-            'startdatum': '2018-06-11',
+            'registratiedatum': '2012-01-13',
+            'startdatum': '2012-01-13',
             'toelichting': 'Een stel dronken toeristen speelt versterkte '
                            'muziek af vanuit een gehuurde boot.',
             'zaakgeometrie': {
