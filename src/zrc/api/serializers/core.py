@@ -801,6 +801,9 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
             },
             'zaak': {
                 'lookup_field': 'uuid',
+            },
+            'datumtijd': {
+                'validators': [DateNotInFutureValidator()]
             }
         }
 
