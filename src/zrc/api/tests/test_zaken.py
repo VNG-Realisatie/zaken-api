@@ -148,6 +148,7 @@ class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -192,7 +193,8 @@ class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
             'toelichting': '',
         }
 
-        response = self.client.post(resultaat_create_url, data)
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 

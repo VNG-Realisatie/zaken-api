@@ -99,6 +99,7 @@ class Application:
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {

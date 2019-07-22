@@ -231,15 +231,10 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         self.assertIsNone(zaak.archiefnominatie)
 
-        response = self.client.post(resultaat_create_url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-
-        # add final status to the case to close it and to calculate archive parameters
-        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -251,6 +246,14 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         data = {
             'zaak': zaak_url,
             'statustype': STATUSTYPE,
@@ -283,15 +286,10 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         self.assertIsNone(zaak.archiefactiedatum)
 
-        response = self.client.post(resultaat_create_url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-
-        # add final status to the case to close it and to calculate archive parameters
-        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -303,6 +301,14 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: BEGIN_STATUSTYPE_RESPONSE
         }
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         data = {
             'zaak': zaak_url,
             'statustype': STATUSTYPE,
@@ -335,18 +341,10 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         self.assertIsNone(zaak.archiefactiedatum)
 
-        response = self.client.post(resultaat_create_url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-
-        # add final status to the case to close it and to calculate archive parameters
-        status_create_url = get_operation_url('status_create')
-        self.autorisatie.scopes = self.autorisatie.scopes + [SCOPEN_ZAKEN_HEROPENEN]
-        self.autorisatie.save()
-
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -358,6 +356,17 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
+        self.autorisatie.scopes = self.autorisatie.scopes + [SCOPEN_ZAKEN_HEROPENEN]
+        self.autorisatie.save()
+
         data = {
             'zaak': zaak_url,
             'statustype': STATUSTYPE,
@@ -396,15 +405,10 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         self.assertIsNone(zaak.archiefactiedatum)
 
-        response = self.client.post(resultaat_create_url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-
-        # add final status to the case to close it and to calculate archive parameters
-        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -416,6 +420,14 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         data = {
             'zaak': zaak_url,
             'statustype': STATUSTYPE,
@@ -430,7 +442,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak.refresh_from_db()
         self.assertEqual(zaak.archiefactiedatum, date(2029, 1, 1))
 
-    def test_add_resultaat_on_zaak_with_incorrect_eigenschap_fails(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_incorrect_eigenschap_fails(self, *mocks):
         """
         Attempt to add RESULTAAT with incorrect ZTC-configuration.
         """
@@ -445,15 +459,10 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             'toelichting': '',
         }
 
-        response = self.client.post(resultaat_create_url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-
-        # add final status to the case to close it and to calculate archive parameters
-        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 # ZTC indicates there is a EIGENSCHAP called "brondatum", but there isn't one.
@@ -466,6 +475,14 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         data = {
             'zaak': zaak_url,
             'statustype': STATUSTYPE,
@@ -496,15 +513,10 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             'toelichting': '',
         }
 
-        response = self.client.post(resultaat_create_url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-
-        # add final status to the case to close it and to calculate archive parameters
-        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -516,6 +528,14 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         data = {
             'zaak': zaak_url,
             'statustype': STATUSTYPE,
@@ -548,15 +568,10 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             'toelichting': '',
         }
 
-        response = self.client.post(resultaat_create_url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-
-        # add final status to the case to close it and to calculate archive parameters
-        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -569,6 +584,14 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         data = {
             'zaak': zaak_url,
             'statustype': STATUSTYPE,
@@ -598,6 +621,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -655,15 +679,10 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             'toelichting': '',
         }
 
-        response = self.client.post(resultaat_create_url, data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-
-        # add final status to the case to close it and to calculate archive parameters
-        status_create_url = get_operation_url('status_create')
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P5Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -675,6 +694,14 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: EIND_STATUSTYPE_RESPONSE
         }
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url('status_create')
         data = {
             'zaak': zaak_url,
             'statustype': STATUSTYPE,

@@ -89,7 +89,9 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(zaak_create_audittrail.oud, None)
         self.assertEqual(zaak_create_audittrail.nieuw, zaak_response)
 
-    def test_create_and_delete_resultaat_audittrails(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_and_delete_resultaat_audittrails(self, *mocks):
         zaak_response = self._create_zaak()
 
         url = reverse(Resultaat)
@@ -97,7 +99,15 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             'zaak': zaak_response['url'],
             'resultaattype': RESULTAATTYPE
         }
-        response = self.client.post(url, resultaat_data, **ZAAK_WRITE_KWARGS)
+        resultaattype_response = {
+            RESULTAATTYPE: {
+                'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE
+            }
+        }
+        with mock_client(resultaattype_response):
+            response = self.client.post(url, resultaat_data, **ZAAK_WRITE_KWARGS)
+
         resultaat_response = response.data
 
         audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response['url']).order_by('pk')
