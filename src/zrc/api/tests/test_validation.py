@@ -751,3 +751,26 @@ class ResultaatValidationTests(JWTAuthMixin, APITestCase):
 
         validation_error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(validation_error['code'], 'zaaktype-mismatch')
+
+
+class KlantContactValidationTests(JWTAuthMixin, APITestCase):
+
+    heeft_alle_autorisaties = True
+
+    @freeze_time('2019-07-22T12:00:00')
+    def test_klantcontact_datumtijd_not_in_future(self):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('klantcontact-list')
+
+        response = self.client.post(list_url, {
+            'zaak': zaak_url,
+            'datumtijd': '2019-07-22T13:00:00',
+            'kanaal': 'test'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'datumtijd')
+        self.assertEqual(validation_error['code'], 'date-in-future')
