@@ -40,9 +40,9 @@ from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from ..auth import get_auth
 from ..validators import (
-    CorrectZaaktypeValidator, HoofdzaakValidator, NotSelfValidator,
-    RolOccurenceValidator, UniekeIdentificatieValidator,
-    ZaaktypeInformatieobjecttypeRelationValidator, DateNotInFutureValidator
+    CorrectZaaktypeValidator, DateNotInFutureValidator, HoofdzaakValidator,
+    NotSelfValidator, RolOccurenceValidator, UniekeIdentificatieValidator,
+    ZaaktypeInformatieobjecttypeRelationValidator
 )
 from .address import ObjectAdresSerializer
 from .betrokkene import (
@@ -908,6 +908,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
             'resultaattype',
             'toelichting'
         )
+        validators = [CorrectZaaktypeValidator('resultaattype')]
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
@@ -923,6 +924,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
                     # TODO: Add shape-validator when we know the shape.
                     URLValidator(get_auth=get_auth),
                     IsImmutableValidator(),
+                    ResourceValidator('ResultaatType', settings.ZTC_API_SPEC, get_auth=get_auth)
                 ],
             }
         }
