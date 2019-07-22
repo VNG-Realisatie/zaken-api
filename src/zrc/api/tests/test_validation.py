@@ -1,10 +1,10 @@
 import uuid
 from unittest import skip
 from unittest.mock import patch
-from freezegun import freeze_time
 
 from django.test import override_settings
 
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
@@ -31,6 +31,7 @@ ZAAKTYPE2 = 'https://ztc.com/zaaktypen/1234'
 STATUSTYPE = f'{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785'
 INFORMATIEOBJECT = f'http://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
 INFORMATIEOBJECT_TYPE = f'http://example.com/ztc/api/v1/informatieobjecttypen/{uuid.uuid4().hex}'
+RESULTAATTYPE = f'https://ztc.com/resultaattypen/{uuid.uuid4().hex}'
 
 RESPONSES = {
     STATUSTYPE: {
@@ -699,3 +700,54 @@ class ResultaatValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         validation_error = get_validation_errors(response, 'resultaattype')
         self.assertEqual(validation_error['code'], IsImmutableValidator.code)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_resultaattype_invalid_resource(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('resultaat-list')
+
+        responses = {
+            RESULTAATTYPE: {
+                'some': 'incorrect property'
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'resultaattype': RESULTAATTYPE
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'resultaattype')
+        self.assertEqual(validation_error['code'], 'invalid-resource')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_resultaattype_incorrect_zaaktype(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('resultaat-list')
+
+        responses = {
+            RESULTAATTYPE: {
+                'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE2
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'resultaattype': RESULTAATTYPE
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(validation_error['code'], 'zaaktype-mismatch')
