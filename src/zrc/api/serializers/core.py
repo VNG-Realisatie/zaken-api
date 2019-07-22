@@ -10,6 +10,7 @@ import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework.settings import api_settings
+from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import (
@@ -40,7 +41,8 @@ from zrc.utils.exceptions import DetermineProcessEndDateException
 from ..auth import get_auth
 from ..validators import (
     CorrectZaaktypeValidator, HoofdzaakValidator, NotSelfValidator,
-    RolOccurenceValidator, UniekeIdentificatieValidator
+    RolOccurenceValidator, UniekeIdentificatieValidator,
+    ZaaktypeInformatieobjecttypeRelationValidator
 )
 from .address import ObjectAdresSerializer
 from .betrokkene import (
@@ -675,6 +677,13 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             'beschrijving',
             'registratiedatum',
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=ZaakInformatieObject.objects.all(),
+                fields=['zaak', 'informatieobject']
+            ),
+            ZaaktypeInformatieobjecttypeRelationValidator("informatieobject"),
+        ]
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
