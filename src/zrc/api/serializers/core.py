@@ -755,8 +755,7 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
                 'lookup_field': 'uuid',
             },
             'eigenschap': {
-                # TODO resource validation
-                'validators': []
+                'validators': [ResourceValidator('Eigenschap', settings.ZTC_API_SPEC, get_auth=get_auth)]
             },
             'naam': {
                 'source': '_naam',
@@ -962,7 +961,6 @@ class ZaakBesluitSerializer(NestedHyperlinkedModelSerializer):
             'zaak': {'lookup_field': 'uuid'},
             'besluit': {
                 'validators': [
-                    # TODO resource validation
                     URLValidator(get_auth=get_auth),
                 ]
             }
