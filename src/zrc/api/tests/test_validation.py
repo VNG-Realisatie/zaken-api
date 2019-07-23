@@ -372,6 +372,50 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, 'startdatum')
         self.assertEqual(validation_error['code'], 'date-in-future')
 
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
+    def test_validate_selectielijstklasse_invalid_url(self):
+        url = reverse('zaak-list')
+
+        response = self.client.post(url, {
+            'selectielijstklasse': 'https://some-bad-url.com/bla',
+            'zaaktype': 'https://example.com/foo/bar',
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-06-11',
+            'startdatum': '2018-06-11',
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'selectielijstklasse')
+        self.assertEqual(validation_error['code'], 'bad-url')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_validate_selectielijstklasse_invalid_resource(self):
+        url = reverse('zaak-list')
+
+        responses = {
+            'https://ztc.com/resultaten/1234': {
+                'some': 'incorrect property'
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(url, {
+                'selectielijstklasse': 'https://ztc.com/resultaten/1234',
+                'zaaktype': 'https://example.com/foo/bar',
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-06-11',
+                'startdatum': '2018-06-11',
+            }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'selectielijstklasse')
+        self.assertEqual(validation_error['code'], 'invalid-resource')
+
+
 class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
