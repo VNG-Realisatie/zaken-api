@@ -862,3 +862,75 @@ class KlantContactValidationTests(JWTAuthMixin, APITestCase):
 
         validation_error = get_validation_errors(response, 'zaak')
         self.assertEqual(validation_error['code'], 'object-does-not-exist')
+
+
+class ZaakEigenschapValidationTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_eigenschap(self, *mocks):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+
+        list_url = reverse('zaakeigenschap-list', kwargs={'zaak_uuid': zaak.uuid})
+
+        responses = {
+            'http://ztc.com/eigenschappen/1234': {
+                'url': 'http://ztc.com/eigenschappen/1234',
+                'naam': 'test'
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'eigenschap': 'http://ztc.com/eigenschappen/1234',
+                'waarde': 'test'
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
+    def test_eigenschap_invalid_url(self):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+
+        list_url = reverse('zaakeigenschap-list', kwargs={'zaak_uuid': zaak.uuid})
+
+        response = self.client.post(list_url, {
+            'zaak': zaak_url,
+            'eigenschap': 'bla',
+            'waarde': 'test'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'eigenschap')
+        self.assertEqual(validation_error['code'], 'bad-url')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_eigenschap_invalid_resource(self):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+
+        list_url = reverse('zaakeigenschap-list', kwargs={'zaak_uuid': zaak.uuid})
+
+        responses = {
+            'http://ztc.com/eigenschappen/1234': {
+                'some': 'incorrect property'
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'eigenschap': 'http://ztc.com/eigenschappen/1234',
+                'waarde': 'test'
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'eigenschap')
+        self.assertEqual(validation_error['code'], 'invalid-resource')
