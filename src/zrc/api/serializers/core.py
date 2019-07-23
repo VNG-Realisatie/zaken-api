@@ -255,7 +255,8 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                 'validators': [DateNotInFutureValidator()]
             },
             'einddatum': {
-                'read_only': True
+                'read_only': True,
+                'allow_null': True,
             },
             'communicatiekanaal': {
                 'validators': [
