@@ -33,8 +33,8 @@ SWAGGER_SETTINGS.update({
 
 GEMMA_URL_INFORMATIEMODEL_VERSIE = '1.0'
 
-repo = 'maykinmedia/vng-referentielijsten'
-commit = '50013acbb22866e9dbaef67473becb505025ea5f'
+repo = 'vng-Realisatie/vng-referentielijsten'
+commit = 'da1b2cfdaadb2d19a7d3fc14530923913a2560f2'
 REFERENTIELIJSTEN_API_SPEC = f'https://raw.githubusercontent.com/{repo}/{commit}/src/openapi.yaml'  # noqa
 
 ztc_repo = 'vng-Realisatie/gemma-zaaktypecatalogus'

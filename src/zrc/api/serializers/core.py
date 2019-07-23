@@ -268,6 +268,11 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                                "ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een "
                                "waarde teruggeeft.")
             },
+            'selectielijstklasse': {
+                'validators': [
+                    ResourceValidator('Resultaat', settings.REFERENTIELIJSTEN_API_SPEC, get_auth=get_auth)
+                ]
+            },
             'hoofdzaak': {
                 'lookup_field': 'uuid',
                 'queryset': Zaak.objects.all(),
@@ -612,6 +617,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
                 'lookup_field': 'uuid',
             },
             'object': {
+                # TODO URLvalidator
                 'required': False,
             }
         }
@@ -669,8 +675,6 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         choices=[(force_text(value), key) for key, value in RelatieAarden.choices]
     )
 
-    # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
-    # bij zaak.zaaktype
     class Meta:
         model = ZaakInformatieObject
         fields = (
@@ -749,6 +753,10 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
             },
             'zaak': {
                 'lookup_field': 'uuid',
+            },
+            'eigenschap': {
+                # TODO resource validation
+                'validators': []
             },
             'naam': {
                 'source': '_naam',
@@ -924,7 +932,6 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
             },
             'resultaattype': {
                 'validators': [
-                    # TODO: Add shape-validator when we know the shape.
                     URLValidator(get_auth=get_auth),
                     IsImmutableValidator(),
                     ResourceValidator('ResultaatType', settings.ZTC_API_SPEC, get_auth=get_auth)
@@ -955,6 +962,7 @@ class ZaakBesluitSerializer(NestedHyperlinkedModelSerializer):
             'zaak': {'lookup_field': 'uuid'},
             'besluit': {
                 'validators': [
+                    # TODO resource validation
                     URLValidator(get_auth=get_auth),
                 ]
             }
