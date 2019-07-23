@@ -489,6 +489,30 @@ class ZaakInformatieObjectValidationTests(ZaakInformatieObjectSyncMixin, JWTAuth
         self.assertEqual(validation_error['name'], 'informatieobject')
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_informatieobject_invalid_resource(self):
+        responses = {
+            INFORMATIEOBJECT: {
+                'some': 'incorrect property'
+            }
+        }
+
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('zaakinformatieobject-list')
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'informatieobject': INFORMATIEOBJECT,
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'informatieobject')
+        self.assertEqual(error['code'], 'invalid-resource')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_informatieobject_no_zaaktype_informatieobjecttype_relation(self, *mocks):
