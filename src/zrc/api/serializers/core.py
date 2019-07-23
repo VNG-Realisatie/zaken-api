@@ -617,8 +617,8 @@ class ZaakObjectSerializer(PolymorphicSerializer):
                 'lookup_field': 'uuid',
             },
             'object': {
-                # TODO URLvalidator
                 'required': False,
+                'validators': [URLValidator()]
             }
         }
 
