@@ -1,3 +1,5 @@
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import ZaakobjectTypes
@@ -52,6 +54,7 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
             }
         )
 
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create_zaakobject_without_identificatie(self):
         url = get_operation_url('zaakobject_create')
         zaak = ZaakFactory.create()
@@ -990,6 +993,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
             }
         )
 
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create_zaakobject_overige_with_url(self):
         url = get_operation_url('zaakobject_create')
         zaak = ZaakFactory.create()
@@ -1036,6 +1040,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(zaakobject.overige, overige)
         self.assertEqual(overige.overige_data, {'some_field': 'some value'})
 
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create_zaakobject_overige_without_type(self):
         url = get_operation_url('zaakobject_create')
         zaak = ZaakFactory.create()
@@ -1054,6 +1059,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'nonFieldErrors')
         self.assertEqual(error['code'], 'missing-object-type-overige')
 
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_create_zaakobject_with_overige_type(self):
         url = get_operation_url('zaakobject_create')
         zaak = ZaakFactory.create()
