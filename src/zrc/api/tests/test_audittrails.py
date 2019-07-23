@@ -181,7 +181,9 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(zaak_update_audittrail.oud, zaak_data)
         self.assertEqual(zaak_update_audittrail.nieuw, zaak_response)
 
-    def test_create_zaakinformatieobject_audittrail(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_zaakinformatieobject_audittrail(self, *mocks):
         zaak_data = self._create_zaak()
 
         url = reverse(ZaakInformatieObject)

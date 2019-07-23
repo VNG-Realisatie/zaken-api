@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from unittest.mock import patch
 
 from django.test import override_settings
 from django.utils import timezone
@@ -57,7 +58,9 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
 
     @freeze_time('2018-09-19T12:25:19+0200')
     @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
-    def test_create(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse('zaak-detail', kwargs={
             'version': '1',
@@ -102,7 +105,9 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
 
     @freeze_time('2018-09-20 12:00:00')
     @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
-    def test_registratiedatum_ignored(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_registratiedatum_ignored(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse('zaak-detail', kwargs={
             'version': '1',
@@ -127,7 +132,9 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         )
 
     @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
-    def test_duplicate_object(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_duplicate_object(self, *mocks):
         """
         Test the (informatieobject, object) unique together validation.
         """
@@ -205,7 +212,9 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['zaak'], f'http://testserver{zaak_url}')
 
-    def test_update_zaak(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_zaak(self, *mocks):
         zaak = ZaakFactory.create()
         zaak_url = reverse('zaak-detail', kwargs={
             'version': '1',

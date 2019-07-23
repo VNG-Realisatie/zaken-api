@@ -489,7 +489,9 @@ class ZaakInformatieObjectValidationTests(ZaakInformatieObjectSyncMixin, JWTAuth
         self.assertEqual(validation_error['name'], 'informatieobject')
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_informatieobject_no_zaaktype_informatieobjecttype_relation(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_informatieobject_no_zaaktype_informatieobjecttype_relation(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse(zaak)
 
@@ -507,7 +509,9 @@ class ZaakInformatieObjectValidationTests(ZaakInformatieObjectSyncMixin, JWTAuth
         self.assertEqual(validation_error['code'], 'missing-zaaktype-informatieobjecttype-relation')
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_informatieobject_create(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_informatieobject_create(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE2)
         zaak_url = reverse(zaak)
 
