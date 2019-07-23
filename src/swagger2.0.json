@@ -10677,7 +10677,8 @@
                     "description": "De datum waarop de uitvoering van de zaak afgerond is.",
                     "type": "string",
                     "format": "date",
-                    "readOnly": true
+                    "readOnly": true,
+                    "x-nullable": true
                 },
                 "einddatumGepland": {
                     "title": "Einddatum gepland",
