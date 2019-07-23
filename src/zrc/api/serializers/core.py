@@ -700,8 +700,10 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'read_only': True,
             },
             'informatieobject': {
-                # 'lookup_field': 'uuid',
-                'validators': [URLValidator(get_auth=get_auth), IsImmutableValidator()],
+                'validators': [
+                    ResourceValidator('EnkelvoudigInformatieObject', settings.DRC_API_SPEC, get_auth=get_auth),
+                    IsImmutableValidator()
+                ],
             },
             'zaak': {
                 'lookup_field': 'uuid',
