@@ -113,10 +113,7 @@ class RelevanteZaakSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'url': {
                 'validators': [
-                    URLValidator(
-                        get_auth=get_auth,
-                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
-                    )
+                    ResourceValidator('Zaak', settings.ZRC_API_SPEC, get_auth=get_auth, headers={'Accept-Crs': 'EPSG:4326'})
                 ]
             }
         }

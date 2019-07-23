@@ -44,3 +44,7 @@ ZTC_API_SPEC = f'https://raw.githubusercontent.com/{ztc_repo}/{ztc_commit}/src/o
 drc_repo = 'vng-Realisatie/gemma-documentregistratiecomponent'
 drc_commit = 'e82802907c24ea6a11a39c77595c29338d55e8c3'
 DRC_API_SPEC = f'https://raw.githubusercontent.com/{drc_repo}/{drc_commit}/src/openapi.yaml'  # noqa
+
+zrc_repo = 'vng-Realisatie/gemma-zaakregistratiecomponent'
+zrc_commit = '010ae9c64b89aa9c662ff05f5b4d25938f1878b7'
+ZRC_API_SPEC = f'https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/openapi.yaml'  # noqa
