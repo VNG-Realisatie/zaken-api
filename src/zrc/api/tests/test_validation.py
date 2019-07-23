@@ -198,12 +198,58 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, 'relevanteAndereZaken.0.url')
         self.assertEqual(validation_error['code'], URLValidator.code)
 
+    @override_settings(
+        LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+        ALLOWED_HOSTS=[valid_testserver_url]
+    )
+    def test_relevante_andere_zaken_invalid_resource(self, *mocks):
+        url = reverse('zaak-list')
+
+        zaak_body = {
+            'zaaktype': ZAAKTYPE,
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-06-11',
+            'startdatum': '2018-06-11',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+        }
+
+        with mock_client(RESPONSES):
+            with patch('vng_api_common.validators.obj_has_shape', return_value=True):
+                response = self.client.post(
+                    url,
+                    zaak_body,
+                    HTTP_HOST=self.valid_testserver_url,
+                    **ZAAK_WRITE_KWARGS
+                )
+
+        andere_zaak_url = response.data['url']
+
+        zaak_body.update({'relevanteAndereZaken': [{
+            'url': andere_zaak_url,
+            'aardRelatie': AardZaakRelatie.vervolg
+        }]})
+
+        with mock_client(RESPONSES):
+            with patch('vng_api_common.validators.obj_has_shape', return_value=False):
+                response = self.client.post(
+                    url,
+                    zaak_body,
+                    HTTP_HOST=self.valid_testserver_url,
+                    **ZAAK_WRITE_KWARGS
+                )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'relevanteAndereZaken.0.url')
+        self.assertEqual(validation_error['code'], 'invalid-resource')
+
     @patch('vng_api_common.validators.obj_has_shape', return_value=True)
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
         ALLOWED_HOSTS=[valid_testserver_url]
     )
-    def test_relevante_andere_zaken_valid_zaak_url(self, *mocks):
+    def test_relevante_andere_zaken_valid_zaak_resource(self, *mocks):
         url = reverse('zaak-list')
 
         zaak_body = {
