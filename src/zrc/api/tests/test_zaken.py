@@ -1,5 +1,5 @@
 import unittest
-from datetime import date, datetime
+from datetime import date
 
 from django.contrib.gis.geos import Point
 from django.test import override_settings, tag
@@ -516,7 +516,7 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
             }
         }
 
-        zaakbesluit = ZaakBesluitFactory.create(zaak=zaak, besluit=BESLUIT)
+        ZaakBesluitFactory.create(zaak=zaak, besluit=BESLUIT)
 
         # Set initial status
         status_list_url = reverse('status-list')
@@ -558,5 +558,5 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
         self.assertEqual(zaak.einddatum, datum_status_gezet.date())
         self.assertEqual(
             zaak.archiefactiedatum,
-            date(2030, 5, 3)     # 2020-05-03 + 10 years
+            date(2030, 5, 3)  # 2020-05-03 + 10 years
         )
