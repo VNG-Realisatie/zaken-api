@@ -1,4 +1,5 @@
 import unittest
+from datetime import date
 
 from django.contrib.gis.geos import Point
 from django.test import override_settings, tag
@@ -16,7 +17,9 @@ from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import Zaak
-from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory
+from zrc.datamodel.tests.factories import (
+    StatusFactory, ZaakBesluitFactory, ZaakFactory
+)
 from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
 from zrc.tests.utils import (
     ZAAK_READ_KWARGS, ZAAK_WRITE_KWARGS, isodatetime, utcdatetime
@@ -34,6 +37,8 @@ ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 RESULTAATTYPE = f'{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785'
 STATUSTYPE = f'{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785'
 STATUSTYPE2 = f'{ZAAKTYPE}/statustypen/b86aa339-151e-45f0-ad6c-20698f50b6cd'
+
+BESLUIT = 'https://example.com/brc/api/v1/besluiten/12345678'
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -469,3 +474,89 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertEqual(data[0]['startdatum'], '2019-03-01')
         self.assertEqual(data[1]['startdatum'], '2019-02-01')
         self.assertEqual(data[2]['startdatum'], '2019-01-01')
+
+
+class ZaakArchivingTests(JWTAuthMixin, APITestCase):
+
+    heeft_alle_autorisaties = True
+
+    @override_settings(
+        LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
+    )
+    def test_zaak_archiefactiedatum_afleidingswijze_ingangsdatum_besluit(self):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        responses = {
+            RESULTAATTYPE: {
+                'url': RESULTAATTYPE,
+                'archiefactietermijn': 'P10Y',
+                'archiefnominatie': Archiefnominatie.blijvend_bewaren,
+                'brondatumArchiefprocedure': {
+                    'afleidingswijze': BrondatumArchiefprocedureAfleidingswijze.ingangsdatum_besluit,
+                    'datumkenmerk': None,
+                    'objecttype': None,
+                    'procestermijn': None,
+                }
+            },
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'volgnummer': 1,
+                'isEindstatus': False,
+            },
+            STATUSTYPE2: {
+                'url': STATUSTYPE2,
+                'volgnummer': 2,
+                'isEindstatus': True,
+            },
+            BESLUIT: {
+                'url': BESLUIT,
+                'ingangsdatum': '2020-05-03',
+            }
+        }
+
+        ZaakBesluitFactory.create(zaak=zaak, besluit=BESLUIT)
+
+        # Set initial status
+        status_list_url = reverse('status-list')
+        with mock_client(responses):
+            response = self.client.post(status_list_url, {
+                'zaak': zaak_url,
+                'statustype': STATUSTYPE,
+                'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+            })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
+
+        zaak.refresh_from_db()
+        self.assertIsNone(zaak.einddatum)
+
+        # add a result for the case
+        resultaat_create_url = get_operation_url('resultaat_create')
+        data = {
+            'zaak': zaak_url,
+            'resultaattype': RESULTAATTYPE,
+            'toelichting': '',
+        }
+
+        response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # Set eindstatus
+        datum_status_gezet = utcdatetime(2018, 10, 22, 10, 00, 00)
+
+        with mock_client(responses):
+            response = self.client.post(status_list_url, {
+                'zaak': zaak_url,
+                'statustype': STATUSTYPE2,
+                'datumStatusGezet': datum_status_gezet.isoformat(),
+            })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.content)
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.einddatum, datum_status_gezet.date())
+        self.assertEqual(
+            zaak.archiefactiedatum,
+            date(2030, 5, 3)  # 2020-05-03 + 10 years
+        )

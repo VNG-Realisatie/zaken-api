@@ -163,8 +163,24 @@ def get_brondatum(zaak: Zaak, afleidingswijze: str, datum_kenmerk: str=None,
         raise NotImplementedError
 
     elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.ingangsdatum_besluit:
-        # TODO: Relation from Zaak to Besluit is not implemented yet...
-        raise NotImplementedError
+        zaakbesluiten = zaak.zaakbesluit_set.all()
+        if not zaakbesluiten.exists():
+            # Cannot use ingangsdatum_besluit if Zaak has no Besluiten
+            raise DetermineProcessEndDateException(
+                _('Geen besluiten aan zaak gekoppeld om brondatum uit af te leiden.')
+            )
+
+        Client = import_string(settings.ZDS_CLIENT_CLASS)
+        client = Client.from_url(zaakbesluiten.first().besluit)
+        client.auth = APICredential.get_auth(zaakbesluiten.first().besluit)
+
+        max_ingangsdatum = None
+        for zaakbesluit in zaakbesluiten:
+            related_besluit = client.retrieve('besluit', url=zaakbesluit.besluit)
+            ingangsdatum = datetime.strptime(related_besluit['ingangsdatum'], '%Y-%m-%d')
+            if not max_ingangsdatum or ingangsdatum > max_ingangsdatum:
+                max_ingangsdatum = ingangsdatum
+        return max_ingangsdatum
 
     elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.vervaldatum_besluit:
         # TODO: Relation from Zaak to Besluit is not implemented yet...
