@@ -7,6 +7,7 @@ Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/163
 Zie ook: test_userstory_39.py, test_userstory_169.py
 """
 from datetime import date
+from unittest.mock import patch
 
 from django.test import override_settings
 
@@ -32,7 +33,9 @@ class US169TestCase(JWTAuthMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE]
     zaaktype = ZAAKTYPE
 
-    def test_create_aanvraag(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_aanvraag(self, *mocks):
         """
         Maak een zaak voor een aanvraag.
         """

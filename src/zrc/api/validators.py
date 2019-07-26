@@ -1,5 +1,8 @@
+from datetime import date
+
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -120,4 +123,39 @@ class CorrectZaaktypeValidator:
 
         obj = fetch_object(self.resource, url)
         if obj["zaaktype"] != zaak.zaaktype:
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class ZaaktypeInformatieobjecttypeRelationValidator:
+    code = "missing-zaaktype-informatieobjecttype-relation"
+    message = _("Het informatieobjecttype hoort niet bij het zaaktype van de zaak.")
+
+    def __init__(self, url_field: str, zaak_field: str = "zaak", resource: str = None):
+        self.url_field = url_field
+        self.zaak_field = zaak_field
+        self.resource = resource or url_field
+
+    def __call__(self, attrs):
+        url = attrs.get(self.url_field)
+        zaak = attrs.get(self.zaak_field)
+        if not url or not zaak:
+            return
+
+        obj = fetch_object(self.resource, url)
+        zaaktype = fetch_object('zaaktype', zaak.zaaktype)
+
+        if obj['informatieobjecttype'] not in zaaktype['informatieobjecttypen']:
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class DateNotInFutureValidator:
+    code = "date-in-future"
+    message = _("Deze datum mag niet in de toekomst zijn")
+
+    def __call__(self, value):
+        now = timezone.now()
+        if type(value) == date:
+            now = now.date()
+
+        if value > now:
             raise serializers.ValidationError(self.message, code=self.code)

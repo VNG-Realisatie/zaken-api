@@ -1,4 +1,5 @@
 import datetime
+from unittest.mock import patch
 
 from django.test import override_settings
 from django.utils import timezone
@@ -7,6 +8,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import Archiefnominatie
 from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
+from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_BIJWERKEN,
@@ -19,6 +21,14 @@ from zrc.tests.utils import ZAAK_WRITE_KWARGS
 CATALOGUS = 'https://example.com/ztc/api/v1/catalogus/878a3318-5950-4642-8715-189745f91b04'
 ZAAKTYPE = f'{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f'
 STATUS_TYPE = f'{ZAAKTYPE}/statustypen/1'
+
+RESPONSES = {
+    STATUS_TYPE: {
+        'url': STATUS_TYPE,
+        'zaaktype': ZAAKTYPE,
+        'isEindstatus': False,
+    }
+}
 
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
@@ -72,10 +82,12 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.content)
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @override_settings(
         ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
-    def test_reopen_zaak_allowed(self):
+    def test_reopen_zaak_allowed(self, *mocks):
         zaak = ZaakFactory.create(
             einddatum=timezone.now(),
             archiefactiedatum='2020-01-01',
@@ -91,7 +103,8 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
             'statustype': STATUS_TYPE,
             'datumStatusGezet': datetime.datetime.now().isoformat(),
         }
-        response = self.client.post(status_create_url, data)
+        with mock_client(RESPONSES):
+            response = self.client.post(status_create_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         zaak.refresh_from_db()
@@ -99,10 +112,12 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
         self.assertIsNone(zaak.archiefactiedatum)
         self.assertIsNone(zaak.archiefnominatie)
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @override_settings(
         ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
-    def test_reopen_zaak_not_allowed(self):
+    def test_reopen_zaak_not_allowed(self, *mocks):
         zaak = ZaakFactory.create(
             einddatum=timezone.now(),
             zaaktype=ZAAKTYPE
@@ -116,7 +131,9 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
             'statustype': STATUS_TYPE,
             'datumStatusGezet': datetime.datetime.now().isoformat(),
         }
-        response = self.client.post(status_create_url, data)
+        with mock_client(RESPONSES):
+            response = self.client.post(status_create_url, data)
+
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         data = response.json()

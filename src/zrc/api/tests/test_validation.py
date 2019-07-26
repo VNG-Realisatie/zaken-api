@@ -1,8 +1,10 @@
+import uuid
 from unittest import skip
 from unittest.mock import patch
 
 from django.test import override_settings
 
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
@@ -17,19 +19,42 @@ from zrc.datamodel.models import ZaakInformatieObject
 from zrc.datamodel.tests.factories import (
     ResultaatFactory, StatusFactory, ZaakFactory
 )
-from zrc.tests.utils import ZAAK_WRITE_KWARGS
+from zrc.tests.utils import ZAAK_WRITE_KWARGS, isodatetime
 
 from ..scopes import (
     SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 )
+from .mixins import ZaakInformatieObjectSyncMixin
 
 ZAAKTYPE = 'https://example.com/foo/bar'
+ZAAKTYPE2 = 'https://ztc.com/zaaktypen/1234'
+STATUSTYPE = f'{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785'
+INFORMATIEOBJECT = f'http://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
+INFORMATIEOBJECT_TYPE = f'http://example.com/ztc/api/v1/informatieobjecttypen/{uuid.uuid4().hex}'
+RESULTAATTYPE = f'https://ztc.com/resultaattypen/{uuid.uuid4().hex}'
 
 RESPONSES = {
+    STATUSTYPE: {
+        'url': STATUSTYPE,
+        'zaaktype': ZAAKTYPE,
+        'volgnummer': 1,
+        'isEindstatus': False
+    },
+    INFORMATIEOBJECT: {
+        'url': INFORMATIEOBJECT,
+        'informatieobjecttype': INFORMATIEOBJECT_TYPE
+    },
     ZAAKTYPE: {
         'url': ZAAKTYPE,
+        'informatieobjecttypen': [],
         'productenOfDiensten': [
             'https://example.com/product/123',
+        ]
+    },
+    ZAAKTYPE2: {
+        'url': ZAAKTYPE2,
+        'informatieobjecttypen': [
+            INFORMATIEOBJECT_TYPE
         ]
     }
 }
@@ -63,11 +88,13 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(validation_error['name'], 'zaaktype')
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_validate_zaaktype_valid(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_validate_zaaktype_valid(self, *mocks):
         url = reverse('zaak-list')
 
         response = self.client.post(url, {
-            'zaaktype': 'https://example.com/foo/bar',
+            'zaaktype': ZAAKTYPE,
             'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
             'bronorganisatie': '517439943',
             'verantwoordelijkeOrganisatie': '517439943',
@@ -76,6 +103,28 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         }, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_create_zaak_validate_incorrect_zaaktype_resource(self, *mocks):
+        responses = {
+            ZAAKTYPE: {
+                'some': 'incorrect property'
+            }
+        }
+        with mock_client(responses):
+            response = self.client.post(reverse('zaak-list'), {
+                'zaaktype': ZAAKTYPE,
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-12-24',
+                'startdatum': '2018-12-24',
+                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+            }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'zaaktype')
+        self.assertEqual(error['code'], 'invalid-resource')
 
     def test_validation_camelcase(self):
         url = reverse('zaak-list')
@@ -153,7 +202,54 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
         ALLOWED_HOSTS=[valid_testserver_url]
     )
-    def test_relevante_andere_zaken_valid_zaak_url(self):
+    def test_relevante_andere_zaken_invalid_resource(self, *mocks):
+        url = reverse('zaak-list')
+
+        zaak_body = {
+            'zaaktype': ZAAKTYPE,
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-06-11',
+            'startdatum': '2018-06-11',
+            'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
+        }
+
+        with mock_client(RESPONSES):
+            with patch('vng_api_common.validators.obj_has_shape', return_value=True):
+                response = self.client.post(
+                    url,
+                    zaak_body,
+                    HTTP_HOST=self.valid_testserver_url,
+                    **ZAAK_WRITE_KWARGS
+                )
+
+        andere_zaak_url = response.data['url']
+
+        zaak_body.update({'relevanteAndereZaken': [{
+            'url': andere_zaak_url,
+            'aardRelatie': AardZaakRelatie.vervolg
+        }]})
+
+        with mock_client(RESPONSES):
+            with patch('vng_api_common.validators.obj_has_shape', return_value=False):
+                response = self.client.post(
+                    url,
+                    zaak_body,
+                    HTTP_HOST=self.valid_testserver_url,
+                    **ZAAK_WRITE_KWARGS
+                )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'relevanteAndereZaken.0.url')
+        self.assertEqual(validation_error['code'], 'invalid-resource')
+
+    @patch('vng_api_common.validators.obj_has_shape', return_value=True)
+    @override_settings(
+        LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
+        ALLOWED_HOSTS=[valid_testserver_url]
+    )
+    def test_relevante_andere_zaken_valid_zaak_resource(self, *mocks):
         url = reverse('zaak-list')
 
         zaak_body = {
@@ -191,7 +287,9 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_laatste_betaaldatum_betaalindicatie_nvt(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_laatste_betaaldatum_betaalindicatie_nvt(self, *mocks):
         """
         Assert that the field laatsteBetaaldatum may not be set for the NVT
         indication.
@@ -233,8 +331,10 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
             validation_error = get_validation_errors(response, 'laatsteBetaaldatum')
             self.assertEqual(validation_error['code'], 'betaling-nvt')
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
-    def test_invalide_product_of_dienst(self):
+    def test_invalide_product_of_dienst(self, *mocks):
         url = reverse('zaak-list')
 
         with mock_client(RESPONSES):
@@ -251,6 +351,49 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         validation_error = get_validation_errors(response, 'productenOfDiensten')
         self.assertEqual(validation_error['code'], 'invalid-products-services')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
+    def test_validate_selectielijstklasse_invalid_url(self):
+        url = reverse('zaak-list')
+
+        response = self.client.post(url, {
+            'selectielijstklasse': 'https://some-bad-url.com/bla',
+            'zaaktype': 'https://example.com/foo/bar',
+            'bronorganisatie': '517439943',
+            'verantwoordelijkeOrganisatie': '517439943',
+            'registratiedatum': '2018-06-11',
+            'startdatum': '2018-06-11',
+        }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'selectielijstklasse')
+        self.assertEqual(validation_error['code'], 'bad-url')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_validate_selectielijstklasse_invalid_resource(self):
+        url = reverse('zaak-list')
+
+        responses = {
+            'https://ztc.com/resultaten/1234': {
+                'some': 'incorrect property'
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(url, {
+                'selectielijstklasse': 'https://ztc.com/resultaten/1234',
+                'zaaktype': 'https://example.com/foo/bar',
+                'bronorganisatie': '517439943',
+                'verantwoordelijkeOrganisatie': '517439943',
+                'registratiedatum': '2018-06-11',
+                'startdatum': '2018-06-11',
+            }, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'selectielijstklasse')
+        self.assertEqual(validation_error['code'], 'invalid-resource')
 
 
 class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
@@ -391,7 +534,7 @@ class DeelZaakValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(error['code'], 'deelzaak-als-hoofdzaak')
 
 
-class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
+class ZaakInformatieObjectValidationTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     @override_settings(
@@ -414,6 +557,67 @@ class ZaakInformatieObjectValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, 'informatieobject')
         self.assertEqual(validation_error['code'], URLValidator.code)
         self.assertEqual(validation_error['name'], 'informatieobject')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_informatieobject_invalid_resource(self):
+        responses = {
+            INFORMATIEOBJECT: {
+                'some': 'incorrect property'
+            }
+        }
+
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('zaakinformatieobject-list')
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'informatieobject': INFORMATIEOBJECT,
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'informatieobject')
+        self.assertEqual(error['code'], 'invalid-resource')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_informatieobject_no_zaaktype_informatieobjecttype_relation(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse(zaak)
+
+        url = reverse(ZaakInformatieObject)
+
+        with mock_client(RESPONSES):
+            response = self.client.post(url, {
+                'zaak': zaak_url,
+                'informatieobject': INFORMATIEOBJECT
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(validation_error['code'], 'missing-zaaktype-informatieobjecttype-relation')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_informatieobject_create(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE2)
+        zaak_url = reverse(zaak)
+
+        url = reverse(ZaakInformatieObject)
+
+        with mock_client(RESPONSES):
+            response = self.client.post(url, {
+                'zaak': zaak_url,
+                'informatieobject': INFORMATIEOBJECT
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class FilterValidationTests(JWTAuthMixin, APITestCase):
@@ -472,7 +676,6 @@ class FilterValidationTests(JWTAuthMixin, APITestCase):
 class StatusValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     def test_not_allowed_to_change_statustype(self):
         _status = StatusFactory.create()
         url = reverse(_status)
@@ -484,6 +687,100 @@ class StatusValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         # validation_error = get_validation_errors(response, 'statustype')
         # self.assertEqual(validation_error['code'], IsImmutableValidator.code)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_statustype_valid_resource(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('status-list')
+
+        with mock_client(RESPONSES):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'statustype': STATUSTYPE,
+                'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_statustype_invalid_resource(self, *mocks):
+        responses = {
+            STATUSTYPE: {
+                'some': 'incorrect property'
+            }
+        }
+
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('status-list')
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'statustype': STATUSTYPE,
+                'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'statustype')
+        self.assertEqual(error['code'], 'invalid-resource')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_statustype_zaaktype_mismatch(self, *mocks):
+        responses = {
+            STATUSTYPE: {
+                'url': STATUSTYPE,
+                'zaaktype': 'http://example.com/zaaktypen/1234',
+                'volgnummer': 1,
+                'isEindstatus': False
+            }
+        }
+
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('status-list')
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'statustype': STATUSTYPE,
+                'datumStatusGezet': isodatetime(2018, 10, 1, 10, 00, 00),
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(error['code'], 'zaaktype-mismatch')
+
+    @freeze_time('2019-07-22T12:00:00')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_status_datum_status_gezet_cannot_be_in_future(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('status-list')
+
+        with mock_client(RESPONSES):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'statustype': STATUSTYPE,
+                'datumStatusGezet': isodatetime(2019, 7, 22, 13, 00, 00),
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'datumStatusGezet')
+        self.assertEqual(validation_error['code'], 'date-in-future')
 
 
 class ResultaatValidationTests(JWTAuthMixin, APITestCase):
@@ -501,3 +798,209 @@ class ResultaatValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         validation_error = get_validation_errors(response, 'resultaattype')
         self.assertEqual(validation_error['code'], IsImmutableValidator.code)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_resultaattype_invalid_resource(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('resultaat-list')
+
+        responses = {
+            RESULTAATTYPE: {
+                'some': 'incorrect property'
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'resultaattype': RESULTAATTYPE
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'resultaattype')
+        self.assertEqual(validation_error['code'], 'invalid-resource')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_resultaattype_incorrect_zaaktype(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('resultaat-list')
+
+        responses = {
+            RESULTAATTYPE: {
+                'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE2
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'resultaattype': RESULTAATTYPE
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'nonFieldErrors')
+        self.assertEqual(validation_error['code'], 'zaaktype-mismatch')
+
+
+class KlantContactValidationTests(JWTAuthMixin, APITestCase):
+
+    heeft_alle_autorisaties = True
+
+    @freeze_time('2019-07-22T12:00:00')
+    def test_klantcontact_datumtijd_not_in_future(self):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
+
+        list_url = reverse('klantcontact-list')
+
+        response = self.client.post(list_url, {
+            'zaak': zaak_url,
+            'datumtijd': '2019-07-22T13:00:00',
+            'kanaal': 'test'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'datumtijd')
+        self.assertEqual(validation_error['code'], 'date-in-future')
+
+    def test_klantcontact_invalid_zaak(self):
+        list_url = reverse('klantcontact-list')
+
+        response = self.client.post(list_url, {
+            'zaak': 'some-wrong-value',
+            'datumtijd': '2019-07-22T12:00:00',
+            'kanaal': 'test'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'zaak')
+        self.assertEqual(validation_error['code'], 'object-does-not-exist')
+
+
+class ZaakEigenschapValidationTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_eigenschap(self, *mocks):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+
+        list_url = reverse('zaakeigenschap-list', kwargs={'zaak_uuid': zaak.uuid})
+
+        responses = {
+            'http://ztc.com/eigenschappen/1234': {
+                'url': 'http://ztc.com/eigenschappen/1234',
+                'naam': 'test'
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'eigenschap': 'http://ztc.com/eigenschappen/1234',
+                'waarde': 'test'
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
+    def test_eigenschap_invalid_url(self):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+
+        list_url = reverse('zaakeigenschap-list', kwargs={'zaak_uuid': zaak.uuid})
+
+        response = self.client.post(list_url, {
+            'zaak': zaak_url,
+            'eigenschap': 'bla',
+            'waarde': 'test'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'eigenschap')
+        self.assertEqual(validation_error['code'], 'bad-url')
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    def test_eigenschap_invalid_resource(self):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+
+        list_url = reverse('zaakeigenschap-list', kwargs={'zaak_uuid': zaak.uuid})
+
+        responses = {
+            'http://ztc.com/eigenschappen/1234': {
+                'some': 'incorrect property'
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'eigenschap': 'http://ztc.com/eigenschappen/1234',
+                'waarde': 'test'
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'eigenschap')
+        self.assertEqual(validation_error['code'], 'invalid-resource')
+
+
+class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_zaakobject(self, *mocks):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+
+        list_url = reverse('zaakobject-list')
+
+        responses = {
+            'http://some-api.com/objecten/1234': {
+                'url': 'http://some-api.com/objecten/1234',
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, {
+                'zaak': zaak_url,
+                'object': 'http://some-api.com/objecten/1234',
+                'objectType': 'adres'
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
+    def test_create_zaakobject_invalid_url(self, *mocks):
+        zaak = ZaakFactory.create()
+        zaak_url = reverse(zaak)
+
+        list_url = reverse('zaakobject-list')
+
+        response = self.client.post(list_url, {
+            'zaak': zaak_url,
+            'object': 'http://some-api.com/objecten/1234',
+            'objectType': 'adres'
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, 'object')
+        self.assertEqual(validation_error['code'], 'bad-url')

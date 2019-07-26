@@ -47,6 +47,15 @@ ROLTYPE_RESPONSE = {
     "omschrijvingGeneriek": RolOmschrijving.behandelaar,
 }
 
+STATUSTYPE_RESPONSE = {
+    STATUS_TYPE: {
+        'url': STATUS_TYPE,
+        'zaaktype': ZAAKTYPE,
+        'volgnummer': 1,
+        'isEindstatus': False
+    }
+}
+
 
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US153TestCase(JWTAuthMixin, APITestCase):
@@ -58,7 +67,9 @@ class US153TestCase(JWTAuthMixin, APITestCase):
     ]
     zaaktype = ZAAKTYPE
 
-    def test_create_zaak_with_kenmerken(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_zaak_with_kenmerken(self, *mocks):
         zaak_create_url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
@@ -106,7 +117,9 @@ class US153TestCase(JWTAuthMixin, APITestCase):
             }
         )
 
-    def test_update_zaak_with_kenmerken(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_zaak_with_kenmerken(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         kenmerk_1 = zaak.zaakkenmerk_set.create(kenmerk='kenmerk 1', bron='bron 1')
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
@@ -186,7 +199,9 @@ class US153TestCase(JWTAuthMixin, APITestCase):
             'statustype': STATUS_TYPE,
             'datumStatusGezet': datetime.datetime.now().isoformat(),
         }
-        response = self.client.post(status_create_url, data)
+
+        with mock_client(STATUSTYPE_RESPONSE):
+            response = self.client.post(status_create_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
         # Haal mogelijke rollen op uit ZTC...

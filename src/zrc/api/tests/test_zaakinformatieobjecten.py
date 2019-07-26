@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from unittest.mock import patch
 
 from django.test import override_settings
 from django.utils import timezone
@@ -10,6 +11,7 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import RelatieAarden
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from vng_api_common.validators import IsImmutableValidator
+from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import Zaak, ZaakInformatieObject
 from zrc.datamodel.tests.factories import (
@@ -19,7 +21,22 @@ from zrc.sync.signals import SyncError
 
 from .mixins import ZaakInformatieObjectSyncMixin
 
+ZAAKTYPE = f'http://example.com/ztc/api/v1/zaaktypen/{uuid.uuid4().hex}'
 INFORMATIEOBJECT = f'http://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
+INFORMATIEOBJECT_TYPE = f'http://example.com/ztc/api/v1/informatieobjecttypen/{uuid.uuid4().hex}'
+
+RESPONSES = {
+    INFORMATIEOBJECT: {
+        'url': INFORMATIEOBJECT,
+        'informatieobjecttype': INFORMATIEOBJECT_TYPE
+    },
+    ZAAKTYPE: {
+        'url': ZAAKTYPE,
+        'informatieobjecttypen': [
+            INFORMATIEOBJECT_TYPE
+        ]
+    }
+}
 
 
 def dt_to_api(dt: datetime):
@@ -40,8 +57,11 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
     heeft_alle_autorisaties = True
 
     @freeze_time('2018-09-19T12:25:19+0200')
-    def test_create(self):
-        zaak = ZaakFactory.create()
+    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse('zaak-detail', kwargs={
             'version': '1',
             'uuid': zaak.uuid,
@@ -58,7 +78,8 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         }
 
         # Send to the API
-        response = self.client.post(self.list_url, content)
+        with mock_client(RESPONSES):
+            response = self.client.post(self.list_url, content)
 
         # Test response
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
@@ -83,8 +104,11 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         self.assertEqual(response.json(), expected_response)
 
     @freeze_time('2018-09-20 12:00:00')
-    def test_registratiedatum_ignored(self):
-        zaak = ZaakFactory.create()
+    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_registratiedatum_ignored(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse('zaak-detail', kwargs={
             'version': '1',
             'uuid': zaak.uuid,
@@ -97,7 +121,8 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         }
 
         # Send to the API
-        self.client.post(self.list_url, content)
+        with mock_client(RESPONSES):
+            self.client.post(self.list_url, content)
 
         oio = ZaakInformatieObject.objects.get()
 
@@ -106,12 +131,16 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
             datetime(2018, 9, 20, 12, 0, 0).replace(tzinfo=timezone.utc)
         )
 
-    def test_duplicate_object(self):
+    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_duplicate_object(self, *mocks):
         """
         Test the (informatieobject, object) unique together validation.
         """
         zio = ZaakInformatieObjectFactory.create(
-            informatieobject=INFORMATIEOBJECT
+            informatieobject=INFORMATIEOBJECT,
+            zaak__zaaktype=ZAAKTYPE,
         )
         zaak_url = reverse('zaak-detail', kwargs={
             'version': '1',
@@ -124,7 +153,8 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         }
 
         # Send to the API
-        response = self.client.post(self.list_url, content)
+        with mock_client(RESPONSES):
+            response = self.client.post(self.list_url, content)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
         error = get_validation_errors(response, 'nonFieldErrors')
@@ -182,7 +212,9 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['zaak'], f'http://testserver{zaak_url}')
 
-    def test_update_zaak(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_update_zaak(self, *mocks):
         zaak = ZaakFactory.create()
         zaak_url = reverse('zaak-detail', kwargs={
             'version': '1',
@@ -209,10 +241,11 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
                 error = get_validation_errors(response, field)
                 self.assertEqual(error['code'], IsImmutableValidator.code)
 
+    @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
     def test_sync_create_fails(self):
         self.mocked_sync_create.side_effect = SyncError("Sync failed")
 
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse('zaak-detail', kwargs={
             'version': '1',
             'uuid': zaak.uuid,
@@ -224,7 +257,8 @@ class ZaakInformatieObjectAPITests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, 
         }
 
         # Send to the API
-        response = self.client.post(self.list_url, content)
+        with mock_client(RESPONSES):
+            response = self.client.post(self.list_url, content)
 
         # Test response
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
