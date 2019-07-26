@@ -130,6 +130,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
     status = serializers.HyperlinkedRelatedField(
         source='current_status_uuid',
         read_only=True,
+        allow_null=True,
         view_name='status-detail',
         lookup_url_kwarg='uuid',
         help_text=_("Indien geen status bekend is, dan is de waarde 'null'")
@@ -169,6 +170,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
 
     resultaat = serializers.HyperlinkedRelatedField(
         read_only=True,
+        allow_null=True,
         view_name='resultaat-detail',
         lookup_url_kwarg='uuid',
         lookup_field='uuid',

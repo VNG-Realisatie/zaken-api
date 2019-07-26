@@ -10805,7 +10805,8 @@
                     "description": "Indien geen status bekend is, dan is de waarde 'null'",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "x-nullable": true
                 },
                 "kenmerken": {
                     "description": "Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`.",
@@ -10847,7 +10848,8 @@
                     "description": "URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde 'null'",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "x-nullable": true
                 }
             }
         },
