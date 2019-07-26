@@ -248,9 +248,6 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                     ResourceValidator('ZaakType', settings.ZTC_API_SPEC, get_auth=get_auth)
                 ],
             },
-            'startdatum': {
-                'validators': [DateNotInFutureValidator()]
-            },
             'einddatum': {
                 'read_only': True,
                 'allow_null': True,
@@ -931,7 +928,6 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
             },
             'resultaattype': {
                 'validators': [
-                    URLValidator(get_auth=get_auth),
                     IsImmutableValidator(),
                     ResourceValidator('ResultaatType', settings.ZTC_API_SPEC, get_auth=get_auth)
                 ],

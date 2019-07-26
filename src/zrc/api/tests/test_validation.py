@@ -352,26 +352,6 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, 'productenOfDiensten')
         self.assertEqual(validation_error['code'], 'invalid-products-services')
 
-    @freeze_time('2019-07-22')
-    def test_zaak_startdatum_cannot_be_in_future(self):
-        url = reverse('zaak-list')
-
-        with mock_client(RESPONSES):
-            response = self.client.post(url, {
-                'zaaktype': 'https://example.com/foo/bar',
-                'vertrouwelijkheidaanduiding': VertrouwelijkheidsAanduiding.openbaar,
-                'bronorganisatie': '517439943',
-                'verantwoordelijkeOrganisatie': '517439943',
-                'registratiedatum': '2018-12-24',
-                'startdatum': '2019-07-23',
-                'productenOfDiensten': ['https://example.com/product/999'],
-            }, **ZAAK_WRITE_KWARGS)
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        validation_error = get_validation_errors(response, 'startdatum')
-        self.assertEqual(validation_error['code'], 'date-in-future')
-
     @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_404')
     def test_validate_selectielijstklasse_invalid_url(self):
         url = reverse('zaak-list')
