@@ -13,9 +13,7 @@ from vng_api_common.constants import (
     Archiefnominatie, BrondatumArchiefprocedureAfleidingswijze,
     VertrouwelijkheidsAanduiding
 )
-from vng_api_common.tests import (
-    JWTAuthMixin, get_operation_url, get_validation_errors, reverse
-)
+from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
@@ -448,7 +446,6 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertIsNone(response_data['previous'])
         self.assertIsNone(response_data['next'])
 
-    # @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_complex_geometry(self, *mocks):
@@ -512,17 +509,19 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
 
     heeft_alle_autorisaties = True
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @override_settings(
         LINK_FETCHER='vng_api_common.mocks.link_fetcher_200',
-        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
     )
-    def test_zaak_archiefactiedatum_afleidingswijze_ingangsdatum_besluit(self):
+    def test_zaak_archiefactiedatum_afleidingswijze_ingangsdatum_besluit(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse('zaak-detail', kwargs={'uuid': zaak.uuid})
 
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -534,11 +533,13 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
             },
             STATUSTYPE: {
                 'url': STATUSTYPE,
+                'zaaktype': ZAAKTYPE,
                 'volgnummer': 1,
                 'isEindstatus': False,
             },
             STATUSTYPE2: {
                 'url': STATUSTYPE2,
+                'zaaktype': ZAAKTYPE,
                 'volgnummer': 2,
                 'isEindstatus': True,
             },
@@ -571,7 +572,8 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
             'toelichting': '',
         }
 
-        response = self.client.post(resultaat_create_url, data)
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
