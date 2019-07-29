@@ -11,50 +11,50 @@ class BetalingsIndicatie(DjangoChoices):
 
 
 class GeslachtsAanduiding(DjangoChoices):
-    man = ChoiceItem('M', 'Man')
-    vrouw = ChoiceItem('V', 'Vrouw')
-    onbekend = ChoiceItem('O', 'Onbekend')
+    man = ChoiceItem('m', 'Man')
+    vrouw = ChoiceItem('v', 'Vrouw')
+    onbekend = ChoiceItem('o', 'Onbekend')
 
 
 class SoortRechtsvorm(DjangoChoices):
     besloten_vennootschap = ChoiceItem(
-        'Besloten Vennootschap', 'Besloten Vennootschap')
+        'besloten_vennootschap', 'Besloten Vennootschap')
     cooperatie_europees_economische_samenwerking = ChoiceItem(
-        'Cooperatie, Europees Economische Samenwerking', 'Cooperatie, Europees Economische Samenwerking')
+        'cooperatie_europees_economische_samenwerking', 'Cooperatie, Europees Economische Samenwerking')
     europese_cooperatieve_vennootschap = ChoiceItem(
-        'Europese Cooperatieve Venootschap', 'Europese Cooperatieve Venootschap')
+        'europese_cooperatieve_venootschap', 'Europese Cooperatieve Venootschap')
     europese_naamloze_vennootschap = ChoiceItem(
-        'Europese Naamloze Vennootschap', 'Europese Naamloze Vennootschap')
+        'europese_naamloze_vennootschap', 'Europese Naamloze Vennootschap')
     kerkelijke_organisatie = ChoiceItem(
-        'Kerkelijke Organisatie', 'Kerkelijke Organisatie')
+        'kerkelijke_organisatie', 'Kerkelijke Organisatie')
     naamloze_vennootschap = ChoiceItem(
-        'Naamloze Vennootschap', 'Naamloze Vennootschap')
+        'naamloze_vennootschap', 'Naamloze Vennootschap')
     onderlinge_waarborg_maatschappij = ChoiceItem(
-        'Onderlinge Waarborg Maatschappij', 'Onderlinge Waarborg Maatschappij')
+        'onderlinge_waarborg_maatschappij', 'Onderlinge Waarborg Maatschappij')
     overig_privaatrechtelijke_rechtspersoon = ChoiceItem(
-        'Overig privaatrechtelijke rechtspersoon', 'Overig privaatrechtelijke rechtspersoon')
+        'overig_privaatrechtelijke_rechtspersoon', 'Overig privaatrechtelijke rechtspersoon')
     stichting = ChoiceItem(
-        'Stichting', 'Stichting')
+        'stichting', 'Stichting')
     vereniging = ChoiceItem(
-        'Vereniging', 'Vereniging')
+        'vereniging', 'Vereniging')
     vereniging_van_eigenaars = ChoiceItem(
-        'Vereniging van Eigenaars', 'Vereniging van Eigenaars')
+        'vereniging_van_eigenaars', 'Vereniging van Eigenaars')
     publiekrechtelijke_rechtspersoon = ChoiceItem(
-        'Publiekrechtelijke Rechtspersoon', 'Publiekrechtelijke Rechtspersoon')
+        'publiekrechtelijke_rechtspersoon', 'Publiekrechtelijke Rechtspersoon')
     vennootschap_onder_firma = ChoiceItem(
-        'Vennootschap onder Firma', 'Vennootschap onder Firma')
+        'vennootschap_onder_firma', 'Vennootschap onder Firma')
     maatschap = ChoiceItem(
-        'Maatschap', 'Maatschap')
+        'maatschap', 'Maatschap')
     rederij = ChoiceItem(
-        'Rederij', 'Rederij')
+        'rederij', 'Rederij')
     commanditaire_vennootschap = ChoiceItem(
-        'Commanditaire vennootschap', 'Commanditaire vennootschap')
+        'commanditaire_vennootschap', 'Commanditaire vennootschap')
     kapitaalvennootschap_binnen_eer = ChoiceItem(
-        'Kapitaalvennootschap binnen EER', 'Kapitaalvennootschap binnen EER')
+        'kapitaalvennootschap_binnen_eer', 'Kapitaalvennootschap binnen EER')
     overige_buitenlandse_rechtspersoon_vennootschap = ChoiceItem(
-        'Overige buitenlandse rechtspersoon vennootschap', 'Overige buitenlandse rechtspersoon vennootschap')
+        'overige_buitenlandse_rechtspersoon_vennootschap', 'Overige buitenlandse rechtspersoon vennootschap')
     kapitaalvennootschap_buiten_eer = ChoiceItem(
-        'Kapitaalvennootschap buiten EER', 'Kapitaalvennootschap buiten EER')
+        'kapitaalvennootschap_buiten_eer', 'Kapitaalvennootschap buiten EER')
 
 
 class AardZaakRelatie(DjangoChoices):
@@ -68,42 +68,42 @@ class AardZaakRelatie(DjangoChoices):
 
 # for zaaokbject models
 class TyperingInrichtingselement(DjangoChoices):
-    bak = ChoiceItem('Bak', 'Bak')
-    bord = ChoiceItem('Bord', 'Bord')
-    installatie = ChoiceItem('Installatie', 'Installatie')
-    kast = ChoiceItem('Kast', 'Kast')
-    mast = ChoiceItem('Mast', 'Mast')
-    paal = ChoiceItem('Paal', 'Paal')
-    sensor = ChoiceItem('Sensor', 'Sensor')
-    straatmeubilair = ChoiceItem('Straatmeubilair', 'Straatmeubilair')
-    waterinrichtingselement = ChoiceItem('Waterinrichtingselement', 'Waterinrichtingselement')
-    weginrichtingselement = ChoiceItem('Weginrichtingselement', 'Weginrichtingselement')
+    bak = ChoiceItem('bak', 'Bak')
+    bord = ChoiceItem('bord', 'Bord')
+    installatie = ChoiceItem('installatie', 'Installatie')
+    kast = ChoiceItem('kast', 'Kast')
+    mast = ChoiceItem('mast', 'Mast')
+    paal = ChoiceItem('paal', 'Paal')
+    sensor = ChoiceItem('sensor', 'Sensor')
+    straatmeubilair = ChoiceItem('straatmeubilair', 'Straatmeubilair')
+    waterinrichtingselement = ChoiceItem('waterinrichtingselement', 'Waterinrichtingselement')
+    weginrichtingselement = ChoiceItem('weginrichtingselement', 'Weginrichtingselement')
 
 
 class TyperingKunstwerk(DjangoChoices):
-    keermuur = ChoiceItem('Keermuur', 'Keermuur')
-    overkluizing = ChoiceItem('Overkluizing', 'Overkluizing')
-    duiker = ChoiceItem('Duiker', 'Duiker')
-    faunavoorziening = ChoiceItem('Faunavoorziening', 'Faunavoorziening')
-    vispassage = ChoiceItem('Vispassage', 'Vispassage')
-    bodemval = ChoiceItem('Bodemval', 'Bodemval')
-    coupure = ChoiceItem('Coupure', 'Coupure')
-    ponton = ChoiceItem('Ponton', 'Ponton')
-    voorde = ChoiceItem('Voorde', 'Voorde')
-    hoogspanningsmast = ChoiceItem('Hoogspanningsmast', 'Hoogspanningsmast')
-    gemaal = ChoiceItem('Gemaal', 'Gemaal')
-    perron = ChoiceItem('Perron', 'Perron')
-    sluis = ChoiceItem('Sluis', 'Sluis')
-    strekdam = ChoiceItem('Strekdam', 'Strekdam')
-    steiger = ChoiceItem('Steiger', 'Steiger')
-    stuw = ChoiceItem('Stuw', 'Stuw')
+    keermuur = ChoiceItem('keermuur', 'Keermuur')
+    overkluizing = ChoiceItem('overkluizing', 'Overkluizing')
+    duiker = ChoiceItem('duiker', 'Duiker')
+    faunavoorziening = ChoiceItem('faunavoorziening', 'Faunavoorziening')
+    vispassage = ChoiceItem('vispassage', 'Vispassage')
+    bodemval = ChoiceItem('bodemval', 'Bodemval')
+    coupure = ChoiceItem('coupure', 'Coupure')
+    ponton = ChoiceItem('ponton', 'Ponton')
+    voorde = ChoiceItem('voorde', 'Voorde')
+    hoogspanningsmast = ChoiceItem('hoogspanningsmast', 'Hoogspanningsmast')
+    gemaal = ChoiceItem('gemaal', 'Gemaal')
+    perron = ChoiceItem('perron', 'Perron')
+    sluis = ChoiceItem('sluis', 'Sluis')
+    strekdam = ChoiceItem('strekdam', 'Strekdam')
+    steiger = ChoiceItem('steiger', 'Steiger')
+    stuw = ChoiceItem('stuw', 'Stuw')
 
 
 class TyperingWater(DjangoChoices):
-    zee = ChoiceItem('Zee', 'Zee')
-    waterloop = ChoiceItem('Waterloop', 'Waterloop')
-    watervlakte = ChoiceItem('Watervlakte', 'Watervlakte')
-    greppel_droge_sloot = ChoiceItem('Greppel, droge sloot', 'Greppel, droge sloot')
+    zee = ChoiceItem('zee', 'Zee')
+    waterloop = ChoiceItem('waterloop', 'Waterloop')
+    watervlakte = ChoiceItem('watervlakte', 'Watervlakte')
+    greppel_droge_sloot = ChoiceItem('greppel_droge_sloot', 'Greppel, droge sloot')
 
 
 class TypeSpoorbaan(DjangoChoices):
