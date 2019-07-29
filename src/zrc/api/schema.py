@@ -3,8 +3,6 @@ from django.conf import settings
 from drf_yasg import openapi
 from vng_api_common.utils import notification_documentation
 
-from zrc.api.viewsets import ZaakViewSet
-
 from .kanalen import KANAAL_ZAKEN
 
 description = f"""Een API om een zaakregistratiecomponent (ZRC) te benaderen.
