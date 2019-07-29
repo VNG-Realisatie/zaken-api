@@ -8500,12 +8500,12 @@
                 },
                 "geslachtsaanduiding": {
                     "title": "Geslachtsaanduiding",
-                    "description": "Een aanduiding die aangeeft of de persoon een man of een vrouw is, of dat het geslacht nog onbekend is.\n\nUitleg bij mogelijke waarden:\n\n* `M` - Man\n* `V` - Vrouw\n* `O` - Onbekend",
+                    "description": "Een aanduiding die aangeeft of de persoon een man of een vrouw is, of dat het geslacht nog onbekend is.\n\nUitleg bij mogelijke waarden:\n\n* `m` - Man\n* `v` - Vrouw\n* `o` - Onbekend",
                     "type": "string",
                     "enum": [
-                        "M",
-                        "V",
-                        "O"
+                        "m",
+                        "v",
+                        "o"
                     ]
                 },
                 "geboortedatum": {
@@ -8567,25 +8567,25 @@
                     "description": "De juridische vorm van de NIET-NATUURLIJK PERSOON.",
                     "type": "string",
                     "enum": [
-                        "Besloten Vennootschap",
-                        "Cooperatie, Europees Economische Samenwerking",
-                        "Europese Cooperatieve Venootschap",
-                        "Europese Naamloze Vennootschap",
-                        "Kerkelijke Organisatie",
-                        "Naamloze Vennootschap",
-                        "Onderlinge Waarborg Maatschappij",
-                        "Overig privaatrechtelijke rechtspersoon",
-                        "Stichting",
-                        "Vereniging",
-                        "Vereniging van Eigenaars",
-                        "Publiekrechtelijke Rechtspersoon",
-                        "Vennootschap onder Firma",
-                        "Maatschap",
-                        "Rederij",
-                        "Commanditaire vennootschap",
-                        "Kapitaalvennootschap binnen EER",
-                        "Overige buitenlandse rechtspersoon vennootschap",
-                        "Kapitaalvennootschap buiten EER"
+                        "besloten_vennootschap",
+                        "cooperatie_europees_economische_samenwerking",
+                        "europese_cooperatieve_venootschap",
+                        "europese_naamloze_vennootschap",
+                        "kerkelijke_organisatie",
+                        "naamloze_vennootschap",
+                        "onderlinge_waarborg_maatschappij",
+                        "overig_privaatrechtelijke_rechtspersoon",
+                        "stichting",
+                        "vereniging",
+                        "vereniging_van_eigenaars",
+                        "publiekrechtelijke_rechtspersoon",
+                        "vennootschap_onder_firma",
+                        "maatschap",
+                        "rederij",
+                        "commanditaire_vennootschap",
+                        "kapitaalvennootschap_binnen_eer",
+                        "overige_buitenlandse_rechtspersoon_vennootschap",
+                        "kapitaalvennootschap_buiten_eer"
                     ]
                 },
                 "bezoekadres": {
@@ -9326,19 +9326,19 @@
             "properties": {
                 "type": {
                     "title": "Type",
-                    "description": "Specificatie van de aard van het inrichtingselement.\n\nUitleg bij mogelijke waarden:\n\n* `Bak` - Bak\n* `Bord` - Bord\n* `Installatie` - Installatie\n* `Kast` - Kast\n* `Mast` - Mast\n* `Paal` - Paal\n* `Sensor` - Sensor\n* `Straatmeubilair` - Straatmeubilair\n* `Waterinrichtingselement` - Waterinrichtingselement\n* `Weginrichtingselement` - Weginrichtingselement",
+                    "description": "Specificatie van de aard van het inrichtingselement.\n\nUitleg bij mogelijke waarden:\n\n* `bak` - Bak\n* `bord` - Bord\n* `installatie` - Installatie\n* `kast` - Kast\n* `mast` - Mast\n* `paal` - Paal\n* `sensor` - Sensor\n* `straatmeubilair` - Straatmeubilair\n* `waterinrichtingselement` - Waterinrichtingselement\n* `weginrichtingselement` - Weginrichtingselement",
                     "type": "string",
                     "enum": [
-                        "Bak",
-                        "Bord",
-                        "Installatie",
-                        "Kast",
-                        "Mast",
-                        "Paal",
-                        "Sensor",
-                        "Straatmeubilair",
-                        "Waterinrichtingselement",
-                        "Weginrichtingselement"
+                        "bak",
+                        "bord",
+                        "installatie",
+                        "kast",
+                        "mast",
+                        "paal",
+                        "sensor",
+                        "straatmeubilair",
+                        "waterinrichtingselement",
+                        "weginrichtingselement"
                     ]
                 },
                 "identificatie": {
@@ -9429,25 +9429,25 @@
             "properties": {
                 "type": {
                     "title": "Type",
-                    "description": "Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.\n\nUitleg bij mogelijke waarden:\n\n* `Keermuur` - Keermuur\n* `Overkluizing` - Overkluizing\n* `Duiker` - Duiker\n* `Faunavoorziening` - Faunavoorziening\n* `Vispassage` - Vispassage\n* `Bodemval` - Bodemval\n* `Coupure` - Coupure\n* `Ponton` - Ponton\n* `Voorde` - Voorde\n* `Hoogspanningsmast` - Hoogspanningsmast\n* `Gemaal` - Gemaal\n* `Perron` - Perron\n* `Sluis` - Sluis\n* `Strekdam` - Strekdam\n* `Steiger` - Steiger\n* `Stuw` - Stuw",
+                    "description": "Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.\n\nUitleg bij mogelijke waarden:\n\n* `keermuur` - Keermuur\n* `overkluizing` - Overkluizing\n* `duiker` - Duiker\n* `faunavoorziening` - Faunavoorziening\n* `vispassage` - Vispassage\n* `bodemval` - Bodemval\n* `coupure` - Coupure\n* `ponton` - Ponton\n* `voorde` - Voorde\n* `hoogspanningsmast` - Hoogspanningsmast\n* `gemaal` - Gemaal\n* `perron` - Perron\n* `sluis` - Sluis\n* `strekdam` - Strekdam\n* `steiger` - Steiger\n* `stuw` - Stuw",
                     "type": "string",
                     "enum": [
-                        "Keermuur",
-                        "Overkluizing",
-                        "Duiker",
-                        "Faunavoorziening",
-                        "Vispassage",
-                        "Bodemval",
-                        "Coupure",
-                        "Ponton",
-                        "Voorde",
-                        "Hoogspanningsmast",
-                        "Gemaal",
-                        "Perron",
-                        "Sluis",
-                        "Strekdam",
-                        "Steiger",
-                        "Stuw"
+                        "keermuur",
+                        "overkluizing",
+                        "duiker",
+                        "faunavoorziening",
+                        "vispassage",
+                        "bodemval",
+                        "coupure",
+                        "ponton",
+                        "voorde",
+                        "hoogspanningsmast",
+                        "gemaal",
+                        "perron",
+                        "sluis",
+                        "strekdam",
+                        "steiger",
+                        "stuw"
                     ]
                 },
                 "identificatie": {
@@ -9790,13 +9790,13 @@
             "properties": {
                 "typeWaterdeel": {
                     "title": "Type waterdeel",
-                    "description": "Specificatie van het soort water\n\nUitleg bij mogelijke waarden:\n\n* `Zee` - Zee\n* `Waterloop` - Waterloop\n* `Watervlakte` - Watervlakte\n* `Greppel, droge sloot` - Greppel, droge sloot",
+                    "description": "Specificatie van het soort water\n\nUitleg bij mogelijke waarden:\n\n* `zee` - Zee\n* `waterloop` - Waterloop\n* `watervlakte` - Watervlakte\n* `greppel_droge_sloot` - Greppel, droge sloot",
                     "type": "string",
                     "enum": [
-                        "Zee",
-                        "Waterloop",
-                        "Watervlakte",
-                        "Greppel, droge sloot"
+                        "zee",
+                        "waterloop",
+                        "watervlakte",
+                        "greppel_droge_sloot"
                     ]
                 },
                 "identificatie": {
