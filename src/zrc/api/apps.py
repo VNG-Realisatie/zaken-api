@@ -5,4 +5,5 @@ class ZRCApiConfig(AppConfig):
     name = 'zrc.api'
 
     def ready(self):
-        from .viewsets import ZaakViewSet # noqa
+        # ensure that the metaclass for every viewset has run
+        from . import viewsets  # noqa
