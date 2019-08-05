@@ -1,0 +1,30 @@
+"""
+Test that the caching mechanisms are in place.
+"""
+from rest_framework import status
+from rest_framework.test import APITestCase
+from vng_api_common.tests import JWTAuthMixin, reverse
+
+from zrc.datamodel.tests.factories import StatusFactory
+
+
+class StatusCacheTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    def test_status_get_cache_header(self):
+        status_ = StatusFactory.create()
+
+        response = self.client.get(reverse(status_))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("ETag", response)
+        self.assertNotEqual(response["ETag"], "")
+
+    def test_status_head_cache_header(self):
+        status_ = StatusFactory.create()
+
+        response = self.client.head(reverse(status_))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("ETag", response)
+        self.assertNotEqual(response["ETag"], "")

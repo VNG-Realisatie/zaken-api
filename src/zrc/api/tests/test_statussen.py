@@ -11,8 +11,6 @@ from .utils import reverse
 
 
 class StatusTests(JWTAuthMixin, APITestCase):
-
-    scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
     heeft_alle_autorisaties = True
 
     @override_settings(
