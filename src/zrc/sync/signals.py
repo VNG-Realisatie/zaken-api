@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.cache import cache
+from django.core.cache import caches
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.urls import reverse
@@ -100,6 +100,7 @@ def sync_informatieobject_relation(sender, instance: ZaakInformatieObject=None, 
         # Add the uuid of the ZaakInformatieObject to the list of ZIOs that are
         # marked for delete, causing them not to show up when performing
         # GET requests on the ZRC, allowing the validation in the DRC to pass
+        cache = caches['drc_sync']
         marked_zios = cache.get('zios_marked_for_delete')
         if marked_zios:
             cache.set('zios_marked_for_delete', marked_zios + [instance.uuid])

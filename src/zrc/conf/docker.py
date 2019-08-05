@@ -41,6 +41,11 @@ CACHES = {
     # https://github.com/jazzband/django-axes/blob/master/docs/configuration.rst#cache-problems
     'axes_cache': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
+    # Cache for BIO removal sync with DRC
+    'drc_sync': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
     }
 }
 

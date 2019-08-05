@@ -1,6 +1,6 @@
 import logging
 
-from django.core.cache import cache
+from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
@@ -441,6 +441,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         qs = super().get_queryset()
 
         # Do not display ZaakInformatieObjecten that are marked to be deleted
+        cache = caches['drc_sync']
         marked_zios = cache.get('zios_marked_for_delete')
         if marked_zios:
             return qs.exclude(uuid__in=marked_zios)
