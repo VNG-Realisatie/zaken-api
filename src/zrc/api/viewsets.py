@@ -21,7 +21,9 @@ from vng_api_common.notifications.viewsets import (
 from vng_api_common.permissions import permission_class_factory
 from vng_api_common.search import SearchMixin
 from vng_api_common.utils import lookup_kwargs_to_filters
-from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
+from vng_api_common.viewsets import (
+    CachingMixin, CheckQueryParamsMixin, NestedViewSetMixin
+)
 
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
@@ -232,7 +234,8 @@ class ZaakViewSet(NotificationViewSetMixin,
         super().perform_update(serializer)
 
 
-class StatusViewSet(NotificationCreateMixin,
+class StatusViewSet(CachingMixin,
+                    NotificationCreateMixin,
                     AuditTrailCreateMixin,
                     CheckQueryParamsMixin,
                     ListFilterByAuthorizationsMixin,

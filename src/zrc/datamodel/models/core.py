@@ -11,6 +11,7 @@ from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
+from vng_api_common.caching import ETagMixin
 from vng_api_common.constants import (
     Archiefnominatie, Archiefstatus, RelatieAarden, RolOmschrijving, RolTypes,
     ZaakobjectTypes
@@ -264,7 +265,7 @@ class RelevanteZaakRelatie(models.Model):
     )
 
 
-class Status(models.Model):
+class Status(ETagMixin, models.Model):
     """
     Modelleer een status van een ZAAK.
 

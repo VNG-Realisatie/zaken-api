@@ -56,9 +56,10 @@ class ZaakAdmin(admin.ModelAdmin):
 
 @admin.register(Status)
 class StatusAdmin(admin.ModelAdmin):
-    list_display = ['zaak', 'datum_status_gezet']
+    list_display = ['zaak', 'datum_status_gezet', '_etag']
     list_select_related = ['zaak']
     raw_id_fields = ['zaak']
+    search_field = ('_etag',)
 
 
 @admin.register(ZaakObject)
