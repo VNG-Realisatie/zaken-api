@@ -45,7 +45,7 @@ CACHES = {
     # Cache for BIO removal sync with DRC
     'drc_sync': {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2", # NOTE: watch out for multiple projects using the same cache!
+        "LOCATION": f"redis://{getenv('REDIS_CACHE')}", # NOTE: watch out for multiple projects using the same cache!
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "IGNORE_EXCEPTIONS": True,
