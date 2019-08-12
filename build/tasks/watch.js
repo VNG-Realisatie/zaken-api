@@ -1,21 +1,30 @@
-'use strict';
-var gulp = require('gulp');
-var paths = require('../paths');
-const { sass } = require('./sass');
+const gulp = require('gulp');
+const paths = require('../paths');
+const {scss} = require('./scss');
 
 
 /**
+ * Watch task
+ * Run using "gulp watch"
+ * Runs "watch-js" and "watch-sass" tasks
+ */
+const watch = gulp.parallel(watchSCSS);
+
+/**
  * Watch-sass task
- * Run using "gulp watch-sass"
+ * Run using "gulp watch-scss"
  * Runs "sass" task instantly and when any file in paths.sassSrc changes
  */
-function watchSASS() {
-    sass();
-    gulp.watch(paths.sassSrc, sass);
+function watchSCSS() {
+    scss()
+    gulp.watch(paths.sassSrc, scss);
 }
 
-exports.watchSASS = watchSASS;
-gulp.task('watch-sass', watchSASS);
 
-exports.watch = watchSASS;
-gulp.task('watch', watchSASS);
+
+exports.watch = watch;
+gulp.task('watch', watch);
+
+
+exports.watchSCSS = watchSCSS;
+gulp.task('watch-scss', watchSCSS);
