@@ -38,9 +38,6 @@ info:
     genereren.
 
 
-    ### Notificaties
-
-
     Deze API publiceert notificaties op het kanaal `zaken`.
 
 
@@ -401,6 +398,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -539,7 +542,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL naar de/het gerelateerde zaak
+        description: URL-referentie naar de ZAAK.
         required: false
         schema:
           type: string
@@ -851,6 +854,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -1474,7 +1483,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL naar de/het gerelateerde zaak
+        description: URL-referentie naar de ZAAK.
         required: false
         schema:
           type: string
@@ -1879,6 +1888,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -2143,7 +2158,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL naar de/het gerelateerde zaak
+        description: URL-referentie naar de ZAAK.
         required: false
         schema:
           type: string
@@ -2460,6 +2475,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -2598,7 +2619,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL naar de/het gerelateerde zaak
+        description: URL-referentie naar de ZAAK.
         required: false
         schema:
           type: string
@@ -2914,6 +2935,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -3544,7 +3571,7 @@ paths:
       parameters:
       - name: zaak
         in: query
-        description: URL naar de/het gerelateerde zaak
+        description: URL-referentie naar de ZAAK.
         required: false
         schema:
           type: string
@@ -3895,6 +3922,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -4787,6 +4820,12 @@ paths:
                 type: string
                 enum:
                 - EPSG:4326
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -5669,6 +5708,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -6116,6 +6161,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -6705,6 +6756,12 @@ paths:
         '200':
           description: OK
           headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
             API-version:
               schema:
                 type: string
@@ -9429,6 +9486,12 @@ components:
           - ztc
           - drc
           - brc
+        requestId:
+          title: Request id
+          description: Een globaal "request" ID om een verzoek door het netwerk heen
+            te traceren.
+          type: string
+          maxLength: 255
         applicatieId:
           title: Applicatie id
           description: Unieke identificatie van de applicatie, binnen de organisatie.

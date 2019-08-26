@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "Zaken API",
-        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Main resource**\n\n`zaak`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef\n* `zaaktype`: URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.\n\n**Resources en acties**\n- `zaak`: create, update, destroy\n- `status`: create\n- `zaakobject`: create\n- `zaakinformatieobject`: create\n- `zaakeigenschap`: create\n- `klantcontact`: create\n- `rol`: create\n- `resultaat`: create, update, destroy\n- `zaakbesluit`: create\n\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n",
+        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Main resource**\n\n`zaak`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef\n* `zaaktype`: URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.\n\n**Resources en acties**\n- `zaak`: create, update, destroy\n- `status`: create\n- `zaakobject`: create\n- `zaakinformatieobject`: create\n- `zaakeigenschap`: create\n- `klantcontact`: create\n- `rol`: create\n- `resultaat`: create, update, destroy\n- `zaakbesluit`: create\n\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n",
         "contact": {
             "url": "https://zaakgerichtwerken.vng.cloud",
             "email": "standaarden.ondersteuning@vng.nl"
@@ -391,6 +391,10 @@
                             "$ref": "#/definitions/KlantContact"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -557,7 +561,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -937,6 +941,10 @@
                             "$ref": "#/definitions/Resultaat"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -1684,7 +1692,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2166,6 +2174,10 @@
                             "$ref": "#/definitions/Rol"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -2487,7 +2499,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2867,6 +2879,10 @@
                             "$ref": "#/definitions/Status"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -3033,7 +3049,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -3413,6 +3429,10 @@
                             "$ref": "#/definitions/ZaakInformatieObject"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -4160,7 +4180,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -4580,6 +4600,10 @@
                             "$ref": "#/definitions/ZaakObject"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -5608,6 +5632,10 @@
                                     "EPSG:4326"
                                 ]
                             },
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -6628,6 +6656,10 @@
                             "$ref": "#/definitions/AuditTrail"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -7160,6 +7192,10 @@
                             "$ref": "#/definitions/ZaakBesluit"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -7869,6 +7905,10 @@
                             "$ref": "#/definitions/ZaakEigenschap"
                         },
                         "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -11016,6 +11056,12 @@
                         "drc",
                         "brc"
                     ]
+                },
+                "requestId": {
+                    "title": "Request id",
+                    "description": "Een globaal \"request\" ID om een verzoek door het netwerk heen te traceren.",
+                    "type": "string",
+                    "maxLength": 255
                 },
                 "applicatieId": {
                     "title": "Applicatie id",
