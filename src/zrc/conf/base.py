@@ -380,6 +380,3 @@ if SENTRY_DSN:
 IS_HTTPS = os.getenv('IS_HTTPS', '1').lower() in ['true', '1', 'yes']
 
 NOTIFICATIONS_KANAAL = 'zaken'
-
-
-REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = ()
