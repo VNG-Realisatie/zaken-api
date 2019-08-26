@@ -4,6 +4,7 @@ Test that the caching mechanisms are in place.
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, reverse
+from vng_api_common.tests.schema import get_spec
 
 from zrc.datamodel.tests.factories import StatusFactory
 
@@ -31,3 +32,10 @@ class StatusCacheTests(JWTAuthMixin, APITestCase):
 
         # head requests should not return a response body, only headers
         self.assertEqual(response.content, b"")
+
+    def test_head_in_apischema(self):
+        spec = get_spec()
+
+        endpoint = spec["paths"]["/statussen/{uuid}"]
+
+        self.assertIn("head", endpoint)
