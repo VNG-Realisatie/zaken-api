@@ -28,3 +28,6 @@ class StatusCacheTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("ETag", response)
         self.assertNotEqual(response["ETag"], "")
+
+        # head requests should not return a response body, only headers
+        self.assertEqual(response.content, b"")
