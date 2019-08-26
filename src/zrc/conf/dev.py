@@ -93,6 +93,9 @@ CACHES = {
     },
     'axes_cache': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
+    'drc_sync': {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     }
 }
 
