@@ -2603,6 +2603,30 @@ paths:
       security:
       - JWT-Claims:
         - zaken.lezen
+    head:
+      operationId: status_headers
+      summary: De headers voor een specifiek(e) STATUS opvragen
+      description: Vraag de headers op die je bij een GET request zou krijgen.
+      responses:
+        '200':
+          description: OK
+          headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+      tags:
+      - statussen
+      security:
+      - JWT-Claims:
+        - zaken.lezen
     parameters:
     - name: uuid
       in: path
