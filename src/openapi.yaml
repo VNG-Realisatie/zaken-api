@@ -982,6 +982,30 @@ paths:
       security:
       - JWT-Claims:
         - zaken.lezen
+    head:
+      operationId: resultaat_headers
+      summary: De headers voor een specifiek(e) RESULTAAT opvragen
+      description: Vraag de headers op die je bij een GET request zou krijgen.
+      responses:
+        '200':
+          description: OK
+          headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+      tags:
+      - resultaten
+      security:
+      - JWT-Claims:
+        - zaken.lezen
     put:
       operationId: resultaat_update
       summary: Werk een RESULTAAT in zijn geheel bij.
@@ -2011,6 +2035,30 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
+      tags:
+      - rollen
+      security:
+      - JWT-Claims:
+        - zaken.lezen
+    head:
+      operationId: rol_headers
+      summary: De headers voor een specifiek(e) ROL opvragen
+      description: Vraag de headers op die je bij een GET request zou krijgen.
+      responses:
+        '200':
+          description: OK
+          headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
       tags:
       - rollen
       security:
@@ -3087,6 +3135,30 @@ paths:
       security:
       - JWT-Claims:
         - zaken.lezen
+    head:
+      operationId: zaakinformatieobject_headers
+      summary: De headers voor een specifiek(e) ZAAKINFORMATIEOBJECT opvragen
+      description: Vraag de headers op die je bij een GET request zou krijgen.
+      responses:
+        '200':
+          description: OK
+          headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+      tags:
+      - zaakinformatieobjecten
+      security:
+      - JWT-Claims:
+        - zaken.lezen
     put:
       operationId: zaakinformatieobject_update
       summary: Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij.
@@ -3434,8 +3506,10 @@ paths:
     delete:
       operationId: zaakinformatieobject_delete
       summary: Verwijder een ZAAK-INFORMATIEOBJECT relatie.
-      description: De gespiegelde relatie in de Documenten API wordt door de Zaken
-        API verwijderd. Consumers kunnen dit niet handmatig doen..
+      description: 'De gespiegelde relatie in de Documenten API wordt door de Zaken
+        API
+
+        verwijderd. Consumers kunnen dit niet handmatig doen..'
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
@@ -4979,6 +5053,59 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
+      tags:
+      - zaken
+      security:
+      - JWT-Claims:
+        - zaken.lezen
+    head:
+      operationId: zaak_headers
+      summary: De headers voor een specifiek(e) ZAAK opvragen
+      description: Vraag de headers op die je bij een GET request zou krijgen.
+      parameters:
+      - name: Accept-Crs
+        in: header
+        description: Het gewenste 'Coordinate Reference System' (CRS) van de geometrie
+          in het antwoord (response body). Volgens de GeoJSON spec is WGS84 de default
+          (EPSG:4326 is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
+      - name: Content-Crs
+        in: header
+        description: Het 'Coordinate Reference System' (CRS) van de geometrie in de
+          vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
+          is hetzelfde als WGS84).
+        required: true
+        schema:
+          type: string
+          enum:
+          - EPSG:4326
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Crs:
+              description: Het 'Coordinate Reference System' (CRS) van de antwoorddata.
+                Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde
+                als WGS84).
+              schema:
+                type: string
+                enum:
+                - EPSG:4326
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
       tags:
       - zaken
       security:
@@ -6903,6 +7030,30 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Fout'
+      tags:
+      - zaken
+      security:
+      - JWT-Claims:
+        - zaken.lezen
+    head:
+      operationId: zaakeigenschap_headers
+      summary: De headers voor een specifiek(e) ZAAKEIGENSCHAP opvragen
+      description: Vraag de headers op die je bij een GET request zou krijgen.
+      responses:
+        '200':
+          description: OK
+          headers:
+            ETag:
+              description: De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+              schema:
+                type: string
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
       tags:
       - zaken
       security:
@@ -9453,7 +9604,7 @@ components:
           description: Which field to use when ordering the results.
           type: string
           minLength: 1
-    Wijzgingen:
+    Wijzigingen:
       title: Wijzigingen
       type: object
       properties:
@@ -9611,7 +9762,7 @@ components:
           format: date-time
           readOnly: true
         wijzigingen:
-          $ref: '#/components/schemas/Wijzgingen'
+          $ref: '#/components/schemas/Wijzigingen'
     ZaakBesluit:
       required:
       - besluit

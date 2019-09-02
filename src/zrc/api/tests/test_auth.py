@@ -25,6 +25,7 @@ from .mixins import ZaakInformatieObjectSyncMixin
 
 INFORMATIEOBJECT = f'http://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
 
+
 @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
 class ZakenScopeForbiddenTests(AuthCheckMixin, APITestCase):
 

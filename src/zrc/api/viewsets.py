@@ -56,7 +56,8 @@ from .serializers import (
 logger = logging.getLogger(__name__)
 
 
-class ZaakViewSet(NotificationViewSetMixin,
+class ZaakViewSet(CachingMixin,
+                  NotificationViewSetMixin,
                   AuditTrailViewsetMixin,
                   GeoMixin,
                   SearchMixin,
@@ -357,7 +358,8 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     audit = AUDIT_ZRC
 
 
-class ZaakInformatieObjectViewSet(NotificationCreateMixin,
+class ZaakInformatieObjectViewSet(CachingMixin,
+                                  NotificationCreateMixin,
                                   AuditTrailViewsetMixin,
                                   CheckQueryParamsMixin,
                                   ListFilterByAuthorizationsMixin,
@@ -420,7 +422,8 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     destroy:
     Verwijder een ZAAK-INFORMATIEOBJECT relatie.
 
-    De gespiegelde relatie in de Documenten API wordt door de Zaken API verwijderd. Consumers kunnen dit niet handmatig doen..
+    De gespiegelde relatie in de Documenten API wordt door de Zaken API
+    verwijderd. Consumers kunnen dit niet handmatig doen..
     """
     queryset = ZaakInformatieObject.objects.all()
     filterset_class = ZaakInformatieObjectFilter
@@ -451,7 +454,8 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         return qs
 
 
-class ZaakEigenschapViewSet(NotificationCreateMixin,
+class ZaakEigenschapViewSet(CachingMixin,
+                            NotificationCreateMixin,
                             AuditTrailCreateMixin,
                             NestedViewSetMixin,
                             ListFilterByAuthorizationsMixin,
@@ -547,7 +551,8 @@ class KlantContactViewSet(NotificationCreateMixin,
     audit = AUDIT_ZRC
 
 
-class RolViewSet(NotificationCreateMixin,
+class RolViewSet(CachingMixin,
+                 NotificationCreateMixin,
                  AuditTrailCreateMixin,
                  CheckQueryParamsMixin,
                  ListFilterByAuthorizationsMixin,
@@ -594,7 +599,8 @@ class RolViewSet(NotificationCreateMixin,
     audit = AUDIT_ZRC
 
 
-class ResultaatViewSet(NotificationViewSetMixin,
+class ResultaatViewSet(CachingMixin,
+                       NotificationViewSetMixin,
                        AuditTrailViewsetMixin,
                        CheckQueryParamsMixin,
                        ListFilterByAuthorizationsMixin,

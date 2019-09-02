@@ -1091,6 +1091,39 @@
                     }
                 ]
             },
+            "head": {
+                "operationId": "resultaat_headers",
+                "summary": "De headers voor een specifiek(e) RESULTAAT opvragen",
+                "description": "Vraag de headers op die je bij een GET request zou krijgen.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "resultaten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
+                ]
+            },
             "put": {
                 "operationId": "resultaat_update",
                 "summary": "Werk een RESULTAAT in zijn geheel bij.",
@@ -2304,6 +2337,39 @@
                             "$ref": "#/definitions/Fout"
                         },
                         "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "rollen"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
+                ]
+            },
+            "head": {
+                "operationId": "rol_headers",
+                "summary": "De headers voor een specifiek(e) ROL opvragen",
+                "description": "Vraag de headers op die je bij een GET request zou krijgen.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -3612,6 +3678,39 @@
                     }
                 ]
             },
+            "head": {
+                "operationId": "zaakinformatieobject_headers",
+                "summary": "De headers voor een specifiek(e) ZAAKINFORMATIEOBJECT opvragen",
+                "description": "Vraag de headers op die je bij een GET request zou krijgen.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaakinformatieobjecten"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
+                ]
+            },
             "put": {
                 "operationId": "zaakinformatieobject_update",
                 "summary": "Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij.",
@@ -4019,7 +4118,7 @@
             "delete": {
                 "operationId": "zaakinformatieobject_delete",
                 "summary": "Verwijder een ZAAK-INFORMATIEOBJECT relatie.",
-                "description": "De gespiegelde relatie in de Documenten API wordt door de Zaken API verwijderd. Consumers kunnen dit niet handmatig doen..",
+                "description": "De gespiegelde relatie in de Documenten API wordt door de Zaken API\nverwijderd. Consumers kunnen dit niet handmatig doen..",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -5809,6 +5908,67 @@
                             "$ref": "#/definitions/Fout"
                         },
                         "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
+                ]
+            },
+            "head": {
+                "operationId": "zaak_headers",
+                "summary": "De headers voor een specifiek(e) ZAAK opvragen",
+                "description": "Vraag de headers op die je bij een GET request zou krijgen.",
+                "parameters": [
+                    {
+                        "name": "Accept-Crs",
+                        "in": "header",
+                        "description": "Het gewenste 'Coordinate Reference System' (CRS) van de geometrie in het antwoord (response body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "EPSG:4326"
+                        ]
+                    },
+                    {
+                        "name": "Content-Crs",
+                        "in": "header",
+                        "description": "Het 'Coordinate Reference System' (CRS) van de geometrie in de vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "EPSG:4326"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "Content-Crs": {
+                                "description": "Het 'Coordinate Reference System' (CRS) van de antwoorddata. Volgens de GeoJSON spec is WGS84 de default (EPSG:4326 is hetzelfde als WGS84).",
+                                "type": "string",
+                                "enum": [
+                                    "EPSG:4326"
+                                ]
+                            },
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -8068,6 +8228,39 @@
                             "$ref": "#/definitions/Fout"
                         },
                         "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
+                        ]
+                    }
+                ]
+            },
+            "head": {
+                "operationId": "zaakeigenschap_headers",
+                "summary": "De headers voor een specifiek(e) ZAAKEIGENSCHAP opvragen",
+                "description": "Vraag de headers op die je bij een GET request zou krijgen.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -11042,7 +11235,7 @@
                 }
             }
         },
-        "Wijzgingen": {
+        "Wijzigingen": {
             "title": "Wijzigingen",
             "type": "object",
             "properties": {
@@ -11183,7 +11376,7 @@
                     "readOnly": true
                 },
                 "wijzigingen": {
-                    "$ref": "#/definitions/Wijzgingen"
+                    "$ref": "#/definitions/Wijzigingen"
                 }
             }
         },
