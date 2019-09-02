@@ -55,7 +55,7 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
 
     def test_update_zaak_closed_not_allowed(self):
         zaak = ZaakFactory.create(
-            einddatum=timezone.now(),
+            einddatum=timezone.now().date(),
             zaaktype=ZAAKTYPE
         )
         url = reverse(zaak)
@@ -68,7 +68,7 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
 
     def test_update_zaak_closed_allowed(self):
         zaak = ZaakFactory.create(
-            einddatum=timezone.now(),
+            einddatum=timezone.now().date(),
             zaaktype=ZAAKTYPE
         )
         url = reverse(zaak)
@@ -89,7 +89,7 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
     )
     def test_reopen_zaak_allowed(self, *mocks):
         zaak = ZaakFactory.create(
-            einddatum=timezone.now(),
+            einddatum=timezone.now().date(),
             archiefactiedatum='2020-01-01',
             archiefnominatie=Archiefnominatie.blijvend_bewaren,
             zaaktype=ZAAKTYPE
@@ -119,7 +119,7 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
     )
     def test_reopen_zaak_not_allowed(self, *mocks):
         zaak = ZaakFactory.create(
-            einddatum=timezone.now(),
+            einddatum=timezone.now().date(),
             zaaktype=ZAAKTYPE
         )
         status_create_url = get_operation_url('status_create')
