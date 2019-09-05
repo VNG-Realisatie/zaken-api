@@ -22,9 +22,7 @@ from vng_api_common.notifications.viewsets import (
 from vng_api_common.permissions import permission_class_factory
 from vng_api_common.search import SearchMixin
 from vng_api_common.utils import lookup_kwargs_to_filters
-from vng_api_common.viewsets import (
-    CachingMixin, CheckQueryParamsMixin, NestedViewSetMixin
-)
+from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
     KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
@@ -57,8 +55,8 @@ from .serializers import (
 logger = logging.getLogger(__name__)
 
 
-class ZaakViewSet(CachingMixin,
-                  NotificationViewSetMixin,
+@conditional_retrieve()
+class ZaakViewSet(NotificationViewSetMixin,
                   AuditTrailViewsetMixin,
                   GeoMixin,
                   SearchMixin,
@@ -237,8 +235,7 @@ class ZaakViewSet(CachingMixin,
 
 
 @conditional_retrieve()
-class StatusViewSet(CachingMixin,
-                    NotificationCreateMixin,
+class StatusViewSet(NotificationCreateMixin,
                     AuditTrailCreateMixin,
                     CheckQueryParamsMixin,
                     ListFilterByAuthorizationsMixin,
@@ -360,8 +357,8 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     audit = AUDIT_ZRC
 
 
-class ZaakInformatieObjectViewSet(CachingMixin,
-                                  NotificationCreateMixin,
+@conditional_retrieve()
+class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   AuditTrailViewsetMixin,
                                   CheckQueryParamsMixin,
                                   ListFilterByAuthorizationsMixin,
@@ -456,8 +453,8 @@ class ZaakInformatieObjectViewSet(CachingMixin,
         return qs
 
 
-class ZaakEigenschapViewSet(CachingMixin,
-                            NotificationCreateMixin,
+@conditional_retrieve()
+class ZaakEigenschapViewSet(NotificationCreateMixin,
                             AuditTrailCreateMixin,
                             NestedViewSetMixin,
                             ListFilterByAuthorizationsMixin,
@@ -553,8 +550,8 @@ class KlantContactViewSet(NotificationCreateMixin,
     audit = AUDIT_ZRC
 
 
-class RolViewSet(CachingMixin,
-                 NotificationCreateMixin,
+@conditional_retrieve()
+class RolViewSet(NotificationCreateMixin,
                  AuditTrailCreateMixin,
                  CheckQueryParamsMixin,
                  ListFilterByAuthorizationsMixin,
@@ -601,8 +598,8 @@ class RolViewSet(CachingMixin,
     audit = AUDIT_ZRC
 
 
-class ResultaatViewSet(CachingMixin,
-                       NotificationViewSetMixin,
+@conditional_retrieve()
+class ResultaatViewSet(NotificationViewSetMixin,
                        AuditTrailViewsetMixin,
                        CheckQueryParamsMixin,
                        ListFilterByAuthorizationsMixin,

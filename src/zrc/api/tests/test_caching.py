@@ -65,6 +65,7 @@ class StatusCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
         Test that, if I have a cached copy, the API returns an HTTP 304.
         """
         status_ = StatusFactory.create()
+        status_.calculate_etag_value()
 
         response = self.client.get(
             reverse(status_),
@@ -75,6 +76,7 @@ class StatusCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
 
     def test_conditional_get_stale(self):
         status_ = StatusFactory.create()
+        status_.calculate_etag_value()
 
         response = self.client.get(
             reverse(status_),
