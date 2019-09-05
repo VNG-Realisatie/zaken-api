@@ -12,6 +12,7 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
 )
+from vng_api_common.caching import conditional_retrieve
 from vng_api_common.filters import Backend
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
@@ -235,6 +236,7 @@ class ZaakViewSet(CachingMixin,
         super().perform_update(serializer)
 
 
+@conditional_retrieve()
 class StatusViewSet(CachingMixin,
                     NotificationCreateMixin,
                     AuditTrailCreateMixin,
