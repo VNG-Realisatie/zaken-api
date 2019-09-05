@@ -1,6 +1,7 @@
 """
 Test that the caching mechanisms are in place.
 """
+from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import CacheMixin, JWTAuthMixin, reverse
 from vng_api_common.tests.schema import get_spec
@@ -58,6 +59,29 @@ class StatusCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
         endpoint = spec["paths"]["/statussen/{uuid}"]
 
         self.assertIn("head", endpoint)
+
+    def test_conditional_get_304(self):
+        """
+        Test that, if I have a cached copy, the API returns an HTTP 304.
+        """
+        status_ = StatusFactory.create()
+
+        response = self.client.get(
+            reverse(status_),
+            HTTP_IF_NONE_MATCH=f"\"{status_._etag}\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_304_NOT_MODIFIED)
+
+    def test_conditional_get_stale(self):
+        status_ = StatusFactory.create()
+
+        response = self.client.get(
+            reverse(status_),
+            HTTP_IF_NONE_MATCH="\"not-an-md5\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class ZaakInformatieObjectCacheTests(
