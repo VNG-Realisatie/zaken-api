@@ -794,6 +794,8 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
             'identificatie',
             'datumtijd',
             'kanaal',
+            'onderwerp',
+            'toelichting',
         )
         extra_kwargs = {
             'url': {

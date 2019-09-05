@@ -557,7 +557,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -1684,7 +1684,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2487,7 +2487,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -3033,7 +3033,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -4160,7 +4160,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -8083,6 +8083,18 @@
                     "description": "Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt",
                     "type": "string",
                     "maxLength": 20
+                },
+                "onderwerp": {
+                    "title": "Onderwerp",
+                    "description": "Het onderwerp waarover contact is geweest met de klant.",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "toelichting": {
+                    "title": "Toelichting",
+                    "description": "Een toelichting die inhoudelijk het contact met de klant beschrijft.",
+                    "type": "string",
+                    "maxLength": 1000
                 }
             }
         },
@@ -10969,7 +10981,7 @@
                 }
             }
         },
-        "Wijzgingen": {
+        "Wijzigingen": {
             "title": "Wijzigingen",
             "type": "object",
             "properties": {
@@ -11104,7 +11116,7 @@
                     "readOnly": true
                 },
                 "wijzigingen": {
-                    "$ref": "#/definitions/Wijzgingen"
+                    "$ref": "#/definitions/Wijzigingen"
                 }
             }
         },
