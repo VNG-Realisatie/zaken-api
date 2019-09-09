@@ -2,7 +2,7 @@
 Test that the caching mechanisms are in place.
 """
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APITransactionTestCase
 from vng_api_common.tests import CacheMixin, JWTAuthMixin, reverse
 from vng_api_common.tests.schema import get_spec
 
@@ -37,6 +37,60 @@ class ZaakCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
 
         self.assertIn("head", endpoint)
 
+    def test_conditional_get_304(self):
+        zaak = ZaakFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(zaak),
+            HTTP_IF_NONE_MATCH=f"\"{zaak._etag}\"",
+            **ZAAK_READ_KWARGS
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_304_NOT_MODIFIED)
+
+    def test_conditional_get_stale(self):
+        zaak = ZaakFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(zaak),
+            HTTP_IF_NONE_MATCH=f"\"not-an-md5\"",
+            **ZAAK_READ_KWARGS
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class ZaakCacheTransactionTests(JWTAuthMixin, APITransactionTestCase):
+    heeft_alle_autorisaties = True
+
+    def setUp(self):
+        super().setUp()
+
+        self._create_credentials(
+            self.client_id,
+            self.secret,
+            self.heeft_alle_autorisaties,
+            self.max_vertrouwelijkheidaanduiding,
+        )
+
+    def test_invalidate_new_status(self):
+        """
+        Status URL is part of the resource, so new status invalidates the ETag.
+        """
+        zaak = ZaakFactory.create(with_etag=True)
+        etag = zaak._etag
+
+        # create new status
+        StatusFactory.create(zaak=zaak)
+
+        response = self.client.get(
+            reverse(zaak),
+            HTTP_IF_NONE_MATCH=f"\"{etag}\"",
+            **ZAAK_READ_KWARGS
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class StatusCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
@@ -64,8 +118,7 @@ class StatusCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
         """
         Test that, if I have a cached copy, the API returns an HTTP 304.
         """
-        status_ = StatusFactory.create()
-        status_.calculate_etag_value()
+        status_ = StatusFactory.create(with_etag=True)
 
         response = self.client.get(
             reverse(status_),
@@ -75,8 +128,7 @@ class StatusCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_304_NOT_MODIFIED)
 
     def test_conditional_get_stale(self):
-        status_ = StatusFactory.create()
-        status_.calculate_etag_value()
+        status_ = StatusFactory.create(with_etag=True)
 
         response = self.client.get(
             reverse(status_),
@@ -112,6 +164,26 @@ class ZaakInformatieObjectCacheTests(
 
         self.assertIn("head", endpoint)
 
+    def test_conditional_get_304(self):
+        zio = ZaakInformatieObjectFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(zio),
+            HTTP_IF_NONE_MATCH=f"\"{zio._etag}\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_304_NOT_MODIFIED)
+
+    def test_conditional_get_stale(self):
+        zio = ZaakInformatieObjectFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(zio),
+            HTTP_IF_NONE_MATCH="\"old\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class ZaakEigenschapCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
@@ -139,18 +211,38 @@ class ZaakEigenschapCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
 
         self.assertIn("head", endpoint)
 
+    def test_conditional_get_304(self):
+        zaak_eigenschap = ZaakEigenschapFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(zaak_eigenschap, kwargs={"zaak_uuid": zaak_eigenschap.zaak.uuid}),
+            HTTP_IF_NONE_MATCH=f"\"{zaak_eigenschap._etag}\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_304_NOT_MODIFIED)
+
+    def test_conditional_get_stale(self):
+        zaak_eigenschap = ZaakEigenschapFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(zaak_eigenschap, kwargs={"zaak_uuid": zaak_eigenschap.zaak.uuid}),
+            HTTP_IF_NONE_MATCH="\"old\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class RolCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_Rol_get_cache_header(self):
+    def test_rol_get_cache_header(self):
         rol = RolFactory.create()
 
         response = self.client.get(reverse(rol))
 
         self.assertHasETag(response)
 
-    def test_Rol_head_cache_header(self):
+    def test_rol_head_cache_header(self):
         rol = RolFactory.create()
 
         self.assertHeadHasETag(reverse(rol))
@@ -162,18 +254,38 @@ class RolCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
 
         self.assertIn("head", endpoint)
 
+    def test_conditional_get_304(self):
+        rol = RolFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(rol),
+            HTTP_IF_NONE_MATCH=f"\"{rol._etag}\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_304_NOT_MODIFIED)
+
+    def test_conditional_get_stale(self):
+        rol = RolFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(rol),
+            HTTP_IF_NONE_MATCH="\"old\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class ResultaatCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_Resultaat_get_cache_header(self):
+    def test_resultaat_get_cache_header(self):
         resultaat = ResultaatFactory.create()
 
         response = self.client.get(reverse(resultaat))
 
         self.assertHasETag(response)
 
-    def test_Resultaat_head_cache_header(self):
+    def test_resultaat_head_cache_header(self):
         resultaat = ResultaatFactory.create()
 
         self.assertHeadHasETag(reverse(resultaat))
@@ -184,3 +296,23 @@ class ResultaatCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
         endpoint = spec["paths"]["/resultaten/{uuid}"]
 
         self.assertIn("head", endpoint)
+
+    def test_conditional_get_304(self):
+        resultaat = ResultaatFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(resultaat),
+            HTTP_IF_NONE_MATCH=f"\"{resultaat._etag}\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_304_NOT_MODIFIED)
+
+    def test_conditional_get_stale(self):
+        resultaat = ResultaatFactory.create(with_etag=True)
+
+        response = self.client.get(
+            reverse(resultaat),
+            HTTP_IF_NONE_MATCH="\"old\"",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
