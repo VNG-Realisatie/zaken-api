@@ -4,15 +4,12 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin
 
-from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN
 from zrc.datamodel.tests.factories import StatusFactory
 
 from .utils import reverse
 
 
 class StatusTests(JWTAuthMixin, APITestCase):
-
-    scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
     heeft_alle_autorisaties = True
 
     @override_settings(

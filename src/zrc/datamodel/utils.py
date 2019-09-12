@@ -154,7 +154,7 @@ def get_brondatum(zaak: Zaak, afleidingswijze: str, datum_kenmerk: str=None,
                 _('Geen procestermijn aanwezig voor het bepalen van de brondatum.'))
         try:
             return zaak.einddatum + isodate.parse_duration(procestermijn)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError):
             raise DetermineProcessEndDateException(
                 _('Geen geldige periode in procestermijn: {}').format(procestermijn))
 
@@ -177,7 +177,11 @@ def get_brondatum(zaak: Zaak, afleidingswijze: str, datum_kenmerk: str=None,
         max_ingangsdatum = None
         for zaakbesluit in zaakbesluiten:
             related_besluit = client.retrieve('besluit', url=zaakbesluit.besluit)
-            ingangsdatum = datetime.strptime(related_besluit['ingangsdatum'], '%Y-%m-%d')
+            ingangsdatum = (
+                datetime
+                .strptime(related_besluit['ingangsdatum'], '%Y-%m-%d')
+                .date()
+            )
             if not max_ingangsdatum or ingangsdatum > max_ingangsdatum:
                 max_ingangsdatum = ingangsdatum
         return max_ingangsdatum

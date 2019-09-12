@@ -12,6 +12,7 @@ from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
     AuditTrailViewsetMixin
 )
+from vng_api_common.caching import conditional_retrieve
 from vng_api_common.filters import Backend
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
@@ -54,6 +55,7 @@ from .serializers import (
 logger = logging.getLogger(__name__)
 
 
+@conditional_retrieve()
 class ZaakViewSet(NotificationViewSetMixin,
                   AuditTrailViewsetMixin,
                   GeoMixin,
@@ -232,6 +234,7 @@ class ZaakViewSet(NotificationViewSetMixin,
         super().perform_update(serializer)
 
 
+@conditional_retrieve()
 class StatusViewSet(NotificationCreateMixin,
                     AuditTrailCreateMixin,
                     CheckQueryParamsMixin,
@@ -354,6 +357,7 @@ class ZaakObjectViewSet(NotificationCreateMixin,
     audit = AUDIT_ZRC
 
 
+@conditional_retrieve()
 class ZaakInformatieObjectViewSet(NotificationCreateMixin,
                                   AuditTrailViewsetMixin,
                                   CheckQueryParamsMixin,
@@ -417,7 +421,8 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     destroy:
     Verwijder een ZAAK-INFORMATIEOBJECT relatie.
 
-    De gespiegelde relatie in de Documenten API wordt door de Zaken API verwijderd. Consumers kunnen dit niet handmatig doen..
+    De gespiegelde relatie in de Documenten API wordt door de Zaken API
+    verwijderd. Consumers kunnen dit niet handmatig doen..
     """
     queryset = ZaakInformatieObject.objects.all()
     filterset_class = ZaakInformatieObjectFilter
@@ -448,6 +453,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         return qs
 
 
+@conditional_retrieve()
 class ZaakEigenschapViewSet(NotificationCreateMixin,
                             AuditTrailCreateMixin,
                             NestedViewSetMixin,
@@ -544,6 +550,7 @@ class KlantContactViewSet(NotificationCreateMixin,
     audit = AUDIT_ZRC
 
 
+@conditional_retrieve()
 class RolViewSet(NotificationCreateMixin,
                  AuditTrailCreateMixin,
                  CheckQueryParamsMixin,
@@ -591,6 +598,7 @@ class RolViewSet(NotificationCreateMixin,
     audit = AUDIT_ZRC
 
 
+@conditional_retrieve()
 class ResultaatViewSet(NotificationViewSetMixin,
                        AuditTrailViewsetMixin,
                        CheckQueryParamsMixin,
