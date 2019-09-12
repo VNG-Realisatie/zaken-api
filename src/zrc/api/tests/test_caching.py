@@ -145,14 +145,14 @@ class ZaakInformatieObjectCacheTests(
         APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_ZaakInformatieObject_get_cache_header(self):
+    def test_zaakinformatieobject_get_cache_header(self):
         zaakinformatieobject = ZaakInformatieObjectFactory.create()
 
         response = self.client.get(reverse(zaakinformatieobject))
 
         self.assertHasETag(response)
 
-    def test_ZaakInformatieObject_head_cache_header(self):
+    def test_zaakinformatieobject_head_cache_header(self):
         zaakinformatieobject = ZaakInformatieObjectFactory.create()
 
         self.assertHeadHasETag(reverse(zaakinformatieobject))
@@ -188,7 +188,7 @@ class ZaakInformatieObjectCacheTests(
 class ZaakEigenschapCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_ZaakEigenschap_get_cache_header(self):
+    def test_zaakeigenschap_get_cache_header(self):
         zaakeigenschap = ZaakEigenschapFactory.create()
 
         response = self.client.get(
@@ -197,7 +197,7 @@ class ZaakEigenschapCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
 
         self.assertHasETag(response)
 
-    def test_ZaakEigenschap_head_cache_header(self):
+    def test_zaakeigenschap_head_cache_header(self):
         zaakeigenschap = ZaakEigenschapFactory.create()
 
         self.assertHeadHasETag(
