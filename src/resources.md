@@ -16,6 +16,8 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | identificatie | De unieke aanduiding van een KLANTCONTACT | string | nee | C​R​U​D |
 | datumtijd | De datum en het tijdstip waarop het KLANTCONTACT begint | string | ja | C​R​U​D |
 | kanaal | Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt | string | nee | C​R​U​D |
+| onderwerp | Het onderwerp waarover contact is geweest met de klant. | string | nee | C​R​U​D |
+| toelichting | Een toelichting die inhoudelijk het contact met de klant beschrijft. | string | nee | C​R​U​D |
 
 ## Resultaat
 

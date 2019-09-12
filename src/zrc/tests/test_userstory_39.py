@@ -212,6 +212,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             'zaak': zaak_url,
             'datumtijd': isodatetime(2018, 6, 11, 13, 47, 55),
             'kanaal': 'Webformulier',
+            'onderwerp': 'subject',
+            'toelichting': 'description',
         }
 
         response = self.client.post(url, data)
@@ -232,6 +234,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'identificatie': klantcontact.identificatie,
                 'datumtijd': '2018-06-11T13:47:55Z',
                 'kanaal': 'Webformulier',
+                'onderwerp': 'subject',
+                'toelichting': 'description',
             }
         )
 

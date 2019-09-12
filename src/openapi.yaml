@@ -7449,6 +7449,16 @@ components:
           description: Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt
           type: string
           maxLength: 20
+        onderwerp:
+          title: Onderwerp
+          description: Het onderwerp waarover contact is geweest met de klant.
+          type: string
+          maxLength: 200
+        toelichting:
+          title: Toelichting
+          description: Een toelichting die inhoudelijk het contact met de klant beschrijft.
+          type: string
+          maxLength: 1000
     Fout:
       required:
       - code
