@@ -5,15 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0001_initial'),
-    ]
+    dependencies = [("datamodel", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='zaak',
-            name='zaaktype',
-            field=models.URLField(default='', help_text='URL naar het zaaktype in de CATALOGUS waar deze voorkomt'),
+            model_name="zaak",
+            name="zaaktype",
+            field=models.URLField(
+                default="",
+                help_text="URL naar het zaaktype in de CATALOGUS waar deze voorkomt",
+            ),
             preserve_default=False,
-        ),
+        )
     ]

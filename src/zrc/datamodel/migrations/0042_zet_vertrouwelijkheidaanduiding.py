@@ -31,7 +31,7 @@ def _get_zaaktype(zaak) -> dict:
 
 
 def zet_aanduiding(apps, _):
-    Zaak = apps.get_model('datamodel', 'Zaak')
+    Zaak = apps.get_model("datamodel", "Zaak")
 
     default = VertrouwelijkheidsAanduiding.openbaar
 
@@ -42,19 +42,17 @@ def zet_aanduiding(apps, _):
             logger.exception("Couldn't fetch zaaktype...")
             zt = {}
 
-        if 'vertrouwelijkheidaanduiding' not in zt:
-            logger.warning("No VertrouwelijkheidsAanduiding set on ZT %s! Using default", zt)
+        if "vertrouwelijkheidaanduiding" not in zt:
+            logger.warning(
+                "No VertrouwelijkheidsAanduiding set on ZT %s! Using default", zt
+            )
 
-        zaak.vertrouwlijkheidaanduiding = zt.get('vertrouwelijkheidaanduiding', default)
+        zaak.vertrouwlijkheidaanduiding = zt.get("vertrouwelijkheidaanduiding", default)
         zaak.save()
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0041_zaak_vertrouwlijkheidaanduiding'),
-    ]
+    dependencies = [("datamodel", "0041_zaak_vertrouwlijkheidaanduiding")]
 
-    operations = [
-        migrations.RunPython(zet_aanduiding, migrations.RunPython.noop),
-    ]
+    operations = [migrations.RunPython(zet_aanduiding, migrations.RunPython.noop)]

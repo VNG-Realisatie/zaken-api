@@ -6,30 +6,42 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0022_auto_20180724_0958'),
-    ]
+    dependencies = [("datamodel", "0022_auto_20180724_0958")]
 
     operations = [
         migrations.AddField(
-            model_name='zaak',
-            name='einddatum',
-            field=models.DateField(blank=True, help_text='De datum waarop de uitvoering van de zaak afgerond is.', null=True),
+            model_name="zaak",
+            name="einddatum",
+            field=models.DateField(
+                blank=True,
+                help_text="De datum waarop de uitvoering van de zaak afgerond is.",
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='zaak',
-            name='einddatum_gepland',
-            field=models.DateField(blank=True, help_text='De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.', null=True),
+            model_name="zaak",
+            name="einddatum_gepland",
+            field=models.DateField(
+                blank=True,
+                help_text="De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.",
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='zaak',
-            name='startdatum',
-            field=models.DateField(default=datetime.date(2018, 1, 1), help_text='De datum waarop met de uitvoering van de zaak is gestart'),
+            model_name="zaak",
+            name="startdatum",
+            field=models.DateField(
+                default=datetime.date(2018, 1, 1),
+                help_text="De datum waarop met de uitvoering van de zaak is gestart",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='zaak',
-            name='registratiedatum',
-            field=models.DateField(default=datetime.date.today, help_text='De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt.'),
+            model_name="zaak",
+            name="registratiedatum",
+            field=models.DateField(
+                default=datetime.date.today,
+                help_text="De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt.",
+            ),
         ),
     ]

@@ -6,14 +6,17 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0014_auto_20180629_1512'),
-    ]
+    dependencies = [("datamodel", "0014_auto_20180629_1512")]
 
     operations = [
         migrations.AlterField(
-            model_name='zaak',
-            name='zaakgeometrie',
-            field=django.contrib.gis.db.models.fields.GeometryField(blank=True, help_text='Punt, lijn of (multi-)vlak geometrie-informatie.', null=True, srid=4326),
-        ),
+            model_name="zaak",
+            name="zaakgeometrie",
+            field=django.contrib.gis.db.models.fields.GeometryField(
+                blank=True,
+                help_text="Punt, lijn of (multi-)vlak geometrie-informatie.",
+                null=True,
+                srid=4326,
+            ),
+        )
     ]

@@ -5,8 +5,11 @@ from django.db import migrations
 from vng_api_common.db.operations import UpdateChoiceValues
 
 from ..constants import (
-    GeslachtsAanduiding, SoortRechtsvorm, TyperingInrichtingselement,
-    TyperingKunstwerk, TyperingWater
+    GeslachtsAanduiding,
+    SoortRechtsvorm,
+    TyperingInrichtingselement,
+    TyperingKunstwerk,
+    TyperingWater,
 )
 
 
@@ -89,9 +92,7 @@ class TyperingWaterUpdate(UpdateChoiceValues):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0081_auto_20190729_1013'),
-    ]
+    dependencies = [("datamodel", "0081_auto_20190729_1013")]
 
     operations = [
         GeslachtsAanduidingUpdate("datamodel.NatuurlijkPersoon", "geslachtsaanduiding"),

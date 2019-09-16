@@ -13,7 +13,7 @@ def rewrite_urls(apps, schema_editor):
         bits = zaak.zaaktype.split("/")
         index = bits.index("catalogussen")
 
-        new_bits = bits[0:index] + bits[index + 2:]
+        new_bits = bits[0:index] + bits[index + 2 :]
         zaak.zaaktype = "/".join(new_bits)
         zaak.save()
 
@@ -24,7 +24,7 @@ def rewrite_urls(apps, schema_editor):
         bits = status.status_type.split("/")
         index = bits.index("catalogussen")
 
-        new_bits = bits[0:index] + bits[index + 4:]
+        new_bits = bits[0:index] + bits[index + 4 :]
         status.status_type = "/".join(new_bits)
         status.save()
 
@@ -35,17 +35,13 @@ def rewrite_urls(apps, schema_editor):
         bits = eigenschap.eigenschap.split("/")
         index = bits.index("catalogussen")
 
-        new_bits = bits[0:index] + bits[index + 4:]
+        new_bits = bits[0:index] + bits[index + 4 :]
         eigenschap.eigenschap = "/".join(new_bits)
         eigenschap.save()
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0070_auto_20190627_1404'),
-    ]
+    dependencies = [("datamodel", "0070_auto_20190627_1404")]
 
-    operations = [
-        migrations.RunPython(rewrite_urls, migrations.RunPython.noop),
-    ]
+    operations = [migrations.RunPython(rewrite_urls, migrations.RunPython.noop)]

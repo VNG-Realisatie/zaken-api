@@ -5,15 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0027_delete_organisatorischeeenheid'),
-    ]
+    dependencies = [("datamodel", "0027_delete_organisatorischeeenheid")]
 
     operations = [
         migrations.AddField(
-            model_name='rol',
-            name='betrokkene_type',
-            field=models.CharField(choices=[('Natuurlijk persoon', 'Natuurlijk persoon'), ('Niet-natuurlijk persoon', 'Niet-natuurlijk persoon'), ('Vestiging', 'Vestiging'), ('Organisatorische eenheid', 'Organisatorische eenheid'), ('Medewerker', 'Medewerker')], default='Natuurlijk persoon', max_length=100),
+            model_name="rol",
+            name="betrokkene_type",
+            field=models.CharField(
+                choices=[
+                    ("Natuurlijk persoon", "Natuurlijk persoon"),
+                    ("Niet-natuurlijk persoon", "Niet-natuurlijk persoon"),
+                    ("Vestiging", "Vestiging"),
+                    ("Organisatorische eenheid", "Organisatorische eenheid"),
+                    ("Medewerker", "Medewerker"),
+                ],
+                default="Natuurlijk persoon",
+                max_length=100,
+            ),
             preserve_default=False,
-        ),
+        )
     ]

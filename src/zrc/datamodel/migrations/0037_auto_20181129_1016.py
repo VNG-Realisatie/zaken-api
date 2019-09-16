@@ -6,14 +6,15 @@ import vng_api_common.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0036_zaakinformatieobject_uuid'),
-    ]
+    dependencies = [("datamodel", "0036_zaakinformatieobject_uuid")]
 
     operations = [
         migrations.AlterField(
-            model_name='zaak',
-            name='verantwoordelijke_organisatie',
-            field=vng_api_common.fields.RSINField(help_text='URL naar de Niet-natuurlijk persoon zijnde de organisatie die eindverantwoordelijk is voor de behandeling van de zaak.', max_length=9),
-        ),
+            model_name="zaak",
+            name="verantwoordelijke_organisatie",
+            field=vng_api_common.fields.RSINField(
+                help_text="URL naar de Niet-natuurlijk persoon zijnde de organisatie die eindverantwoordelijk is voor de behandeling van de zaak.",
+                max_length=9,
+            ),
+        )
     ]

@@ -5,18 +5,13 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0030_auto_20180813_0855'),
-    ]
+    dependencies = [("datamodel", "0030_auto_20180813_0855")]
 
     operations = [
         migrations.RenameField(
-            model_name='zaak',
-            old_name='zaakidentificatie',
-            new_name='identificatie',
+            model_name="zaak", old_name="zaakidentificatie", new_name="identificatie"
         ),
         migrations.AlterUniqueTogether(
-            name='zaak',
-            unique_together={('bronorganisatie', 'identificatie')},
+            name="zaak", unique_together={("bronorganisatie", "identificatie")}
         ),
     ]

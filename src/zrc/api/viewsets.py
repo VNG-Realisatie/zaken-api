@@ -9,15 +9,18 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from vng_api_common.audittrails.viewsets import (
-    AuditTrailCreateMixin, AuditTrailDestroyMixin, AuditTrailViewSet,
-    AuditTrailViewsetMixin
+    AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
+    AuditTrailViewSet,
+    AuditTrailViewsetMixin,
 )
 from vng_api_common.caching import conditional_retrieve
 from vng_api_common.filters import Backend
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
-    NotificationCreateMixin, NotificationViewSetMixin
+    NotificationCreateMixin,
+    NotificationViewSetMixin,
 )
 from vng_api_common.permissions import permission_class_factory
 from vng_api_common.search import SearchMixin
@@ -25,44 +28,68 @@ from vng_api_common.utils import lookup_kwargs_to_filters
 from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
 from zrc.datamodel.models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakBesluit, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject
+    KlantContact,
+    Resultaat,
+    Rol,
+    Status,
+    Zaak,
+    ZaakBesluit,
+    ZaakEigenschap,
+    ZaakInformatieObject,
+    ZaakObject,
 )
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
-    ResultaatFilter, RolFilter, StatusFilter, ZaakFilter,
-    ZaakInformatieObjectFilter, ZaakObjectFilter
+    ResultaatFilter,
+    RolFilter,
+    StatusFilter,
+    ZaakFilter,
+    ZaakInformatieObjectFilter,
+    ZaakObjectFilter,
 )
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
-    ZaakAuthScopesRequired, ZaakBaseAuthRequired,
-    ZaakRelatedAuthScopesRequired
+    ZaakAuthScopesRequired,
+    ZaakBaseAuthRequired,
+    ZaakRelatedAuthScopesRequired,
 )
 from .scopes import (
-    SCOPE_STATUSSEN_TOEVOEGEN, SCOPE_ZAKEN_ALLES_LEZEN,
-    SCOPE_ZAKEN_ALLES_VERWIJDEREN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE,
-    SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN, SCOPEN_ZAKEN_HEROPENEN
+    SCOPE_STATUSSEN_TOEVOEGEN,
+    SCOPE_ZAKEN_ALLES_LEZEN,
+    SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+    SCOPE_ZAKEN_BIJWERKEN,
+    SCOPE_ZAKEN_CREATE,
+    SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+    SCOPEN_ZAKEN_HEROPENEN,
 )
 from .serializers import (
-    KlantContactSerializer, ResultaatSerializer, RolSerializer,
-    StatusSerializer, ZaakBesluitSerializer, ZaakEigenschapSerializer,
-    ZaakInformatieObjectSerializer, ZaakObjectSerializer, ZaakSerializer,
-    ZaakZoekSerializer
+    KlantContactSerializer,
+    ResultaatSerializer,
+    RolSerializer,
+    StatusSerializer,
+    ZaakBesluitSerializer,
+    ZaakEigenschapSerializer,
+    ZaakInformatieObjectSerializer,
+    ZaakObjectSerializer,
+    ZaakSerializer,
+    ZaakZoekSerializer,
 )
 
 logger = logging.getLogger(__name__)
 
 
 @conditional_retrieve()
-class ZaakViewSet(NotificationViewSetMixin,
-                  AuditTrailViewsetMixin,
-                  GeoMixin,
-                  SearchMixin,
-                  CheckQueryParamsMixin,
-                  ListFilterByAuthorizationsMixin,
-                  viewsets.ModelViewSet):
+class ZaakViewSet(
+    NotificationViewSetMixin,
+    AuditTrailViewsetMixin,
+    GeoMixin,
+    SearchMixin,
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    viewsets.ModelViewSet,
+):
     """
     Opvragen en bewerken van ZAAKen.
 
@@ -167,29 +194,30 @@ class ZaakViewSet(NotificationViewSetMixin,
       zie ook: https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
     - `klantcontact` - alle klantcontacten bij een zaak
     """
-    queryset = Zaak.objects.prefetch_related('deelzaken').order_by('-pk')
+
+    queryset = Zaak.objects.prefetch_related("deelzaken").order_by("-pk")
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
     filter_backends = (Backend, OrderingFilter)
     filterset_class = ZaakFilter
-    ordering_fields = ('startdatum', )
-    lookup_field = 'uuid'
+    ordering_fields = ("startdatum",)
+    lookup_field = "uuid"
     pagination_class = PageNumberPagination
 
     permission_classes = (ZaakAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        '_zoek': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE,
-        'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
-        'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "_zoek": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_CREATE,
+        "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
-    @action(methods=('post',), detail=False)
+    @action(methods=("post",), detail=False)
     def _zoek(self, request, *args, **kwargs):
         """
         Voer een (geo)-zoekopdracht uit op ZAAKen.
@@ -199,14 +227,13 @@ class ZaakViewSet(NotificationViewSetMixin,
         """
         search_input = self.get_search_input()
 
-        within = search_input['zaakgeometrie']['within']
-        queryset = (
-            self
-            .filter_queryset(self.get_queryset())
-            .filter(zaakgeometrie__within=within)
+        within = search_input["zaakgeometrie"]["within"]
+        queryset = self.filter_queryset(self.get_queryset()).filter(
+            zaakgeometrie__within=within
         )
 
         return self.get_search_output(queryset)
+
     _zoek.is_search_action = True
 
     def perform_update(self, serializer):
@@ -226,7 +253,7 @@ class ZaakViewSet(NotificationViewSetMixin,
         if not self.request.jwt_auth.has_auth(
             scopes=SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
             zaaktype=zaak.zaaktype,
-            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding
+            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding,
         ):
             if zaak.einddatum:
                 msg = "Modifying a closed case with current scope is forbidden"
@@ -235,12 +262,14 @@ class ZaakViewSet(NotificationViewSetMixin,
 
 
 @conditional_retrieve()
-class StatusViewSet(NotificationCreateMixin,
-                    AuditTrailCreateMixin,
-                    CheckQueryParamsMixin,
-                    ListFilterByAuthorizationsMixin,
-                    mixins.CreateModelMixin,
-                    viewsets.ReadOnlyModelViewSet):
+class StatusViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    mixins.CreateModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
     """
     Opvragen en beheren van zaakstatussen.
 
@@ -269,17 +298,20 @@ class StatusViewSet(NotificationCreateMixin,
       zaak afgesloten door de einddatum te zetten.
 
     """
-    queryset = Status.objects.order_by('-pk')
+
+    queryset = Status.objects.order_by("-pk")
     serializer_class = StatusSerializer
     filterset_class = StatusFilter
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     pagination_class = PageNumberPagination
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN | SCOPEN_ZAKEN_HEROPENEN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_CREATE
+        | SCOPE_STATUSSEN_TOEVOEGEN
+        | SCOPEN_ZAKEN_HEROPENEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -298,11 +330,11 @@ class StatusViewSet(NotificationCreateMixin,
         :raises: PermissionDenied if attempting to create another Status with
           insufficient permissions
         """
-        zaak = serializer.validated_data['zaak']
+        zaak = serializer.validated_data["zaak"]
         if not self.request.jwt_auth.has_auth(
             scopes=SCOPE_STATUSSEN_TOEVOEGEN | SCOPEN_ZAKEN_HEROPENEN,
             zaaktype=zaak.zaaktype,
-            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding
+            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding,
         ):
             if zaak.status_set.exists():
                 msg = f"Met de '{SCOPE_ZAKEN_CREATE}' scope mag je slechts 1 status zetten"
@@ -311,7 +343,7 @@ class StatusViewSet(NotificationCreateMixin,
         if not self.request.jwt_auth.has_auth(
             scopes=SCOPEN_ZAKEN_HEROPENEN,
             zaaktype=zaak.zaaktype,
-            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding
+            vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding,
         ):
             if zaak.einddatum:
                 msg = "Reopening a closed case with current scope is forbidden"
@@ -320,11 +352,13 @@ class StatusViewSet(NotificationCreateMixin,
         super().perform_create(serializer)
 
 
-class ZaakObjectViewSet(NotificationCreateMixin,
-                        ListFilterByAuthorizationsMixin,
-                        AuditTrailCreateMixin,
-                        mixins.CreateModelMixin,
-                        viewsets.ReadOnlyModelViewSet):
+class ZaakObjectViewSet(
+    NotificationCreateMixin,
+    ListFilterByAuthorizationsMixin,
+    AuditTrailCreateMixin,
+    mixins.CreateModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
     """
     Opvragen en bewerken van ZAAKOBJECTen.
 
@@ -343,28 +377,31 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
     Een specifiek ZAAKOBJECT opvragen.
     """
-    queryset = ZaakObject.objects.order_by('-pk')
+
+    queryset = ZaakObject.objects.order_by("-pk")
     serializer_class = ZaakObjectSerializer
     filterset_class = ZaakObjectFilter
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     pagination_class = PageNumberPagination
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
 
 @conditional_retrieve()
-class ZaakInformatieObjectViewSet(NotificationCreateMixin,
-                                  AuditTrailViewsetMixin,
-                                  CheckQueryParamsMixin,
-                                  ListFilterByAuthorizationsMixin,
-                                  viewsets.ModelViewSet):
+class ZaakInformatieObjectViewSet(
+    NotificationCreateMixin,
+    AuditTrailViewsetMixin,
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    viewsets.ModelViewSet,
+):
 
     """
     Opvragen en bewerken van ZAAK-INFORMATIEOBJECT relaties.
@@ -426,21 +463,24 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     De gespiegelde relatie in de Documenten API wordt door de Zaken API
     verwijderd. Consumers kunnen dit niet handmatig doen..
     """
+
     queryset = ZaakInformatieObject.objects.all()
     filterset_class = ZaakInformatieObjectFilter
     serializer_class = ZaakInformatieObjectSerializer
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     notifications_kanaal = KANAAL_ZAKEN
-    notifications_main_resource_key = 'zaak'
+    notifications_main_resource_key = "zaak"
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
-        'update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
-        'partial_update': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
+        "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN
+        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     audit = AUDIT_ZRC
 
@@ -448,20 +488,22 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         qs = super().get_queryset()
 
         # Do not display ZaakInformatieObjecten that are marked to be deleted
-        cache = caches['drc_sync']
-        marked_zios = cache.get('zios_marked_for_delete')
+        cache = caches["drc_sync"]
+        marked_zios = cache.get("zios_marked_for_delete")
         if marked_zios:
             return qs.exclude(uuid__in=marked_zios)
         return qs
 
 
 @conditional_retrieve()
-class ZaakEigenschapViewSet(NotificationCreateMixin,
-                            AuditTrailCreateMixin,
-                            NestedViewSetMixin,
-                            ListFilterByAuthorizationsMixin,
-                            mixins.CreateModelMixin,
-                            viewsets.ReadOnlyModelViewSet):
+class ZaakEigenschapViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    NestedViewSetMixin,
+    ListFilterByAuthorizationsMixin,
+    mixins.CreateModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
     """
     Opvragen en bewerken van ZAAKEIGENSCHAPpen
 
@@ -480,29 +522,25 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
 
     Een specifieke ZAAKEIGENSCHAP opvragen.
     """
+
     queryset = ZaakEigenschap.objects.all()
     serializer_class = ZaakEigenschapSerializer
     permission_classes = (
-        permission_class_factory(
-            base=ZaakBaseAuthRequired,
-            get_obj='_get_zaak',
-        ),
+        permission_class_factory(base=ZaakBaseAuthRequired, get_obj="_get_zaak"),
     )
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN,
     }
-    parent_retrieve_kwargs = {
-        'zaak_uuid': 'uuid',
-    }
+    parent_retrieve_kwargs = {"zaak_uuid": "uuid"}
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
     def _get_zaak(self):
-        if not hasattr(self, '_zaak'):
+        if not hasattr(self, "_zaak"):
             filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
             self._zaak = get_object_or_404(Zaak, **filters)
         return self._zaak
@@ -515,11 +553,13 @@ class ZaakEigenschapViewSet(NotificationCreateMixin,
         return super().list(request, *args, **kwargs)
 
 
-class KlantContactViewSet(NotificationCreateMixin,
-                          ListFilterByAuthorizationsMixin,
-                          AuditTrailCreateMixin,
-                          mixins.CreateModelMixin,
-                          viewsets.ReadOnlyModelViewSet):
+class KlantContactViewSet(
+    NotificationCreateMixin,
+    ListFilterByAuthorizationsMixin,
+    AuditTrailCreateMixin,
+    mixins.CreateModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
     """
     Opvragen en bewerken van KLANTCONTACTen.
 
@@ -539,28 +579,31 @@ class KlantContactViewSet(NotificationCreateMixin,
 
     Een specifiek KLANTCONTACT bij een ZAAK opvragen.
     """
-    queryset = KlantContact.objects.order_by('-pk')
+
+    queryset = KlantContact.objects.order_by("-pk")
     serializer_class = KlantContactSerializer
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     pagination_class = PageNumberPagination
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_BIJWERKEN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
 
 @conditional_retrieve()
-class RolViewSet(NotificationCreateMixin,
-                 AuditTrailCreateMixin,
-                 CheckQueryParamsMixin,
-                 ListFilterByAuthorizationsMixin,
-                 mixins.CreateModelMixin,
-                 mixins.DestroyModelMixin,
-                 viewsets.ReadOnlyModelViewSet):
+class RolViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
     """
     Opvragen en bewerken van ROL relatie tussen een ZAAK en een BETROKKENE.
 
@@ -585,29 +628,32 @@ class RolViewSet(NotificationCreateMixin,
     Maak een ROL aan bij een ZAAK.
 
     """
-    queryset = Rol.objects.order_by('-pk')
+
+    queryset = Rol.objects.order_by("-pk")
     serializer_class = RolSerializer
     filterset_class = RolFilter
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     pagination_class = PageNumberPagination
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
 
 @conditional_retrieve()
-class ResultaatViewSet(NotificationViewSetMixin,
-                       AuditTrailViewsetMixin,
-                       CheckQueryParamsMixin,
-                       ListFilterByAuthorizationsMixin,
-                       viewsets.ModelViewSet):
+class ResultaatViewSet(
+    NotificationViewSetMixin,
+    AuditTrailViewsetMixin,
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    viewsets.ModelViewSet,
+):
     """
     Opvragen en beheren van resultaten.
 
@@ -648,20 +694,21 @@ class ResultaatViewSet(NotificationViewSetMixin,
     Verwijder een RESULTAAT van een ZAAK.
 
     """
-    queryset = Resultaat.objects.order_by('-pk')
+
+    queryset = Resultaat.objects.order_by("-pk")
     serializer_class = ResultaatSerializer
     filterset_class = ResultaatFilter
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
     pagination_class = PageNumberPagination
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_BIJWERKEN,
-        'update': SCOPE_ZAKEN_BIJWERKEN,
-        'partial_update': SCOPE_ZAKEN_BIJWERKEN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN,
+        "update": SCOPE_ZAKEN_BIJWERKEN,
+        "partial_update": SCOPE_ZAKEN_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -681,17 +728,20 @@ class ZaakAuditTrailViewSet(AuditTrailViewSet):
 
     Een specifieke audit trail regel opvragen.
     """
-    main_resource_lookup_field = 'zaak_uuid'
+
+    main_resource_lookup_field = "zaak_uuid"
 
 
-class ZaakBesluitViewSet(NotificationCreateMixin,
-                         AuditTrailCreateMixin,
-                         AuditTrailDestroyMixin,
-                         NestedViewSetMixin,
-                         ListFilterByAuthorizationsMixin,
-                         mixins.CreateModelMixin,
-                         mixins.DestroyModelMixin,
-                         viewsets.ReadOnlyModelViewSet):
+class ZaakBesluitViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
+    NestedViewSetMixin,
+    ListFilterByAuthorizationsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
 
     """
     Read and edit Zaak-Besluit relations.
@@ -726,31 +776,27 @@ class ZaakBesluitViewSet(NotificationCreateMixin,
     daarom is dit endpoint in de Zaken API geimplementeerd.
 
     """
+
     queryset = ZaakBesluit.objects.all()
     serializer_class = ZaakBesluitSerializer
     permission_classes = (
-        permission_class_factory(
-            base=ZaakBaseAuthRequired,
-            get_obj='_get_zaak',
-        ),
+        permission_class_factory(base=ZaakBaseAuthRequired, get_obj="_get_zaak"),
     )
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
 
     required_scopes = {
-        'list': SCOPE_ZAKEN_ALLES_LEZEN,
-        'retrieve': SCOPE_ZAKEN_ALLES_LEZEN,
-        'create': SCOPE_ZAKEN_BIJWERKEN,
-        'destroy': SCOPE_ZAKEN_BIJWERKEN,
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN,
     }
 
-    parent_retrieve_kwargs = {
-        'zaak_uuid': 'uuid',
-    }
+    parent_retrieve_kwargs = {"zaak_uuid": "uuid"}
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
     def _get_zaak(self):
-        if not hasattr(self, '_zaak'):
+        if not hasattr(self, "_zaak"):
             filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
             self._zaak = get_object_or_404(Zaak, **filters)
         return self._zaak
@@ -768,7 +814,7 @@ class ZaakBesluitViewSet(NotificationCreateMixin,
         if not self.kwargs:
             return context
 
-        context['parent_object'] = self._get_zaak()
+        context["parent_object"] = self._get_zaak()
         return context
 
     def get_notification_main_object_url(self, data: dict, kanaal: Kanaal) -> str:

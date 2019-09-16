@@ -5,19 +5,26 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0047_auto_20190103_1353'),
-    ]
+    dependencies = [("datamodel", "0047_auto_20190103_1353")]
 
     operations = [
         migrations.AddField(
-            model_name='zaak',
-            name='opschorting_indicatie',
-            field=models.BooleanField(default=False, help_text='Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.', verbose_name='indicatie opschorting'),
+            model_name="zaak",
+            name="opschorting_indicatie",
+            field=models.BooleanField(
+                default=False,
+                help_text="Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.",
+                verbose_name="indicatie opschorting",
+            ),
         ),
         migrations.AddField(
-            model_name='zaak',
-            name='opschorting_reden',
-            field=models.CharField(blank=True, help_text='Omschrijving van de reden voor het opschorten van de 306behandeling van de zaak.', max_length=200, verbose_name='reden opschorting'),
+            model_name="zaak",
+            name="opschorting_reden",
+            field=models.CharField(
+                blank=True,
+                help_text="Omschrijving van de reden voor het opschorten van de 306behandeling van de zaak.",
+                max_length=200,
+                verbose_name="reden opschorting",
+            ),
         ),
     ]

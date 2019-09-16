@@ -7,25 +7,25 @@ from django.views.generic.base import TemplateView
 
 from vng_api_common.views import ViewConfigView
 
-handler500 = 'zrc.utils.views.server_error'
+handler500 = "zrc.utils.views.server_error"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('zrc.api.urls')),
-
+    path("admin/", admin.site.urls),
+    path("api/", include("zrc.api.urls")),
     # Simply show the master template.
-    path('', TemplateView.as_view(template_name='index.html')),
-    path('view-config/', ViewConfigView.as_view(), name='view-config'),
-    path('ref/', include('vng_api_common.urls')),
-    path('ref/', include('vng_api_common.notifications.urls')),
+    path("", TemplateView.as_view(template_name="index.html")),
+    path("view-config/", ViewConfigView.as_view(), name="view-config"),
+    path("ref/", include("vng_api_common.urls")),
+    path("ref/", include("vng_api_common.notifications.urls")),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run collectstatic). Both the static
 # folder and the media folder are only served via Django if DEBUG = True.
-urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += staticfiles_urlpatterns() + static(
+    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+)
 
-if settings.DEBUG and 'debug_toolbar' in settings.INSTALLED_APPS:
+if settings.DEBUG and "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]
+
+    urlpatterns += [path("__debug__/", include(debug_toolbar.urls))]
