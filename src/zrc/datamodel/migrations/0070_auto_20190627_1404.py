@@ -5,19 +5,17 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0069_auto_20190627_1305'),
-    ]
+    dependencies = [("datamodel", "0069_auto_20190627_1305")]
 
     operations = [
         migrations.RenameField(
-            model_name='wozobject',
-            old_name='wozobject_nummer',
-            new_name='woz_object_nummer',
+            model_name="wozobject",
+            old_name="wozobject_nummer",
+            new_name="woz_object_nummer",
         ),
         migrations.RenameField(
-            model_name='wozdeelobject',
-            old_name='nummer_WOZ_deel_object',
-            new_name='nummer_woz_deel_object',
+            model_name="wozdeelobject",
+            old_name="nummer_WOZ_deel_object",
+            new_name="nummer_woz_deel_object",
         ),
     ]

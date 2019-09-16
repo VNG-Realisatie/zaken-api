@@ -5,14 +5,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0028_rol_betrokkene_type'),
-    ]
+    dependencies = [("datamodel", "0028_rol_betrokkene_type")]
 
     operations = [
         migrations.AlterField(
-            model_name='zaakobject',
-            name='object_type',
-            field=models.CharField(choices=[('VerblijfsObject', 'Verblijfsobject'), ('MeldingOpenbareRuimte', 'Melding openbare ruimte')], help_text='Beschrijft het type object gerelateerd aan de zaak', max_length=100),
-        ),
+            model_name="zaakobject",
+            name="object_type",
+            field=models.CharField(
+                choices=[
+                    ("VerblijfsObject", "Verblijfsobject"),
+                    ("MeldingOpenbareRuimte", "Melding openbare ruimte"),
+                ],
+                help_text="Beschrijft het type object gerelateerd aan de zaak",
+                max_length=100,
+            ),
+        )
     ]

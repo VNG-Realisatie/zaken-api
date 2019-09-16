@@ -5,24 +5,33 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 
-from zrc.api.scopes import (
-    SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_ALLES_VERWIJDEREN
-)
+from zrc.api.scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_ALLES_VERWIJDEREN
 from zrc.api.tests.mixins import ZaakInformatieObjectSyncMixin
 from zrc.datamodel.models import (
-    KlantContact, Resultaat, Rol, Status, Zaak, ZaakEigenschap,
-    ZaakInformatieObject, ZaakObject
+    KlantContact,
+    Resultaat,
+    Rol,
+    Status,
+    Zaak,
+    ZaakEigenschap,
+    ZaakInformatieObject,
+    ZaakObject,
 )
 from zrc.datamodel.tests.factories import (
-    KlantContactFactory, ResultaatFactory, RolFactory, StatusFactory,
-    ZaakEigenschapFactory, ZaakFactory, ZaakInformatieObjectFactory,
-    ZaakObjectFactory
+    KlantContactFactory,
+    ResultaatFactory,
+    RolFactory,
+    StatusFactory,
+    ZaakEigenschapFactory,
+    ZaakFactory,
+    ZaakInformatieObjectFactory,
+    ZaakObjectFactory,
 )
 from zrc.tests.utils import ZAAK_READ_KWARGS
 
 from .utils import ZAAK_WRITE_KWARGS
 
-ZAAKTYPE = 'https://example.com/api/v1/zaaktype/1'
+ZAAKTYPE = "https://example.com/api/v1/zaaktype/1"
 
 
 class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
@@ -46,10 +55,12 @@ class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         ZaakInformatieObjectFactory.create(zaak=zaak)
         KlantContactFactory.create(zaak=zaak)
 
-        zaak_delete_url = get_operation_url('zaak_delete', uuid=zaak.uuid)
+        zaak_delete_url = get_operation_url("zaak_delete", uuid=zaak.uuid)
 
         response = self.client.delete(zaak_delete_url, **ZAAK_WRITE_KWARGS)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
+        self.assertEqual(
+            response.status_code, status.HTTP_204_NO_CONTENT, response.data
+        )
 
         self.assertEqual(Zaak.objects.all().count(), 0)
 
@@ -68,10 +79,12 @@ class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         deel_zaak = ZaakFactory.create(hoofdzaak=zaak, zaaktype=ZAAKTYPE)
 
-        zaak_delete_url = get_operation_url('zaak_delete', uuid=deel_zaak.uuid)
+        zaak_delete_url = get_operation_url("zaak_delete", uuid=deel_zaak.uuid)
 
         response = self.client.delete(zaak_delete_url, **ZAAK_WRITE_KWARGS)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, response.data)
+        self.assertEqual(
+            response.status_code, status.HTTP_204_NO_CONTENT, response.data
+        )
 
         self.assertEqual(Zaak.objects.all().count(), 1)
         self.assertEqual(Zaak.objects.get().pk, zaak.pk)
@@ -82,8 +95,8 @@ class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         resultaat = ResultaatFactory.create(zaak=zaak)
-        zaak_url = 'http://testserver{path}'.format(path=reverse(zaak))
-        resultaat_url = 'http://testserver{path}'.format(path=reverse(resultaat))
+        zaak_url = "http://testserver{path}".format(path=reverse(zaak))
+        resultaat_url = "http://testserver{path}".format(path=reverse(resultaat))
 
         self.autorisatie.scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
         self.autorisatie.save()
@@ -91,4 +104,4 @@ class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         response = self.client.get(zaak_url, **ZAAK_READ_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['resultaat'], resultaat_url)
+        self.assertEqual(response.json()["resultaat"], resultaat_url)

@@ -5,15 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0025_remove_rol_betrokkene'),
-    ]
+    dependencies = [("datamodel", "0025_remove_rol_betrokkene")]
 
     operations = [
         migrations.AddField(
-            model_name='rol',
-            name='betrokkene',
-            field=models.URLField(default='', help_text='Een betrokkene gerelateerd aan een zaak'),
+            model_name="rol",
+            name="betrokkene",
+            field=models.URLField(
+                default="", help_text="Een betrokkene gerelateerd aan een zaak"
+            ),
             preserve_default=False,
-        ),
+        )
     ]

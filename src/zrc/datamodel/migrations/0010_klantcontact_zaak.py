@@ -6,15 +6,17 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0009_klantcontact'),
-    ]
+    dependencies = [("datamodel", "0009_klantcontact")]
 
     operations = [
         migrations.AddField(
-            model_name='klantcontact',
-            name='zaak',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='datamodel.Zaak'),
+            model_name="klantcontact",
+            name="zaak",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="datamodel.Zaak",
+            ),
             preserve_default=False,
-        ),
+        )
     ]

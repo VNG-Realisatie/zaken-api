@@ -14,7 +14,7 @@ from zrc.datamodel.tests.factories import ZaakFactory
 
 from .utils import ZAAK_WRITE_KWARGS
 
-ZAAKTYPE = 'https://example.com/api/v1/zaaktype/1'
+ZAAKTYPE = "https://example.com/api/v1/zaaktype/1"
 
 
 class US345TestCase(JWTAuthMixin, APITestCase):
@@ -28,27 +28,31 @@ class US345TestCase(JWTAuthMixin, APITestCase):
             archiefnominatie=Archiefnominatie.blijvend_bewaren,
             archiefactiedatum=date(2010, 1, 1),
             archiefstatus=Archiefstatus.nog_te_archiveren,
-            zaaktype=ZAAKTYPE
+            zaaktype=ZAAKTYPE,
         )
         zaak_2 = ZaakFactory.create(
             archiefnominatie=Archiefnominatie.vernietigen,
             archiefactiedatum=date(2010, 1, 1),
             archiefstatus=Archiefstatus.nog_te_archiveren,
-            zaaktype=ZAAKTYPE
+            zaaktype=ZAAKTYPE,
         )
 
-        zaak_list_url = get_operation_url('zaak_list')
+        zaak_list_url = get_operation_url("zaak_list")
 
         query_params = {
-            'archiefactiedatum__lt': date(2015, 1, 1),
-            'archiefnominatie': Archiefnominatie.blijvend_bewaren,
-            'archiefstatus__in': ','.join([Archiefstatus.nog_te_archiveren, Archiefstatus.gearchiveerd]),
+            "archiefactiedatum__lt": date(2015, 1, 1),
+            "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+            "archiefstatus__in": ",".join(
+                [Archiefstatus.nog_te_archiveren, Archiefstatus.gearchiveerd]
+            ),
         }
         query_params = urlencode(query_params, quote_via=quote_plus)
 
-        response = self.client.get(f'{zaak_list_url}?{query_params}', **ZAAK_WRITE_KWARGS)
+        response = self.client.get(
+            f"{zaak_list_url}?{query_params}", **ZAAK_WRITE_KWARGS
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
-        data = response.json()['results']
+        data = response.json()["results"]
         self.assertEqual(len(data), 1)
-        self.assertTrue(data[0]['url'].endswith(str(zaak_1.uuid)))
+        self.assertTrue(data[0]["url"].endswith(str(zaak_1.uuid)))

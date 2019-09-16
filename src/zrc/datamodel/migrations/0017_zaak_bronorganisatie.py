@@ -6,15 +6,17 @@ import vng_api_common.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0016_auto_20180711_1346'),
-    ]
+    dependencies = [("datamodel", "0016_auto_20180711_1346")]
 
     operations = [
         migrations.AddField(
-            model_name='zaak',
-            name='bronorganisatie',
-            field=vng_api_common.fields.RSINField(default='', help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd.', max_length=9),
+            model_name="zaak",
+            name="bronorganisatie",
+            field=vng_api_common.fields.RSINField(
+                default="",
+                help_text="Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd.",
+                max_length=9,
+            ),
             preserve_default=False,
-        ),
+        )
     ]

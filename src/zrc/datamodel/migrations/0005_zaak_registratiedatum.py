@@ -6,15 +6,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0004_zaakobject'),
-    ]
+    dependencies = [("datamodel", "0004_zaakobject")]
 
     operations = [
         migrations.AddField(
-            model_name='zaak',
-            name='registratiedatum',
-            field=models.DateField(default=datetime.date(2018, 6, 1), help_text='De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd'),
+            model_name="zaak",
+            name="registratiedatum",
+            field=models.DateField(
+                default=datetime.date(2018, 6, 1),
+                help_text="De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd",
+            ),
             preserve_default=False,
-        ),
+        )
     ]
