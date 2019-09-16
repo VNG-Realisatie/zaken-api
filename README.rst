@@ -7,7 +7,7 @@ Zaakregistratiecomponent
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, ZRC
 :PythonVersion: 3.6
 
-|build-status|
+|build-status| |black|
 
 Referentieimplementatie van de zaakregistratiecomponent (ZRC).
 
@@ -50,6 +50,9 @@ Referenties
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements.svg?branch=master
      :target: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements/?branch=master
      :alt: Requirements status
+
+.. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
 
 .. _testomgeving: https://ref.tst.vng.cloud/zrc/
 
