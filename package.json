@@ -1,6 +1,6 @@
 {
   "name": "zrc",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc2",
   "description": "zrc referentie implementatie API",
   "main": "src/index.js",
   "directories": {
@@ -14,26 +14,24 @@
     "type": "git",
     "url": "git+ssh://git@github.com/VNG-Realisatie/gemma-zaakregistratiecomponent.git"
   },
-  "author": "Maykin Media",
+  "author": "VNG-Realisatie",
   "license": "EUPL 1.2",
-  "homepage": "https://ref.tst.vng.cloud/",
+  "homepage": "https://zaken-api.vng.cloud",
   "dependencies": {
-    "autoprefixer": "^9.5.1",
     "font-awesome": "^4.7.0"
   },
   "devDependencies": {
+    "autoprefixer": "^9.6.1",
     "cssnano": "^4.1.10",
-    "gulp": "^4.0.0",
-    "gulp-file": "^0.4.0",
-    "gulp-hub": "next",
-    "gulp-if": "^2.0.2",
-    "gulp-postcss": "^8.0.0",
+    "gulp": "^4.0.2",
     "gulp-sass": "^4.0.2",
+    "swagger2openapi": "^5.3.1",
+    "gulp-file": "^0.4.0",
+    "gulp-hub": "^4.2.0",
+    "gulp-if": "^3.0.0",
+    "gulp-postcss": "^8.0.0",
     "gulp-sourcemaps": "^2.6.5",
-    "postcss-loader": "^0.11.1",
     "postcss-selector-lint": "^1.0.0",
-    "sass-loader": "^7.0.3",
-    "swagger2openapi": "^2.11.16",
-    "yargs": "^9.0.1"
+    "yargs": "^13.3.0"
   }
 }

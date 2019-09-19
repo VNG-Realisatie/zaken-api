@@ -122,7 +122,7 @@ class NietNatuurlijkPersoon(AbstractRolZaakobjectZakelijkRechtRelation):
                   'vennootschap).')
 
     inn_rechtsvorm = models.CharField(
-        max_length=30, choices=SoortRechtsvorm.choices, blank=True,
+        max_length=50, choices=SoortRechtsvorm.choices, blank=True,
         help_text='De juridische vorm van de NIET-NATUURLIJK PERSOON.'
     )
     bezoekadres = models.CharField(

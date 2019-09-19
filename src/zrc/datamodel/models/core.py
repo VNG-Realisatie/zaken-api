@@ -634,7 +634,7 @@ class KlantContact(models.Model):
     """
     uuid = models.UUIDField(
         unique=True, default=uuid.uuid4,
-        help_text="Unieke resource identifier (UUID4)"
+        help_text=_("Unieke resource identifier (UUID4)")
     )
     zaak = models.ForeignKey(
         'Zaak', on_delete=models.CASCADE,
@@ -642,14 +642,22 @@ class KlantContact(models.Model):
     )
     identificatie = models.CharField(
         max_length=14, unique=True,
-        help_text='De unieke aanduiding van een KLANTCONTACT'
+        help_text=_('De unieke aanduiding van een KLANTCONTACT')
     )
     datumtijd = models.DateTimeField(
-        help_text='De datum en het tijdstip waarop het KLANTCONTACT begint'
+        help_text=_('De datum en het tijdstip waarop het KLANTCONTACT begint')
     )
     kanaal = models.CharField(
         blank=True, max_length=20,
-        help_text='Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt'
+        help_text=_('Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt')
+    )
+    onderwerp = models.CharField(
+        blank=True, max_length=200,
+        help_text=_('Het onderwerp waarover contact is geweest met de klant.')
+    )
+    toelichting = models.CharField(
+        blank=True, max_length=1000,
+        help_text=_('Een toelichting die inhoudelijk het contact met de klant beschrijft.')
     )
 
     objects = ZaakRelatedQuerySet.as_manager()

@@ -10,6 +10,7 @@ import requests
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework.settings import api_settings
+from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import (
@@ -39,8 +40,9 @@ from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from ..auth import get_auth
 from ..validators import (
-    CorrectZaaktypeValidator, HoofdzaakValidator, NotSelfValidator,
-    RolOccurenceValidator, UniekeIdentificatieValidator
+    CorrectZaaktypeValidator, DateNotInFutureValidator, HoofdzaakValidator,
+    NotSelfValidator, RolOccurenceValidator, UniekeIdentificatieValidator,
+    ZaaktypeInformatieobjecttypeRelationValidator
 )
 from .address import ObjectAdresSerializer
 from .betrokkene import (
@@ -111,10 +113,7 @@ class RelevanteZaakSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'url': {
                 'validators': [
-                    URLValidator(
-                        get_auth=get_auth,
-                        headers={'Content-Crs': 'EPSG:4326', 'Accept-Crs': 'EPSG:4326'}
-                    )
+                    ResourceValidator('Zaak', settings.ZRC_API_SPEC, get_auth=get_auth, headers={'Accept-Crs': 'EPSG:4326'})
                 ]
             }
         }
@@ -131,6 +130,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
     status = serializers.HyperlinkedRelatedField(
         source='current_status_uuid',
         read_only=True,
+        allow_null=True,
         view_name='status-detail',
         lookup_url_kwarg='uuid',
         help_text=_("Indien geen status bekend is, dan is de waarde 'null'")
@@ -170,6 +170,7 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
 
     resultaat = serializers.HyperlinkedRelatedField(
         read_only=True,
+        allow_null=True,
         view_name='resultaat-detail',
         lookup_url_kwarg='uuid',
         lookup_field='uuid',
@@ -244,10 +245,14 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
             },
             'zaaktype': {
                 # TODO: does order matter here with the default validators?
-                'validators': [URLValidator(get_auth=get_auth), IsImmutableValidator()],
+                'validators': [
+                    IsImmutableValidator(),
+                    ResourceValidator('ZaakType', settings.ZTC_API_SPEC, get_auth=get_auth)
+                ],
             },
             'einddatum': {
-                'read_only': True
+                'read_only': True,
+                'allow_null': True,
             },
             'communicatiekanaal': {
                 'validators': [
@@ -261,6 +266,11 @@ class ZaakSerializer(NestedGegevensGroepMixin, NestedCreateMixin, NestedUpdateMi
                                "geen waarde gekozen wordt, dan wordt de waarde van het "
                                "ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een "
                                "waarde teruggeeft.")
+            },
+            'selectielijstklasse': {
+                'validators': [
+                    ResourceValidator('Resultaat', settings.REFERENTIELIJSTEN_API_SPEC, get_auth=get_auth)
+                ]
             },
             'hoofdzaak': {
                 'lookup_field': 'uuid',
@@ -393,6 +403,9 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             'datum_status_gezet',
             'statustoelichting'
         )
+        validators = [
+            CorrectZaaktypeValidator('statustype')
+        ]
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
@@ -402,6 +415,16 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             },
             'zaak': {
                 'lookup_field': 'uuid',
+            },
+            'statustype': {
+                'validators': [
+                    ResourceValidator('StatusType', settings.ZTC_API_SPEC, get_auth=get_auth),
+                ]
+            },
+            'datum_status_gezet': {
+                'validators': [
+                    DateNotInFutureValidator()
+                ]
             }
         }
 
@@ -594,6 +617,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             },
             'object': {
                 'required': False,
+                'validators': [URLValidator()]
             }
         }
 
@@ -650,8 +674,6 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
         choices=[(force_text(value), key) for key, value in RelatieAarden.choices]
     )
 
-    # TODO: valideer dat ObjectInformatieObject.informatieobjecttype hoort
-    # bij zaak.zaaktype
     class Meta:
         model = ZaakInformatieObject
         fields = (
@@ -664,6 +686,13 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             'beschrijving',
             'registratiedatum',
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=ZaakInformatieObject.objects.all(),
+                fields=['zaak', 'informatieobject']
+            ),
+            ZaaktypeInformatieobjecttypeRelationValidator("informatieobject"),
+        ]
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
@@ -672,8 +701,10 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 'read_only': True,
             },
             'informatieobject': {
-                # 'lookup_field': 'uuid',
-                'validators': [URLValidator(get_auth=get_auth), IsImmutableValidator()],
+                'validators': [
+                    ResourceValidator('EnkelvoudigInformatieObject', settings.DRC_API_SPEC, get_auth=get_auth),
+                    IsImmutableValidator()
+                ],
             },
             'zaak': {
                 'lookup_field': 'uuid',
@@ -722,6 +753,9 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
             'zaak': {
                 'lookup_field': 'uuid',
             },
+            'eigenschap': {
+                'validators': [ResourceValidator('Eigenschap', settings.ZTC_API_SPEC, get_auth=get_auth)]
+            },
             'naam': {
                 'source': '_naam',
                 'read_only': True,
@@ -760,6 +794,8 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
             'identificatie',
             'datumtijd',
             'kanaal',
+            'onderwerp',
+            'toelichting',
         )
         extra_kwargs = {
             'url': {
@@ -773,6 +809,9 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
             },
             'zaak': {
                 'lookup_field': 'uuid',
+            },
+            'datumtijd': {
+                'validators': [DateNotInFutureValidator()]
             }
         }
 
@@ -826,9 +865,8 @@ class RolSerializer(PolymorphicSerializer):
             },
             'roltype': {
                 'validators': [
-                    URLValidator(get_auth=get_auth),
                     IsImmutableValidator(),
-                    ResourceValidator('RolType', settings.ZTC_API_SPEC),
+                    ResourceValidator('RolType', settings.ZTC_API_SPEC, get_auth=get_auth),
                 ]
             }
         }
@@ -881,6 +919,7 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
             'resultaattype',
             'toelichting'
         )
+        validators = [CorrectZaaktypeValidator('resultaattype')]
         extra_kwargs = {
             'url': {
                 'lookup_field': 'uuid',
@@ -893,9 +932,8 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
             },
             'resultaattype': {
                 'validators': [
-                    # TODO: Add shape-validator when we know the shape.
-                    URLValidator(get_auth=get_auth),
                     IsImmutableValidator(),
+                    ResourceValidator('ResultaatType', settings.ZTC_API_SPEC, get_auth=get_auth)
                 ],
             }
         }

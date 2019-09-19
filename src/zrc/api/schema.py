@@ -1,6 +1,7 @@
 from django.conf import settings
 
 from drf_yasg import openapi
+from vng_api_common.notifications.utils import notification_documentation
 
 from .kanalen import KANAAL_ZAKEN
 
@@ -26,9 +27,9 @@ Deze API vereist autorisatie. Je kan de
 [token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te
 genereren.
 
-**Notificaties**
+### Notificaties
 
-Deze API publiceert notificaties op het kanaal `{KANAAL_ZAKEN.label}`.
+{notification_documentation(KANAAL_ZAKEN)}
 
 **Handige links**
 

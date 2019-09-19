@@ -4,6 +4,10 @@ ontvangen, zodat ik voldoende details weet om de melding op te volgen.
 
 ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/52
 """
+from unittest.mock import patch
+
+from django.test import override_settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import (
@@ -21,7 +25,10 @@ EIGENSCHAP_NAAM_BOOT = 'https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/e
 class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_zet_eigenschappen(self):
+    @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_zet_eigenschappen(self, *mocks):
         zaak = ZaakFactory.create()
         url = get_operation_url('zaakeigenschap_create', zaak_uuid=zaak.uuid)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)

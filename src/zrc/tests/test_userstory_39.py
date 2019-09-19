@@ -44,14 +44,24 @@ ROLTYPE_RESPONSE = {
     "omschrijvingGeneriek": RolOmschrijving.behandelaar,
 }
 
+STATUSTYPE_RESPONSE = {
+    STATUS_TYPE: {
+        'url': STATUS_TYPE,
+        'zaaktype': ZAAKTYPE,
+        'volgnummer': 1,
+        'isEindstatus': False
+    }
+}
 
+@patch("vng_api_common.validators.fetcher")
+@patch("vng_api_common.validators.obj_has_shape", return_value=True)
 @override_settings(LINK_FETCHER='vng_api_common.mocks.link_fetcher_200')
 class US39TestCase(JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 
-    def test_create_zaak(self):
+    def test_create_zaak(self, *mocks):
         """
         Maak een zaak van een bepaald type.
         """
@@ -96,7 +106,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(zaak.zaakgeometrie.x, 4.910649523925713)
         self.assertEqual(zaak.zaakgeometrie.y, 52.37240093589432)
 
-    def test_create_zaak_zonder_bronorganisatie(self):
+    def test_create_zaak_zonder_bronorganisatie(self, *mocks):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
@@ -109,7 +119,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'bronorganisatie')
         self.assertEqual(error['code'], 'required')
 
-    def test_create_zaak_invalide_rsin(self):
+    def test_create_zaak_invalide_rsin(self, *mocks):
         url = get_operation_url('zaak_create')
         data = {
             'zaaktype': ZAAKTYPE,
@@ -123,10 +133,9 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, 'bronorganisatie')
         self.assertEqual(error['code'], 'invalid')
 
-    @override_settings(
-        ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient'
-    )
-    def test_zet_zaakstatus(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_zet_zaakstatus(self, *mocks):
         """
         De actuele status van een zaak moet gezet worden bij het aanmaken
         van de zaak.
@@ -140,7 +149,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             'datumStatusGezet': isodatetime(2018, 6, 6, 17, 23, 43),
         }
 
-        response = self.client.post(url, data)
+        with mock_client(STATUSTYPE_RESPONSE):
+            response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         response_data = response.json()
@@ -159,7 +169,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             }
         )
 
-    def test_zet_adres_binnenland(self):
+    def test_zet_adres_binnenland(self, *mocks):
         """
         Het adres van de melding moet in de zaak beschikbaar zijn.
         """
@@ -194,7 +204,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             }
         )
 
-    def test_create_klantcontact(self):
+    def test_create_klantcontact(self, *mocks):
         url = get_operation_url('klantcontact_create')
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
@@ -202,6 +212,8 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             'zaak': zaak_url,
             'datumtijd': isodatetime(2018, 6, 11, 13, 47, 55),
             'kanaal': 'Webformulier',
+            'onderwerp': 'subject',
+            'toelichting': 'description',
         }
 
         response = self.client.post(url, data)
@@ -222,10 +234,12 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 'identificatie': klantcontact.identificatie,
                 'datumtijd': '2018-06-11T13:47:55Z',
                 'kanaal': 'Webformulier',
+                'onderwerp': 'subject',
+                'toelichting': 'description',
             }
         )
 
-    def test_zet_stadsdeel(self):
+    def test_zet_stadsdeel(self, *mocks):
         url = get_operation_url('zaakobject_create')
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url('zaak_read', uuid=zaak.uuid)
@@ -257,8 +271,6 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             }
         )
 
-    @patch("vng_api_common.validators.fetcher")
-    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @freeze_time('2018-01-01')
     def test_zet_verantwoordelijk(self, *mocks):
         url = get_operation_url('rol_create')

@@ -25,6 +25,7 @@ from .mixins import ZaakInformatieObjectSyncMixin
 
 INFORMATIEOBJECT = f'http://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}'
 
+
 @override_settings(ZDS_CLIENT_CLASS='vng_api_common.mocks.MockClient')
 class ZakenScopeForbiddenTests(AuthCheckMixin, APITestCase):
 
@@ -173,7 +174,7 @@ class StatusReadTests(JWTAuthMixin, APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
+        response_data = response.json()["results"]
         self.assertEqual(len(response_data), 1)
         self.assertEqual(
             response_data[0]['url'],
@@ -207,7 +208,7 @@ class ResultaatTests(JWTAuthMixin, APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
+        response_data = response.json()["results"]
         self.assertEqual(len(response_data), 1)
         self.assertEqual(
             response_data[0]['url'],
@@ -256,7 +257,7 @@ class ZaakObjectTests(JWTAuthMixin, APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
+        response_data = response.json()["results"]
         self.assertEqual(len(response_data), 1)
         self.assertEqual(
             response_data[0]['url'],
@@ -438,7 +439,7 @@ class RolReadTests(JWTAuthMixin, APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
+        response_data = response.json()["results"]
         self.assertEqual(len(response_data), 1)
         self.assertEqual(
             response_data[0]['url'],

@@ -41,6 +41,15 @@ CACHES = {
     # https://github.com/jazzband/django-axes/blob/master/docs/configuration.rst#cache-problems
     'axes_cache': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
+    # Cache for BIO removal sync with DRC
+    'drc_sync': {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{getenv('REDIS_CACHE')}", # NOTE: watch out for multiple projects using the same cache!
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,
+        }
     }
 }
 

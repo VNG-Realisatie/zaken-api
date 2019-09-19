@@ -1,6 +1,6 @@
 import logging
 
-from django.core.cache import cache
+from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
@@ -266,10 +266,11 @@ class StatusViewSet(NotificationCreateMixin,
       zaak afgesloten door de einddatum te zetten.
 
     """
-    queryset = Status.objects.all()
+    queryset = Status.objects.order_by('-pk')
     serializer_class = StatusSerializer
     filterset_class = StatusFilter
     lookup_field = 'uuid'
+    pagination_class = PageNumberPagination
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
@@ -339,10 +340,11 @@ class ZaakObjectViewSet(NotificationCreateMixin,
 
     Een specifiek ZAAKOBJECT opvragen.
     """
-    queryset = ZaakObject.objects.all()
+    queryset = ZaakObject.objects.order_by('-pk')
     serializer_class = ZaakObjectSerializer
     filterset_class = ZaakObjectFilter
     lookup_field = 'uuid'
+    pagination_class = PageNumberPagination
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
@@ -417,7 +419,8 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
     destroy:
     Verwijder een ZAAK-INFORMATIEOBJECT relatie.
 
-    De gespiegelde relatie in de Documenten API wordt door de Zaken API verwijderd. Consumers kunnen dit niet handmatig doen..
+    De gespiegelde relatie in de Documenten API wordt door de Zaken API
+    verwijderd. Consumers kunnen dit niet handmatig doen..
     """
     queryset = ZaakInformatieObject.objects.all()
     filterset_class = ZaakInformatieObjectFilter
@@ -441,6 +444,7 @@ class ZaakInformatieObjectViewSet(NotificationCreateMixin,
         qs = super().get_queryset()
 
         # Do not display ZaakInformatieObjecten that are marked to be deleted
+        cache = caches['drc_sync']
         marked_zios = cache.get('zios_marked_for_delete')
         if marked_zios:
             return qs.exclude(uuid__in=marked_zios)
@@ -530,9 +534,10 @@ class KlantContactViewSet(NotificationCreateMixin,
 
     Een specifiek KLANTCONTACT bij een ZAAK opvragen.
     """
-    queryset = KlantContact.objects.all()
+    queryset = KlantContact.objects.order_by('-pk')
     serializer_class = KlantContactSerializer
     lookup_field = 'uuid'
+    pagination_class = PageNumberPagination
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
         'list': SCOPE_ZAKEN_ALLES_LEZEN,
@@ -574,10 +579,11 @@ class RolViewSet(NotificationCreateMixin,
     Maak een ROL aan bij een ZAAK.
 
     """
-    queryset = Rol.objects.all()
+    queryset = Rol.objects.order_by('-pk')
     serializer_class = RolSerializer
     filterset_class = RolFilter
     lookup_field = 'uuid'
+    pagination_class = PageNumberPagination
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
@@ -635,10 +641,11 @@ class ResultaatViewSet(NotificationViewSetMixin,
     Verwijder een RESULTAAT van een ZAAK.
 
     """
-    queryset = Resultaat.objects.all()
+    queryset = Resultaat.objects.order_by('-pk')
     serializer_class = ResultaatSerializer
     filterset_class = ResultaatFilter
     lookup_field = 'uuid'
+    pagination_class = PageNumberPagination
 
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {

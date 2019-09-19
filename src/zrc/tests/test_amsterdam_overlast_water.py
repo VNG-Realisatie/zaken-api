@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import override_settings
 
 from dateutil import parser
@@ -97,6 +99,7 @@ class Application:
         responses = {
             RESULTAATTYPE: {
                 'url': RESULTAATTYPE,
+                'zaaktype': ZAAKTYPE,
                 'archiefactietermijn': 'P10Y',
                 'archiefnominatie': Archiefnominatie.blijvend_bewaren,
                 'brondatumArchiefprocedure': {
@@ -108,11 +111,13 @@ class Application:
             },
             STATUSTYPE: {
                 'url': STATUSTYPE,
+                'zaaktype': ZAAKTYPE,
                 'volgnummer': 1,
                 'isEindstatus': False,
             },
             STATUSTYPE_OVERLAST_GECONSTATEERD: {
                 'url': STATUSTYPE_OVERLAST_GECONSTATEERD,
+                'zaaktype': ZAAKTYPE,
                 'volgnummer': 2,
                 'isEindstatus': True,
             }
@@ -187,7 +192,9 @@ class US39IntegrationTestCase(JWTAuthMixin, APITestCase):
     ]
     zaaktype = ZAAKTYPE
 
-    def test_full_flow(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_full_flow(self, *mocks):
         app = Application(self.client, TEST_DATA)
 
         app.store_notification()

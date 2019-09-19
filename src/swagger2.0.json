@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "Zaken API",
-        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n**Notificaties**\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n",
+        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Main resource**\n\n`zaak`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef\n* `zaaktype`: URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.\n\n**Resources en acties**\n- `zaak`: create, update, destroy\n- `status`: create\n- `zaakobject`: create\n- `zaakinformatieobject`: create\n- `zaakeigenschap`: create\n- `klantcontact`: create\n- `rol`: create\n- `resultaat`: create, update, destroy\n- `zaakbesluit`: create\n\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n",
         "contact": {
             "url": "https://zaakgerichtwerken.vng.cloud",
             "email": "standaarden.ondersteuning@vng.nl"
@@ -38,14 +38,44 @@
                 "operationId": "klantcontact_list",
                 "summary": "Alle KLANTCONTACTen opvragen.",
                 "description": "Alle KLANTCONTACTen opvragen.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/KlantContact"
+                            "required": [
+                                "count",
+                                "results"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/KlantContact"
+                                    }
+                                }
                             }
                         },
                         "headers": {
@@ -557,7 +587,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -569,15 +599,44 @@
                         "required": false,
                         "type": "string",
                         "format": "uri"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
+                        "required": false,
+                        "type": "integer"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Resultaat"
+                            "required": [
+                                "count",
+                                "results"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Resultaat"
+                                    }
+                                }
                             }
                         },
                         "headers": {
@@ -1684,7 +1743,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -1798,15 +1857,44 @@
                             "zaakcoordinator",
                             "mede_initiator"
                         ]
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
+                        "required": false,
+                        "type": "integer"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Rol"
+                            "required": [
+                                "count",
+                                "results"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Rol"
+                                    }
+                                }
                             }
                         },
                         "headers": {
@@ -2487,7 +2575,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -2499,15 +2587,44 @@
                         "required": false,
                         "type": "string",
                         "format": "uri"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
+                        "required": false,
+                        "type": "integer"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Status"
+                            "required": [
+                                "count",
+                                "results"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Status"
+                                    }
+                                }
                             }
                         },
                         "headers": {
@@ -3033,7 +3150,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -3966,7 +4083,7 @@
             "delete": {
                 "operationId": "zaakinformatieobject_delete",
                 "summary": "Verwijder een ZAAK-INFORMATIEOBJECT relatie.",
-                "description": "De gespiegelde relatie in de Documenten API wordt door de Zaken API verwijderd. Consumers kunnen dit niet handmatig doen..",
+                "description": "De gespiegelde relatie in de Documenten API wordt door de Zaken API\nverwijderd. Consumers kunnen dit niet handmatig doen..",
                 "parameters": [
                     {
                         "name": "X-NLX-Request-Application-Id",
@@ -4160,7 +4277,7 @@
                     {
                         "name": "zaak",
                         "in": "query",
-                        "description": "URL naar de/het gerelateerde zaak",
+                        "description": "URL-referentie naar de ZAAK.",
                         "required": false,
                         "type": "string",
                         "format": "uri"
@@ -4212,15 +4329,44 @@
                             "zakelijk_recht",
                             "overige"
                         ]
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Een pagina binnen de gepagineerde set resultaten.",
+                        "required": false,
+                        "type": "integer"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ZaakObject"
+                            "required": [
+                                "count",
+                                "results"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/ZaakObject"
+                                    }
+                                }
                             }
                         },
                         "headers": {
@@ -8083,6 +8229,18 @@
                     "description": "Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt",
                     "type": "string",
                     "maxLength": 20
+                },
+                "onderwerp": {
+                    "title": "Onderwerp",
+                    "description": "Het onderwerp waarover contact is geweest met de klant.",
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "toelichting": {
+                    "title": "Toelichting",
+                    "description": "Een toelichting die inhoudelijk het contact met de klant beschrijft.",
+                    "type": "string",
+                    "maxLength": 1000
                 }
             }
         },
@@ -8500,12 +8658,12 @@
                 },
                 "geslachtsaanduiding": {
                     "title": "Geslachtsaanduiding",
-                    "description": "Een aanduiding die aangeeft of de persoon een man of een vrouw is, of dat het geslacht nog onbekend is.\n\nUitleg bij mogelijke waarden:\n\n* `M` - Man\n* `V` - Vrouw\n* `O` - Onbekend",
+                    "description": "Een aanduiding die aangeeft of de persoon een man of een vrouw is, of dat het geslacht nog onbekend is.\n\nUitleg bij mogelijke waarden:\n\n* `m` - Man\n* `v` - Vrouw\n* `o` - Onbekend",
                     "type": "string",
                     "enum": [
-                        "M",
-                        "V",
-                        "O"
+                        "m",
+                        "v",
+                        "o"
                     ]
                 },
                 "geboortedatum": {
@@ -8567,25 +8725,25 @@
                     "description": "De juridische vorm van de NIET-NATUURLIJK PERSOON.",
                     "type": "string",
                     "enum": [
-                        "Besloten Vennootschap",
-                        "Cooperatie, Europees Economische Samenwerking",
-                        "Europese Cooperatieve Venootschap",
-                        "Europese Naamloze Vennootschap",
-                        "Kerkelijke Organisatie",
-                        "Naamloze Vennootschap",
-                        "Onderlinge Waarborg Maatschappij",
-                        "Overig privaatrechtelijke rechtspersoon",
-                        "Stichting",
-                        "Vereniging",
-                        "Vereniging van Eigenaars",
-                        "Publiekrechtelijke Rechtspersoon",
-                        "Vennootschap onder Firma",
-                        "Maatschap",
-                        "Rederij",
-                        "Commanditaire vennootschap",
-                        "Kapitaalvennootschap binnen EER",
-                        "Overige buitenlandse rechtspersoon vennootschap",
-                        "Kapitaalvennootschap buiten EER"
+                        "besloten_vennootschap",
+                        "cooperatie_europees_economische_samenwerking",
+                        "europese_cooperatieve_venootschap",
+                        "europese_naamloze_vennootschap",
+                        "kerkelijke_organisatie",
+                        "naamloze_vennootschap",
+                        "onderlinge_waarborg_maatschappij",
+                        "overig_privaatrechtelijke_rechtspersoon",
+                        "stichting",
+                        "vereniging",
+                        "vereniging_van_eigenaars",
+                        "publiekrechtelijke_rechtspersoon",
+                        "vennootschap_onder_firma",
+                        "maatschap",
+                        "rederij",
+                        "commanditaire_vennootschap",
+                        "kapitaalvennootschap_binnen_eer",
+                        "overige_buitenlandse_rechtspersoon_vennootschap",
+                        "kapitaalvennootschap_buiten_eer"
                     ]
                 },
                 "bezoekadres": {
@@ -9326,19 +9484,19 @@
             "properties": {
                 "type": {
                     "title": "Type",
-                    "description": "Specificatie van de aard van het inrichtingselement.\n\nUitleg bij mogelijke waarden:\n\n* `Bak` - Bak\n* `Bord` - Bord\n* `Installatie` - Installatie\n* `Kast` - Kast\n* `Mast` - Mast\n* `Paal` - Paal\n* `Sensor` - Sensor\n* `Straatmeubilair` - Straatmeubilair\n* `Waterinrichtingselement` - Waterinrichtingselement\n* `Weginrichtingselement` - Weginrichtingselement",
+                    "description": "Specificatie van de aard van het inrichtingselement.\n\nUitleg bij mogelijke waarden:\n\n* `bak` - Bak\n* `bord` - Bord\n* `installatie` - Installatie\n* `kast` - Kast\n* `mast` - Mast\n* `paal` - Paal\n* `sensor` - Sensor\n* `straatmeubilair` - Straatmeubilair\n* `waterinrichtingselement` - Waterinrichtingselement\n* `weginrichtingselement` - Weginrichtingselement",
                     "type": "string",
                     "enum": [
-                        "Bak",
-                        "Bord",
-                        "Installatie",
-                        "Kast",
-                        "Mast",
-                        "Paal",
-                        "Sensor",
-                        "Straatmeubilair",
-                        "Waterinrichtingselement",
-                        "Weginrichtingselement"
+                        "bak",
+                        "bord",
+                        "installatie",
+                        "kast",
+                        "mast",
+                        "paal",
+                        "sensor",
+                        "straatmeubilair",
+                        "waterinrichtingselement",
+                        "weginrichtingselement"
                     ]
                 },
                 "identificatie": {
@@ -9429,25 +9587,25 @@
             "properties": {
                 "type": {
                     "title": "Type",
-                    "description": "Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.\n\nUitleg bij mogelijke waarden:\n\n* `Keermuur` - Keermuur\n* `Overkluizing` - Overkluizing\n* `Duiker` - Duiker\n* `Faunavoorziening` - Faunavoorziening\n* `Vispassage` - Vispassage\n* `Bodemval` - Bodemval\n* `Coupure` - Coupure\n* `Ponton` - Ponton\n* `Voorde` - Voorde\n* `Hoogspanningsmast` - Hoogspanningsmast\n* `Gemaal` - Gemaal\n* `Perron` - Perron\n* `Sluis` - Sluis\n* `Strekdam` - Strekdam\n* `Steiger` - Steiger\n* `Stuw` - Stuw",
+                    "description": "Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.\n\nUitleg bij mogelijke waarden:\n\n* `keermuur` - Keermuur\n* `overkluizing` - Overkluizing\n* `duiker` - Duiker\n* `faunavoorziening` - Faunavoorziening\n* `vispassage` - Vispassage\n* `bodemval` - Bodemval\n* `coupure` - Coupure\n* `ponton` - Ponton\n* `voorde` - Voorde\n* `hoogspanningsmast` - Hoogspanningsmast\n* `gemaal` - Gemaal\n* `perron` - Perron\n* `sluis` - Sluis\n* `strekdam` - Strekdam\n* `steiger` - Steiger\n* `stuw` - Stuw",
                     "type": "string",
                     "enum": [
-                        "Keermuur",
-                        "Overkluizing",
-                        "Duiker",
-                        "Faunavoorziening",
-                        "Vispassage",
-                        "Bodemval",
-                        "Coupure",
-                        "Ponton",
-                        "Voorde",
-                        "Hoogspanningsmast",
-                        "Gemaal",
-                        "Perron",
-                        "Sluis",
-                        "Strekdam",
-                        "Steiger",
-                        "Stuw"
+                        "keermuur",
+                        "overkluizing",
+                        "duiker",
+                        "faunavoorziening",
+                        "vispassage",
+                        "bodemval",
+                        "coupure",
+                        "ponton",
+                        "voorde",
+                        "hoogspanningsmast",
+                        "gemaal",
+                        "perron",
+                        "sluis",
+                        "strekdam",
+                        "steiger",
+                        "stuw"
                     ]
                 },
                 "identificatie": {
@@ -9790,13 +9948,13 @@
             "properties": {
                 "typeWaterdeel": {
                     "title": "Type waterdeel",
-                    "description": "Specificatie van het soort water\n\nUitleg bij mogelijke waarden:\n\n* `Zee` - Zee\n* `Waterloop` - Waterloop\n* `Watervlakte` - Watervlakte\n* `Greppel, droge sloot` - Greppel, droge sloot",
+                    "description": "Specificatie van het soort water\n\nUitleg bij mogelijke waarden:\n\n* `zee` - Zee\n* `waterloop` - Waterloop\n* `watervlakte` - Watervlakte\n* `greppel_droge_sloot` - Greppel, droge sloot",
                     "type": "string",
                     "enum": [
-                        "Zee",
-                        "Waterloop",
-                        "Watervlakte",
-                        "Greppel, droge sloot"
+                        "zee",
+                        "waterloop",
+                        "watervlakte",
+                        "greppel_droge_sloot"
                     ]
                 },
                 "identificatie": {
@@ -10677,7 +10835,8 @@
                     "description": "De datum waarop de uitvoering van de zaak afgerond is.",
                     "type": "string",
                     "format": "date",
-                    "readOnly": true
+                    "readOnly": true,
+                    "x-nullable": true
                 },
                 "einddatumGepland": {
                     "title": "Einddatum gepland",
@@ -10804,7 +10963,8 @@
                     "description": "Indien geen status bekend is, dan is de waarde 'null'",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "x-nullable": true
                 },
                 "kenmerken": {
                     "description": "Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`.",
@@ -10846,7 +11006,8 @@
                     "description": "URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde 'null'",
                     "type": "string",
                     "format": "uri",
-                    "readOnly": true
+                    "readOnly": true,
+                    "x-nullable": true
                 }
             }
         },
@@ -10966,7 +11127,7 @@
                 }
             }
         },
-        "Wijzgingen": {
+        "Wijzigingen": {
             "title": "Wijzigingen",
             "type": "object",
             "properties": {
@@ -11101,7 +11262,7 @@
                     "readOnly": true
                 },
                 "wijzigingen": {
-                    "$ref": "#/definitions/Wijzgingen"
+                    "$ref": "#/definitions/Wijzigingen"
                 }
             }
         },

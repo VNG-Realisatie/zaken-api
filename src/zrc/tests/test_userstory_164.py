@@ -4,6 +4,8 @@ ik in mijn communicatie snel kan verwijzen naar mijn aanvraag.
 
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/164
 """
+from unittest.mock import patch
+
 from django.test import override_settings
 
 from rest_framework import status
@@ -30,7 +32,9 @@ class US164TestCase(JWTAuthMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE]
     zaaktype = ZAAKTYPE
 
-    def test_geef_zelf_identificatie(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_geef_zelf_identificatie(self, *mocks):
         """
         Garandeer dat de client zelf een identificatie kan genereren.
         """
@@ -51,7 +55,9 @@ class US164TestCase(JWTAuthMixin, APITestCase):
         zaak = Zaak.objects.get()
         self.assertEqual(zaak.identificatie, 'strtmzk-0001')
 
-    def test_uniqueness_identificatie(self):
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_uniqueness_identificatie(self, *mocks):
         ZaakFactory.create(identificatie='strtmzk-0001', bronorganisatie='517439943')
 
         url = get_operation_url('zaak_create')
