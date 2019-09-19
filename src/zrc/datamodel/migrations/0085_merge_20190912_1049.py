@@ -9,8 +9,7 @@ class Migration(migrations.Migration):
         # TODO: re-enable when merging with develop - this is the ETag
         # caching branch
         # ('datamodel', '0084_auto_20190902_1216'),
-        ('datamodel', '0083_auto_20190905_1522'),
+        ("datamodel", "0083_auto_20190905_1522")
     ]
 
-    operations = [
-    ]
+    operations = []

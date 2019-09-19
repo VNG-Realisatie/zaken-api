@@ -6,14 +6,16 @@ import uuid
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0035_auto_20180919_1103'),
-    ]
+    dependencies = [("datamodel", "0035_auto_20180919_1103")]
 
     operations = [
         migrations.AddField(
-            model_name='zaakinformatieobject',
-            name='uuid',
-            field=models.UUIDField(default=uuid.uuid4, help_text='Unieke resource identifier (UUID4)', unique=True),
-        ),
+            model_name="zaakinformatieobject",
+            name="uuid",
+            field=models.UUIDField(
+                default=uuid.uuid4,
+                help_text="Unieke resource identifier (UUID4)",
+                unique=True,
+            ),
+        )
     ]

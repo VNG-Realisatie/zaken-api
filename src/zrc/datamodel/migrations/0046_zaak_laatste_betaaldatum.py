@@ -5,14 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0045_zaak_betalingsindicatie'),
-    ]
+    dependencies = [("datamodel", "0045_zaak_betalingsindicatie")]
 
     operations = [
         migrations.AddField(
-            model_name='zaak',
-            name='laatste_betaaldatum',
-            field=models.DateTimeField(blank=True, help_text='De datum waarop de meest recente betaling is verwerkt van kosten die gemoeid zijn met behandeling van de zaak.', null=True, verbose_name='laatste betaaldatum'),
-        ),
+            model_name="zaak",
+            name="laatste_betaaldatum",
+            field=models.DateTimeField(
+                blank=True,
+                help_text="De datum waarop de meest recente betaling is verwerkt van kosten die gemoeid zijn met behandeling van de zaak.",
+                null=True,
+                verbose_name="laatste betaaldatum",
+            ),
+        )
     ]

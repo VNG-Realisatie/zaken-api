@@ -6,19 +6,27 @@ import vng_api_common.validators
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0002_zaak_zaaktype'),
-    ]
+    dependencies = [("datamodel", "0002_zaak_zaaktype")]
 
     operations = [
         migrations.AlterField(
-            model_name='status',
-            name='statustoelichting',
-            field=models.TextField(blank=True, help_text='Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak.', max_length=1000),
+            model_name="status",
+            name="statustoelichting",
+            field=models.TextField(
+                blank=True,
+                help_text="Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak.",
+                max_length=1000,
+            ),
         ),
         migrations.AlterField(
-            model_name='zaak',
-            name='zaakidentificatie',
-            field=models.CharField(blank=True, help_text='De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.', max_length=40, unique=True, validators=[vng_api_common.validators.AlphanumericExcludingDiacritic()]),
+            model_name="zaak",
+            name="zaakidentificatie",
+            field=models.CharField(
+                blank=True,
+                help_text="De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.",
+                max_length=40,
+                unique=True,
+                validators=[vng_api_common.validators.AlphanumericExcludingDiacritic()],
+            ),
         ),
     ]

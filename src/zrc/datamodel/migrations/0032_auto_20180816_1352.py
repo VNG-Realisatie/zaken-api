@@ -6,14 +6,17 @@ import vng_api_common.validators
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0031_auto_20180815_1525'),
-    ]
+    dependencies = [("datamodel", "0031_auto_20180815_1525")]
 
     operations = [
         migrations.AlterField(
-            model_name='zaak',
-            name='identificatie',
-            field=models.CharField(blank=True, help_text='De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.', max_length=40, validators=[vng_api_common.validators.AlphanumericExcludingDiacritic()]),
-        ),
+            model_name="zaak",
+            name="identificatie",
+            field=models.CharField(
+                blank=True,
+                help_text="De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.",
+                max_length=40,
+                validators=[vng_api_common.validators.AlphanumericExcludingDiacritic()],
+            ),
+        )
     ]

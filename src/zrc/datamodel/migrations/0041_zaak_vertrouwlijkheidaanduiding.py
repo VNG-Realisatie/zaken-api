@@ -6,15 +6,28 @@ import vng_api_common.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0040_zaak_communicatiekanaal'),
-    ]
+    dependencies = [("datamodel", "0040_zaak_communicatiekanaal")]
 
     operations = [
         migrations.AddField(
-            model_name='zaak',
-            name='vertrouwlijkheidaanduiding',
-            field=vng_api_common.fields.VertrouwelijkheidsAanduidingField(choices=[('openbaar', 'OPENBAAR'), ('beperkt openbaar', 'BEPERKT OPENBAAR'), ('intern', 'INTERN'), ('zaakvertrouwelijk', 'ZAAKVERTROUWELIJK'), ('vertrouwelijk', 'VERTROUWELIJK'), ('confidentieel', 'CONFIDENTIEEL'), ('geheim', 'GEHEIM'), ('zeer geheim', 'ZEER GEHEIM')], default='', help_text='Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.', max_length=20, verbose_name='vertrouwlijkheidaanduiding'),
+            model_name="zaak",
+            name="vertrouwlijkheidaanduiding",
+            field=vng_api_common.fields.VertrouwelijkheidsAanduidingField(
+                choices=[
+                    ("openbaar", "OPENBAAR"),
+                    ("beperkt openbaar", "BEPERKT OPENBAAR"),
+                    ("intern", "INTERN"),
+                    ("zaakvertrouwelijk", "ZAAKVERTROUWELIJK"),
+                    ("vertrouwelijk", "VERTROUWELIJK"),
+                    ("confidentieel", "CONFIDENTIEEL"),
+                    ("geheim", "GEHEIM"),
+                    ("zeer geheim", "ZEER GEHEIM"),
+                ],
+                default="",
+                help_text="Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.",
+                max_length=20,
+                verbose_name="vertrouwlijkheidaanduiding",
+            ),
             preserve_default=False,
-        ),
+        )
     ]
