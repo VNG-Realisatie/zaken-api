@@ -40,6 +40,14 @@
                 "description": "Alle KLANTCONTACTen opvragen.",
                 "parameters": [
                     {
+                        "name": "zaak",
+                        "in": "query",
+                        "description": "URL-referentie naar de ZAAK.",
+                        "required": false,
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    {
                         "name": "page",
                         "in": "query",
                         "description": "Een pagina binnen de gepagineerde set resultaten.",
@@ -77,6 +85,20 @@
                                     }
                                 }
                             }
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/ValidatieFout"
                         },
                         "headers": {
                             "API-version": {
