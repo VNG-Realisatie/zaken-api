@@ -29,7 +29,6 @@ from zrc.api.scopes import (
     SCOPE_ZAKEN_BIJWERKEN,
     SCOPE_ZAKEN_CREATE,
 )
-
 # aanvraag aangemaakt in extern systeem, leeft buiten ZRC
 from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import ZaakFactory

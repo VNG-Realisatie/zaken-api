@@ -3,12 +3,13 @@ from vng_api_common.filtersets import FilterSet
 from vng_api_common.utils import get_help_text
 
 from zrc.datamodel.models import (
+    KlantContact,
     Resultaat,
     Rol,
     Status,
     Zaak,
     ZaakInformatieObject,
-    ZaakObject, KlantContact
+    ZaakObject,
 )
 
 
