@@ -42,12 +42,13 @@ from zrc.datamodel.models import (
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
+    KlantContactFilter,
     ResultaatFilter,
     RolFilter,
     StatusFilter,
     ZaakFilter,
     ZaakInformatieObjectFilter,
-    ZaakObjectFilter, KlantContactFilter
+    ZaakObjectFilter,
 )
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
