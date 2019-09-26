@@ -47,7 +47,7 @@ from .filters import (
     StatusFilter,
     ZaakFilter,
     ZaakInformatieObjectFilter,
-    ZaakObjectFilter,
+    ZaakObjectFilter, KlantContactFilter
 )
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
@@ -583,6 +583,7 @@ class KlantContactViewSet(
 
     queryset = KlantContact.objects.order_by("-pk")
     serializer_class = KlantContactSerializer
+    filterset_class = KlantContactFilter
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
     permission_classes = (ZaakRelatedAuthScopesRequired,)
