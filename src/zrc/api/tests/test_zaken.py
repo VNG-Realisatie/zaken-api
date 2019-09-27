@@ -19,7 +19,12 @@ from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import Zaak
-from zrc.datamodel.tests.factories import StatusFactory, ZaakBesluitFactory, ZaakFactory
+from zrc.datamodel.tests.factories import (
+    StatusFactory,
+    ZaakBesluitFactory,
+    ZaakFactory,
+    ZaakEigenschapFactory,
+)
 from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
 from zrc.tests.utils import (
     ZAAK_READ_KWARGS,
@@ -542,6 +547,31 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertEqual(data[0]["startdatum"], "2019-03-01")
         self.assertEqual(data[1]["startdatum"], "2019-02-01")
         self.assertEqual(data[2]["startdatum"], "2019-01-01")
+
+    def test_zaak_eigenschappen_as_inline(self):
+        zaak1 = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak2 = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        eigenschap1, eigenschap2 = ZaakEigenschapFactory.create_batch(2, zaak=zaak1)
+
+        url = reverse(Zaak)
+
+        response = self.client.get(url, **ZAAK_READ_KWARGS)
+
+        results = response.data["results"]
+        self.assertEqual(results[0]["eigenschappen"], [])
+
+        eigenschap1_url = reverse(
+            "zaakeigenschap-detail",
+            kwargs={"version": 1, "zaak_uuid": zaak1.uuid, "uuid": eigenschap1.uuid},
+        )
+        eigenschap2_url = reverse(
+            "zaakeigenschap-detail",
+            kwargs={"version": 1, "zaak_uuid": zaak1.uuid, "uuid": eigenschap2.uuid},
+        )
+
+        eigenschappen = results[1]["eigenschappen"]
+        self.assertIn(f"http://testserver{eigenschap1_url}", eigenschappen)
+        self.assertIn(f"http://testserver{eigenschap2_url}", eigenschappen)
 
 
 class ZaakArchivingTests(JWTAuthMixin, APITestCase):
