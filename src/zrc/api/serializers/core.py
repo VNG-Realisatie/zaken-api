@@ -13,6 +13,7 @@ from rest_framework.settings import api_settings
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_gis.fields import GeometryField
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
+from rest_framework_nested.relations import NestedHyperlinkedRelatedField
 from vng_api_common.constants import (
     Archiefnominatie,
     Archiefstatus,
@@ -157,6 +158,14 @@ class ZaakSerializer(
     NestedUpdateMixin,
     serializers.HyperlinkedModelSerializer,
 ):
+    eigenschappen = NestedHyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        lookup_field="uuid",
+        view_name="zaakeigenschap-detail",
+        parent_lookup_kwargs={"zaak_uuid": "zaak__uuid"},
+        source="zaakeigenschap_set",
+    )
     status = serializers.HyperlinkedRelatedField(
         source="current_status_uuid",
         read_only=True,
@@ -251,6 +260,7 @@ class ZaakSerializer(
             "hoofdzaak",
             "deelzaken",
             "relevante_andere_zaken",
+            "eigenschappen",
             # read-only veld, on-the-fly opgevraagd
             "status",
             # Writable inline resource, as opposed to eigenschappen for demo
