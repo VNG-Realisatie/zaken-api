@@ -102,11 +102,7 @@ info:
   license:
     name: EUPL 1.2
     url: https://opensource.org/licenses/EUPL-1.2
-<<<<<<< HEAD
   version: 1.1.0-alpha
-=======
-  version: 1.0.0-rc2
->>>>>>> master
 security:
 - JWT-Claims: []
 paths:
