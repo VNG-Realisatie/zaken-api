@@ -19,4 +19,4 @@ django-filter
 djangorestframework-camel-case
 drf-yasg
 drf-writable-nested
-vng-api-common
+vng-api-common<1.1.0

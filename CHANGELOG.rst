@@ -2,6 +2,39 @@
 Wijzigingen
 ===========
 
+1.0.0-rc2 (2019-09-19)
+======================
+
+Second release candidate.
+
+A number of defects were found, so this contains a couple of breaking changes.
+
+* Documented some fields being ``null`` when they're empty/unset:
+    - ``Zaak.einddatum``
+    - ``Zaak.status``
+    - ``Zaak.resultaat``
+* Added documentation w/r to notifications to the API spec document itself. For
+  provider implementations: this means you MUST send these notifications.
+* Added two attributes to ``KlantContact``:
+    - ``KlantContact.onderwerp``
+    - ``KlantContact.toelichting``
+
+Breaking changes
+----------------
+
+* Normalized enums to be only lower-cased alpha-numeric strings with underscores:
+    - ``RolNietNatuurlijkPersoon.innRechtsvorm``
+    - ``ObjectInrichtingselement.type``
+    - ``ObjectKunstwerkdeel.type``
+    - ``ObjectWaterdeel.type``
+* Pagination added to the following resources (page size 100 by default):
+    - ``Status``
+    - ``KlantContact``
+    - ``Resultaat``
+    - ``Rol``
+    - ``ZaakObject``
+* Fixed typo in audit trail ``Wijzigingen`` schema (was ``Wijzgingen``)
+
 1.0.0-rc1 (2019-07-18)
 ======================
 
