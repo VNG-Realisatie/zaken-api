@@ -31,6 +31,7 @@ from vng_api_common.serializers import (
 )
 from vng_api_common.validators import (
     IsImmutableValidator,
+    PublishValidator,
     ResourceValidator,
     UntilNowValidator,
     URLValidator,
@@ -283,7 +284,7 @@ class ZaakSerializer(
                 # TODO: does order matter here with the default validators?
                 "validators": [
                     IsImmutableValidator(),
-                    ResourceValidator(
+                    PublishValidator(
                         "ZaakType", settings.ZTC_API_SPEC, get_auth=get_auth
                     ),
                 ]

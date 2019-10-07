@@ -1,6 +1,7 @@
 import uuid
 from unittest import skip
 from unittest.mock import patch
+import requests_mock
 
 from django.test import override_settings
 
@@ -128,6 +129,55 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
 
         error = get_validation_errors(response, "zaaktype")
         self.assertEqual(error["code"], "invalid-resource")
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @patch("vng_api_common.validators.fetcher")
+    def test_create_zaak_validate_unpublished_zaaktype(self, *mocks):
+        responses = {ZAAKTYPE: {"url": ZAAKTYPE, "concept": True}}
+        url = reverse("zaak-list")
+
+        zaak_body = {
+            "zaaktype": ZAAKTYPE,
+            "bronorganisatie": "517439943",
+            "verantwoordelijkeOrganisatie": "517439943",
+            "registratiedatum": "2018-06-11",
+            "startdatum": "2018-06-11",
+            "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.openbaar,
+        }
+
+        with requests_mock.Mocker() as m:
+            m.get(ZAAKTYPE, json=responses[ZAAKTYPE])
+            with mock_client(responses):
+                response = self.client.post(
+                    url, zaak_body, **ZAAK_WRITE_KWARGS
+                )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "zaaktype")
+        self.assertEqual(error["code"], "not-published")
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @patch("vng_api_common.validators.fetcher")
+    def test_create_zaak_validate_published_zaaktype(self, *mocks):
+        responses = {ZAAKTYPE: {"url": ZAAKTYPE, "concept": False}}
+        url = reverse("zaak-list")
+
+        zaak_body = {
+            "zaaktype": ZAAKTYPE,
+            "bronorganisatie": "517439943",
+            "verantwoordelijkeOrganisatie": "517439943",
+            "registratiedatum": "2018-06-11",
+            "startdatum": "2018-06-11",
+            "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.openbaar,
+        }
+
+        with requests_mock.Mocker() as m:
+            m.get(ZAAKTYPE, json=responses[ZAAKTYPE])
+            with mock_client(responses):
+                response = self.client.post(
+                    url, zaak_body, **ZAAK_WRITE_KWARGS
+                )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_validation_camelcase(self):
         url = reverse("zaak-list")
