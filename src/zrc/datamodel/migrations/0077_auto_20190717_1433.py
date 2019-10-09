@@ -6,14 +6,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0076_auto_20190717_1051'),
-    ]
+    dependencies = [("datamodel", "0076_auto_20190717_1051")]
 
     operations = [
         migrations.AddField(
-            model_name='zaakobject',
-            name='object_type_overige',
-            field=models.CharField(blank=True, help_text='Beschrijft het type OBJECT als `objectType` de waarde "overige" heeft.', max_length=100, validators=[django.core.validators.RegexValidator('a-z\\_')]),
-        ),
+            model_name="zaakobject",
+            name="object_type_overige",
+            field=models.CharField(
+                blank=True,
+                help_text='Beschrijft het type OBJECT als `objectType` de waarde "overige" heeft.',
+                max_length=100,
+                validators=[django.core.validators.RegexValidator("a-z\\_")],
+            ),
+        )
     ]

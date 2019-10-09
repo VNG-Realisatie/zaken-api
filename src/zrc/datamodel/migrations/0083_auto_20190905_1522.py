@@ -5,19 +5,25 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0082_normalize_enums'),
-    ]
+    dependencies = [("datamodel", "0082_normalize_enums")]
 
     operations = [
         migrations.AddField(
-            model_name='klantcontact',
-            name='onderwerp',
-            field=models.CharField(blank=True, help_text='Het onderwerp waarover contact is geweest met de klant.', max_length=200),
+            model_name="klantcontact",
+            name="onderwerp",
+            field=models.CharField(
+                blank=True,
+                help_text="Het onderwerp waarover contact is geweest met de klant.",
+                max_length=200,
+            ),
         ),
         migrations.AddField(
-            model_name='klantcontact',
-            name='toelichting',
-            field=models.CharField(blank=True, help_text='Een toelichting die inhoudelijk het contact met de klant beschrijft.', max_length=1000),
+            model_name="klantcontact",
+            name="toelichting",
+            field=models.CharField(
+                blank=True,
+                help_text="Een toelichting die inhoudelijk het contact met de klant beschrijft.",
+                max_length=1000,
+            ),
         ),
     ]

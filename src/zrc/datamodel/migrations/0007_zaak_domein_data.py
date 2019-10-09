@@ -6,14 +6,16 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0006_zaak_toelichting'),
-    ]
+    dependencies = [("datamodel", "0006_zaak_toelichting")]
 
     operations = [
         migrations.AddField(
-            model_name='zaak',
-            name='domein_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, help_text='Domeinspecifieke data die niet in het RGBZ past.', null=True),
-        ),
+            model_name="zaak",
+            name="domein_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True,
+                help_text="Domeinspecifieke data die niet in het RGBZ past.",
+                null=True,
+            ),
+        )
     ]

@@ -6,15 +6,18 @@ import django.utils.timezone
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0061_auto_20190617_1101'),
-    ]
+    dependencies = [("datamodel", "0061_auto_20190617_1101")]
 
     operations = [
         migrations.AddField(
-            model_name='rol',
-            name='registratiedatum',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, help_text='De datum waarop dit object is geregistreerd.', verbose_name='registratiedatum'),
+            model_name="rol",
+            name="registratiedatum",
+            field=models.DateTimeField(
+                auto_now_add=True,
+                default=django.utils.timezone.now,
+                help_text="De datum waarop dit object is geregistreerd.",
+                verbose_name="registratiedatum",
+            ),
             preserve_default=False,
-        ),
+        )
     ]

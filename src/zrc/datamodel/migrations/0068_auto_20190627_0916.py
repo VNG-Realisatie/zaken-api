@@ -5,14 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('datamodel', '0067_auto_20190627_0908'),
-    ]
+    dependencies = [("datamodel", "0067_auto_20190627_0908")]
 
     operations = [
         migrations.RenameField(
-            model_name='zaakobject',
-            old_name='object_type',
-            new_name='type',
-        ),
+            model_name="zaakobject", old_name="object_type", new_name="type"
+        )
     ]
