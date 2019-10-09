@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import ZaakobjectTypes
-from vng_api_common.tests import JWTAuthMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url, get_validation_errors
 
 from zrc.datamodel.tests.factories import ZaakObjectFactory
 
@@ -55,4 +55,15 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
         data = response.json()["results"]
 
         self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['url'], f"http://testserver{zaakobject1_url}")
+        self.assertEqual(data[0]["url"], f"http://testserver{zaakobject1_url}")
+
+    def test_validate_unknown_query_params(self):
+        ZaakObjectFactory.create_batch(2, object="http://example.com/objects/1")
+        url = get_operation_url("zaakobject_list")
+
+        response = self.client.get(url, {"someparam": "somevalue"})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "unknown-parameters")
