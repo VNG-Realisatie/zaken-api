@@ -354,6 +354,7 @@ class StatusViewSet(
 
 class ZaakObjectViewSet(
     NotificationCreateMixin,
+    CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailCreateMixin,
     mixins.CreateModelMixin,
