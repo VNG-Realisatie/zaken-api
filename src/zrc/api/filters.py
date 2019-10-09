@@ -3,6 +3,7 @@ from vng_api_common.filtersets import FilterSet
 from vng_api_common.utils import get_help_text
 
 from zrc.datamodel.models import (
+    KlantContact,
     Resultaat,
     Rol,
     Status,
@@ -102,3 +103,9 @@ class ZaakObjectFilter(FilterSet):
     class Meta:
         model = ZaakObject
         fields = ("zaak", "object", "object_type")
+
+
+class KlantContactFilter(FilterSet):
+    class Meta:
+        model = KlantContact
+        fields = ("zaak",)

@@ -42,6 +42,7 @@ from zrc.datamodel.models import (
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
+    KlantContactFilter,
     ResultaatFilter,
     RolFilter,
     StatusFilter,
@@ -583,6 +584,7 @@ class KlantContactViewSet(
 
     queryset = KlantContact.objects.order_by("-pk")
     serializer_class = KlantContactSerializer
+    filterset_class = KlantContactFilter
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
     permission_classes = (ZaakRelatedAuthScopesRequired,)
