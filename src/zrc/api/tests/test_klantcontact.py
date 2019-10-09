@@ -14,7 +14,9 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
         klantcontact2 = KlantContactFactory.create()
         zaak = klantcontact1.zaak
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        klantcontact1_url = get_operation_url("klantcontact_read", uuid=klantcontact1.uuid)
+        klantcontact1_url = get_operation_url(
+            "klantcontact_read", uuid=klantcontact1.uuid
+        )
         url = get_operation_url("klantcontact_list")
 
         response = self.client.get(url, {"zaak": zaak_url})
