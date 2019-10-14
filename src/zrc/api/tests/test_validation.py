@@ -1,10 +1,10 @@
 import uuid
 from unittest import skip
 from unittest.mock import patch
-import requests_mock
 
 from django.test import override_settings
 
+import requests_mock
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -148,9 +148,7 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         with requests_mock.Mocker() as m:
             m.get(ZAAKTYPE, json=responses[ZAAKTYPE])
             with mock_client(responses):
-                response = self.client.post(
-                    url, zaak_body, **ZAAK_WRITE_KWARGS
-                )
+                response = self.client.post(url, zaak_body, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         error = get_validation_errors(response, "zaaktype")
@@ -174,9 +172,7 @@ class ZaakValidationTests(JWTAuthMixin, APITestCase):
         with requests_mock.Mocker() as m:
             m.get(ZAAKTYPE, json=responses[ZAAKTYPE])
             with mock_client(responses):
-                response = self.client.post(
-                    url, zaak_body, **ZAAK_WRITE_KWARGS
-                )
+                response = self.client.post(url, zaak_body, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_validation_camelcase(self):
