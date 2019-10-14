@@ -4481,9 +4481,10 @@ paths:
       description: "Indien geen identificatie gegeven is, dan wordt deze automatisch\n\
         gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\
         \n**Er wordt gevalideerd op**:\n- `zaaktype` moet een geldige URL zijn.\n\
-        - `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum`\
-        \ mag niet gezet worden als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie`\
-        \ moet een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
+        - `zaaktype` being published (`zaaktype.concept` = False)\n- `laatsteBetaaldatum`\
+        \ mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden\
+        \ als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een\
+        \ waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
         \ heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus`\
         \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen\
         \ een waarde anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde\
@@ -5057,19 +5058,19 @@ paths:
       operationId: zaak_update
       summary: Werk een ZAAK in zijn geheel bij.
       description: "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n\
-        - `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet\
-        \ in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als\
-        \ de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde\
-        \ hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n\
-        - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n\
-        \  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde\
-        \ anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde\
-        \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
-        \ heeft.\n\n**Opmerkingen**\n- er worden enkel zaken getoond van de zaaktypes\
-        \ waar u toe geautoriseerd\n  bent.\n- zaaktype zal in de toekomst niet-wijzigbaar\
-        \ gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door\
-        \ een nieuwe status\n  toe te voegen die NIET de eindstatus is.\n  Zie de\
-        \ `Status` resource."
+        - `zaaktype` being published (`zaaktype.concept` = False)\n- `identificatie`\
+        \ mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst\
+        \ liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n\
+        \  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus`\
+        \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet\
+        \ een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
+        \ heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\
+        \n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n\
+        \  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- er worden\
+        \ enkel zaken getoond van de zaaktypes waar u toe geautoriseerd\n  bent.\n\
+        - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een\
+        \ zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te\
+        \ voegen die NIET de eindstatus is.\n  Zie de `Status` resource."
       parameters:
       - name: Accept-Crs
         in: header
@@ -5275,19 +5276,19 @@ paths:
       operationId: zaak_partial_update
       summary: Werk een ZAAK deels bij.
       description: "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n\
-        - `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet\
-        \ in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als\
-        \ de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een waarde\
-        \ hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\" heeft.\n\
-        - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n\
-        \  waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde\
-        \ anders dan \"nog_te_archiveren\"\n  hebben indien van alle gerelateeerde\
-        \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
-        \ heeft.\n\n**Opmerkingen**\n- er worden enkel zaken getoond van de zaaktypes\
-        \ waar u toe geautoriseerd\n  bent.\n- zaaktype zal in de toekomst niet-wijzigbaar\
-        \ gemaakt worden.\n- indien een zaak heropend moet worden, doe dit dan door\
-        \ een nieuwe status\n  toe te voegen die NIET de eindstatus is. Zie de `Status`\
-        \ resource."
+        - `zaaktype` being published (`zaaktype.concept` = False)\n- `identificatie`\
+        \ mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst\
+        \ liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n\
+        \  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus`\
+        \ niet de\n  waarde \"nog_te_archiveren\" heeft.\n- `archiefactiedatum` moet\
+        \ een waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
+        \ heeft.\n- `archiefstatus` kan alleen een waarde anders dan \"nog_te_archiveren\"\
+        \n  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n\
+        \  `status` de waarde \"gearchiveerd\" heeft.\n\n**Opmerkingen**\n- er worden\
+        \ enkel zaken getoond van de zaaktypes waar u toe geautoriseerd\n  bent.\n\
+        - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.\n- indien een\
+        \ zaak heropend moet worden, doe dit dan door een nieuwe status\n  toe te\
+        \ voegen die NIET de eindstatus is. Zie de `Status` resource."
       parameters:
       - name: Accept-Crs
         in: header
