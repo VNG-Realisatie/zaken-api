@@ -4481,7 +4481,7 @@ paths:
       description: "Indien geen identificatie gegeven is, dan wordt deze automatisch\n\
         gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\
         \n**Er wordt gevalideerd op**:\n- `zaaktype` moet een geldige URL zijn.\n\
-        - `zaaktype` being published (`zaaktype.concept` = False)\n- `laatsteBetaaldatum`\
+        - `zaaktype` is geen concept (`zaaktype.concept` = False)\n- `laatsteBetaaldatum`\
         \ mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden\
         \ als de betalingsindicatie\n  \"nvt\" is.\n- `archiefnominatie` moet een\
         \ waarde hebben indien `archiefstatus` niet de\n  waarde \"nog_te_archiveren\"\
@@ -5058,7 +5058,7 @@ paths:
       operationId: zaak_update
       summary: Werk een ZAAK in zijn geheel bij.
       description: "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n\
-        - `zaaktype` being published (`zaaktype.concept` = False)\n- `identificatie`\
+        - `zaaktype` is geen concept (`zaaktype.concept` = False)\n- `identificatie`\
         \ mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst\
         \ liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n\
         \  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus`\
@@ -5276,7 +5276,7 @@ paths:
       operationId: zaak_partial_update
       summary: Werk een ZAAK deels bij.
       description: "**Er wordt gevalideerd op**\n- `zaaktype` mag niet gewijzigd worden.\n\
-        - `zaaktype` being published (`zaaktype.concept` = False)\n- `identificatie`\
+        - `zaaktype` is geen concept (`zaaktype.concept` = False)\n- `identificatie`\
         \ mag niet gewijzigd worden.\n- `laatsteBetaaldatum` mag niet in de toekomst\
         \ liggen.\n- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n\
         \  \"nvt\" is.\n- `archiefnominatie` moet een waarde hebben indien `archiefstatus`\
@@ -9331,6 +9331,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RelevanteZaak'
+        eigenschappen:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          uniqueItems: true
         status:
           title: Status
           description: Indien geen status bekend is, dan is de waarde 'null'

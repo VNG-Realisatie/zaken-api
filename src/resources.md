@@ -214,6 +214,7 @@ Uitleg bij mogelijke waarden:
 | hoofdzaak | URL-referentie naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er één is. | string | nee | C​R​U​D |
 | deelzaken | URL-referenties naar deel ZAAKen. | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 | relevanteAndereZaken | Een lijst van relevante andere zaken. | array | nee | C​R​U​D |
+| eigenschappen |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | kenmerken | Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`. | array | nee | C​R​U​D |
 | archiefnominatie | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.
