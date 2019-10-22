@@ -104,6 +104,7 @@ class ZaakViewSet(
 
     **Er wordt gevalideerd op**:
     - `zaaktype` moet een geldige URL zijn.
+    - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
       "nvt" is.
@@ -134,6 +135,7 @@ class ZaakViewSet(
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
+    - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `identificatie` mag niet gewijzigd worden.
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
@@ -159,6 +161,7 @@ class ZaakViewSet(
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
+    - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `identificatie` mag niet gewijzigd worden.
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
