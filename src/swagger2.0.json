@@ -10700,7 +10700,8 @@
                     "type": "string",
                     "format": "duration"
                 }
-            }
+            },
+            "x-nullable": true
         },
         "Opschorting": {
             "title": "Opschorting",
@@ -10722,7 +10723,8 @@
                     "type": "string",
                     "maxLength": 200
                 }
-            }
+            },
+            "x-nullable": true
         },
         "RelevanteZaak": {
             "description": "Een lijst van relevante andere zaken.",

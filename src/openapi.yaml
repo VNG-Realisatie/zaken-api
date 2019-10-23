@@ -9048,6 +9048,7 @@ components:
             doorlooptijd.
           type: string
           format: duration
+      nullable: true
     Opschorting:
       title: Opschorting
       description: Gegevens omtrent het tijdelijk opschorten van de behandeling van
@@ -9067,6 +9068,7 @@ components:
             van de zaak.
           type: string
           maxLength: 200
+      nullable: true
     RelevanteZaak:
       description: Een lijst van relevante andere zaken.
       required:
