@@ -53,6 +53,7 @@ from zrc.datamodel.models import (
     ZaakInformatieObject,
     ZaakKenmerk,
     ZaakObject,
+    ZaakContactMoment,
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
@@ -982,3 +983,16 @@ class ZaakBesluitSerializer(NestedHyperlinkedModelSerializer):
     def create(self, validated_data):
         validated_data["zaak"] = self.context["parent_object"]
         return super().create(validated_data)
+
+
+class ZaakContactMomentSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = ZaakContactMoment
+        fields = ("url", "uuid", "zaak", "contactmoment")
+        extra_kwargs = {
+            "url": {"lookup_field": "uuid"},
+            "uuid": {"read_only": True},
+            "zaak": {"lookup_field": "uuid"},
+            "contactmoment": {"validators": [URLValidator(get_auth=get_auth)]},
+        }

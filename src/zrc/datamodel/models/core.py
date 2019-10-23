@@ -50,6 +50,7 @@ __all__ = [
     "ZaakInformatieObject",
     "KlantContact",
     "ZaakBesluit",
+    "ZaakContactMoment",
 ]
 
 
@@ -821,3 +822,32 @@ class ZaakBesluit(models.Model):
 
     def unique_representation(self):
         return f"{self.zaak} - {self.besluit}"
+
+
+class ZaakContactMoment(models.Model):
+    """
+    Model ContactMoment belonged to Zaak
+    """
+
+    uuid = models.UUIDField(
+        unique=True, default=uuid.uuid4, help_text="Unieke resource identifier (UUID4)"
+    )
+    zaak = models.ForeignKey(Zaak, on_delete=models.CASCADE)
+    contactmoment = models.URLField(
+        "contactmoment",
+        help_text=_("URL-referentie naar het CONTACTMOMENT (in de KCC API)"),
+        max_length=1000,
+    )
+
+    objects = ZaakRelatedQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = "contactmoment"
+        verbose_name_plural = "contactmomenten"
+        unique_together = ("zaak", "contactmoment")
+
+    def __str__(self) -> str:
+        return f"{self.zaak} - {self.contactmoment}"
+
+    def unique_representation(self):
+        return f"{self.zaak} - {self.contactmoment}"
