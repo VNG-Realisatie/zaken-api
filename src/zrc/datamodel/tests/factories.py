@@ -126,3 +126,11 @@ class ZaakBesluitFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "datamodel.ZaakBesluit"
+
+
+class ZaakContactMomentFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    contactmoment = factory.Faker("url")
+
+    class Meta:
+        model = "datamodel.ZaakContactMoment"
