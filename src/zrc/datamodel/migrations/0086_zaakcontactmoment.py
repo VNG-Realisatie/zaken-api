@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ZaakContactMoment',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID', help_text="URL-referentie naar de ZAAK.")),
                 ('uuid', models.UUIDField(default=uuid.uuid4, help_text='Unieke resource identifier (UUID4)', unique=True)),
                 ('contactmoment', models.URLField(help_text='URL-referentie naar het CONTACTMOMENT (in de KCC API)', max_length=1000, verbose_name='contactmoment')),
                 ('zaak', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='datamodel.Zaak')),
