@@ -34,10 +34,10 @@ from zrc.datamodel.models import (
     Status,
     Zaak,
     ZaakBesluit,
+    ZaakContactMoment,
     ZaakEigenschap,
     ZaakInformatieObject,
     ZaakObject,
-    ZaakContactMoment,
 )
 
 from .audits import AUDIT_ZRC
@@ -72,12 +72,12 @@ from .serializers import (
     RolSerializer,
     StatusSerializer,
     ZaakBesluitSerializer,
+    ZaakContactMomentSerializer,
     ZaakEigenschapSerializer,
     ZaakInformatieObjectSerializer,
     ZaakObjectSerializer,
     ZaakSerializer,
     ZaakZoekSerializer,
-    ZaakContactMomentSerializer,
 )
 
 logger = logging.getLogger(__name__)

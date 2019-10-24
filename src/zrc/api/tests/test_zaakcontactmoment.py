@@ -6,7 +6,6 @@ from vng_api_common.tests import JWTAuthMixin, reverse
 
 from zrc.datamodel.tests.factories import ZaakContactMomentFactory, ZaakFactory
 
-
 CONTACTMOMENT = "https://kcc.nl/api/v1/contactmomenten/1234"
 
 
@@ -18,7 +17,9 @@ class ZaakContactMomentTests(JWTAuthMixin, APITestCase):
         zaak = ZaakFactory.create()
         url = reverse("zaakcontactmoment-list")
 
-        response = self.client.post(url, {"contactmoment": CONTACTMOMENT, "zaak": reverse(zaak)})
+        response = self.client.post(
+            url, {"contactmoment": CONTACTMOMENT, "zaak": reverse(zaak)}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

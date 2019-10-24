@@ -12,8 +12,8 @@ from rest_framework import serializers
 from rest_framework.settings import api_settings
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_gis.fields import GeometryField
-from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from rest_framework_nested.relations import NestedHyperlinkedRelatedField
+from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from vng_api_common.constants import (
     Archiefnominatie,
     Archiefstatus,
@@ -49,11 +49,11 @@ from zrc.datamodel.models import (
     Status,
     Zaak,
     ZaakBesluit,
+    ZaakContactMoment,
     ZaakEigenschap,
     ZaakInformatieObject,
     ZaakKenmerk,
     ZaakObject,
-    ZaakContactMoment,
 )
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
@@ -986,7 +986,6 @@ class ZaakBesluitSerializer(NestedHyperlinkedModelSerializer):
 
 
 class ZaakContactMomentSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = ZaakContactMoment
         fields = ("url", "uuid", "zaak", "contactmoment")

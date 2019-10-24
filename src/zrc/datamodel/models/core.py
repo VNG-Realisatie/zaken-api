@@ -830,7 +830,9 @@ class ZaakContactMoment(models.Model):
     """
 
     uuid = models.UUIDField(
-        unique=True, default=uuid.uuid4, help_text=_("Unieke resource identifier (UUID4)")
+        unique=True,
+        default=uuid.uuid4,
+        help_text=_("Unieke resource identifier (UUID4)"),
     )
     zaak = models.ForeignKey(
         Zaak, on_delete=models.CASCADE, help_text=_("URL-referentie naar de ZAAK.")

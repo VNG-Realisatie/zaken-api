@@ -22,8 +22,8 @@ from zrc.datamodel.models import Zaak
 from zrc.datamodel.tests.factories import (
     StatusFactory,
     ZaakBesluitFactory,
-    ZaakFactory,
     ZaakEigenschapFactory,
+    ZaakFactory,
 )
 from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
 from zrc.tests.utils import (

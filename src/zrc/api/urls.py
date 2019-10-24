@@ -11,11 +11,11 @@ from .viewsets import (
     StatusViewSet,
     ZaakAuditTrailViewSet,
     ZaakBesluitViewSet,
+    ZaakContactMomentViewSet,
     ZaakEigenschapViewSet,
     ZaakInformatieObjectViewSet,
     ZaakObjectViewSet,
     ZaakViewSet,
-    ZaakContactMomentViewSet,
 )
 
 router = routers.DefaultRouter()
