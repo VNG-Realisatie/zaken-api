@@ -38,3 +38,20 @@ class StatusTests(JWTAuthMixin, APITestCase):
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]["url"], f"http://testserver{status1_url}")
         self.assertNotEqual(response_data[0]["url"], f"http://testserver{status2_url}")
+
+    def test_filter_statussen_on_zaak_external_url(self):
+        status = StatusFactory.create()
+        list_url = reverse("status-list")
+
+        bad_urls = [
+            "https://google.nl",
+            "https://example.com/",
+            "https://example.com/404",
+        ]
+
+        for bad_url in bad_urls:
+            with self.subTest(bad_url=bad_url):
+                response = self.client.get(list_url, {"zaak": bad_url})
+
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertEqual(response.data["count"], 0)
