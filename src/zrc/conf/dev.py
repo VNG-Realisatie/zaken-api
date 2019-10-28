@@ -98,6 +98,7 @@ IS_HTTPS = False
 
 if "test" in sys.argv:
     NOTIFICATIONS_DISABLED = True
+    ALLOWED_HOSTS += ["testserver.com"]
 
 # Override settings with local settings.
 try:
