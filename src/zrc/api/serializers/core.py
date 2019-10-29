@@ -993,5 +993,7 @@ class ZaakContactMomentSerializer(serializers.HyperlinkedModelSerializer):
             "url": {"lookup_field": "uuid"},
             "uuid": {"read_only": True},
             "zaak": {"lookup_field": "uuid"},
-            "contactmoment": {"validators": [URLValidator(get_auth=get_auth)]},
+            "contactmoment": {
+                "validators": [ResourceValidator("ContactMoment",  settings.KCC_API_SPEC, get_auth=get_auth)]
+            }
         }

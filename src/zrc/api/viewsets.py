@@ -47,6 +47,7 @@ from .filters import (
     ResultaatFilter,
     RolFilter,
     StatusFilter,
+    ZaakContactMomentFilter,
     ZaakFilter,
     ZaakInformatieObjectFilter,
     ZaakObjectFilter,
@@ -832,15 +833,17 @@ class ZaakBesluitViewSet(
 
 
 class ZaakContactMomentViewSet(
+    NotificationCreateMixin,
     AuditTrailCreateMixin,
     AuditTrailDestroyMixin,
     ListFilterByAuthorizationsMixin,
+    CheckQueryParamsMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
     """
-    Read and edit Zaak-ContactMoment relations.
+    Opvragen en bewerken van ZAAK-CONTACTMOMENT relaties.
 
     list:
     Alle ZAAKCONTACTMOMENTen opvragen.
@@ -855,25 +858,14 @@ class ZaakContactMomentViewSet(
     create:
     Maak een ZAAKCONTACTMOMENT aan.
 
-    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
-
-    De KCC API gebruikt dit endpoint om relaties te synchroniseren,
-    daarom is dit endpoint in de Zaken API geimplementeerd.
-
-    **Er wordt gevalideerd op**
-    - geldigheid URL naar de ZAAK
-
     destroy:
     Verwijder een ZAAKCONTACTMOMENT.
 
-    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
-
-    De KCC API gebruikt dit endpoint om relaties te synchroniseren,
-    daarom is dit endpoint in de Zaken API geimplementeerd.
     """
 
     queryset = ZaakContactMoment.objects.order_by("-pk")
     serializer_class = ZaakContactMomentSerializer
+    filterset_class = ZaakContactMomentFilter
     lookup_field = "uuid"
     permission_classes = (ZaakRelatedAuthScopesRequired,)
     required_scopes = {
@@ -882,4 +874,5 @@ class ZaakContactMomentViewSet(
         "create": SCOPE_ZAKEN_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN,
     }
+    notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
