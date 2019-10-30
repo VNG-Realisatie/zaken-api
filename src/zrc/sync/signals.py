@@ -7,8 +7,8 @@ from django.dispatch import receiver
 from vng_api_common.models import APICredential
 from zds_client import Client
 
-from zrc.datamodel.models import ZaakInformatieObject, ZaakContactMoment
 from zrc.api.utils import get_absolute_url
+from zrc.datamodel.models import ZaakContactMoment, ZaakInformatieObject
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class SyncError(Exception):
 
 
 def sync_create_zio(relation: ZaakInformatieObject):
-    zaak_url = get_absolute_url('zaak-detail', relation.zaak.uuid)
+    zaak_url = get_absolute_url("zaak-detail", relation.zaak.uuid)
 
     logger.info("Zaak: %s", zaak_url)
     logger.info("Informatieobject: %s", relation.informatieobject)
@@ -43,7 +43,7 @@ def sync_create_zio(relation: ZaakInformatieObject):
 
 
 def sync_delete_zio(relation: ZaakInformatieObject):
-    zaak_url = get_absolute_url('zaak-detail', relation.zaak.uuid)
+    zaak_url = get_absolute_url("zaak-detail", relation.zaak.uuid)
 
     logger.info("Zaak: %s", zaak_url)
     logger.info("Informatieobject: %s", relation.informatieobject)
@@ -77,7 +77,7 @@ def sync_delete_zio(relation: ZaakInformatieObject):
 
 
 def sync_create_zaakcontactmoment(relation: ZaakContactMoment):
-    zaak_url = get_absolute_url('zaak-detail', relation.zaak.uuid)
+    zaak_url = get_absolute_url("zaak-detail", relation.zaak.uuid)
 
     logger.info("Zaak: %s", zaak_url)
     logger.info("Contactmoment: %s", relation.contactmoment)
@@ -101,7 +101,7 @@ def sync_create_zaakcontactmoment(relation: ZaakContactMoment):
         raise SyncError(f"Could not create remote relation") from exc
 
     # save ZaakBesluit url for delete signal
-    relation._objectcontactmoment = response['url']
+    relation._objectcontactmoment = response["url"]
     relation.save()
 
 
@@ -152,9 +152,7 @@ def sync_informatieobject_relation(
     sender=ZaakContactMoment,
     dispatch_uid="sync.sync_contactmoment_relation",
 )
-def sync_contactmoment_relation(
-    sender, instance: ZaakContactMoment = None, **kwargs
-):
+def sync_contactmoment_relation(sender, instance: ZaakContactMoment = None, **kwargs):
     signal = kwargs["signal"]
     if signal is post_save and not instance._objectcontactmoment:
         sync_create_zaakcontactmoment(instance)

@@ -37,30 +37,22 @@ GEMMA_URL_INFORMATIEMODEL_VERSIE = "1.0"
 repo = "vng-Realisatie/vng-referentielijsten"
 commit = "da1b2cfdaadb2d19a7d3fc14530923913a2560f2"
 REFERENTIELIJSTEN_API_SPEC = (
-    f"https://raw.githubusercontent.com/{repo}/{commit}/src/openapi.yaml"
-)  # noqa
+    f"https://raw.githubusercontent.com/{repo}/{commit}/src/openapi.yaml"  # noqa
+)
 
 ztc_repo = "vng-Realisatie/gemma-zaaktypecatalogus"
 ztc_commit = "9c51082d6399060bff6bee2e23d0f22472bfa47f"
-ZTC_API_SPEC = (
-    f"https://raw.githubusercontent.com/{ztc_repo}/{ztc_commit}/src/openapi.yaml"
-)  # noqa
+ZTC_API_SPEC = f"https://raw.githubusercontent.com/{ztc_repo}/{ztc_commit}/src/openapi.yaml"  # noqa
 
 drc_repo = "vng-Realisatie/gemma-documentregistratiecomponent"
 drc_commit = "e82802907c24ea6a11a39c77595c29338d55e8c3"
-DRC_API_SPEC = (
-    f"https://raw.githubusercontent.com/{drc_repo}/{drc_commit}/src/openapi.yaml"
-)  # noqa
+DRC_API_SPEC = f"https://raw.githubusercontent.com/{drc_repo}/{drc_commit}/src/openapi.yaml"  # noqa
 
 zrc_repo = "vng-Realisatie/gemma-zaakregistratiecomponent"
 zrc_commit = "8ea1950fe4ec2ad99504d345eba60a175eea3edf"
-ZRC_API_SPEC = (
-    f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/openapi.yaml"
-)  # noqa
+ZRC_API_SPEC = f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/openapi.yaml"  # noqa
 
 
-kcc_repo = 'VNG-Realisatie/gemma-klantcontactcomponent'
-kcc_commit = '5e1a18f95a5ad401d306060855d0d3d5336bd9db'
-KCC_API_SPEC = (
-    f"https://raw.githubusercontent.com/{kcc_repo}/{kcc_commit}/src/openapi.yaml"
-)  # noqa
+kcc_repo = "VNG-Realisatie/gemma-klantcontactcomponent"
+kcc_commit = "5e1a18f95a5ad401d306060855d0d3d5336bd9db"
+KCC_API_SPEC = f"https://raw.githubusercontent.com/{kcc_repo}/{kcc_commit}/src/openapi.yaml"  # noqa

@@ -115,4 +115,4 @@ class KlantContactFilter(FilterSet):
 class ZaakContactMomentFilter(FilterSet):
     class Meta:
         model = ZaakContactMoment
-        fields = ('zaak', 'contactmoment')
+        fields = ("zaak", "contactmoment")

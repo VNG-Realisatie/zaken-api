@@ -63,7 +63,7 @@ class ZaakAdmin(admin.ModelAdmin):
         RolInline,
         ResultaatInline,
         RelevanteZaakRelatieInline,
-        ZaakContactMomentInline
+        ZaakContactMomentInline,
     ]
 
 
@@ -112,6 +112,6 @@ class ResultaatAdmin(admin.ModelAdmin):
 
 @admin.register(ZaakContactMoment)
 class ZaakContactMomentAdmin(admin.ModelAdmin):
-    list_display = ['zaak', 'contactmoment']
+    list_display = ["zaak", "contactmoment"]
     list_select_related = ["zaak"]
     raw_id_fields = ["zaak"]

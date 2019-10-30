@@ -994,8 +994,12 @@ class ZaakContactMomentSerializer(serializers.HyperlinkedModelSerializer):
             "uuid": {"read_only": True},
             "zaak": {"lookup_field": "uuid"},
             "contactmoment": {
-                "validators": [ResourceValidator("ContactMoment",  settings.KCC_API_SPEC, get_auth=get_auth)]
-            }
+                "validators": [
+                    ResourceValidator(
+                        "ContactMoment", settings.KCC_API_SPEC, get_auth=get_auth
+                    )
+                ]
+            },
         }
 
     def save(self, **kwargs):

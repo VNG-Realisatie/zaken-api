@@ -18,11 +18,15 @@ class ZaakContactMomentSyncMixin:
     def setUp(self):
         super().setUp()
 
-        patcher_sync_create_zcm = patch("zrc.sync.signals.sync_create_zaakcontactmoment")
+        patcher_sync_create_zcm = patch(
+            "zrc.sync.signals.sync_create_zaakcontactmoment"
+        )
         self.mocked_sync_create_zcm = patcher_sync_create_zcm.start()
         self.addCleanup(patcher_sync_create_zcm.stop)
 
-        patcher_sync_delete_zcm = patch("zrc.sync.signals.sync_delete_zaakcontactmoment")
+        patcher_sync_delete_zcm = patch(
+            "zrc.sync.signals.sync_delete_zaakcontactmoment"
+        )
         self.mocked_sync_delete_zcm = patcher_sync_delete_zcm.start()
         self.addCleanup(patcher_sync_delete_zcm.stop)
 

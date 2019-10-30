@@ -4,12 +4,12 @@ from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
-from rest_framework.settings import api_settings
-from rest_framework.serializers import ValidationError
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.serializers import ValidationError
+from rest_framework.settings import api_settings
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin,
     AuditTrailDestroyMixin,

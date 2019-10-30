@@ -843,8 +843,9 @@ class ZaakContactMoment(models.Model):
         max_length=1000,
     )
     _objectcontactmoment = models.URLField(
-        'objectcontactmoment', blank=True,
-        help_text="Link to the related object in the KCC API"
+        "objectcontactmoment",
+        blank=True,
+        help_text="Link to the related object in the KCC API",
     )
 
     objects = ZaakRelatedQuerySet.as_manager()
