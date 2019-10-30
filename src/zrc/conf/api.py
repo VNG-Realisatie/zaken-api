@@ -62,5 +62,5 @@ ZRC_API_SPEC = (
 kcc_repo = 'VNG-Realisatie/gemma-klantcontactcomponent'
 kcc_commit = '5e1a18f95a5ad401d306060855d0d3d5336bd9db'
 KCC_API_SPEC = (
-    f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/openapi.yaml"
+    f"https://raw.githubusercontent.com/{kcc_repo}/{kcc_commit}/src/openapi.yaml"
 )  # noqa

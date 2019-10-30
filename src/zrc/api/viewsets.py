@@ -4,6 +4,8 @@ from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 
 from rest_framework import mixins, viewsets
+from rest_framework.settings import api_settings
+from rest_framework.serializers import ValidationError
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
@@ -39,6 +41,7 @@ from zrc.datamodel.models import (
     ZaakInformatieObject,
     ZaakObject,
 )
+from zrc.sync.signals import SyncError
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
@@ -876,3 +879,21 @@ class ZaakContactMomentViewSet(
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        # Do not display ZaakInformatieObjecten that are marked to be deleted
+        cache = caches["drc_sync"]
+        marked_zcms = cache.get("zcms_marked_for_delete")
+        if marked_zcms:
+            return qs.exclude(uuid__in=marked_zcms)
+        return qs
+
+    def perform_destroy(self, instance):
+        try:
+            super().perform_destroy(instance)
+        except SyncError as sync_error:
+            raise ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]}
+            ) from sync_error

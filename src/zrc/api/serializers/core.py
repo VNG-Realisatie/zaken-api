@@ -997,3 +997,16 @@ class ZaakContactMomentSerializer(serializers.HyperlinkedModelSerializer):
                 "validators": [ResourceValidator("ContactMoment",  settings.KCC_API_SPEC, get_auth=get_auth)]
             }
         }
+
+    def save(self, **kwargs):
+        try:
+            return super().save(**kwargs)
+        except SyncError as sync_error:
+            # delete the object again
+            ZaakContactMoment.objects.filter(
+                contactmoment=self.validated_data["contactmoment"],
+                zaak=self.validated_data["zaak"],
+            )._raw_delete("default")
+            raise serializers.ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]}
+            ) from sync_error
