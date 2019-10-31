@@ -17,6 +17,11 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
         "LOCATION": "/var/tmp/django_cache",
     },
+    # Cache for ZaakContactMoment removal sync with KCC
+    "kcc_sync": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "/var/tmp/django_cache",
+    },
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
