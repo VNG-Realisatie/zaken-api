@@ -3079,7 +3079,10 @@ paths:
         - zaken.lezen
     post:
       operationId: zaakcontactmoment_create
-      description: Maak een ZAAKCONTACTMOMENT aan.
+      summary: Maak een ZAAKCONTACTMOMENT aan.
+      description: '**Er wordt gevalideerd op**
+
+        - geldigheid URL naar de CONTACTMOMENT'
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header

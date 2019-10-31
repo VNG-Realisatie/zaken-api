@@ -861,6 +861,9 @@ class ZaakContactMomentViewSet(
     create:
     Maak een ZAAKCONTACTMOMENT aan.
 
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de CONTACTMOMENT
+
     destroy:
     Verwijder een ZAAKCONTACTMOMENT.
 
