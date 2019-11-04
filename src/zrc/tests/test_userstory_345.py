@@ -120,7 +120,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_cannot_set_archiefstatus_without_archiefnominatie_and_archiefactiedatum(
-        self
+        self,
     ):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_patch_url = get_operation_url("zaak_partial_update", uuid=zaak.uuid)
@@ -146,7 +146,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_can_set_archiefstatus_when_archiefnominatie_and_archiefactiedatum_already_set(
-        self
+        self,
     ):
         zaak = ZaakFactory.create(
             archiefnominatie=Archiefnominatie.vernietigen,
