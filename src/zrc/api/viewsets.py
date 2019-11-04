@@ -41,6 +41,7 @@ from zrc.datamodel.models import (
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
 from .filters import (
+    KlantContactFilter,
     ResultaatFilter,
     RolFilter,
     StatusFilter,
@@ -103,6 +104,7 @@ class ZaakViewSet(
 
     **Er wordt gevalideerd op**:
     - `zaaktype` moet een geldige URL zijn.
+    - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
       "nvt" is.
@@ -133,6 +135,7 @@ class ZaakViewSet(
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
+    - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `identificatie` mag niet gewijzigd worden.
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
@@ -158,6 +161,7 @@ class ZaakViewSet(
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
+    - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `identificatie` mag niet gewijzigd worden.
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
@@ -578,6 +582,7 @@ class KlantContactViewSet(
 
     queryset = KlantContact.objects.order_by("-pk")
     serializer_class = KlantContactSerializer
+    filterset_class = KlantContactFilter
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
     permission_classes = (ZaakRelatedAuthScopesRequired,)

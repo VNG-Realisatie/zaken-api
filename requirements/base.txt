@@ -35,7 +35,7 @@ jinja2==2.10.1            # via coreschema
 markdown==3.0.1
 markupsafe==1.0           # via jinja2
 oyaml==0.7                # via vng-api-common
-pip-tools==4.0.0
+pip-tools==4.2.0
 psycopg2-binary==2.7.5
 pyjwt==1.6.4              # via gemma-zds-client, vng-api-common
 python-dateutil==2.7.3
@@ -51,4 +51,4 @@ sqlparse==0.3.0           # via django
 unidecode==1.0.22         # via vng-api-common
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.3           # via requests
-vng-api-common==1.0.20
+vng-api-common==1.0.28

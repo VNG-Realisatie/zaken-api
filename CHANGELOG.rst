@@ -2,6 +2,22 @@
 Wijzigingen
 ===========
 
+1.0.0-rc2 fixes (2019-11-04)
+============================
+
+Bugfixes in second release candidate
+
+* Added missing query parameters to ``ZaakObject`` list
+* Added ``KlantContact.zaak`` query parameter
+* Added inline references to ``Zaak.eigenschappen``
+* Fixes to GegevensGroep schema's, as they may often be ``null``
+
+Breaking changes
+----------------
+
+* ``Zaak.zaaktype`` must now be published (validation added)
+
+
 1.0.0-rc2 (2019-09-19)
 ======================
 
