@@ -93,12 +93,14 @@ class ZaakContactMomentFilterTests(
         ZaakContactMomentFactory.create(zaak=zaak)
 
         response = self.client.get(
-            self.list_url, {"zaak": f"http://testserver{zaak_url}"}
+            self.list_url,
+            {"zaak": f"http://testserver.com{zaak_url}"},
+            HTTP_HOST="testserver.com",
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["zaak"], f"http://testserver{zaak_url}")
+        self.assertEqual(response.data[0]["zaak"], f"http://testserver.com{zaak_url}")
 
     def test_filter_contactmoment(self):
         ZaakContactMomentFactory.create(contactmoment=CONTACTMOMENT)
