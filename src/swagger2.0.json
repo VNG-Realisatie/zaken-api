@@ -92,6 +92,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -106,6 +112,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -120,6 +132,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -134,6 +152,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -148,6 +172,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -162,6 +192,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -176,6 +212,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -190,6 +232,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -204,6 +252,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -218,6 +272,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     }
@@ -287,6 +347,12 @@
                                     "format": "uri"
                                 },
                                 "description": "URL waar de resource leeft."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -301,6 +367,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -315,6 +387,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -329,6 +407,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -343,6 +427,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -357,6 +447,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -371,6 +467,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -385,6 +487,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -399,6 +507,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -413,6 +527,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     }
@@ -470,6 +590,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -484,6 +610,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -498,6 +630,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -512,6 +650,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -526,6 +670,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -540,6 +690,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -554,6 +710,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -568,6 +730,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -582,6 +750,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     },
@@ -596,6 +770,12 @@
                                     "type": "string"
                                 },
                                 "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            },
+                            "Warning": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit."
                             }
                         }
                     }
