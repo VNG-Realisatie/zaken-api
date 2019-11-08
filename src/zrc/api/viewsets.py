@@ -605,6 +605,11 @@ class KlantContactViewSet(
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
+    deprecation_message = (
+        "Deze endpoint is verouderd en zal binnenkort uit dienst worden genomen. "
+        "Maak gebruik van de vervangende contactmomenten API."
+    )
+
 
 @conditional_retrieve()
 class RolViewSet(
