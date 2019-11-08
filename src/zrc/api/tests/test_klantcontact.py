@@ -22,7 +22,7 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
         response = self.client.get(
             url,
             {"zaak": f"http://testserver.com{zaak_url}"},
-            HTTP_HOST="testserver.com"
+            HTTP_HOST="testserver.com",
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
