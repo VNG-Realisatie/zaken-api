@@ -19,11 +19,26 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
         )
         url = get_operation_url("klantcontact_list")
 
-        response = self.client.get(url, {"zaak": zaak_url})
+        response = self.client.get(
+            url,
+            {"zaak": f"http://testserver.com{zaak_url}"},
+            HTTP_HOST="testserver.com",
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.json()["results"]
 
         self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]["url"], f"http://testserver{klantcontact1_url}")
+        self.assertEqual(data[0]["url"], f"http://testserver.com{klantcontact1_url}")
+
+    def test_list_page(self):
+        KlantContactFactory.create_batch(2)
+        url = get_operation_url("klantcontact_list")
+
+        response = self.client.get(url, {"page": 1}, HTTP_HOST="testserver.com")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+        self.assertEqual(len(data), 2)

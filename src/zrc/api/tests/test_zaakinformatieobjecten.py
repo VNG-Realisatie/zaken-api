@@ -193,12 +193,14 @@ class ZaakInformatieObjectAPITests(
         zio_list_url = reverse("zaakinformatieobject-list", kwargs={"version": "1"})
 
         response = self.client.get(
-            zio_list_url, {"zaak": f"http://testserver{zaak_url}"}
+            zio_list_url,
+            {"zaak": f"http://testserver.com{zaak_url}"},
+            HTTP_HOST="testserver.com",
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["zaak"], f"http://testserver{zaak_url}")
+        self.assertEqual(response.data[0]["zaak"], f"http://testserver.com{zaak_url}")
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
