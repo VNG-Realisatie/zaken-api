@@ -11,6 +11,7 @@ SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
 SWAGGER_SETTINGS.update(
     {
         "DEFAULT_INFO": "zrc.api.schema.info",
+        "DEFAULT_AUTO_SCHEMA_CLASS": "zrc.api.inspectors.AutoSchema",
         "SECURITY_DEFINITIONS": {
             SECURITY_DEFINITION_NAME: {
                 # OAS 3.0
@@ -51,3 +52,7 @@ DRC_API_SPEC = f"https://raw.githubusercontent.com/{drc_repo}/{drc_commit}/src/o
 zrc_repo = "vng-Realisatie/gemma-zaakregistratiecomponent"
 zrc_commit = "8ea1950fe4ec2ad99504d345eba60a175eea3edf"
 ZRC_API_SPEC = f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/openapi.yaml"  # noqa
+
+kcc_repo = "VNG-Realisatie/gemma-klantcontactcomponent"
+kcc_commit = "5e1a18f95a5ad401d306060855d0d3d5336bd9db"
+KCC_API_SPEC = f"https://raw.githubusercontent.com/{kcc_repo}/{kcc_commit}/src/openapi.yaml"  # noqa

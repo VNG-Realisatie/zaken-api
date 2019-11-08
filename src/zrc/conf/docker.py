@@ -47,6 +47,15 @@ CACHES = {
             "IGNORE_EXCEPTIONS": True,
         },
     },
+    # Cache for ZaakContactMoment removal sync with KCC
+    "kcc_sync": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{getenv('REDIS_CACHE')}",  # NOTE: watch out for multiple projects using the same cache!
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,
+        },
+    },
 }
 
 # Deal with being hosted on a subpath

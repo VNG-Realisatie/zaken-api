@@ -11,6 +11,7 @@ from .viewsets import (
     StatusViewSet,
     ZaakAuditTrailViewSet,
     ZaakBesluitViewSet,
+    ZaakContactMomentViewSet,
     ZaakEigenschapViewSet,
     ZaakInformatieObjectViewSet,
     ZaakObjectViewSet,
@@ -33,6 +34,7 @@ router.register("klantcontacten", KlantContactViewSet)
 router.register("rollen", RolViewSet)
 router.register("resultaten", ResultaatViewSet)
 router.register("zaakinformatieobjecten", ZaakInformatieObjectViewSet)
+router.register("zaakcontactmomenten", ZaakContactMomentViewSet)
 
 
 # TODO: the EndpointEnumerator seems to choke on path and re_path

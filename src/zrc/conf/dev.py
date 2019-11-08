@@ -79,6 +79,7 @@ CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
     "axes_cache": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
     "drc_sync": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    "kcc_sync": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
 }
 
 AXES_CACHE = "axes_cache"

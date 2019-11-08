@@ -8,6 +8,8 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.serializers import ValidationError
+from rest_framework.settings import api_settings
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin,
     AuditTrailDestroyMixin,
@@ -34,10 +36,12 @@ from zrc.datamodel.models import (
     Status,
     Zaak,
     ZaakBesluit,
+    ZaakContactMoment,
     ZaakEigenschap,
     ZaakInformatieObject,
     ZaakObject,
 )
+from zrc.sync.signals import SyncError
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
@@ -46,6 +50,7 @@ from .filters import (
     ResultaatFilter,
     RolFilter,
     StatusFilter,
+    ZaakContactMomentFilter,
     ZaakFilter,
     ZaakInformatieObjectFilter,
     ZaakObjectFilter,
@@ -71,6 +76,7 @@ from .serializers import (
     RolSerializer,
     StatusSerializer,
     ZaakBesluitSerializer,
+    ZaakContactMomentSerializer,
     ZaakEigenschapSerializer,
     ZaakInformatieObjectSerializer,
     ZaakObjectSerializer,
@@ -574,15 +580,21 @@ class KlantContactViewSet(
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd.
 
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
+
     list:
     Alle KLANTCONTACTen opvragen.
 
     Alle KLANTCONTACTen opvragen.
 
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
+
     retrieve:
     Een specifiek KLANTCONTACT bij een ZAAK opvragen.
 
     Een specifiek KLANTCONTACT bij een ZAAK opvragen.
+
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
     """
 
     queryset = KlantContact.objects.order_by("-pk")
@@ -598,6 +610,11 @@ class KlantContactViewSet(
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
+    deprecation_message = (
+        "Deze endpoint is verouderd en zal binnenkort uit dienst worden genomen. "
+        "Maak gebruik van de vervangende contactmomenten API."
+    )
 
 
 @conditional_retrieve()
@@ -830,3 +847,70 @@ class ZaakBesluitViewSet(
     def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
         zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
+
+
+class ZaakContactMomentViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
+    ListFilterByAuthorizationsMixin,
+    CheckQueryParamsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
+    """
+    Opvragen en bewerken van ZAAK-CONTACTMOMENT relaties.
+
+    list:
+    Alle ZAAKCONTACTMOMENTen opvragen.
+
+    Alle ZAAKCONTACTMOMENTen opvragen.
+
+    retrieve:
+    Een specifiek ZAAKCONTACTMOMENT opvragen.
+
+    Een specifiek ZAAKCONTACTMOMENT opvragen.
+
+    create:
+    Maak een ZAAKCONTACTMOMENT aan.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de CONTACTMOMENT
+
+    destroy:
+    Verwijder een ZAAKCONTACTMOMENT.
+
+    """
+
+    queryset = ZaakContactMoment.objects.order_by("-pk")
+    serializer_class = ZaakContactMomentSerializer
+    filterset_class = ZaakContactMomentFilter
+    lookup_field = "uuid"
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
+    required_scopes = {
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN,
+    }
+    notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        # Do not display ZaakContactMomenten that are marked to be deleted
+        cache = caches["kcc_sync"]
+        marked_zcms = cache.get("zcms_marked_for_delete")
+        if marked_zcms:
+            return qs.exclude(uuid__in=marked_zcms)
+        return qs
+
+    def perform_destroy(self, instance):
+        try:
+            super().perform_destroy(instance)
+        except SyncError as sync_error:
+            raise ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]}
+            ) from sync_error
