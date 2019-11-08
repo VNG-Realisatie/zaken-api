@@ -11,6 +11,7 @@ SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
 SWAGGER_SETTINGS.update(
     {
         "DEFAULT_INFO": "zrc.api.schema.info",
+        "DEFAULT_AUTO_SCHEMA_CLASS": "zrc.api.inspectors.AutoSchema",
         "SECURITY_DEFINITIONS": {
             SECURITY_DEFINITION_NAME: {
                 # OAS 3.0
