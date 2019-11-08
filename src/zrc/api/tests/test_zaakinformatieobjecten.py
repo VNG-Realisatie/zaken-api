@@ -193,8 +193,9 @@ class ZaakInformatieObjectAPITests(
         zio_list_url = reverse("zaakinformatieobject-list", kwargs={"version": "1"})
 
         response = self.client.get(
-            zio_list_url, {"zaak": f"http://testserver.com{zaak_url}"},
-            HTTP_HOST="testserver.com"
+            zio_list_url,
+            {"zaak": f"http://testserver.com{zaak_url}"},
+            HTTP_HOST="testserver.com",
         )
 
         self.assertEqual(response.status_code, 200)
