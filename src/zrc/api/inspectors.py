@@ -24,3 +24,7 @@ class AutoSchema(_AutoSchema):
             response["headers"][WARNING_HEADER] = warning_header
 
         return responses
+
+    def is_deprecated(self):
+        deprecation_message = getattr(self.view, "deprecation_message", None)
+        return bool(deprecation_message) or super().is_deprecated()

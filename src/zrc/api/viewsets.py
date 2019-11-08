@@ -580,15 +580,21 @@ class KlantContactViewSet(
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd.
 
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
+
     list:
     Alle KLANTCONTACTen opvragen.
 
     Alle KLANTCONTACTen opvragen.
 
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
+
     retrieve:
     Een specifiek KLANTCONTACT bij een ZAAK opvragen.
 
     Een specifiek KLANTCONTACT bij een ZAAK opvragen.
+
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
     """
 
     queryset = KlantContact.objects.order_by("-pk")
