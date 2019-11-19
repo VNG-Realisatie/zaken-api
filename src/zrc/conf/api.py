@@ -41,7 +41,7 @@ REFERENTIELIJSTEN_API_SPEC = (
 )
 
 ztc_repo = "vng-Realisatie/gemma-zaaktypecatalogus"
-ztc_commit = "9c51082d6399060bff6bee2e23d0f22472bfa47f"
+ztc_commit = "b8cc38484ad862b9bbbf975e24718ede3f662e1e"
 ZTC_API_SPEC = f"https://raw.githubusercontent.com/{ztc_repo}/{ztc_commit}/src/openapi.yaml"  # noqa
 
 drc_repo = "vng-Realisatie/gemma-documentregistratiecomponent"
