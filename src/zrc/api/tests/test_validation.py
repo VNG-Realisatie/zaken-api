@@ -846,6 +846,39 @@ class StatusValidationTests(JWTAuthMixin, APITestCase):
         validation_error = get_validation_errors(response, "datumStatusGezet")
         self.assertEqual(validation_error["code"], "date-in-future")
 
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    def test_create_status_existing_combination_zaak_datum_status_gezet(self, *mocks):
+        zaak = ZaakFactory.create()
+        status = StatusFactory.create(
+            zaak=zaak, datum_status_gezet="2019-01-01T12:00:00Z"
+        )
+
+        list_url = reverse("status-list")
+
+        STATUSTYPE = "https://www.ztc.nl/statustypen/1234"
+        responses = {
+            STATUSTYPE: {
+                "url": STATUSTYPE,
+                "zaaktype": zaak.zaaktype,
+                "volgnummer": 1,
+                "isEindstatus": False,
+            }
+        }
+
+        data = {
+            "zaak": reverse(zaak),
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2019-01-01T12:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(list_url, data)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "unique")
+
 
 class ResultaatValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True

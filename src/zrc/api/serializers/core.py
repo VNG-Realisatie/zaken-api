@@ -483,7 +483,12 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             "datum_status_gezet",
             "statustoelichting",
         )
-        validators = [CorrectZaaktypeValidator("statustype")]
+        validators = [
+            CorrectZaaktypeValidator("statustype"),
+            UniqueTogetherValidator(
+                queryset=Status.objects.all(), fields=["zaak", "datum_status_gezet"]
+            ),
+        ]
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},
             "uuid": {"read_only": True},
