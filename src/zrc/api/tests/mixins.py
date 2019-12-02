@@ -31,5 +31,20 @@ class ZaakContactMomentSyncMixin:
         self.addCleanup(patcher_sync_delete_zcm.stop)
 
 
-class SyncMixin(ZaakInformatieObjectSyncMixin, ZaakContactMomentSyncMixin):
+class ZaakVerzoekSyncMixin:
+    def setUp(self):
+        super().setUp()
+
+        patcher_sync_create_zv = patch("zrc.sync.signals.sync_create_zaakverzoek")
+        self.mocked_sync_create_zv = patcher_sync_create_zv.start()
+        self.addCleanup(patcher_sync_create_zv.stop)
+
+        patcher_sync_delete_zv = patch("zrc.sync.signals.sync_delete_zaakverzoek")
+        self.mocked_sync_delete_zv = patcher_sync_delete_zv.start()
+        self.addCleanup(patcher_sync_delete_zv.stop)
+
+
+class SyncMixin(
+    ZaakInformatieObjectSyncMixin, ZaakContactMomentSyncMixin, ZaakVerzoekSyncMixin
+):
     pass

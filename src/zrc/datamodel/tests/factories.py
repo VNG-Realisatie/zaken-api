@@ -134,3 +134,11 @@ class ZaakContactMomentFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "datamodel.ZaakContactMoment"
+
+
+class ZaakVerzoekFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    verzoek = factory.Faker("url")
+
+    class Meta:
+        model = "datamodel.ZaakVerzoek"
