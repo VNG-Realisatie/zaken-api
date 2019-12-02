@@ -13498,7 +13498,7 @@
                 },
                 "bron": {
                     "title": "Bron",
-                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisatiecomponent\n* `nrc` - Notificatierouteringcomponent\n* `zrc` - Zaakregistratiecomponent\n* `ztc` - Zaaktypecatalogus\n* `drc` - Documentregistratiecomponent\n* `brc` - Besluitregistratiecomponent\n* `kcc` - Klantcontactcomponent",
+                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisatiecomponent\n* `nrc` - Notificatierouteringcomponent\n* `zrc` - Zaakregistratiecomponent\n* `ztc` - Zaaktypecatalogus\n* `drc` - Documentregistratiecomponent\n* `brc` - Besluitregistratiecomponent\n* `kic` - Klantinteractiescomponent",
                     "type": "string",
                     "enum": [
                         "ac",
@@ -13507,7 +13507,7 @@
                         "ztc",
                         "drc",
                         "brc",
-                        "kcc"
+                        "kic"
                     ]
                 },
                 "requestId": {
@@ -13684,5 +13684,47 @@
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "_zoek",
+            "description": "Een zaak mag (in principe) niet meer gewijzigd worden als de\n`archiefstatus` een andere status heeft dan \"nog_te_archiveren\". Voor\npraktische redenen is er geen harde validatie regel aan de provider kant."
+        },
+        {
+            "name": "klantcontacten",
+            "description": ""
+        },
+        {
+            "name": "resultaten",
+            "description": ""
+        },
+        {
+            "name": "rollen",
+            "description": ""
+        },
+        {
+            "name": "statussen",
+            "description": ""
+        },
+        {
+            "name": "zaakcontactmomenten",
+            "description": ""
+        },
+        {
+            "name": "zaakinformatieobjecten",
+            "description": ""
+        },
+        {
+            "name": "zaakobjecten",
+            "description": ""
+        },
+        {
+            "name": "zaakverzoeken",
+            "description": ""
+        },
+        {
+            "name": "zaken",
+            "description": "Een zaak mag (in principe) niet meer gewijzigd worden als de\n`archiefstatus` een andere status heeft dan \"nog_te_archiveren\". Voor\npraktische redenen is er geen harde validatie regel aan de provider kant."
+        }
+    ]
 }
