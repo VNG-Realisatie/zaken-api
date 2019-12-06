@@ -6,3 +6,5 @@ factory-boy
 freezegun
 requests-mock
 tblib
+pylint<2.0
+pep8
