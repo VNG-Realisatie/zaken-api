@@ -11,7 +11,7 @@ class Warning:
         self.text = text
 
     def __str__(self):
-        return f"{self.code} \"{self.agent}\" \"{self.text}\""
+        return f'{self.code} "{self.agent}" "{self.text}"'
 
 
 class DeprecationMiddleware:
@@ -47,7 +47,7 @@ class DeprecationMiddleware:
         request._warning = Warning(
             DEPRECATION_WARNING_CODE,
             request.build_absolute_uri(request.path),
-            deprecation_msg
+            deprecation_msg,
         )
 
         return None

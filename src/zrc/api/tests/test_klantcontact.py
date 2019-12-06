@@ -53,7 +53,4 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
             "Deze endpoint is verouderd en zal binnenkort uit dienst worden genomen. "
             "Maak gebruik van de vervangende contactmomenten API."
         )
-        self.assertEqual(
-            response["Warning"],
-            f"299 \"http://testserver{url}\" \"{msg}\""
-        )
+        self.assertEqual(response["Warning"], f'299 "http://testserver{url}" "{msg}"')

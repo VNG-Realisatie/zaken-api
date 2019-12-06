@@ -51,6 +51,7 @@ __all__ = [
     "KlantContact",
     "ZaakBesluit",
     "ZaakContactMoment",
+    "ZaakVerzoek",
 ]
 
 
@@ -839,13 +840,15 @@ class ZaakContactMoment(models.Model):
     )
     contactmoment = models.URLField(
         "contactmoment",
-        help_text=_("URL-referentie naar het CONTACTMOMENT (in de KCC API)"),
+        help_text=_(
+            "URL-referentie naar het CONTACTMOMENT (in de Klantinteractie API)"
+        ),
         max_length=1000,
     )
     _objectcontactmoment = models.URLField(
         "objectcontactmoment",
         blank=True,
-        help_text="Link to the related object in the KCC API",
+        help_text="Link to the related object in the Klantinteractie API",
     )
 
     objects = ZaakRelatedQuerySet.as_manager()
@@ -860,3 +863,41 @@ class ZaakContactMoment(models.Model):
 
     def unique_representation(self):
         return f"{self.zaak} - {self.contactmoment}"
+
+
+class ZaakVerzoek(models.Model):
+    """
+    Model Verzoek belonged to Zaak
+    """
+
+    uuid = models.UUIDField(
+        unique=True,
+        default=uuid.uuid4,
+        help_text=_("Unieke resource identifier (UUID4)"),
+    )
+    zaak = models.ForeignKey(
+        Zaak, on_delete=models.CASCADE, help_text=_("URL-referentie naar de ZAAK.")
+    )
+    verzoek = models.URLField(
+        "verzoek",
+        help_text=_("URL-referentie naar het VERZOEK (in de Klantinteractie API)"),
+        max_length=1000,
+    )
+    _objectverzoek = models.URLField(
+        "objectverzoek",
+        blank=True,
+        help_text="Link to the related object in the Klantinteractie API",
+    )
+
+    objects = ZaakRelatedQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = "verzoek"
+        verbose_name_plural = "verzoeken"
+        unique_together = ("zaak", "verzoek")
+
+    def __str__(self) -> str:
+        return f"{self.zaak} - {self.verzoek}"
+
+    def unique_representation(self):
+        return f"{self.zaak} - {self.verzoek}"

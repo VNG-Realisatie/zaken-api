@@ -107,7 +107,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
-| contactmoment | URL-referentie naar het CONTACTMOMENT (in de KCC API) | string | ja | C​R​U​D |
+| contactmoment | URL-referentie naar het CONTACTMOMENT (in de Klantinteractie API) | string | ja | C​R​U​D |
 
 ## ZaakInformatieObject
 
@@ -178,6 +178,17 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 
 | Attribuut | Omschrijving | Type | Verplicht | CRUD* |
 | --- | --- | --- | --- | --- |
+
+## ZaakVerzoek
+
+Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/objecttype/zaakverzoek)
+
+| Attribuut | Omschrijving | Type | Verplicht | CRUD* |
+| --- | --- | --- | --- | --- |
+| url | URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| uuid | Unieke resource identifier (UUID4) | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| zaak | URL-referentie naar de ZAAK. | string | ja | C​R​U​D |
+| verzoek | URL-referentie naar het VERZOEK (in de Klantinteractie API) | string | ja | C​R​U​D |
 
 ## ZaakKenmerk
 
@@ -261,7 +272,8 @@ Uitleg bij mogelijke waarden:
 * `zrc` - Zaakregistratiecomponent
 * `ztc` - Zaaktypecatalogus
 * `drc` - Documentregistratiecomponent
-* `brc` - Besluitregistratiecomponent | string | ja | C​R​U​D |
+* `brc` - Besluitregistratiecomponent
+* `kic` - Klantinteractiescomponent | string | ja | C​R​U​D |
 | requestId | Een globaal &quot;request&quot; ID om een verzoek door het netwerk heen te traceren. | string | nee | C​R​U​D |
 | applicatieId | Unieke identificatie van de applicatie, binnen de organisatie. | string | nee | C​R​U​D |
 | applicatieWeergave | Vriendelijke naam van de applicatie. | string | nee | C​R​U​D |

@@ -54,6 +54,7 @@ from .filters import (
     ZaakFilter,
     ZaakInformatieObjectFilter,
     ZaakObjectFilter,
+    ZaakVerzoekFilter,
 )
 from .kanalen import KANAAL_ZAKEN
 from .permissions import (
@@ -81,6 +82,8 @@ from .serializers import (
     ZaakInformatieObjectSerializer,
     ZaakObjectSerializer,
     ZaakSerializer,
+    ZaakVerzoek,
+    ZaakVerzoekSerializer,
     ZaakZoekSerializer,
 )
 
@@ -905,6 +908,73 @@ class ZaakContactMomentViewSet(
         marked_zcms = cache.get("zcms_marked_for_delete")
         if marked_zcms:
             return qs.exclude(uuid__in=marked_zcms)
+        return qs
+
+    def perform_destroy(self, instance):
+        try:
+            super().perform_destroy(instance)
+        except SyncError as sync_error:
+            raise ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]}
+            ) from sync_error
+
+
+class ZaakVerzoekViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
+    ListFilterByAuthorizationsMixin,
+    CheckQueryParamsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
+    """
+    Opvragen en bewerken van ZAAK-VERZOEK relaties.
+
+    list:
+    Alle ZAAK-VERZOEK opvragen.
+
+    Alle ZAAK-VERZOEK opvragen.
+
+    retrieve:
+    Een specifiek ZAAK-VERZOEK opvragen.
+
+    Een specifiek ZAAK-VERZOEK opvragen.
+
+    create:
+    Maak een ZAAK-VERZOEK aan.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de VERZOEK
+
+    destroy:
+    Verwijder een ZAAK-VERZOEK.
+
+    """
+
+    queryset = ZaakVerzoek.objects.order_by("-pk")
+    serializer_class = ZaakVerzoekSerializer
+    filterset_class = ZaakVerzoekFilter
+    lookup_field = "uuid"
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
+    required_scopes = {
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN,
+    }
+    notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        # Do not display ZaakVerzoeken that are marked to be deleted
+        cache = caches["kcc_sync"]
+        marked_zvs = cache.get("zvs_marked_for_delete")
+        if marked_zvs:
+            return qs.exclude(uuid__in=marked_zvs)
         return qs
 
     def perform_destroy(self, instance):

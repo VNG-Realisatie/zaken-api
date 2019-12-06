@@ -5,15 +5,13 @@ from vng_api_common.inspectors.view import AutoSchema as _AutoSchema, response_h
 
 from ..middleware import WARNING_HEADER
 
-
 warning_header = response_header(
     "Geeft een endpoint-specifieke waarschuwing, zoals het uitfaseren van functionaliteit.",
-    type=openapi.TYPE_STRING
+    type=openapi.TYPE_STRING,
 )
 
 
 class AutoSchema(_AutoSchema):
-
     def get_response_schemas(self, response_serializers):
         responses = super().get_response_schemas(response_serializers)
         if not hasattr(self.view, "deprecation_message"):

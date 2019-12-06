@@ -47,7 +47,7 @@ CACHES = {
             "IGNORE_EXCEPTIONS": True,
         },
     },
-    # Cache for ZaakContactMoment removal sync with KCC
+    # Cache for ZaakContactMoment removal sync with KIC
     "kcc_sync": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": f"redis://{getenv('REDIS_CACHE')}",  # NOTE: watch out for multiple projects using the same cache!
