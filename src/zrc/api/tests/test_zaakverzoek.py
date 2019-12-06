@@ -30,7 +30,7 @@ class ZaakVerzoekTests(ZaakVerzoekSyncMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(zaak_verzoek.verzoek, VERZOEK)
 
     def test_create_fail_sync(self):
-        self.mocked_sync_create_zcm.side_effect = SyncError("Sync failed")
+        self.mocked_sync_create_zv.side_effect = SyncError("Sync failed")
 
         zaak = ZaakFactory.create()
         url = reverse("zaakverzoek-list")
@@ -57,7 +57,7 @@ class ZaakVerzoekTests(ZaakVerzoekSyncMixin, JWTAuthMixin, APITestCase):
         self.assertFalse(zaak.zaakverzoek_set.exists())
 
     def test_detele_fail_sync(self):
-        self.mocked_sync_delete_zcm.side_effect = SyncError("Sync failed")
+        self.mocked_sync_delete_zv.side_effect = SyncError("Sync failed")
 
         zaak_verzoek = ZaakVerzoekFactory.create(
             _objectverzoek="http://example.com/api/v1/_objectverzoeken/1"

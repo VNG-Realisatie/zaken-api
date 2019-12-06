@@ -53,6 +53,6 @@ zrc_repo = "vng-Realisatie/gemma-zaakregistratiecomponent"
 zrc_commit = "8ea1950fe4ec2ad99504d345eba60a175eea3edf"
 ZRC_API_SPEC = f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/openapi.yaml"  # noqa
 
-kic_repo = "VNG-Realisatie/gemma-klantcontactcomponent"
-kic_commit = "5e1a18f95a5ad401d306060855d0d3d5336bd9db"
+kic_repo = "VNG-Realisatie/klantinteracties-api"
+kic_commit = "c62f0a2e9c47955316fe2f8f4caa6b522d71bbe9"
 KIC_API_SPEC = f"https://raw.githubusercontent.com/{kic_repo}/{kic_commit}/src/openapi.yaml"  # noqa
