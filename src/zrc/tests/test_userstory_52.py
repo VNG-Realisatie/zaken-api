@@ -22,6 +22,7 @@ EIGENSCHAP_OBJECTTYPE = (
 EIGENSCHAP_NAAM_BOOT = (
     "https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/eigenschappen/2"
 )
+ZAAKTYPE = "https://example.com/zrc/api/v1/zaken/1"
 
 
 class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
@@ -31,7 +32,7 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_zet_eigenschappen(self, *mocks):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         url = get_operation_url("zaakeigenschap_create", zaak_uuid=zaak.uuid)
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
         data = {
@@ -41,7 +42,8 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         }
 
         responses = {
-            EIGENSCHAP_OBJECTTYPE: {"url": EIGENSCHAP_OBJECTTYPE, "naam": "foobar"}
+            EIGENSCHAP_OBJECTTYPE: {"url": EIGENSCHAP_OBJECTTYPE, "naam": "foobar"},
+            ZAAKTYPE: {"url": ZAAKTYPE, "eigenschappen": [EIGENSCHAP_OBJECTTYPE]},
         }
 
         with mock_client(responses):

@@ -127,6 +127,10 @@ class Application:
                 "volgnummer": 2,
                 "isEindstatus": True,
             },
+            # ZAAKTYPE: {
+            #     "url": ZAAKTYPE,
+            #     "eigenschappen": []
+            # }
         }
         with mock_client(responses):
             self.client.post(
@@ -170,6 +174,10 @@ class Application:
             EIGENSCHAP_NAAM_BOOT: {
                 "url": EIGENSCHAP_NAAM_BOOT,
                 "naam": "waternet_naam_boot",
+            },
+            ZAAKTYPE: {
+                "url": ZAAKTYPE,
+                "eigenschappen": [EIGENSCHAP_OBJECTTYPE, EIGENSCHAP_NAAM_BOOT],
             },
         }
 
