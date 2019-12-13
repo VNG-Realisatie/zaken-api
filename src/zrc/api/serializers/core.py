@@ -309,6 +309,7 @@ class ZaakSerializer(
             },
             "selectielijstklasse": {
                 "validators": [
+                    IsImmutableValidator(),
                     ResourceValidator(
                         "Resultaat",
                         settings.REFERENTIELIJSTEN_API_SPEC,
