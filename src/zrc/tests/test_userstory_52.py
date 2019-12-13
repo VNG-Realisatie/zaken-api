@@ -10,7 +10,12 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.tests import JWTAuthMixin, TypeCheckMixin, get_operation_url
+from vng_api_common.tests import (
+    JWTAuthMixin,
+    TypeCheckMixin,
+    get_operation_url,
+    get_validation_errors,
+)
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import ZaakEigenschap
@@ -90,3 +95,32 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                         ("waarde", str),
                     ),
                 )
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_zaakeigenschap_not_in_zaaktypen_fails(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+
+        responses = {
+            EIGENSCHAP_OBJECTTYPE: {"url": EIGENSCHAP_OBJECTTYPE, "naam": "foobar"},
+            ZAAKTYPE: {"url": ZAAKTYPE, "eigenschappen": [EIGENSCHAP_NAAM_BOOT]},
+        }
+
+        url = get_operation_url("zaakeigenschap_create", zaak_uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": zaak_url,
+            "eigenschap": EIGENSCHAP_OBJECTTYPE,
+            "waarde": "overlast_water",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+        )
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "zaaktype-mismatch")
