@@ -15,6 +15,9 @@ API spec changes
 * Fix ``Zaak`` validations documentation:
     - ``Zaak.zaaktype`` is immutable
     - ``Zaak.zaaktype`` is validated against ZTC API spec on ``zaak_create``
+* Fix ``ZaakEigenschap`` validations documentation:
+    - ``ZaakEigenschap.eigenschap`` must be a ZTC ``Eigenschap`` resource
+    - ``ZaakEigenschap.eigenschap`` must belong to ``ZaakEigenschap.zaak.zaaktype``
 
 Implementation changes
 ----------------------

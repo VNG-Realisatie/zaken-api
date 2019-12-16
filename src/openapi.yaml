@@ -6661,7 +6661,10 @@ paths:
     post:
       operationId: zaakeigenschap_create
       summary: Maak een ZAAKEIGENSCHAP aan.
-      description: Maak een ZAAKEIGENSCHAP aan.
+      description: "Maak een ZAAKEIGENSCHAP aan.\n\n**Er wordt gevalideerd op:**\n\
+        - geldigheid `eigenschap` URL - de resource moet opgevraagd kunnen\n  worden\
+        \ uit de Catalogi API en de vorm van een EIGENSCHAP hebben.\n- de `eigenschap`\
+        \ moet bij het `ZAAK.zaaktype` horen"
       parameters:
       - name: X-NLX-Request-Application-Id
         in: header
