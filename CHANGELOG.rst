@@ -2,6 +2,27 @@
 Wijzigingen
 ===========
 
+1.0.1 (2019-12-16)
+==================
+
+API spec bugfix release. There are some fixes and clarifications in the API
+spec compared to 1.0.0. Additionally, some bugfixes without effect on the API
+spec have been carried out.
+
+API spec changes
+----------------
+
+* Fix ``Zaak`` validations documentation:
+    - ``Zaak.zaaktype`` is immutable
+    - ``Zaak.zaaktype`` is validated against ZTC API spec on ``zaak_create``
+
+Implementation changes
+----------------------
+
+* Updated reference (commit hash) to ZTC API spec to use
+* Validate uniqueness of ``Status.zaak`` and ``Status.datumStatusGezet``
+* Cache the API spec
+
 1.0.0 final (2019-11-18)
 ========================
 
