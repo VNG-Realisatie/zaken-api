@@ -686,7 +686,10 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             "url": {"lookup_field": "uuid"},
             "uuid": {"read_only": True},
             "zaak": {"lookup_field": "uuid"},
-            "object": {"required": False, "validators": [URLValidator()]},
+            "object": {
+                "required": False,
+                "validators": [URLValidator(get_auth=get_auth)],
+            },
         }
 
     def __init__(self, *args, **kwargs):
@@ -820,6 +823,7 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
             },
             "naam": {"source": "_naam", "read_only": True},
         }
+        validators = [CorrectZaaktypeValidator("eigenschap")]
 
     def _get_eigenschap(self, eigenschap_url):
         if not hasattr(self, "_eigenschap"):

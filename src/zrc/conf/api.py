@@ -56,3 +56,5 @@ ZRC_API_SPEC = f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/o
 kic_repo = "VNG-Realisatie/klantinteracties-api"
 kic_commit = "c62f0a2e9c47955316fe2f8f4caa6b522d71bbe9"
 KIC_API_SPEC = f"https://raw.githubusercontent.com/{kic_repo}/{kic_commit}/src/openapi.yaml"  # noqa
+
+SPEC_CACHE_TIMEOUT = 60 * 60 * 24  # 24 hours

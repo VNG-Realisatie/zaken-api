@@ -983,7 +983,7 @@ class ZaakEigenschapValidationTests(JWTAuthMixin, APITestCase):
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_create_eigenschap(self, *mocks):
-        zaak = ZaakFactory.create()
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse(zaak)
 
         list_url = reverse("zaakeigenschap-list", kwargs={"zaak_uuid": zaak.uuid})
@@ -992,7 +992,12 @@ class ZaakEigenschapValidationTests(JWTAuthMixin, APITestCase):
             "http://ztc.com/eigenschappen/1234": {
                 "url": "http://ztc.com/eigenschappen/1234",
                 "naam": "test",
-            }
+                "zaaktype": ZAAKTYPE,
+            },
+            ZAAKTYPE: {
+                "url": ZAAKTYPE,
+                "eigenschappen": ["http://ztc.com/eigenschappen/1234"],
+            },
         }
 
         with mock_client(responses):

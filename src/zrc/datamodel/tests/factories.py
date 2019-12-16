@@ -9,6 +9,8 @@ from vng_api_common.constants import (
     ZaakobjectTypes,
 )
 
+from ..constants import AardZaakRelatie
+
 
 class ZaakFactory(factory.django.DjangoModelFactory):
     zaaktype = factory.Faker("url")
@@ -126,6 +128,22 @@ class ZaakBesluitFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "datamodel.ZaakBesluit"
+
+
+class RelevanteZaakRelatieFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    url = factory.Faker("url")
+    aard_relatie = AardZaakRelatie.vervolg
+
+    class Meta:
+        model = "datamodel.RelevanteZaakRelatie"
+
+
+class WozWaardeFactory(factory.django.DjangoModelFactory):
+    zaakobject = factory.SubFactory(ZaakObjectFactory)
+
+    class Meta:
+        model = "datamodel.WozWaarde"
 
 
 class ZaakContactMomentFactory(factory.django.DjangoModelFactory):

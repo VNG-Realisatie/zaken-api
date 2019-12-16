@@ -97,6 +97,8 @@ warnings.filterwarnings(
 
 IS_HTTPS = False
 
+SPEC_CACHE_TIMEOUT = None
+
 if "test" in sys.argv:
     NOTIFICATIONS_DISABLED = True
     ALLOWED_HOSTS += ["testserver.com"]

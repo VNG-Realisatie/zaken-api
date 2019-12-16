@@ -2,6 +2,7 @@ from datetime import date, datetime
 from typing import Union
 
 from django.conf import settings
+from django.db.models import Max
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -153,17 +154,33 @@ def get_brondatum(
                 )
             )
 
+        dates = []
         for zaak_object in zaak.zaakobject_set.filter(object_type=objecttype):
-            object = zaak_object._get_object()
-            if datum_kenmerk in object:
-                try:
-                    return parse_isodatetime(object[datum_kenmerk]).date()
-                except ValueError:
-                    raise DetermineProcessEndDateException(
-                        _('Geen geldige datumwaarde in attribuut "{}": {}').format(
-                            datum_kenmerk, object[datum_kenmerk]
-                        )
+            if zaak_object.object:
+                remote_object = zaak_object._get_object()
+                value = remote_object.get(datum_kenmerk)
+            else:
+                local_object = getattr(zaak_object, objecttype.replace("_", ""))
+                value = getattr(local_object, datum_kenmerk, None)
+
+            if value is None:
+                raise DetermineProcessEndDateException(
+                    _("{} geen geldig attribuut voor ZaakObject van type {}").format(
+                        datum_kenmerk, objecttype
                     )
+                )
+
+            try:
+                dates.append(parse_isodatetime(value).date())
+            except ValueError:
+                raise DetermineProcessEndDateException(
+                    _('Geen geldige datumwaarde in attribuut "{}": {}').format(
+                        datum_kenmerk, value
+                    )
+                )
+
+        if dates:
+            return max(dates)
 
         raise DetermineProcessEndDateException(
             _(
@@ -188,9 +205,36 @@ def get_brondatum(
             )
 
     elif afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.gerelateerde_zaak:
-        # TODO: Determine what this means...
-        raise NotImplementedError
+        relevante_zaken = zaak.relevante_andere_zaken
+        if relevante_zaken.count() == 0:
+            # Cannot use ingangsdatum_besluit if Zaak has no Besluiten
+            raise DetermineProcessEndDateException(
+                _(
+                    "Geen gerelateerde zaken aan zaak gekoppeld om brondatum uit af te leiden."
+                )
+            )
 
+        einddatum_max_external = None
+        for relevante_zaak in relevante_zaken.all():
+            Client = import_string(settings.ZDS_CLIENT_CLASS)
+            client = Client.from_url(relevante_zaak.url)
+            client.auth = APICredential.get_auth(relevante_zaak.url)
+            data = client.retrieve("zaak", url=relevante_zaak.url)
+            if data["einddatum"] is None:
+                continue
+
+            einddatum = datetime.strptime(data["einddatum"], "%Y-%m-%d").date()
+            einddatum_max_external = max_with_none(einddatum, einddatum_max_external)
+
+        if einddatum_max_external is None:
+            raise DetermineProcessEndDateException(
+                _(
+                    "Zaak.einddatum moet voor minstens een relevante zaak gezet "
+                    "worden voordat de zaak kan worden afgesloten"
+                )
+            )
+
+        return einddatum_max_external
     elif (
         afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.ingangsdatum_besluit
     ):
@@ -218,7 +262,36 @@ def get_brondatum(
     elif (
         afleidingswijze == BrondatumArchiefprocedureAfleidingswijze.vervaldatum_besluit
     ):
-        # TODO: Relation from Zaak to Besluit is not implemented yet...
-        raise NotImplementedError
+        zaakbesluiten = zaak.zaakbesluit_set.all()
+        if not zaakbesluiten.exists():
+            # Cannot use ingangsdatum_besluit if Zaak has no Besluiten
+            raise DetermineProcessEndDateException(
+                _("Geen besluiten aan zaak gekoppeld om brondatum uit af te leiden.")
+            )
+
+        Client = import_string(settings.ZDS_CLIENT_CLASS)
+        client = Client.from_url(zaakbesluiten.first().besluit)
+        client.auth = APICredential.get_auth(zaakbesluiten.first().besluit)
+
+        max_vervaldatum = None
+        for zaakbesluit in zaakbesluiten:
+            related_besluit = client.retrieve("besluit", url=zaakbesluit.besluit)
+            if related_besluit["vervaldatum"] is None:
+                continue
+
+            vervaldatum = datetime.strptime(related_besluit["vervaldatum"], "%Y-%m-%d")
+            if not max_vervaldatum or vervaldatum > max_vervaldatum:
+                max_vervaldatum = vervaldatum
+        if max_vervaldatum is None:
+            raise DetermineProcessEndDateException(
+                _(
+                    "Besluit.vervaldatum moet gezet worden voordat de zaak kan worden afgesloten"
+                )
+            )
+        return max_vervaldatum
 
     raise ValueError(f'Onbekende "Afleidingswijze": {afleidingswijze}')
+
+
+def max_with_none(*args):
+    return max(filter(lambda x: x is not None, args)) if any(args) else None

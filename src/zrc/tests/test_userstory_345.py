@@ -14,7 +14,7 @@ from vng_api_common.constants import (
     BrondatumArchiefprocedureAfleidingswijze,
     VertrouwelijkheidsAanduiding,
 )
-from vng_api_common.tests import JWTAuthMixin, get_operation_url
+from vng_api_common.tests import JWTAuthMixin, get_operation_url, get_validation_errors
 from zds_client.tests.mocks import mock_client
 
 from zrc.api.scopes import (
@@ -25,6 +25,9 @@ from zrc.api.scopes import (
 )
 from zrc.api.tests.mixins import ZaakInformatieObjectSyncMixin
 from zrc.datamodel.tests.factories import (
+    RelevanteZaakRelatieFactory,
+    WozWaardeFactory,
+    ZaakBesluitFactory,
     ZaakEigenschapFactory,
     ZaakFactory,
     ZaakInformatieObjectFactory,
@@ -588,7 +591,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
-    def test_add_resultaat_on_zaak_with_zaakobject_causes_archiefactiedatum_to_be_set(
+    def test_add_resultaat_on_zaak_with_remote_zaakobjecten_causes_archiefactiedatum_to_be_set(
         self, *mocks
     ):
         """
@@ -596,9 +599,13 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        zaak_object = ZaakObjectFactory.create(zaak=zaak)
+        zaak_object1 = ZaakObjectFactory.create(zaak=zaak)
+        zaak_object2 = ZaakObjectFactory.create(
+            zaak=zaak, object_type=zaak_object1.object_type
+        )
         responses = {
-            zaak_object.object: {"einddatum": isodatetime(2019, 1, 1)},
+            zaak_object1.object: {"einddatum": isodatetime(2019, 1, 1)},
+            zaak_object2.object: {"einddatum": isodatetime(2016, 1, 1)},
             RESULTAATTYPE: {
                 "url": RESULTAATTYPE,
                 "zaaktype": ZAAKTYPE,
@@ -607,7 +614,70 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
                 "brondatumArchiefprocedure": {
                     "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.zaakobject,
                     "datumkenmerk": "einddatum",
-                    "objecttype": zaak_object.object_type,
+                    "objecttype": zaak_object1.object_type,
+                    "procestermijn": None,
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+
+        # add resultaat
+        resultaat_create_url = get_operation_url("resultaat_create")
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(status_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.archiefactiedatum, date(2029, 1, 1))
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_local_zaakobjecten_causes_archiefactiedatum_to_be_set(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_object1 = ZaakObjectFactory.create(
+            zaak=zaak, object="", object_type="woz_waarde"
+        )
+        zaak_object2 = ZaakObjectFactory.create(
+            zaak=zaak, object="", object_type="woz_waarde"
+        )
+        woz_waarde1 = WozWaardeFactory.create(
+            zaakobject=zaak_object1, waardepeildatum="2019-1-1"
+        )
+        woz_waarde2 = WozWaardeFactory.create(
+            zaakobject=zaak_object2, waardepeildatum="2016-1-1"
+        )
+        responses = {
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P10Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.zaakobject,
+                    "datumkenmerk": "waardepeildatum",
+                    "objecttype": zaak_object1.object_type,
                     "procestermijn": None,
                 },
             },
@@ -689,3 +759,498 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         zaak.refresh_from_db()
         self.assertEqual(zaak.archiefactiedatum, date(2028, 10, 18))
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_afleidingswijze_ingangsdatum_besluit_causes_archiefactiedatum_to_be_set(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+
+        besluit1_url = "https://www.brc.com/1"
+        besluit2_url = "https://www.brc.com/2"
+
+        responses = {
+            besluit1_url: {
+                "url": besluit1_url,
+                "zaak": zaak_url,
+                "ingangsdatum": "2020-01-01",
+            },
+            besluit2_url: {
+                "url": besluit2_url,
+                "zaak": zaak_url,
+                "ingangsdatum": "2018-01-01",
+            },
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P5Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.ingangsdatum_besluit,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": "P5Y",
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+
+        ZaakBesluitFactory(zaak=zaak, besluit=besluit1_url)
+        ZaakBesluitFactory(zaak=zaak, besluit=besluit2_url)
+
+        resultaat_create_url = get_operation_url("resultaat_create")
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(status_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.archiefactiedatum, date(2025, 1, 1))
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_afleidingswijze_ingangsdatum_besluit_without_besluiten_gives_400(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        responses = {
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P5Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.ingangsdatum_besluit,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": "P5Y",
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        resultaat_create_url = get_operation_url("resultaat_create")
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(status_create_url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+        )
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "archiefactiedatum-error")
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.archiefactiedatum, None)
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_afleidingswijze_vervaldatum_besluit_causes_archiefactiedatum_to_be_set(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+
+        besluit1_url = "https://www.brc.com/1"
+        besluit2_url = "https://www.brc.com/2"
+
+        ZaakBesluitFactory(zaak=zaak, besluit=besluit1_url)
+        ZaakBesluitFactory(zaak=zaak, besluit=besluit2_url)
+
+        responses = {
+            besluit1_url: {
+                "url": besluit1_url,
+                "zaak": zaak_url,
+                "vervaldatum": "2021-01-01",
+            },
+            besluit2_url: {
+                "url": besluit2_url,
+                "zaak": zaak_url,
+                "vervaldatum": "2020-01-01",
+            },
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P5Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.vervaldatum_besluit,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": "P5Y",
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+        resultaat_create_url = get_operation_url("resultaat_create")
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(status_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.archiefactiedatum, date(2026, 1, 1))
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_afleidingswijze_vervaldatum_besluit_and_besluit_vervaldatum_none_gives_400(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+
+        besluit_url = "https://www.brc.com/1"
+
+        ZaakBesluitFactory(zaak=zaak, besluit=besluit_url)
+
+        responses = {
+            besluit_url: {"url": besluit_url, "zaak": zaak_url, "vervaldatum": None},
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P5Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.vervaldatum_besluit,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": "P5Y",
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+        resultaat_create_url = get_operation_url("resultaat_create")
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(status_create_url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+        )
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "archiefactiedatum-error")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_afleidingswijze_vervaldatum_besluit_without_besluiten_gives_400(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        responses = {
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P5Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.vervaldatum_besluit,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": "P5Y",
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+        resultaat_create_url = get_operation_url("resultaat_create")
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(status_create_url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+        )
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "archiefactiedatum-error")
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.archiefactiedatum, None)
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @override_settings(ALLOWED_HOSTS=["testserver.com"])
+    def test_add_resultaat_on_zaak_with_afleidingswijze_gerelateerde_zaak_causes_archiefactiedatum_to_be_set(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak2 = ZaakFactory.create(zaaktype=ZAAKTYPE, einddatum="2022-01-01")
+        zaak3 = ZaakFactory.create(zaaktype=ZAAKTYPE, einddatum="2025-01-01")
+
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak2_uri = get_operation_url("zaak_read", uuid=zaak2.uuid)
+        zaak3_uri = get_operation_url("zaak_read", uuid=zaak3.uuid)
+        zaak2_url = f"https://www.testserver.com{zaak2_uri}"
+        zaak3_url = f"https://www.testserver.com{zaak3_uri}"
+
+        RelevanteZaakRelatieFactory.create(zaak=zaak, url=zaak2_url)
+        RelevanteZaakRelatieFactory.create(zaak=zaak, url=zaak3_url)
+
+        responses = {
+            zaak2_url: {"url": zaak2_url, "einddatum": "2022-01-01"},
+            zaak3_url: {"url": zaak3_url, "einddatum": "2025-01-01"},
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P5Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.gerelateerde_zaak,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": "P5Y",
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+        resultaat_create_url = get_operation_url("resultaat_create")
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        with mock_client(responses):
+            response = self.client.post(
+                resultaat_create_url, data, HTTP_HOST="testserver.com"
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(
+                status_create_url, data, HTTP_HOST="testserver.com"
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.archiefactiedatum, date(2030, 1, 1))
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_add_resultaat_on_zaak_with_afleidingswijze_gerelateerde_zaak_without_relevante_zaken_gives_400(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+
+        responses = {
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P5Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.gerelateerde_zaak,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": "P5Y",
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+
+        resultaat_create_url = get_operation_url("resultaat_create")
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        with mock_client(responses):
+            response = self.client.post(resultaat_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(status_create_url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+        )
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "archiefactiedatum-error")
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.archiefactiedatum, None)
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @override_settings(ALLOWED_HOSTS=["testserver.com"])
+    def test_add_resultaat_on_zaak_with_afleidingswijze_gerelateerde_zaak_einddatum_none_gives_400(
+        self, *mocks
+    ):
+        """
+        Add RESULTAAT that causes `archiefactiedatum` to be set.
+        """
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak2 = ZaakFactory.create(zaaktype=ZAAKTYPE, einddatum="2022-01-01")
+
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak2_uri = get_operation_url("zaak_read", uuid=zaak2.uuid)
+        zaak2_url = f"https://www.testserver.com{zaak2_uri}"
+
+        RelevanteZaakRelatieFactory.create(zaak=zaak, url=zaak2_url)
+
+        responses = {
+            zaak2_url: {"url": zaak2_url, "einddatum": None},
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P5Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.gerelateerde_zaak,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": "P5Y",
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+        resultaat_create_url = get_operation_url("resultaat_create")
+        data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
+
+        with mock_client(responses):
+            response = self.client.post(
+                resultaat_create_url, data, HTTP_HOST="testserver.com"
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # add final status to the case to close it and to calculate archive parameters
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            response = self.client.post(
+                status_create_url, data, HTTP_HOST="testserver.com"
+            )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+        )
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "archiefactiedatum-error")
+
+        zaak.refresh_from_db()
+        self.assertEqual(zaak.archiefactiedatum, None)
