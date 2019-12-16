@@ -26,6 +26,9 @@ Implementation changes
 * Validate uniqueness of ``Status.zaak`` and ``Status.datumStatusGezet``
 * Cache the API spec
 * ``ZaakObject.object`` validation calls now make authenticated calls (#133)
+* Implemented ``brondatum`` determination for:
+    - afleidingswijze ``gerelateerde_zaak``
+    - afleidingswijze ``vervaldatum_besluit``
 
 1.0.0 final (2019-11-18)
 ========================
