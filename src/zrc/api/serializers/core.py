@@ -67,7 +67,6 @@ from ..validators import (
     NotSelfValidator,
     RolOccurenceValidator,
     UniekeIdentificatieValidator,
-    ZaakEigenschapZaakTypeValidator,
     ZaaktypeInformatieobjecttypeRelationValidator,
 )
 from .address import ObjectAdresSerializer
@@ -819,7 +818,7 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
             },
             "naam": {"source": "_naam", "read_only": True},
         }
-        validators = [ZaakEigenschapZaakTypeValidator("eigenschap")]
+        validators = [CorrectZaaktypeValidator("eigenschap")]
 
     def _get_eigenschap(self, eigenschap_url):
         if not hasattr(self, "_eigenschap"):

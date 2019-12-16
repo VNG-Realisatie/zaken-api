@@ -165,23 +165,3 @@ class DateNotInFutureValidator:
 
         if value > now:
             raise serializers.ValidationError(self.message, code=self.code)
-
-
-class ZaakEigenschapZaakTypeValidator:
-    code = "zaaktype-mismatch"
-    message = _("De referentie hoort niet bij het zaaktype van de zaak.")
-
-    def __init__(self, eigenschap_field: str, zaak_field: str = "zaak"):
-        self.eigenschap_field = eigenschap_field
-        self.zaak_field = zaak_field
-
-    def __call__(self, attrs):
-        eigenschap = attrs.get(self.eigenschap_field)
-        zaak = attrs.get(self.zaak_field)
-        if not eigenschap or not zaak:
-            return
-
-        zaaktype = fetch_object("zaaktype", zaak.zaaktype)
-
-        if eigenschap not in zaaktype["eigenschappen"]:
-            raise serializers.ValidationError(self.message, code=self.code)
