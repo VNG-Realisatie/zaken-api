@@ -27,7 +27,7 @@ EIGENSCHAP_OBJECTTYPE = (
 EIGENSCHAP_NAAM_BOOT = (
     "https://example.com/ztc/api/v1/catalogus/1/zaaktypen/1/eigenschappen/2"
 )
-ZAAKTYPE = "https://example.com/zrc/api/v1/zaken/1"
+ZAAKTYPE = "https://example.com/ztc/api/v1/zaaktypen/1"
 
 
 class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
@@ -47,7 +47,11 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         }
 
         responses = {
-            EIGENSCHAP_OBJECTTYPE: {"url": EIGENSCHAP_OBJECTTYPE, "naam": "foobar"},
+            EIGENSCHAP_OBJECTTYPE: {
+                "url": EIGENSCHAP_OBJECTTYPE,
+                "naam": "foobar",
+                "zaaktype": ZAAKTYPE,
+            },
             ZAAKTYPE: {"url": ZAAKTYPE, "eigenschappen": [EIGENSCHAP_OBJECTTYPE]},
         }
 
@@ -103,7 +107,11 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
 
         responses = {
-            EIGENSCHAP_OBJECTTYPE: {"url": EIGENSCHAP_OBJECTTYPE, "naam": "foobar"},
+            EIGENSCHAP_OBJECTTYPE: {
+                "url": EIGENSCHAP_OBJECTTYPE,
+                "naam": "foobar",
+                "zaaktype": "https://example.com/ztc/api/v1/zaaktypen/2",
+            },
             ZAAKTYPE: {"url": ZAAKTYPE, "eigenschappen": [EIGENSCHAP_NAAM_BOOT]},
         }
 

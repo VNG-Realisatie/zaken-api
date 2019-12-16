@@ -992,6 +992,7 @@ class ZaakEigenschapValidationTests(JWTAuthMixin, APITestCase):
             "http://ztc.com/eigenschappen/1234": {
                 "url": "http://ztc.com/eigenschappen/1234",
                 "naam": "test",
+                "zaaktype": ZAAKTYPE,
             },
             ZAAKTYPE: {
                 "url": ZAAKTYPE,
