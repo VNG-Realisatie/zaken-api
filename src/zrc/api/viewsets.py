@@ -103,7 +103,8 @@ class ZaakViewSet(
     gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
 
     **Er wordt gevalideerd op**:
-    - `zaaktype` moet een geldige URL zijn.
+    - geldigheid `zaaktype` URL - de resource moet opgevraagd kunnen
+      worden uit de Catalogi API en de vorm van een ZAAKTYPE hebben.
     - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
@@ -135,7 +136,6 @@ class ZaakViewSet(
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
-    - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `identificatie` mag niet gewijzigd worden.
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
@@ -151,7 +151,6 @@ class ZaakViewSet(
     **Opmerkingen**
     - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
       bent.
-    - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
       toe te voegen die NIET de eindstatus is.
       Zie de `Status` resource.
@@ -161,7 +160,6 @@ class ZaakViewSet(
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
-    - `zaaktype` is geen concept (`zaaktype.concept` = False)
     - `identificatie` mag niet gewijzigd worden.
     - `laatsteBetaaldatum` mag niet in de toekomst liggen.
     - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
@@ -177,7 +175,6 @@ class ZaakViewSet(
     **Opmerkingen**
     - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
       bent.
-    - zaaktype zal in de toekomst niet-wijzigbaar gemaakt worden.
     - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
       toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
 
@@ -511,6 +508,11 @@ class ZaakEigenschapViewSet(
     Maak een ZAAKEIGENSCHAP aan.
 
     Maak een ZAAKEIGENSCHAP aan.
+
+    **Er wordt gevalideerd op:**
+    - geldigheid `eigenschap` URL - de resource moet opgevraagd kunnen
+      worden uit de Catalogi API en de vorm van een EIGENSCHAP hebben.
+    - de `eigenschap` moet bij het `ZAAK.zaaktype` horen
 
     list:
     Alle ZAAKEIGENSCHAPpen opvragen.
