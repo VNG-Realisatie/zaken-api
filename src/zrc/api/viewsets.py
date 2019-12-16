@@ -509,6 +509,11 @@ class ZaakEigenschapViewSet(
 
     Maak een ZAAKEIGENSCHAP aan.
 
+    **Er wordt gevalideerd op:**
+    - geldigheid `eigenschap` URL - de resource moet opgevraagd kunnen
+      worden uit de Catalogi API en de vorm van een EIGENSCHAP hebben.
+    - de `eigenschap` moet bij het `ZAAK.zaaktype` horen
+
     list:
     Alle ZAAKEIGENSCHAPpen opvragen.
 

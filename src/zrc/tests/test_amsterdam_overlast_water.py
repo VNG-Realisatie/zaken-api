@@ -166,10 +166,16 @@ class Application:
             EIGENSCHAP_OBJECTTYPE: {
                 "url": EIGENSCHAP_OBJECTTYPE,
                 "naam": "melding_type",
+                "zaaktype": ZAAKTYPE,
             },
             EIGENSCHAP_NAAM_BOOT: {
                 "url": EIGENSCHAP_NAAM_BOOT,
                 "naam": "waternet_naam_boot",
+                "zaaktype": ZAAKTYPE,
+            },
+            ZAAKTYPE: {
+                "url": ZAAKTYPE,
+                "eigenschappen": [EIGENSCHAP_OBJECTTYPE, EIGENSCHAP_NAAM_BOOT],
             },
         }
 
