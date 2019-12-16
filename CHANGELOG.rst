@@ -22,6 +22,7 @@ Implementation changes
 * Updated reference (commit hash) to ZTC API spec to use
 * Validate uniqueness of ``Status.zaak`` and ``Status.datumStatusGezet``
 * Cache the API spec
+* ``ZaakObject.object`` validation calls now make authenticated calls (#133)
 
 1.0.0 final (2019-11-18)
 ========================
