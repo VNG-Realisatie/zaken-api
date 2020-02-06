@@ -1,0 +1,10 @@
+# Dependencies only relevant for (unit) testing
+coverage
+django-jenkins
+django-webtest
+factory-boy
+freezegun
+requests-mock
+tblib
+pylint<2.0
+pep8
