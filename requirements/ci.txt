@@ -48,7 +48,7 @@ oyaml==0.7
 pep8==1.7.1
 psycopg2==2.8.4
 pyjwt==1.6.4
-pylint==1.9.5
+pylint==1.9.4
 python-dateutil==2.7.3
 python-decouple==3.3
 python-dotenv==0.8.2

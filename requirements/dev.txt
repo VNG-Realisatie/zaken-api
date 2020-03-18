@@ -52,7 +52,7 @@ itypes==1.1.0
 jinja2==2.10.1
 lazy-object-proxy==1.4.3
 markdown==3.0.1
-markupsafe==1.0
+markupsafe==1.1.1
 mccabe==0.6.1
 oyaml==0.7
 packaging==19.2           # via sphinx
@@ -62,7 +62,7 @@ pip-tools==4.2.0
 psycopg2==2.8.4
 pygments==2.5.2           # via sphinx
 pyjwt==1.6.4
-pylint==1.9.5
+pylint==1.9.4
 pyparsing==2.4.5          # via packaging
 python-dateutil==2.7.3
 python-decouple==3.3
@@ -102,4 +102,4 @@ webtest==2.0.33
 wrapt==1.11.2
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==42.0.2        # via sphinx
+# setuptools==46.0.0        # via sphinx
