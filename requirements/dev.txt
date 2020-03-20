@@ -49,10 +49,10 @@ iso-639==0.4.5
 isodate==0.6.0
 isort==4.3.21
 itypes==1.1.0
-jinja2==2.10.1
+jinja2==2.11.1
 lazy-object-proxy==1.4.3
 markdown==3.0.1
-markupsafe==1.0
+markupsafe==1.1.1
 mccabe==0.6.1
 oyaml==0.7
 packaging==19.2           # via sphinx
@@ -102,4 +102,4 @@ webtest==2.0.33
 wrapt==1.11.2
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==42.0.2        # via sphinx
+# setuptools==46.0.0        # via sphinx
