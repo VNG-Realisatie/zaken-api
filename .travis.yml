@@ -1,0 +1,59 @@
+language: python
+cache: pip
+
+python:
+  - "3.6"
+
+services:
+  - postgresql
+
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10-postgis-2.4
+      - postgresql-10-postgis-2.4-scripts
+
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=zrc.conf.jenkins
+    - SECRET_KEY=dummy
+    - DB_USER=postgres
+    - DB_PASSWORD=
+    - DEPLOYMENT=zrc
+  matrix:
+    - TOXENV=django_tests
+    - TOXENV=isort
+    - TOXENV=black
+
+install:
+  - pip install tox tox-travis
+
+script: tox
+
+jobs:
+  include:
+    # First stage is 'Tests' by default and populated from env matrix
+    # expansion
+    - stage: Docker images
+      name: Test docker image build
+      services:
+        - docker
+      install: skip
+      script:
+        - bash bin/release-docker-image.sh
+      after_success: echo "deploying..."
+      deploy:
+        - provider: script
+          script: bash bin/cicd.sh latest yes
+          on:
+            branch: master
+
+        - provider: script
+          script: bash bin/cicd.sh $TRAVIS_TAG yes
+          on:
+            tags: true
+
+after_success:
+  - pip install codecov
+  - codecov
