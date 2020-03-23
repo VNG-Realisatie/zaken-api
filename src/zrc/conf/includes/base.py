@@ -5,7 +5,6 @@ import raven
 from .api import *  # noqa
 from .environ import config
 
-
 # Build paths inside the project, so further paths can be defined relative to
 # the code root.
 DJANGO_PROJECT_DIR = os.path.abspath(
