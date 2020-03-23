@@ -43,9 +43,9 @@ Referenties
 * `Code <https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent>`_
 
 
-.. |build-status| image:: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements.svg?branch=master
+.. |build-status| image:: https://travis-ci.org/VNG-Realisatie/gemma-zaakregistratiecomponent.svg?branch=develop
     :alt: Build status
-    :target: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements.svg?branch=master
+    :target: https://travis-ci.org/VNG-Realisatie/gemma-zaakregistratiecomponent
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements.svg?branch=master
      :target: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements/?branch=master
