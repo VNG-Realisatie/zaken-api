@@ -573,6 +573,35 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertIn(f"http://testserver{eigenschap1_url}", eigenschappen)
         self.assertIn(f"http://testserver{eigenschap2_url}", eigenschappen)
 
+    def test_filter_max_vertrouwelijkheidaanduiding(self):
+        zaak1 = ZaakFactory.create(
+            zaaktype=ZAAKTYPE,
+            vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+        )
+        zaak2 = ZaakFactory.create(
+            zaaktype=ZAAKTYPE,
+            vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.geheim,
+        )
+
+        url = reverse(Zaak)
+
+        response = self.client.get(
+            url,
+            {
+                "maximaleVertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.zaakvertrouwelijk
+            },
+            **ZAAK_READ_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["url"], f"http://testserver{reverse(zaak1)}",
+        )
+        self.assertNotEqual(
+            response.data["results"][0]["url"], f"http://testserver{reverse(zaak2)}",
+        )
+
 
 class ZaakArchivingTests(JWTAuthMixin, APITestCase):
 
