@@ -38,6 +38,10 @@ class MaximaleVertrouwelijkheidaanduidingFilter(filters.ChoiceFilter):
 class ZaakFilter(FilterSet):
     maximale_vertrouwelijkheidaanduiding = MaximaleVertrouwelijkheidaanduidingFilter(
         field_name="vertrouwelijkheidaanduiding",
+        help_text=(
+            "Zaken met een vertrouwelijkheidaanduiding die beperkter is dan de "
+            "aangegeven aanduiding worden uit de resultaten gefiltered."
+        ),
     )
 
     class Meta:
