@@ -44,6 +44,11 @@ class ZaakFilter(FilterSet):
         ),
     )
 
+    rol__betrokkene_identificatie__medewerker__identificatie = filters.CharFilter(
+        field_name="rol__medewerker__identificatie",
+        help_text=get_help_text("datamodel.Medewerker", "identificatie"),
+    )
+
     class Meta:
         model = Zaak
         fields = {
@@ -54,7 +59,6 @@ class ZaakFilter(FilterSet):
             "archiefactiedatum": ["exact", "lt", "gt"],
             "archiefstatus": ["exact", "in"],
             "startdatum": ["exact", "gt", "gte", "lt", "lte"],
-
             # filters for werkvoorraad
             "rol__betrokkene_type": ["exact"],
             "rol__betrokkene": ["exact"],
