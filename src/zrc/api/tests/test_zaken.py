@@ -20,7 +20,7 @@ from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
-from zrc.datamodel.models import Medewerker, Zaak
+from zrc.datamodel.models import Medewerker, NatuurlijkPersoon, Zaak
 from zrc.datamodel.tests.factories import (
     RolFactory,
     StatusFactory,
@@ -792,7 +792,46 @@ class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
         with self.subTest(expected="match"):
             response = self.client.get(
                 url,
-                {"rol__betrokkeneIdentificatie__medewerker__identificatie": "some-username"},
+                {
+                    "rol__betrokkeneIdentificatie__medewerker__identificatie": "some-username"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_rol_np_bsn(self):
+        """
+        Essential to be able to fetch all Zaken related to a particular citizen.
+        """
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.natuurlijk_persoon,
+            omschrijving_generiek=RolOmschrijving.initiator,
+        )
+        NatuurlijkPersoon.objects.create(
+            rol=rol, inp_bsn="129117729"
+        )  # http://www.wilmans.com/sofinummer/
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "000000000"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "some129117729"
+                },
                 **ZAAK_READ_KWARGS,
             )
 
