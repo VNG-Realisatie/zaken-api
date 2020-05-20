@@ -5084,6 +5084,13 @@
                         ]
                     },
                     {
+                        "name": "rol__betrokkeneIdentificatie__medewerker__identificatie",
+                        "in": "query",
+                        "description": "Een korte unieke aanduiding van de MEDEWERKER.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "ordering",
                         "in": "query",
                         "description": "Which field to use when ordering the results.",
@@ -11218,9 +11225,15 @@
                 },
                 "rol__betrokkeneType": {
                     "title": "Rol  betrokkenetype",
-                    "description": "Type van de `betrokkene`.",
+                    "description": "Type van de `betrokkene`.\n\nUitleg bij mogelijke waarden:\n\n* `natuurlijk_persoon` - Natuurlijk persoon\n* `niet_natuurlijk_persoon` - Niet-natuurlijk persoon\n* `vestiging` - Vestiging\n* `organisatorische_eenheid` - Organisatorische eenheid\n* `medewerker` - Medewerker",
                     "type": "string",
-                    "minLength": 1
+                    "enum": [
+                        "natuurlijk_persoon",
+                        "niet_natuurlijk_persoon",
+                        "vestiging",
+                        "organisatorische_eenheid",
+                        "medewerker"
+                    ]
                 },
                 "rol__betrokkene": {
                     "title": "Rol  betrokkene",
@@ -11230,9 +11243,18 @@
                 },
                 "rol__omschrijvingGeneriek": {
                     "title": "Rol  omschrijvinggeneriek",
-                    "description": "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.",
+                    "description": "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.\n\nUitleg bij mogelijke waarden:\n\n* `adviseur` - Adviseur\n* `behandelaar` - Behandelaar\n* `belanghebbende` - Belanghebbende\n* `beslisser` - Beslisser\n* `initiator` - Initiator\n* `klantcontacter` - Klantcontacter\n* `zaakcoordinator` - Zaakco\u00f6rdinator\n* `mede_initiator` - Mede-initiator",
                     "type": "string",
-                    "minLength": 1
+                    "enum": [
+                        "adviseur",
+                        "behandelaar",
+                        "belanghebbende",
+                        "beslisser",
+                        "initiator",
+                        "klantcontacter",
+                        "zaakcoordinator",
+                        "mede_initiator"
+                    ]
                 },
                 "maximaleVertrouwelijkheidaanduiding": {
                     "title": "Maximalevertrouwelijkheidaanduiding",
@@ -11248,6 +11270,12 @@
                         "geheim",
                         "zeer_geheim"
                     ]
+                },
+                "rol__betrokkeneIdentificatie__medewerker__identificatie": {
+                    "title": "Rol  betrokkeneidentificatie  medewerker  identificatie",
+                    "description": "Een korte unieke aanduiding van de MEDEWERKER.",
+                    "type": "string",
+                    "minLength": 1
                 },
                 "ordering": {
                     "title": "Ordering",
