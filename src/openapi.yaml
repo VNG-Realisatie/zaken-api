@@ -4279,6 +4279,41 @@ paths:
         required: false
         schema:
           type: string
+      - name: rol__betrokkeneType
+        in: query
+        description: Type van de `betrokkene`.
+        required: false
+        schema:
+          type: string
+          enum:
+          - natuurlijk_persoon
+          - niet_natuurlijk_persoon
+          - vestiging
+          - organisatorische_eenheid
+          - medewerker
+      - name: rol__betrokkene
+        in: query
+        description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
+        required: false
+        schema:
+          type: string
+          format: uri
+      - name: rol__omschrijvingGeneriek
+        in: query
+        description: Algemeen gehanteerde benaming van de aard van de ROL, afgeleid
+          uit het ROLTYPE.
+        required: false
+        schema:
+          type: string
+          enum:
+          - adviseur
+          - behandelaar
+          - belanghebbende
+          - beslisser
+          - initiator
+          - klantcontacter
+          - zaakcoordinator
+          - mede_initiator
       - name: maximaleVertrouwelijkheidaanduiding
         in: query
         description: Zaken met een vertrouwelijkheidaanduiding die beperkter is dan
@@ -9568,6 +9603,22 @@ components:
         startdatum__lte:
           title: Startdatum  lte
           description: De datum waarop met de uitvoering van de zaak is gestart
+          type: string
+          minLength: 1
+        rol__betrokkeneType:
+          title: Rol  betrokkenetype
+          description: Type van de `betrokkene`.
+          type: string
+          minLength: 1
+        rol__betrokkene:
+          title: Rol  betrokkene
+          description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
+          type: string
+          minLength: 1
+        rol__omschrijvingGeneriek:
+          title: Rol  omschrijvinggeneriek
+          description: Algemeen gehanteerde benaming van de aard van de ROL, afgeleid
+            uit het ROLTYPE.
           type: string
           minLength: 1
         maximaleVertrouwelijkheidaanduiding:
