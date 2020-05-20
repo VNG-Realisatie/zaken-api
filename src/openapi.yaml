@@ -4330,6 +4330,13 @@ paths:
           - confidentieel
           - geheim
           - zeer_geheim
+      - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
+        in: query
+        description: Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene
+          bepalingen burgerservicenummer.
+        required: false
+        schema:
+          type: string
       - name: rol__betrokkeneIdentificatie__medewerker__identificatie
         in: query
         description: Een korte unieke aanduiding van de MEDEWERKER.
@@ -9692,6 +9699,12 @@ components:
           - confidentieel
           - geheim
           - zeer_geheim
+        rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn:
+          title: Rol  betrokkeneidentificatie  natuurlijkpersoon  inpbsn
+          description: Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet
+            algemene bepalingen burgerservicenummer.
+          type: string
+          minLength: 1
         rol__betrokkeneIdentificatie__medewerker__identificatie:
           title: Rol  betrokkeneidentificatie  medewerker  identificatie
           description: Een korte unieke aanduiding van de MEDEWERKER.
