@@ -44,6 +44,10 @@ class ZaakFilter(FilterSet):
         ),
     )
 
+    rol__betrokkene_identificatie__natuurlijk_persoon__inp_bsn = filters.CharFilter(
+        field_name="rol__natuurlijkpersoon__inp_bsn",
+        help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_bsn"),
+    )
     rol__betrokkene_identificatie__medewerker__identificatie = filters.CharFilter(
         field_name="rol__medewerker__identificatie",
         help_text=get_help_text("datamodel.Medewerker", "identificatie"),
