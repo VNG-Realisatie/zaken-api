@@ -20,7 +20,7 @@ from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
-from zrc.datamodel.models import Zaak
+from zrc.datamodel.models import Medewerker, Zaak
 from zrc.datamodel.tests.factories import (
     RolFactory,
     StatusFactory,
@@ -768,3 +768,33 @@ class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
                 response.data["results"][0]["url"],
                 f"http://testserver{reverse(zaak1)}",
             )
+
+    def test_rol_medewerker_identificatie(self):
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.medewerker,
+            omschrijving_generiek=RolOmschrijving.behandelaar,
+        )
+        Medewerker.objects.create(
+            rol=rol, identificatie="some-username",
+        )
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {"rol__betrokkeneIdentificatie__medewerker__identificatie": "no-match"},
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {"rol__betrokkeneIdentificatie__medewerker__identificatie": "some-username"},
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
