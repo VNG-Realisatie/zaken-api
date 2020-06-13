@@ -91,13 +91,13 @@ info:
     **Handige links**
 
 
-    * [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)
+    * [Documentatie](https://vng-realisatie.github.io/gemma-zaken/standaard)
 
-    * [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)
+    * [Zaakgericht werken](https://vng-realisatie.github.io/gemma-zaken)
 
     '
   contact:
-    url: https://zaakgerichtwerken.vng.cloud
+    url: https://vng-realisatie.github.io/gemma-zaken
     email: standaarden.ondersteuning@vng.nl
   license:
     name: EUPL 1.2
