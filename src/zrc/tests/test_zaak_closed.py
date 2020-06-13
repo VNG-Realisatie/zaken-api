@@ -328,11 +328,7 @@ class ClosedZaakRelatedDataNotAllowedTests(MocksMixin, JWTAuthMixin, APITestCase
 
     def test_statussen(self):
         self.assertCreateBlocked(
-            reverse(Status),
-            {
-                "zaak": reverse(self.zaak),
-                "statustype": STATUS_TYPE,
-            },
+            reverse(Status), {"zaak": reverse(self.zaak), "statustype": STATUS_TYPE,},
         )
 
 
