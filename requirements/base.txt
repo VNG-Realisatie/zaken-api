@@ -6,7 +6,6 @@
 #
 certifi==2018.4.16        # via requests
 chardet==3.0.4            # via requests
-click==7.1.2              # via pip-tools
 coreapi==2.3.3            # via drf-yasg
 coreschema==0.0.4         # via coreapi, drf-yasg
 django-appconf==1.0.2     # via django-axes
@@ -35,10 +34,10 @@ jinja2==2.10.1            # via coreschema
 markdown==3.0.1           # via -r requirements/base.in
 markupsafe==1.1.1         # via jinja2
 oyaml==0.7                # via vng-api-common
-pip-tools==5.1.2          # via -r requirements/base.in
-psycopg2-binary==2.7.5    # via -r requirements/base.in
+psycopg2==2.8.5           # via -r requirements/base.in
 pyjwt==1.6.4              # via gemma-zds-client, vng-api-common
 python-dateutil==2.7.3    # via -r requirements/base.in
+python-decouple==3.3      # via -r requirements/base.in
 python-dotenv==0.8.2      # via -r requirements/base.in
 pytz==2019.1              # via -r requirements/base.in, django, django-axes
 pyyaml==5.1.2             # via gemma-zds-client, oyaml, vng-api-common
@@ -51,7 +50,5 @@ sqlparse==0.3.0           # via django
 unidecode==1.0.22         # via vng-api-common
 uritemplate==3.0.0        # via coreapi, drf-yasg
 urllib3==1.24.3           # via requests
+uwsgi==2.0.18             # via -r requirements/base.in
 vng-api-common==1.0.46    # via -r requirements/base.in
-
-# The following packages are considered to be unsafe in a requirements file:
-# pip
