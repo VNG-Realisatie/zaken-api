@@ -11,7 +11,7 @@
             "name": "EUPL 1.2",
             "url": "https://opensource.org/licenses/EUPL-1.2"
         },
-        "version": "1.0.1"
+        "version": "1.0.2"
     },
     "basePath": "/api/v1",
     "consumes": [
@@ -423,7 +423,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.bijwerken"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -998,7 +998,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.bijwerken"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -1361,7 +1361,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.bijwerken"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -1563,7 +1563,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.bijwerken"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -1740,7 +1740,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.bijwerken"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -2256,7 +2256,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.bijwerken"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -2572,7 +2572,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.bijwerken"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -3532,7 +3532,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.aanmaken | zaken.bijwerken)"
+                            "(zaken.aanmaken | zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -4728,7 +4728,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.aanmaken | zaken.bijwerken)"
+                            "(zaken.aanmaken | zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
@@ -8008,7 +8008,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "zaken.bijwerken"
+                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
                         ]
                     }
                 ]
