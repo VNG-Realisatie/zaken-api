@@ -375,3 +375,7 @@ if SENTRY_DSN:
             }
         }
     )
+
+
+# URL for documentation that's shown in API schema
+DOCUMENTATION_URL = "https://vng-realisatie.github.io/gemma-zaken"

@@ -50,6 +50,7 @@ from .filters import (
     ZaakObjectFilter,
 )
 from .kanalen import KANAAL_ZAKEN
+from .mixins import ClosedZaakMixin
 from .permissions import (
     ZaakAuthScopesRequired,
     ZaakBaseAuthRequired,
@@ -254,7 +255,7 @@ class ZaakViewSet(
             zaaktype=zaak.zaaktype,
             vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding,
         ):
-            if zaak.einddatum:
+            if zaak.is_closed:
                 msg = "Modifying a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)
         super().perform_update(serializer)
@@ -343,7 +344,7 @@ class StatusViewSet(
             zaaktype=zaak.zaaktype,
             vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding,
         ):
-            if zaak.einddatum:
+            if zaak.is_closed:
                 msg = "Reopening a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)
 
@@ -355,6 +356,7 @@ class ZaakObjectViewSet(
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailCreateMixin,
+    ClosedZaakMixin,
     mixins.CreateModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
@@ -387,7 +389,9 @@ class ZaakObjectViewSet(
     required_scopes = {
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
-        "create": SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
+        "create": SCOPE_ZAKEN_CREATE
+        | SCOPE_ZAKEN_BIJWERKEN
+        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -398,6 +402,7 @@ class ZaakInformatieObjectViewSet(
     AuditTrailViewsetMixin,
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
+    ClosedZaakMixin,
     viewsets.ModelViewSet,
 ):
 
@@ -473,7 +478,9 @@ class ZaakInformatieObjectViewSet(
     required_scopes = {
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
-        "create": SCOPE_ZAKEN_CREATE | SCOPE_ZAKEN_BIJWERKEN,
+        "create": SCOPE_ZAKEN_CREATE
+        | SCOPE_ZAKEN_BIJWERKEN
+        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
@@ -498,6 +505,7 @@ class ZaakEigenschapViewSet(
     AuditTrailCreateMixin,
     NestedViewSetMixin,
     ListFilterByAuthorizationsMixin,
+    ClosedZaakMixin,
     mixins.CreateModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
@@ -534,8 +542,8 @@ class ZaakEigenschapViewSet(
     required_scopes = {
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
-        "create": SCOPE_ZAKEN_BIJWERKEN,
-        "destroy": SCOPE_ZAKEN_BIJWERKEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
     }
     parent_retrieve_kwargs = {"zaak_uuid": "uuid"}
     notifications_kanaal = KANAAL_ZAKEN
@@ -559,6 +567,7 @@ class KlantContactViewSet(
     NotificationCreateMixin,
     ListFilterByAuthorizationsMixin,
     AuditTrailCreateMixin,
+    ClosedZaakMixin,
     mixins.CreateModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
@@ -591,7 +600,7 @@ class KlantContactViewSet(
     required_scopes = {
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
-        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -602,6 +611,7 @@ class RolViewSet(
     AuditTrailCreateMixin,
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
+    ClosedZaakMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,
@@ -641,8 +651,8 @@ class RolViewSet(
     required_scopes = {
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
-        "create": SCOPE_ZAKEN_BIJWERKEN,
-        "destroy": SCOPE_ZAKEN_BIJWERKEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -653,6 +663,7 @@ class ResultaatViewSet(
     AuditTrailViewsetMixin,
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
+    ClosedZaakMixin,
     viewsets.ModelViewSet,
 ):
     """
@@ -706,10 +717,10 @@ class ResultaatViewSet(
     required_scopes = {
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
-        "create": SCOPE_ZAKEN_BIJWERKEN,
-        "destroy": SCOPE_ZAKEN_BIJWERKEN,
-        "update": SCOPE_ZAKEN_BIJWERKEN,
-        "partial_update": SCOPE_ZAKEN_BIJWERKEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -739,6 +750,7 @@ class ZaakBesluitViewSet(
     AuditTrailDestroyMixin,
     NestedViewSetMixin,
     ListFilterByAuthorizationsMixin,
+    ClosedZaakMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,

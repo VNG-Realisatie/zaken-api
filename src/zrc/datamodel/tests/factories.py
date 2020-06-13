@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.utils import timezone
 
 import factory
@@ -24,6 +26,15 @@ class ZaakFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "datamodel.Zaak"
+
+    class Params:
+        closed = factory.Trait(
+            einddatum=factory.LazyFunction(date.today),
+            status_set=factory.RelatedFactory(
+                "zrc.datamodel.tests.factories.StatusFactory",
+                factory_related_name="zaak",
+            ),
+        )
 
 
 class ZaakInformatieObjectFactory(factory.django.DjangoModelFactory):
