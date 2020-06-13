@@ -58,8 +58,8 @@ RESPONSES = {
     ROLTYPE: {
         "url": ROLTYPE,
         "zaaktype": ZAAKTYPE,
-        "omschrijving": RolOmschrijving.initiator,
-        "omschrijvingGeneriek": RolOmschrijving.initiator,
+        "omschrijving": RolOmschrijving.adviseur,
+        "omschrijvingGeneriek": RolOmschrijving.adviseur,
     },
     RESULTAATTYPE: {"url": RESULTAATTYPE, "zaaktype": ZAAKTYPE},
     EIGENSCHAP: {"url": EIGENSCHAP, "zaaktype": ZAAKTYPE, "naam": "foo"},
