@@ -830,7 +830,7 @@ class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
             response = self.client.get(
                 url,
                 {
-                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "some129117729"
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "129117729"
                 },
                 **ZAAK_READ_KWARGS,
             )
