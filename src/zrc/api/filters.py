@@ -1,7 +1,7 @@
 from django_filters import filters
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.filtersets import FilterSet
-from vng_api_common.utils import get_help_text
+from vng_api_common.utils import get_field_attribute, get_help_text
 
 from zrc.datamodel.models import (
     KlantContact,
@@ -47,10 +47,16 @@ class ZaakFilter(FilterSet):
     rol__betrokkene_identificatie__natuurlijk_persoon__inp_bsn = filters.CharFilter(
         field_name="rol__natuurlijkpersoon__inp_bsn",
         help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_bsn"),
+        max_length=get_field_attribute(
+            "datamodel.NatuurlijkPersoon", "inp_bsn", "max_length"
+        ),
     )
     rol__betrokkene_identificatie__medewerker__identificatie = filters.CharFilter(
         field_name="rol__medewerker__identificatie",
         help_text=get_help_text("datamodel.Medewerker", "identificatie"),
+        max_length=get_field_attribute(
+            "datamodel.Medewerker", "identificatie", "max_length"
+        ),
     )
 
     class Meta:
