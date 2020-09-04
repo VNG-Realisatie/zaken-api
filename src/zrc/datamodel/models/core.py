@@ -288,6 +288,15 @@ class Zaak(ETagMixin, APIMixin, models.Model):
             "een RESULTAAT aan deze ZAAK indien nog leeg."
         ),
     )
+    opdrachtgevende_organisatie = RSINField(
+        help_text=_(
+            "De krachtens publiekrecht ingestelde rechtspersoon dan wel "
+            "ander niet-natuurlijk persoon waarbinnen het (bestuurs)orgaan zetelt "
+            "dat opdracht heeft gegeven om taken uit te voeren waaraan de zaak "
+            "invulling geeft."
+        ),
+        blank=True,
+    )
 
     objects = ZaakQuerySet.as_manager()
 
