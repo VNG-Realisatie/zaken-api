@@ -68,9 +68,9 @@ class Application:
     def store_notification(self):
         # registreer zaak & zet statussen, resultaat
         self.registreer_zaak()
+        self.zet_statussen_resultaat()
         self.registreer_domein_data()
         self.registreer_klantcontact()
-        self.zet_statussen_resultaat()
 
     def registreer_zaak(self):
         zaak_create_url = get_operation_url("zaak_create")

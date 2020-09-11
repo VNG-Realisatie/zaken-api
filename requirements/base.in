@@ -1,28 +1,22 @@
-# Core python libraries
-markdown
-psycopg2
-python-dateutil
-python-decouple
+pip-tools
+psycopg2-binary
 python-dotenv
+python-dateutil
 pytz
+raven
+markdown
 
-# Framework libraries
 Django<3.0
 django-axes
 django-choices
 django-cors-middleware
 django-markup
-django-redis
+django_redis
 
-# API libraries
 djangorestframework
 djangorestframework-gis
 django-filter
 djangorestframework-camel-case
 drf-yasg
 drf-writable-nested
-vng-api-common<1.1.0
-
-# wsgi-server/monitoring
-uwsgi
-raven
+vng-api-common

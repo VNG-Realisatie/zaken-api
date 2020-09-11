@@ -2,24 +2,22 @@ import os
 import sys
 import warnings
 
-os.environ.setdefault("DEBUG", "yes")
-os.environ.setdefault("ALLOWED_HOSTS", "localhost,127.0.0.1")
 os.environ.setdefault(
     "SECRET_KEY", "8u9chcd4g1%i5z)u@s6#c#0u%s_gggx*915w(yzrf#awezmu^i"
 )
-os.environ.setdefault("IS_HTTPS", "no")
-
 os.environ.setdefault("DB_NAME", "zrc")
 os.environ.setdefault("DB_USER", "zrc")
 os.environ.setdefault("DB_PASSWORD", "zrc")
 
 os.environ.setdefault("ZTC_JWT_SECRET", "zrc-to-ztc")
 
-from .includes.base import *  # noqa isort:skip
+from .base import *  # noqa isort:skip
 
 #
 # Standard Django settings.
 #
+
+DEBUG = True
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ADMINS = ()
@@ -48,6 +46,15 @@ LOGGING["loggers"].update(
 )
 
 #
+# Additional Django settings
+#
+
+# Disable security measures for development
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False
+
+#
 # Custom settings
 #
 ENVIRONMENT = "development"
@@ -62,14 +69,20 @@ MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 INTERNAL_IPS = ("127.0.0.1",)
 DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
 
+AXES_BEHIND_REVERSE_PROXY = (
+    False  # Default: False (we are typically using Nginx as reverse proxy)
+)
+
 # in memory cache and django-axes don't get along.
 # https://django-axes.readthedocs.io/en/latest/configuration.html#known-configuration-problems
 CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
-    "axes": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
+    "axes_cache": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
     "drc_sync": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
     "kcc_sync": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
 }
+
+AXES_CACHE = "axes_cache"
 
 REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += (
     "rest_framework.renderers.BrowsableAPIRenderer",
@@ -82,6 +95,8 @@ warnings.filterwarnings(
     r"django\.db\.models\.fields",
 )
 
+IS_HTTPS = False
+
 SPEC_CACHE_TIMEOUT = None
 
 if "test" in sys.argv:
@@ -90,6 +105,6 @@ if "test" in sys.argv:
 
 # Override settings with local settings.
 try:
-    from .includes.local import *  # noqa
+    from .local import *  # noqa
 except ImportError:
     pass
