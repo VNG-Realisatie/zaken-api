@@ -1,4 +1,5 @@
 from django_filters import filters
+from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.filtersets import FilterSet
 from vng_api_common.utils import get_help_text
 
@@ -15,7 +16,45 @@ from zrc.datamodel.models import (
 )
 
 
+class MaximaleVertrouwelijkheidaanduidingFilter(filters.ChoiceFilter):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("choices", VertrouwelijkheidsAanduiding.choices)
+        kwargs.setdefault("lookup_expr", "lte")
+        super().__init__(*args, **kwargs)
+
+        # rewrite the field_name correctly
+        self._field_name = self.field_name
+        self.field_name = f"_{self._field_name}_order"
+
+    def filter(self, qs, value):
+        if value in filters.EMPTY_VALUES:
+            return qs
+        order_expression = VertrouwelijkheidsAanduiding.get_order_expression(
+            self._field_name
+        )
+        qs = qs.annotate(**{self.field_name: order_expression})
+        numeric_value = VertrouwelijkheidsAanduiding.get_choice(value).order
+        return super().filter(qs, numeric_value)
+
+
 class ZaakFilter(FilterSet):
+    maximale_vertrouwelijkheidaanduiding = MaximaleVertrouwelijkheidaanduidingFilter(
+        field_name="vertrouwelijkheidaanduiding",
+        help_text=(
+            "Zaken met een vertrouwelijkheidaanduiding die beperkter is dan de "
+            "aangegeven aanduiding worden uit de resultaten gefiltered."
+        ),
+    )
+
+    rol__betrokkene_identificatie__natuurlijk_persoon__inp_bsn = filters.CharFilter(
+        field_name="rol__natuurlijkpersoon__inp_bsn",
+        help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_bsn"),
+    )
+    rol__betrokkene_identificatie__medewerker__identificatie = filters.CharFilter(
+        field_name="rol__medewerker__identificatie",
+        help_text=get_help_text("datamodel.Medewerker", "identificatie"),
+    )
+
     class Meta:
         model = Zaak
         fields = {
@@ -26,6 +65,10 @@ class ZaakFilter(FilterSet):
             "archiefactiedatum": ["exact", "lt", "gt"],
             "archiefstatus": ["exact", "in"],
             "startdatum": ["exact", "gt", "gte", "lt", "lte"],
+            # filters for werkvoorraad
+            "rol__betrokkene_type": ["exact"],
+            "rol__betrokkene": ["exact"],
+            "rol__omschrijving_generiek": ["exact"],
         }
 
 

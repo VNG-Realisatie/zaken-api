@@ -328,7 +328,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
-        zaak = ZaakFactory.create(einddatum=date(2019, 1, 1), zaaktype=ZAAKTYPE)
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
 
         resultaat_create_url = get_operation_url("resultaat_create")
