@@ -9,8 +9,10 @@ from zrc.datamodel.models import (
     Rol,
     Status,
     Zaak,
+    ZaakContactMoment,
     ZaakInformatieObject,
     ZaakObject,
+    ZaakVerzoek,
 )
 
 
@@ -152,3 +154,15 @@ class KlantContactFilter(FilterSet):
     class Meta:
         model = KlantContact
         fields = ("zaak",)
+
+
+class ZaakContactMomentFilter(FilterSet):
+    class Meta:
+        model = ZaakContactMoment
+        fields = ("zaak", "contactmoment")
+
+
+class ZaakVerzoekFilter(FilterSet):
+    class Meta:
+        model = ZaakVerzoek
+        fields = ("zaak", "verzoek")

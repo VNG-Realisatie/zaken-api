@@ -134,6 +134,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "vng_api_common.middleware.APIVersionHeaderMiddleware",
+    "zrc.middleware.DeprecationMiddleware",
 ]
 
 ROOT_URLCONF = "zrc.urls"

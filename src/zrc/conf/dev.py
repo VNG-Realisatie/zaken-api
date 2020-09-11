@@ -68,6 +68,7 @@ CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
     "axes": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
     "drc_sync": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    "kcc_sync": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
 }
 
 REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += (

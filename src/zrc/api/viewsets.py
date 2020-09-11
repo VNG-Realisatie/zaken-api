@@ -8,12 +8,15 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.serializers import ValidationError
+from rest_framework.settings import api_settings
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin,
     AuditTrailDestroyMixin,
     AuditTrailViewSet,
     AuditTrailViewsetMixin,
 )
+from vng_api_common.caching import conditional_retrieve
 from vng_api_common.filters import Backend
 from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
@@ -33,10 +36,12 @@ from zrc.datamodel.models import (
     Status,
     Zaak,
     ZaakBesluit,
+    ZaakContactMoment,
     ZaakEigenschap,
     ZaakInformatieObject,
     ZaakObject,
 )
+from zrc.sync.signals import SyncError
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
@@ -45,9 +50,11 @@ from .filters import (
     ResultaatFilter,
     RolFilter,
     StatusFilter,
+    ZaakContactMomentFilter,
     ZaakFilter,
     ZaakInformatieObjectFilter,
     ZaakObjectFilter,
+    ZaakVerzoekFilter,
 )
 from .kanalen import KANAAL_ZAKEN
 from .mixins import ClosedZaakMixin
@@ -71,16 +78,20 @@ from .serializers import (
     RolSerializer,
     StatusSerializer,
     ZaakBesluitSerializer,
+    ZaakContactMomentSerializer,
     ZaakEigenschapSerializer,
     ZaakInformatieObjectSerializer,
     ZaakObjectSerializer,
     ZaakSerializer,
+    ZaakVerzoek,
+    ZaakVerzoekSerializer,
     ZaakZoekSerializer,
 )
 
 logger = logging.getLogger(__name__)
 
 
+@conditional_retrieve()
 class ZaakViewSet(
     NotificationViewSetMixin,
     AuditTrailViewsetMixin,
@@ -261,6 +272,7 @@ class ZaakViewSet(
         super().perform_update(serializer)
 
 
+@conditional_retrieve()
 class StatusViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
@@ -397,6 +409,7 @@ class ZaakObjectViewSet(
     audit = AUDIT_ZRC
 
 
+@conditional_retrieve()
 class ZaakInformatieObjectViewSet(
     NotificationCreateMixin,
     AuditTrailViewsetMixin,
@@ -500,6 +513,7 @@ class ZaakInformatieObjectViewSet(
         return qs
 
 
+@conditional_retrieve()
 class ZaakEigenschapViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
@@ -580,15 +594,21 @@ class KlantContactViewSet(
     Indien geen identificatie gegeven is, dan wordt deze automatisch
     gegenereerd.
 
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
+
     list:
     Alle KLANTCONTACTen opvragen.
 
     Alle KLANTCONTACTen opvragen.
 
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
+
     retrieve:
     Een specifiek KLANTCONTACT bij een ZAAK opvragen.
 
     Een specifiek KLANTCONTACT bij een ZAAK opvragen.
+
+    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
     """
 
     queryset = KlantContact.objects.order_by("-pk")
@@ -605,7 +625,13 @@ class KlantContactViewSet(
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
+    deprecation_message = (
+        "Deze endpoint is verouderd en zal binnenkort uit dienst worden genomen. "
+        "Maak gebruik van de vervangende contactmomenten API."
+    )
 
+
+@conditional_retrieve()
 class RolViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
@@ -658,6 +684,7 @@ class RolViewSet(
     audit = AUDIT_ZRC
 
 
+@conditional_retrieve()
 class ResultaatViewSet(
     NotificationViewSetMixin,
     AuditTrailViewsetMixin,
@@ -837,3 +864,137 @@ class ZaakBesluitViewSet(
     def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
         zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
+
+
+class ZaakContactMomentViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
+    ListFilterByAuthorizationsMixin,
+    CheckQueryParamsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
+    """
+    Opvragen en bewerken van ZAAK-CONTACTMOMENT relaties.
+
+    list:
+    Alle ZAAKCONTACTMOMENTen opvragen.
+
+    Alle ZAAKCONTACTMOMENTen opvragen.
+
+    retrieve:
+    Een specifiek ZAAKCONTACTMOMENT opvragen.
+
+    Een specifiek ZAAKCONTACTMOMENT opvragen.
+
+    create:
+    Maak een ZAAKCONTACTMOMENT aan.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de CONTACTMOMENT
+
+    destroy:
+    Verwijder een ZAAKCONTACTMOMENT.
+
+    """
+
+    queryset = ZaakContactMoment.objects.order_by("-pk")
+    serializer_class = ZaakContactMomentSerializer
+    filterset_class = ZaakContactMomentFilter
+    lookup_field = "uuid"
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
+    required_scopes = {
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN,
+    }
+    notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        # Do not display ZaakContactMomenten that are marked to be deleted
+        cache = caches["kcc_sync"]
+        marked_zcms = cache.get("zcms_marked_for_delete")
+        if marked_zcms:
+            return qs.exclude(uuid__in=marked_zcms)
+        return qs
+
+    def perform_destroy(self, instance):
+        try:
+            super().perform_destroy(instance)
+        except SyncError as sync_error:
+            raise ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]}
+            ) from sync_error
+
+
+class ZaakVerzoekViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
+    ListFilterByAuthorizationsMixin,
+    CheckQueryParamsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
+    """
+    Opvragen en bewerken van ZAAK-VERZOEK relaties.
+
+    list:
+    Alle ZAAK-VERZOEK opvragen.
+
+    Alle ZAAK-VERZOEK opvragen.
+
+    retrieve:
+    Een specifiek ZAAK-VERZOEK opvragen.
+
+    Een specifiek ZAAK-VERZOEK opvragen.
+
+    create:
+    Maak een ZAAK-VERZOEK aan.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de VERZOEK
+
+    destroy:
+    Verwijder een ZAAK-VERZOEK.
+
+    """
+
+    queryset = ZaakVerzoek.objects.order_by("-pk")
+    serializer_class = ZaakVerzoekSerializer
+    filterset_class = ZaakVerzoekFilter
+    lookup_field = "uuid"
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
+    required_scopes = {
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_BIJWERKEN,
+        "destroy": SCOPE_ZAKEN_BIJWERKEN,
+    }
+    notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        # Do not display ZaakVerzoeken that are marked to be deleted
+        cache = caches["kcc_sync"]
+        marked_zvs = cache.get("zvs_marked_for_delete")
+        if marked_zvs:
+            return qs.exclude(uuid__in=marked_zvs)
+        return qs
+
+    def perform_destroy(self, instance):
+        try:
+            super().perform_destroy(instance)
+        except SyncError as sync_error:
+            raise ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]}
+            ) from sync_error

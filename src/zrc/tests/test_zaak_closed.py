@@ -116,7 +116,7 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
     @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
     def test_reopen_zaak_allowed(self, *mocks):
         zaak = ZaakFactory.create(
-            einddatum=timezone.now(),
+            einddatum=timezone.now().date(),
             archiefactiedatum="2020-01-01",
             archiefnominatie=Archiefnominatie.blijvend_bewaren,
             zaaktype=ZAAKTYPE,
@@ -143,7 +143,7 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
     def test_reopen_zaak_not_allowed(self, *mocks):
-        zaak = ZaakFactory.create(einddatum=timezone.now(), zaaktype=ZAAKTYPE)
+        zaak = ZaakFactory.create(einddatum=timezone.now().date(), zaaktype=ZAAKTYPE)
         status_create_url = get_operation_url("status_create")
         self.autorisatie.scopes = [SCOPE_STATUSSEN_TOEVOEGEN]
         self.autorisatie.save()
