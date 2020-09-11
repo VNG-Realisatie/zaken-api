@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.utils import timezone
 
 import factory
@@ -26,8 +28,12 @@ class ZaakFactory(factory.django.DjangoModelFactory):
         model = "datamodel.Zaak"
 
     class Params:
-        with_etag = factory.Trait(
-            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        closed = factory.Trait(
+            einddatum=factory.LazyFunction(date.today),
+            status_set=factory.RelatedFactory(
+                "zrc.datamodel.tests.factories.StatusFactory",
+                factory_related_name="zaak",
+            ),
         )
 
 

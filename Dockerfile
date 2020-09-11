@@ -41,7 +41,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=build /usr/local/lib/python3.6 /usr/local/lib/python3.6
 COPY --from=build /app/requirements /app/requirements
 
-RUN pip install -r requirements/jenkins.txt --exists-action=s
+RUN pip install -r requirements/ci.txt --exists-action=s
 
 # Stage 3.2 - Set up testing config
 COPY ./setup.cfg /app/setup.cfg
@@ -53,7 +53,7 @@ COPY ./src /app/src
 ARG COMMIT_HASH
 ENV GIT_SHA=${COMMIT_HASH}
 
-RUN mkdir /app/log && rm /app/src/zrc/conf/test.py
+RUN mkdir /app/log
 CMD ["/runtests.sh"]
 
 
