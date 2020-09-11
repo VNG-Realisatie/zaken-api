@@ -28,6 +28,9 @@ class ZaakFactory(factory.django.DjangoModelFactory):
         model = "datamodel.Zaak"
 
     class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
         closed = factory.Trait(
             einddatum=factory.LazyFunction(date.today),
             status_set=factory.RelatedFactory(
