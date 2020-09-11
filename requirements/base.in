@@ -21,7 +21,7 @@ django-filter
 djangorestframework-camel-case
 drf-yasg
 drf-writable-nested
-vng-api-common<1.1.0
+vng-api-common
 
 # wsgi-server/monitoring
 uwsgi
