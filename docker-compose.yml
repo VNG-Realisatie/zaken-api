@@ -15,7 +15,6 @@ services:
       - DJANGO_SETTINGS_MODULE=zrc.conf.docker
       - SECRET_KEY=${SECRET_KEY}
       - REDIS_CACHE=redis:6379/0
-      - AXES_CACHE=redis:6379/0
     ports:
       - 8000:8000
     depends_on:

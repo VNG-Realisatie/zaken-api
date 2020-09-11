@@ -1,6 +1,6 @@
 from vng_api_common.conf.api import *  # noqa - imports white-listed
 
-API_VERSION = "1.0.2"
+API_VERSION = "1.1.0-alpha"
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
@@ -58,5 +58,3 @@ kic_commit = "c62f0a2e9c47955316fe2f8f4caa6b522d71bbe9"
 KIC_API_SPEC = f"https://raw.githubusercontent.com/{kic_repo}/{kic_commit}/src/openapi.yaml"  # noqa
 
 SPEC_CACHE_TIMEOUT = 60 * 60 * 24  # 24 hours
-
-NOTIFICATIONS_KANAAL = "zaken"

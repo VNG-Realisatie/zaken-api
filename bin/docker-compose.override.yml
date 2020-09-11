@@ -8,7 +8,7 @@ services:
     volumes:
       - ${WORKSPACE}/reports:/app/reports
     environment:
-      - DJANGO_SETTINGS_MODULE=zrc.conf.ci
+      - DJANGO_SETTINGS_MODULE=zrc.conf.jenkins
       - SECRET_KEY=jenkins
       - DB_NAME=postgres
       - DB_USER=postgres

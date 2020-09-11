@@ -2,16 +2,16 @@
     "swagger": "2.0",
     "info": {
         "title": "Zaken API",
-        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Main resource**\n\n`zaak`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef\n* `zaaktype`: URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.\n\n**Resources en acties**\n- `zaak`: create, update, destroy\n- `status`: create\n- `zaakobject`: create\n- `zaakinformatieobject`: create\n- `zaakeigenschap`: create\n- `klantcontact`: create\n- `rol`: create\n- `resultaat`: create, update, destroy\n- `zaakbesluit`: create\n\n\n**Handige links**\n\n* [Documentatie](https://vng-realisatie.github.io/gemma-zaken/standaard)\n* [Zaakgericht werken](https://vng-realisatie.github.io/gemma-zaken)\n",
+        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Main resource**\n\n`zaak`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef\n* `zaaktype`: URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.\n\n**Resources en acties**\n- `zaak`: create, update, destroy\n- `status`: create\n- `zaakobject`: create\n- `zaakinformatieobject`: create\n- `zaakeigenschap`: create\n- `klantcontact`: create\n- `rol`: create\n- `resultaat`: create, update, destroy\n- `zaakbesluit`: create\n- `zaakcontactmoment`: create\n- `zaakverzoek`: create\n\n\n**Handige links**\n\n* [Documentatie](https://zaakgerichtwerken.vng.cloud/standaard)\n* [Zaakgericht werken](https://zaakgerichtwerken.vng.cloud)\n",
         "contact": {
-            "url": "https://vng-realisatie.github.io/gemma-zaken",
+            "url": "https://zaakgerichtwerken.vng.cloud",
             "email": "standaarden.ondersteuning@vng.nl"
         },
         "license": {
             "name": "EUPL 1.2",
             "url": "https://opensource.org/licenses/EUPL-1.2"
         },
-        "version": "1.0.2"
+        "version": "1.1.0-alpha"
     },
     "basePath": "/api/v1",
     "consumes": [
@@ -544,7 +544,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ],
@@ -1203,7 +1203,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -1639,7 +1639,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -1841,7 +1841,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -2018,7 +2018,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -2534,7 +2534,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -2923,7 +2923,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -3956,7 +3956,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.aanmaken | zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -6537,7 +6537,190 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.aanmaken | zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
+                        ]
+                    }
+                ]
+            },
+            "parameters": []
+        },
+        "/zaakverzoeken/{uuid}": {
+            "get": {
+                "operationId": "zaakverzoek_read",
+                "summary": "Een specifiek ZAAK-VERZOEK opvragen.",
+                "description": "Een specifiek ZAAK-VERZOEK opvragen.",
+                "parameters": [
+                    {
+                        "name": "If-None-Match",
+                        "in": "header",
+                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoord de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
+                        "required": false,
+                        "type": "string",
+                        "examples": {
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
+                            },
+                            "oneValue": {
+                                "summary": "E\u00e9n ETag-waarde",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ZaakVerzoek"
+                        },
+                        "headers": {
+                            "ETag": {
+                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
+                                "type": "string"
+                            },
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "Not acceptable",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "Gone",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "415": {
+                        "description": "Unsupported media type",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/Fout"
+                        },
+                        "headers": {
+                            "API-version": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Geeft een specifieke API-versie aan in de context van een specifieke aanroep. Voorbeeld: 1.2.1."
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "zaakverzoeken"
+                ],
+                "security": [
+                    {
+                        "JWT-Claims": [
+                            "zaken.lezen"
                         ]
                     }
                 ]
@@ -6848,76 +7031,6 @@
                         "name": "startdatum__lte",
                         "in": "query",
                         "description": "De datum waarop met de uitvoering van de zaak is gestart",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "rol__betrokkeneType",
-                        "in": "query",
-                        "description": "Type van de `betrokkene`.",
-                        "required": false,
-                        "type": "string",
-                        "enum": [
-                            "natuurlijk_persoon",
-                            "niet_natuurlijk_persoon",
-                            "vestiging",
-                            "organisatorische_eenheid",
-                            "medewerker"
-                        ]
-                    },
-                    {
-                        "name": "rol__betrokkene",
-                        "in": "query",
-                        "description": "URL-referentie naar een betrokkene gerelateerd aan de ZAAK.",
-                        "required": false,
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    {
-                        "name": "rol__omschrijvingGeneriek",
-                        "in": "query",
-                        "description": "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.",
-                        "required": false,
-                        "type": "string",
-                        "enum": [
-                            "adviseur",
-                            "behandelaar",
-                            "belanghebbende",
-                            "beslisser",
-                            "initiator",
-                            "klantcontacter",
-                            "zaakcoordinator",
-                            "mede_initiator"
-                        ]
-                    },
-                    {
-                        "name": "maximaleVertrouwelijkheidaanduiding",
-                        "in": "query",
-                        "description": "Zaken met een vertrouwelijkheidaanduiding die beperkter is dan de aangegeven aanduiding worden uit de resultaten gefiltered.",
-                        "required": false,
-                        "type": "string",
-                        "enum": [
-                            "openbaar",
-                            "beperkt_openbaar",
-                            "intern",
-                            "zaakvertrouwelijk",
-                            "vertrouwelijk",
-                            "confidentieel",
-                            "geheim",
-                            "zeer_geheim"
-                        ]
-                    },
-                    {
-                        "name": "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn",
-                        "in": "query",
-                        "description": "Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "rol__betrokkeneIdentificatie__medewerker__identificatie",
-                        "in": "query",
-                        "description": "Een korte unieke aanduiding van de MEDEWERKER.",
                         "required": false,
                         "type": "string"
                     },
@@ -10045,7 +10158,7 @@
                 "security": [
                     {
                         "JWT-Claims": [
-                            "(zaken.bijwerken | zaken.geforceerd-bijwerken)"
+                            "zaken.bijwerken"
                         ]
                     }
                 ]
@@ -13270,12 +13383,9 @@
                 },
                 "archiefnominatie": {
                     "title": "Archiefnominatie",
-                    "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.\n\nUitleg bij mogelijke waarden:\n\n* `blijvend_bewaren` - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen worden naar een archiefbewaarplaats.\n* `vernietigen` - Het zaakdossier moet op of na de Archiefactiedatum vernietigd worden.",
+                    "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.",
                     "type": "string",
-                    "enum": [
-                        "blijvend_bewaren",
-                        "vernietigen"
-                    ]
+                    "minLength": 1
                 },
                 "archiefnominatie__in": {
                     "title": "Archiefnominatie  in",
@@ -13303,14 +13413,9 @@
                 },
                 "archiefstatus": {
                     "title": "Archiefstatus",
-                    "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.\n\nUitleg bij mogelijke waarden:\n\n* `nog_te_archiveren` - De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd.\n* `gearchiveerd` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt.\n* `gearchiveerd_procestermijn_onbekend` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum kan nog niet bepaald worden.\n* `overgedragen` - De zaak cq. het zaakdossier is overgebracht naar een archiefbewaarplaats.",
+                    "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.",
                     "type": "string",
-                    "enum": [
-                        "nog_te_archiveren",
-                        "gearchiveerd",
-                        "gearchiveerd_procestermijn_onbekend",
-                        "overgedragen"
-                    ]
+                    "minLength": 1
                 },
                 "archiefstatus__in": {
                     "title": "Archiefstatus  in",
@@ -13345,66 +13450,6 @@
                 "startdatum__lte": {
                     "title": "Startdatum  lte",
                     "description": "De datum waarop met de uitvoering van de zaak is gestart",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "rol__betrokkeneType": {
-                    "title": "Rol  betrokkenetype",
-                    "description": "Type van de `betrokkene`.\n\nUitleg bij mogelijke waarden:\n\n* `natuurlijk_persoon` - Natuurlijk persoon\n* `niet_natuurlijk_persoon` - Niet-natuurlijk persoon\n* `vestiging` - Vestiging\n* `organisatorische_eenheid` - Organisatorische eenheid\n* `medewerker` - Medewerker",
-                    "type": "string",
-                    "enum": [
-                        "natuurlijk_persoon",
-                        "niet_natuurlijk_persoon",
-                        "vestiging",
-                        "organisatorische_eenheid",
-                        "medewerker"
-                    ]
-                },
-                "rol__betrokkene": {
-                    "title": "Rol  betrokkene",
-                    "description": "URL-referentie naar een betrokkene gerelateerd aan de ZAAK.",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "rol__omschrijvingGeneriek": {
-                    "title": "Rol  omschrijvinggeneriek",
-                    "description": "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.\n\nUitleg bij mogelijke waarden:\n\n* `adviseur` - Adviseur\n* `behandelaar` - Behandelaar\n* `belanghebbende` - Belanghebbende\n* `beslisser` - Beslisser\n* `initiator` - Initiator\n* `klantcontacter` - Klantcontacter\n* `zaakcoordinator` - Zaakco\u00f6rdinator\n* `mede_initiator` - Mede-initiator",
-                    "type": "string",
-                    "enum": [
-                        "adviseur",
-                        "behandelaar",
-                        "belanghebbende",
-                        "beslisser",
-                        "initiator",
-                        "klantcontacter",
-                        "zaakcoordinator",
-                        "mede_initiator"
-                    ]
-                },
-                "maximaleVertrouwelijkheidaanduiding": {
-                    "title": "Maximalevertrouwelijkheidaanduiding",
-                    "description": "Zaken met een vertrouwelijkheidaanduiding die beperkter is dan de aangegeven aanduiding worden uit de resultaten gefiltered.\n\nUitleg bij mogelijke waarden:\n\n* `openbaar` - Openbaar\n* `beperkt_openbaar` - Beperkt openbaar\n* `intern` - Intern\n* `zaakvertrouwelijk` - Zaakvertrouwelijk\n* `vertrouwelijk` - Vertrouwelijk\n* `confidentieel` - Confidentieel\n* `geheim` - Geheim\n* `zeer_geheim` - Zeer geheim",
-                    "type": "string",
-                    "enum": [
-                        "openbaar",
-                        "beperkt_openbaar",
-                        "intern",
-                        "zaakvertrouwelijk",
-                        "vertrouwelijk",
-                        "confidentieel",
-                        "geheim",
-                        "zeer_geheim"
-                    ]
-                },
-                "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": {
-                    "title": "Rol  betrokkeneidentificatie  natuurlijkpersoon  inpbsn",
-                    "description": "Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "rol__betrokkeneIdentificatie__medewerker__identificatie": {
-                    "title": "Rol  betrokkeneidentificatie  medewerker  identificatie",
-                    "description": "Een korte unieke aanduiding van de MEDEWERKER.",
                     "type": "string",
                     "minLength": 1
                 },
