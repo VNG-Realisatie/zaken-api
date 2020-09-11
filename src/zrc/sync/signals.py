@@ -132,7 +132,11 @@ def sync_create_zaakverzoek(relation: ZaakVerzoek):
     try:
         response = client.create(
             resource,
-            {"object": zaak_url, "verzoek": relation.verzoek, "objectType": "zaak",},
+            {
+                "object": zaak_url,
+                "verzoek": relation.verzoek,
+                "objectType": "zaak",
+            },
         )
     except Exception as exc:
         logger.error(f"Could not create remote relation", exc_info=1)
