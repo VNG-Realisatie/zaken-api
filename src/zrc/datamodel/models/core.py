@@ -318,6 +318,10 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         status = self.status_set.order_by("-datum_status_gezet").first()
         return status.uuid if status else None
 
+    @property
+    def is_closed(self) -> bool:
+        return self.einddatum is not None
+
     def unique_representation(self):
         return f"{self.bronorganisatie} - {self.identificatie}"
 

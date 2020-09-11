@@ -1,18 +1,20 @@
-pip-tools
-psycopg2-binary
-python-dotenv
-python-dateutil
-pytz
-raven
+# Core python libraries
 markdown
+psycopg2
+python-dateutil
+python-decouple
+python-dotenv
+pytz
 
+# Framework libraries
 Django<3.0
 django-axes
 django-choices
 django-cors-middleware
 django-markup
-django_redis
+django-redis
 
+# API libraries
 djangorestframework
 djangorestframework-gis
 django-filter
@@ -20,3 +22,7 @@ djangorestframework-camel-case
 drf-yasg
 drf-writable-nested
 vng-api-common
+
+# wsgi-server/monitoring
+uwsgi
+raven

@@ -12,14 +12,17 @@ from rest_framework.test import APITestCase
 from vng_api_common.constants import (
     Archiefnominatie,
     BrondatumArchiefprocedureAfleidingswijze,
+    RolOmschrijving,
+    RolTypes,
     VertrouwelijkheidsAanduiding,
 )
 from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
-from zrc.datamodel.models import Zaak
+from zrc.datamodel.models import Medewerker, NatuurlijkPersoon, Zaak
 from zrc.datamodel.tests.factories import (
+    RolFactory,
     StatusFactory,
     ZaakBesluitFactory,
     ZaakEigenschapFactory,
@@ -573,6 +576,37 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertIn(f"http://testserver{eigenschap1_url}", eigenschappen)
         self.assertIn(f"http://testserver{eigenschap2_url}", eigenschappen)
 
+    def test_filter_max_vertrouwelijkheidaanduiding(self):
+        zaak1 = ZaakFactory.create(
+            zaaktype=ZAAKTYPE,
+            vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+        )
+        zaak2 = ZaakFactory.create(
+            zaaktype=ZAAKTYPE,
+            vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.geheim,
+        )
+
+        url = reverse(Zaak)
+
+        response = self.client.get(
+            url,
+            {
+                "maximaleVertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.zaakvertrouwelijk
+            },
+            **ZAAK_READ_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["url"],
+            f"http://testserver{reverse(zaak1)}",
+        )
+        self.assertNotEqual(
+            response.data["results"][0]["url"],
+            f"http://testserver{reverse(zaak2)}",
+        )
+
 
 class ZaakArchivingTests(JWTAuthMixin, APITestCase):
 
@@ -663,3 +697,146 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
         self.assertEqual(
             zaak.archiefactiedatum, date(2030, 5, 3)  # 2020-05-03 + 10 years
         )
+
+
+class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
+    """
+    Test that the queries to build up a 'werkvoorraad' work as expected.
+    """
+
+    heeft_alle_autorisaties = True
+
+    def test_rol_medewerker_url(self):
+        """
+        Test that zaken for a specific medewerker can be retrieved.
+        """
+        url = reverse(Zaak)
+        MEDEWERKER = "https://medewerkers.nl/api/v1/medewerkers/1"
+        rol1 = RolFactory.create(
+            betrokkene=MEDEWERKER,
+            betrokkene_type=RolTypes.medewerker,
+            omschrijving_generiek=RolOmschrijving.behandelaar,
+        )
+        rol2 = RolFactory.create(
+            betrokkene_type=RolTypes.medewerker,
+            omschrijving_generiek=RolOmschrijving.behandelaar,
+        )
+        RolFactory.create(
+            betrokkene_type=RolTypes.natuurlijk_persoon,
+            omschrijving_generiek=RolOmschrijving.initiator,
+        )
+        zaak1, zaak2 = rol1.zaak, rol2.zaak
+
+        with self.subTest(filter_on="betrokkeneType"):
+            query = {"rol__betrokkeneType": RolTypes.medewerker}
+
+            response = self.client.get(url, query, **ZAAK_READ_KWARGS)
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 2)
+            urls = {result["url"] for result in response.data["results"]}
+            self.assertEqual(
+                urls,
+                {
+                    f"http://testserver{reverse(zaak1)}",
+                    f"http://testserver{reverse(zaak2)}",
+                },
+            )
+
+        with self.subTest(filter_on="omschrijving generiek"):
+            query = {"rol__omschrijvingGeneriek": RolOmschrijving.behandelaar}
+
+            response = self.client.get(url, query, **ZAAK_READ_KWARGS)
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 2)
+            urls = {result["url"] for result in response.data["results"]}
+            self.assertEqual(
+                urls,
+                {
+                    f"http://testserver{reverse(zaak1)}",
+                    f"http://testserver{reverse(zaak2)}",
+                },
+            )
+
+        with self.subTest(filter_on="betrokkene"):
+            query = {"rol__betrokkene": MEDEWERKER}
+
+            response = self.client.get(url, query, **ZAAK_READ_KWARGS)
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(
+                response.data["results"][0]["url"],
+                f"http://testserver{reverse(zaak1)}",
+            )
+
+    def test_rol_medewerker_identificatie(self):
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.medewerker,
+            omschrijving_generiek=RolOmschrijving.behandelaar,
+        )
+        Medewerker.objects.create(
+            rol=rol,
+            identificatie="some-username",
+        )
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {"rol__betrokkeneIdentificatie__medewerker__identificatie": "no-match"},
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__medewerker__identificatie": "some-username"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_rol_np_bsn(self):
+        """
+        Essential to be able to fetch all Zaken related to a particular citizen.
+        """
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.natuurlijk_persoon,
+            omschrijving_generiek=RolOmschrijving.initiator,
+        )
+        NatuurlijkPersoon.objects.create(
+            rol=rol, inp_bsn="129117729"
+        )  # http://www.wilmans.com/sofinummer/
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "000000000"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "129117729"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
