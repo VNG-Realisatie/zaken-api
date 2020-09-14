@@ -81,9 +81,11 @@ class RolFilter(FilterSet):
         field_name="natuurlijkpersoon__inp_bsn",
         help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_bsn"),
     )
-    betrokkene_identificatie__natuurlijk_persoon__anp_identificatie = filters.CharFilter(
-        field_name="natuurlijkpersoon__anp_identificatie",
-        help_text=get_help_text("datamodel.NatuurlijkPersoon", "anp_identificatie"),
+    betrokkene_identificatie__natuurlijk_persoon__anp_identificatie = (
+        filters.CharFilter(
+            field_name="natuurlijkpersoon__anp_identificatie",
+            help_text=get_help_text("datamodel.NatuurlijkPersoon", "anp_identificatie"),
+        )
     )
     betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer = filters.CharFilter(
         field_name="natuurlijkpersoon__inp_a_nummer",
@@ -93,9 +95,13 @@ class RolFilter(FilterSet):
         field_name="nietnatuurlijkpersoon__inn_nnp_id",
         help_text=get_help_text("datamodel.NietNatuurlijkPersoon", "inn_nnp_id"),
     )
-    betrokkene_identificatie__niet_natuurlijk_persoon__ann_identificatie = filters.CharFilter(
-        field_name="nietnatuurlijkpersoon__ann_identificatie",
-        help_text=get_help_text("datamodel.NietNatuurlijkPersoon", "ann_identificatie"),
+    betrokkene_identificatie__niet_natuurlijk_persoon__ann_identificatie = (
+        filters.CharFilter(
+            field_name="nietnatuurlijkpersoon__ann_identificatie",
+            help_text=get_help_text(
+                "datamodel.NietNatuurlijkPersoon", "ann_identificatie"
+            ),
+        )
     )
     betrokkene_identificatie__vestiging__vestigings_nummer = filters.CharFilter(
         field_name="vestiging__vestigings_nummer",

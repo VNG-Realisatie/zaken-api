@@ -188,7 +188,10 @@ class MocksMixin(ZaakInformatieObjectSyncMixin):
         self.addCleanup(mock_fetch_object.stop)
 
         mock_fetch_schema = patch(
-            "zds_client.client.schema_fetcher.fetch", return_value={"paths": {},}
+            "zds_client.client.schema_fetcher.fetch",
+            return_value={
+                "paths": {},
+            },
         )
         mock_fetch_schema.start()
         self.addCleanup(mock_fetch_schema.stop)
@@ -255,7 +258,10 @@ class ClosedZaakRelatedDataNotAllowedTests(MocksMixin, JWTAuthMixin, APITestCase
             )
 
     def test_zaakinformatieobjecten(self):
-        zio = ZaakInformatieObjectFactory(zaak=self.zaak, informatieobject=EIO,)
+        zio = ZaakInformatieObjectFactory(
+            zaak=self.zaak,
+            informatieobject=EIO,
+        )
         zio_url = reverse(zio)
 
         self.assertUpdateBlocked(zio_url)
@@ -265,7 +271,10 @@ class ClosedZaakRelatedDataNotAllowedTests(MocksMixin, JWTAuthMixin, APITestCase
         zio.delete()
         self.assertCreateBlocked(
             reverse(ZaakInformatieObject),
-            {"zaak": reverse(self.zaak), "informatieobject": EIO,},
+            {
+                "zaak": reverse(self.zaak),
+                "informatieobject": EIO,
+            },
         )
 
     def test_zaakobjecten(self):
@@ -282,7 +291,11 @@ class ClosedZaakRelatedDataNotAllowedTests(MocksMixin, JWTAuthMixin, APITestCase
     def test_zaakeigenschappen(self):
         self.assertCreateBlocked(
             reverse(ZaakEigenschap, kwargs={"zaak_uuid": self.zaak.uuid}),
-            {"zaak": reverse(self.zaak), "eigenschap": EIGENSCHAP, "waarde": "123",},
+            {
+                "zaak": reverse(self.zaak),
+                "eigenschap": EIGENSCHAP,
+                "waarde": "123",
+            },
         )
 
     def test_klantcontacten(self):
@@ -328,7 +341,11 @@ class ClosedZaakRelatedDataNotAllowedTests(MocksMixin, JWTAuthMixin, APITestCase
 
     def test_statussen(self):
         self.assertCreateBlocked(
-            reverse(Status), {"zaak": reverse(self.zaak), "statustype": STATUS_TYPE,},
+            reverse(Status),
+            {
+                "zaak": reverse(self.zaak),
+                "statustype": STATUS_TYPE,
+            },
         )
 
 
@@ -389,7 +406,10 @@ class ClosedZaakRelatedDataAllowedTests(MocksMixin, JWTAuthMixin, APITestCase):
 
         self.assertCreateAllowed(
             reverse(ZaakInformatieObject),
-            {"zaak": reverse(self.zaak), "informatieobject": EIO,},
+            {
+                "zaak": reverse(self.zaak),
+                "informatieobject": EIO,
+            },
         )
 
     def test_zaakobjecten(self):
@@ -406,7 +426,11 @@ class ClosedZaakRelatedDataAllowedTests(MocksMixin, JWTAuthMixin, APITestCase):
     def test_zaakeigenschappen(self):
         self.assertCreateAllowed(
             reverse(ZaakEigenschap, kwargs={"zaak_uuid": self.zaak.uuid}),
-            {"zaak": reverse(self.zaak), "eigenschap": EIGENSCHAP, "waarde": "123",},
+            {
+                "zaak": reverse(self.zaak),
+                "eigenschap": EIGENSCHAP,
+                "waarde": "123",
+            },
         )
 
     def test_klantcontacten(self):
