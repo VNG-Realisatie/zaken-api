@@ -107,9 +107,13 @@ class RolFilter(FilterSet):
         field_name="vestiging__vestigings_nummer",
         help_text=get_help_text("datamodel.Vestiging", "vestigings_nummer"),
     )
-    betrokkene_identificatie__organisatorische_eenheid__identificatie = filters.CharFilter(
-        field_name="organisatorischeeenheid__identificatie",
-        help_text=get_help_text("datamodel.OrganisatorischeEenheid", "identificatie"),
+    betrokkene_identificatie__organisatorische_eenheid__identificatie = (
+        filters.CharFilter(
+            field_name="organisatorischeeenheid__identificatie",
+            help_text=get_help_text(
+                "datamodel.OrganisatorischeEenheid", "identificatie"
+            ),
+        )
     )
     betrokkene_identificatie__medewerker__identificatie = filters.CharFilter(
         field_name="medewerker__identificatie",
