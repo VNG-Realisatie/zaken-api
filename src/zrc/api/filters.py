@@ -58,6 +58,14 @@ class ZaakFilter(FilterSet):
             "datamodel.Medewerker", "identificatie", "max_length"
         ),
     )
+    rol__betrokkene_identificatie__organisatorische_eenheid__identificatie = (
+        filters.CharFilter(
+            field_name="rol__organisatorischeeenheid__identificatie",
+            help_text=get_help_text(
+                "datamodel.OrganisatorischeEenheid", "identificatie"
+            ),
+        )
+    )
 
     class Meta:
         model = Zaak
