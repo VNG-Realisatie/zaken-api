@@ -1,42 +1,89 @@
 import os
 
-# Django-hijack (and Django-hijack-admin)
-from django.urls import reverse_lazy
-
 import raven
 
 from .api import *  # noqa
+from .environ import config
 
-SITE_ID = int(os.getenv("SITE_ID", 1))
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Build paths inside the project, so further paths can be defined relative to
+# the code root.
 DJANGO_PROJECT_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), os.path.pardir)
+    os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir)
 )
 BASE_DIR = os.path.abspath(
     os.path.join(DJANGO_PROJECT_DIR, os.path.pardir, os.path.pardir)
 )
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+#
+# Core Django settings
+#
+SITE_ID = config("SITE_ID", default=1)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# NEVER run with DEBUG=True in production-like environments
+DEBUG = config("DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+# = domains we're running on
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", split=True)
 
+IS_HTTPS = config("IS_HTTPS", default=not DEBUG)
+
+# Internationalization
+# https://docs.djangoproject.com/en/2.0/topics/i18n/
+
+LANGUAGE_CODE = "nl-nl"
+
+TIME_ZONE = "UTC"  # note: this *may* affect the output of DRF datetimes
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+USE_THOUSAND_SEPARATOR = True
+
+#
+# DATABASE and CACHING setup
+#
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": os.getenv("DB_NAME", "zrc"),
-        "USER": os.getenv("DB_USER", "zrc"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "zrc"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": os.getenv("DB_PORT", 5432),
+        "NAME": config("DB_NAME", "zrc"),
+        "USER": config("DB_USER", "zrc"),
+        "PASSWORD": config("DB_PASSWORD", "zrc"),
+        "HOST": config("DB_HOST", "localhost"),
+        "PORT": config("DB_PORT", 5432),
     }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{config('CACHE_DEFAULT', 'localhost:6379/0')}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,
+        },
+    },
+    "axes": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{config('CACHE_AXES', 'localhost:6379/0')}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,
+        },
+    },
+    "drc_sync": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{config('CACHE_DEFAULT', 'localhost:6379/0')}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,
+        },
+    },
 }
 
 # Application definition
@@ -79,7 +126,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    # 'django.middleware.locale.LocaleMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -88,15 +134,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "vng_api_common.middleware.APIVersionHeaderMiddleware",
+    "zrc.middleware.DeprecationMiddleware",
 ]
 
 ROOT_URLCONF = "zrc.urls"
 
 # List of callables that know how to import templates from various sources.
-RAW_TEMPLATE_LOADERS = (
+TEMPLATE_LOADERS = (
     "django.template.loaders.filesystem.Loader",
     "django.template.loaders.app_directories.Loader",
-    # 'admin_tools.template_loaders.Loader',
 )
 
 TEMPLATES = [
@@ -112,49 +158,19 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "zrc.utils.context_processors.settings",
             ],
-            "loaders": RAW_TEMPLATE_LOADERS,
+            "loaders": TEMPLATE_LOADERS,
         },
     }
 ]
 
 WSGI_APPLICATION = "zrc.wsgi.application"
 
-# Database: Defined in target specific settings files.
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-# Password validation
-# https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/2.0/topics/i18n/
-
-LANGUAGE_CODE = "nl-nl"
-
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-USE_THOUSAND_SEPARATOR = True
-
 # Translations
 LOCALE_PATHS = (os.path.join(DJANGO_PROJECT_DIR, "conf", "locale"),)
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
+#
+# SERVING of static and media files
+#
 
 STATIC_URL = "/static/"
 
@@ -171,18 +187,31 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 MEDIA_URL = "/media/"
 
-FIXTURE_DIRS = (os.path.join(DJANGO_PROJECT_DIR, "fixtures"),)
-
-DEFAULT_FROM_EMAIL = "zrc@example.com"
+#
+# Sending EMAIL
+#
+EMAIL_HOST = config("EMAIL_HOST", default="localhost")
+EMAIL_PORT = config(
+    "EMAIL_PORT", default=25
+)  # disabled on Google Cloud, use 487 instead
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=False)
 EMAIL_TIMEOUT = 10
 
+DEFAULT_FROM_EMAIL = "zrc@example.com"
+
+FIXTURE_DIRS = (os.path.join(DJANGO_PROJECT_DIR, "fixtures"),)
+
+#
+# LOGGING
+#
 LOGGING_DIR = os.path.join(BASE_DIR, "log")
 
 LOGGING = {
@@ -246,11 +275,18 @@ LOGGING = {
 }
 
 #
-# Additional Django settings
+# AUTH settings - user accounts, passwords, backends...
 #
-
-# Custom user model
 AUTH_USER_MODEL = "accounts.User"
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
 
 # Allow logging in with both username+password and email+password
 AUTHENTICATION_BACKENDS = [
@@ -259,6 +295,16 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SESSION_COOKIE_NAME = "zrc_sessionid"
+
+#
+# SECURITY settings
+#
+SESSION_COOKIE_SECURE = IS_HTTPS
+SESSION_COOKIE_HTTPONLY = True
+
+CSRF_COOKIE_SECURE = IS_HTTPS
+
+X_FRAME_OPTIONS = "DENY"
 
 #
 # Silenced checks
@@ -278,16 +324,13 @@ SHOW_ALERT = True
 # Library settings
 #
 
-ADMIN_INDEX_SHOW_REMAINING_APPS = True
-
 # Django-axes
+AXES_CACHE = "axes"  # refers to CACHES setting
 AXES_LOGIN_FAILURE_LIMIT = 30  # Default: 3
 AXES_LOCK_OUT_AT_FAILURE = True  # Default: True
 AXES_USE_USER_AGENT = False  # Default: False
 AXES_COOLOFF_TIME = 1  # One hour
-AXES_BEHIND_REVERSE_PROXY = (
-    True  # Default: False (we are typically using Nginx as reverse proxy)
-)
+AXES_BEHIND_REVERSE_PROXY = IS_HTTPS  # We have either Ingress or Nginx
 AXES_ONLY_USER_FAILURES = (
     False  # Default: False (you might want to block on username rather than IP)
 )
@@ -295,15 +338,9 @@ AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = (
     False  # Default: False (you might want to block on username and IP)
 )
 
-
-HIJACK_LOGIN_REDIRECT_URL = "/"
-HIJACK_LOGOUT_REDIRECT_URL = reverse_lazy("admin:accounts_user_changelist")
-HIJACK_REGISTER_ADMIN = False
-# This is a CSRF-security risk.
-# See: http://django-hijack.readthedocs.io/en/latest/configuration/#allowing-get-method-for-hijack-views
-HIJACK_ALLOW_GET_REQUESTS = True
-
-# Django-CORS-middleware
+#
+# DJANGO-CORS-MIDDLEWARE
+#
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = (
     "x-requested-with",
@@ -319,12 +356,12 @@ CORS_ALLOW_HEADERS = (
 )
 
 if "GIT_SHA" in os.environ:
-    GIT_SHA = os.getenv("GIT_SHA")
+    GIT_SHA = config("GIT_SHA")
 else:
     GIT_SHA = raven.fetch_git_sha(BASE_DIR)
 
 # Raven
-SENTRY_DSN = os.getenv("SENTRY_DSN")
+SENTRY_DSN = config("SENTRY_DSN", None)
 
 if SENTRY_DSN:
     INSTALLED_APPS = INSTALLED_APPS + ["raven.contrib.django.raven_compat"]
@@ -340,9 +377,6 @@ if SENTRY_DSN:
         }
     )
 
-#
-# SSL or not?
-#
-IS_HTTPS = os.getenv("IS_HTTPS", "1").lower() in ["true", "1", "yes"]
 
-NOTIFICATIONS_KANAAL = "zaken"
+# URL for documentation that's shown in API schema
+DOCUMENTATION_URL = "https://vng-realisatie.github.io/gemma-zaken"

@@ -1,18 +1,15 @@
 import logging
 
-from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core.cache import caches
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
-from django.urls import reverse
 
-import requests
 from vng_api_common.models import APICredential
-from vng_api_common.utils import get_uuid_from_path
-from zds_client import Client, extract_params, get_operation_url
+from zds_client import Client
 
-from zrc.datamodel.models import ZaakInformatieObject
+from zrc.api.utils import get_absolute_url
+from zrc.datamodel.models import ZaakContactMoment, ZaakInformatieObject
+from zrc.datamodel.models.core import ZaakVerzoek
 
 logger = logging.getLogger(__name__)
 
@@ -21,20 +18,8 @@ class SyncError(Exception):
     pass
 
 
-def sync_create(relation: ZaakInformatieObject):
-    operation = "create"
-
-    # build the URL of the Zaak
-    path = reverse(
-        "zaak-detail",
-        kwargs={
-            "version": settings.REST_FRAMEWORK["DEFAULT_VERSION"],
-            "uuid": relation.zaak.uuid,
-        },
-    )
-    domain = Site.objects.get_current().domain
-    protocol = "https" if settings.IS_HTTPS else "http"
-    zaak_url = f"{protocol}://{domain}{path}"
+def sync_create_zio(relation: ZaakInformatieObject):
+    zaak_url = get_absolute_url("zaak-detail", relation.zaak.uuid)
 
     logger.info("Zaak: %s", zaak_url)
     logger.info("Informatieobject: %s", relation.informatieobject)
@@ -54,24 +39,12 @@ def sync_create(relation: ZaakInformatieObject):
             },
         )
     except Exception as exc:
-        logger.error(f"Could not {operation} remote relation", exc_info=1)
-        raise SyncError(f"Could not {operation} remote relation") from exc
+        logger.error(f"Could not create remote relation", exc_info=1)
+        raise SyncError(f"Could not create remote relation") from exc
 
 
-def sync_delete(relation: ZaakInformatieObject):
-    operation = "delete"
-
-    # build the URL of the Zaak
-    path = reverse(
-        "zaak-detail",
-        kwargs={
-            "version": settings.REST_FRAMEWORK["DEFAULT_VERSION"],
-            "uuid": relation.zaak.uuid,
-        },
-    )
-    domain = Site.objects.get_current().domain
-    protocol = "https" if settings.IS_HTTPS else "http"
-    zaak_url = f"{protocol}://{domain}{path}"
+def sync_delete_zio(relation: ZaakInformatieObject):
+    zaak_url = get_absolute_url("zaak-detail", relation.zaak.uuid)
 
     logger.info("Zaak: %s", zaak_url)
     logger.info("Informatieobject: %s", relation.informatieobject)
@@ -100,8 +73,90 @@ def sync_delete(relation: ZaakInformatieObject):
     try:
         client.delete(resource, url=relation_url)
     except Exception as exc:
-        logger.error(f"Could not {operation} remote relation", exc_info=1)
-        raise SyncError(f"Could not {operation} remote relation") from exc
+        logger.error(f"Could not delete remote relation", exc_info=1)
+        raise SyncError(f"Could not delete remote relation") from exc
+
+
+def sync_create_zaakcontactmoment(relation: ZaakContactMoment):
+    zaak_url = get_absolute_url("zaak-detail", relation.zaak.uuid)
+
+    logger.info("Zaak: %s", zaak_url)
+    logger.info("Contactmoment: %s", relation.contactmoment)
+
+    # Define the remote resource with which we need to interact
+    resource = "objectcontactmoment"
+    client = Client.from_url(relation.contactmoment)
+    client.auth = APICredential.get_auth(relation.contactmoment)
+
+    try:
+        response = client.create(
+            resource,
+            {
+                "object": zaak_url,
+                "contactmoment": relation.contactmoment,
+                "objectType": "zaak",
+            },
+        )
+    except Exception as exc:
+        logger.error(f"Could not create remote relation", exc_info=1)
+        raise SyncError(f"Could not create remote relation") from exc
+
+    # save ZaakBesluit url for delete signal
+    relation._objectcontactmoment = response["url"]
+    relation.save()
+
+
+def sync_delete_zaakcontactmoment(relation: ZaakContactMoment):
+    resource = "objectcontactmoment"
+    client = Client.from_url(relation.contactmoment)
+    client.auth = APICredential.get_auth(relation.contactmoment)
+
+    try:
+        client.delete(resource, url=relation._objectcontactmoment)
+    except Exception as exc:
+        logger.error(f"Could not delete remote relation", exc_info=1)
+        raise SyncError(f"Could not delete remote relation") from exc
+
+
+def sync_create_zaakverzoek(relation: ZaakVerzoek):
+    zaak_url = get_absolute_url("zaak-detail", relation.zaak.uuid)
+
+    logger.info("Zaak: %s", zaak_url)
+    logger.info("Verzoek: %s", relation.verzoek)
+
+    # Define the remote resource with which we need to interact
+    resource = "objectverzoek"
+    client = Client.from_url(relation.verzoek)
+    client.auth = APICredential.get_auth(relation.verzoek)
+
+    try:
+        response = client.create(
+            resource,
+            {
+                "object": zaak_url,
+                "verzoek": relation.verzoek,
+                "objectType": "zaak",
+            },
+        )
+    except Exception as exc:
+        logger.error(f"Could not create remote relation", exc_info=1)
+        raise SyncError(f"Could not create remote relation") from exc
+
+    # save ZaakBesluit url for delete signal
+    relation._objectverzoek = response["url"]
+    relation.save()
+
+
+def sync_delete_zaakverzoek(relation: ZaakVerzoek):
+    resource = "objectverzoek"
+    client = Client.from_url(relation.verzoek)
+    client.auth = APICredential.get_auth(relation.verzoek)
+
+    try:
+        client.delete(resource, url=relation._objectverzoek)
+    except Exception as exc:
+        logger.error(f"Could not delete remote relation", exc_info=1)
+        raise SyncError(f"Could not delete remote relation") from exc
 
 
 @receiver(
@@ -114,7 +169,7 @@ def sync_informatieobject_relation(
 ):
     signal = kwargs["signal"]
     if signal is post_save and kwargs.get("created", False):
-        sync_create(instance)
+        sync_create_zio(instance)
     elif signal is pre_delete:
         # Add the uuid of the ZaakInformatieObject to the list of ZIOs that are
         # marked for delete, causing them not to show up when performing
@@ -127,8 +182,58 @@ def sync_informatieobject_relation(
             cache.set("zios_marked_for_delete", [instance.uuid])
 
         try:
-            sync_delete(instance)
+            sync_delete_zio(instance)
         finally:
             marked_zios = cache.get("zios_marked_for_delete")
             marked_zios.remove(instance.uuid)
             cache.set("zios_marked_for_delete", marked_zios)
+
+
+@receiver(
+    [post_save, pre_delete],
+    sender=ZaakContactMoment,
+    dispatch_uid="sync.sync_contactmoment_relation",
+)
+def sync_contactmoment_relation(sender, instance: ZaakContactMoment = None, **kwargs):
+    signal = kwargs["signal"]
+    if signal is post_save and not instance._objectcontactmoment:
+        sync_create_zaakcontactmoment(instance)
+    elif signal is pre_delete and instance._objectcontactmoment:
+        cache = caches["kcc_sync"]
+        marked_zcms = cache.get("zcms_marked_for_delete")
+        if marked_zcms:
+            cache.set("zcms_marked_for_delete", marked_zcms + [instance.uuid])
+        else:
+            cache.set("zcms_marked_for_delete", [instance.uuid])
+
+        try:
+            sync_delete_zaakcontactmoment(instance)
+        finally:
+            marked_zcms = cache.get("zcms_marked_for_delete")
+            marked_zcms.remove(instance.uuid)
+            cache.set("zcms_marked_for_delete", marked_zcms)
+
+
+@receiver(
+    [post_save, pre_delete],
+    sender=ZaakVerzoek,
+    dispatch_uid="sync.sync_verzoek_relation",
+)
+def sync_verzoek_relation(sender, instance: ZaakVerzoek = None, **kwargs):
+    signal = kwargs["signal"]
+    if signal is post_save and not instance._objectverzoek:
+        sync_create_zaakverzoek(instance)
+    elif signal is pre_delete and instance._objectverzoek:
+        cache = caches["kcc_sync"]
+        marked_zvs = cache.get("zvs_marked_for_delete")
+        if marked_zvs:
+            cache.set("zvs_marked_for_delete", marked_zvs + [instance.uuid])
+        else:
+            cache.set("zvs_marked_for_delete", [instance.uuid])
+
+        try:
+            sync_delete_zaakverzoek(instance)
+        finally:
+            marked_zvs = cache.get("zvs_marked_for_delete")
+            marked_zvs.remove(instance.uuid)
+            cache.set("zvs_marked_for_delete", marked_zvs)
