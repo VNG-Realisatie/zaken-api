@@ -53,6 +53,7 @@ from ..scopes import (
 ZTC_ROOT = "https://example.com/ztc/api/v1"
 CATALOGUS = f"{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04"
 ZAAKTYPE = f"{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f"
+ZAAKTYPE2 = f"{CATALOGUS}/zaaktypen/5dc4ebb0-67c5-4d24-9666-a11f169a6e8c"
 RESULTAATTYPE = f"{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785"
 STATUSTYPE = f"{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785"
 STATUSTYPE2 = f"{ZAAKTYPE}/statustypen/b86aa339-151e-45f0-ad6c-20698f50b6cd"
@@ -651,6 +652,77 @@ class ZakenTests(JWTAuthMixin, APITestCase):
             response, "rol__betrokkeneIdentificatie__medewerker__identificatie"
         )
         self.assertEqual(error["code"], "max_length")
+
+
+@override_settings(
+    LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+    ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
+)
+class HoofdZaakTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @tag("mock_client")
+    def test_create_deelzaak_missing_deelzaaktype_relation(self, *mocks):
+        hoofdzaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        detail_url = reverse(hoofdzaak)
+
+        responses = {
+            ZAAKTYPE: {"url": ZAAKTYPE, "deelzaaktypen": []},
+        }
+
+        with mock_client(responses):
+
+            response = self.client.post(
+                reverse(Zaak),
+                {
+                    "zaaktype": ZAAKTYPE2,
+                    "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.openbaar,
+                    "hoofdzaak": detail_url,
+                    "bronorganisatie": "517439943",
+                    "verantwoordelijkeOrganisatie": "517439943",
+                    "registratiedatum": "2018-06-11",
+                    "startdatum": "2018-06-11",
+                },
+                **ZAAK_WRITE_KWARGS,
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "invalid-deelzaaktype")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @tag("mock_client")
+    def test_create_deelzaak_success(self, *mocks):
+        hoofdzaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        detail_url = reverse(hoofdzaak)
+
+        responses = {
+            ZAAKTYPE: {"url": ZAAKTYPE, "deelzaaktypen": [ZAAKTYPE2]},
+        }
+
+        with mock_client(responses):
+
+            response = self.client.post(
+                reverse(Zaak),
+                {
+                    "zaaktype": ZAAKTYPE2,
+                    "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.openbaar,
+                    "hoofdzaak": detail_url,
+                    "bronorganisatie": "517439943",
+                    "verantwoordelijkeOrganisatie": "517439943",
+                    "registratiedatum": "2018-06-11",
+                    "startdatum": "2018-06-11",
+                },
+                **ZAAK_WRITE_KWARGS,
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(Zaak.objects.count(), 2)
 
 
 class ZaakArchivingTests(JWTAuthMixin, APITestCase):
