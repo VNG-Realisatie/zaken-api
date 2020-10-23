@@ -19,6 +19,7 @@ from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin,
+    NotificationDestroyMixin,
     NotificationViewSetMixin,
 )
 from vng_api_common.permissions import permission_class_factory
@@ -608,7 +609,9 @@ class KlantContactViewSet(
 
 class RolViewSet(
     NotificationCreateMixin,
+    NotificationDestroyMixin,
     AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     ClosedZaakMixin,
