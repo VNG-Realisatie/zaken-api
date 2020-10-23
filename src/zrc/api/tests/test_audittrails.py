@@ -17,6 +17,8 @@ from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
 from .mixins import ZaakInformatieObjectSyncMixin
 
+from ...datamodel.tests.factories import RolFactory
+
 # ZTC
 ZTC_ROOT = "https://example.com/ztc/api/v1"
 DRC_ROOT = "https://example.com/drc/api/v1"
@@ -277,3 +279,18 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         # Verify that the resource weergave stored in the AuditTrail matches
         # the unique representation as defined in the Zaak model
         self.assertIn(audittrail.resource_weergave, zaak_unique_representation)
+
+    def test_delete_rol(self):
+        rol = RolFactory.create()
+
+        rol_url = reverse(rol)
+        zaak_url = reverse(rol.zaak)
+
+        # Delete the Rol
+        response = self.client.delete(rol_url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        audittrail = AuditTrail.objects.get()
+        self.assertEqual(audittrail.hoofd_object, f"http://testserver{zaak_url}")
+        self.assertEqual(audittrail.resource_url, f"http://testserver{rol_url}")
