@@ -16,7 +16,12 @@ from vng_api_common.constants import (
     RolTypes,
     VertrouwelijkheidsAanduiding,
 )
-from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
+from vng_api_common.tests import (
+    JWTAuthMixin,
+    get_operation_url,
+    get_validation_errors,
+    reverse,
+)
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
@@ -599,11 +604,53 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(
-            response.data["results"][0]["url"], f"http://testserver{reverse(zaak1)}",
+            response.data["results"][0]["url"],
+            f"http://testserver{reverse(zaak1)}",
         )
         self.assertNotEqual(
-            response.data["results"][0]["url"], f"http://testserver{reverse(zaak2)}",
+            response.data["results"][0]["url"],
+            f"http://testserver{reverse(zaak2)}",
         )
+
+    def test_filter_rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn_max_length(
+        self,
+    ):
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-01-01")
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-03-01")
+        url = reverse("zaak-list")
+
+        response = self.client.get(
+            url,
+            {"rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "0" * 10},
+            **ZAAK_READ_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(
+            response, "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn"
+        )
+        self.assertEqual(error["code"], "max_length")
+
+    def test_filter_rol__betrokkeneIdentificatie__medewerker__identificatie_max_length(
+        self,
+    ):
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-01-01")
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-03-01")
+        url = reverse("zaak-list")
+
+        response = self.client.get(
+            url,
+            {"rol__betrokkeneIdentificatie__medewerker__identificatie": "0" * 25},
+            **ZAAK_READ_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(
+            response, "rol__betrokkeneIdentificatie__medewerker__identificatie"
+        )
+        self.assertEqual(error["code"], "max_length")
 
 
 class ZaakArchivingTests(JWTAuthMixin, APITestCase):
@@ -776,7 +823,8 @@ class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
             omschrijving_generiek=RolOmschrijving.behandelaar,
         )
         Medewerker.objects.create(
-            rol=rol, identificatie="some-username",
+            rol=rol,
+            identificatie="some-username",
         )
 
         with self.subTest(expected="no-match"):
