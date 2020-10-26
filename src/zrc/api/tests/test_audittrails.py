@@ -15,9 +15,8 @@ from zds_client.tests.mocks import mock_client
 from zrc.datamodel.models import Resultaat, Zaak, ZaakInformatieObject
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
-from .mixins import ZaakInformatieObjectSyncMixin
-
 from ...datamodel.tests.factories import RolFactory
+from .mixins import ZaakInformatieObjectSyncMixin
 
 # ZTC
 ZTC_ROOT = "https://example.com/ztc/api/v1"
