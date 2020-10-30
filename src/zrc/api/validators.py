@@ -1,4 +1,5 @@
 from datetime import date
+from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
 from django.db import models
@@ -164,4 +165,17 @@ class DateNotInFutureValidator:
             now = now.date()
 
         if value > now:
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class LatestVersionValidator:
+    code = "not-latest-version"
+    message = _(
+        "Er mag geen specifieke versie van een informatieobject worden opgegeven"
+    )
+
+    def __call__(self, value):
+        url = urlparse(value)
+
+        if "versie" in parse_qs(url.query):
             raise serializers.ValidationError(self.message, code=self.code)
