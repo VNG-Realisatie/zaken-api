@@ -155,36 +155,6 @@ class ZaakInformatieObjectAPITests(
         error = get_validation_errors(response, "nonFieldErrors")
         self.assertEqual(error["code"], "unique")
 
-    @freeze_time("2018-09-19T12:25:19+0200")
-    @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
-    @patch("vng_api_common.validators.fetcher")
-    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
-    def test_create_with_specific_informatieobject_version_fails(self, *mocks):
-        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = reverse("zaak-detail", kwargs={"version": "1", "uuid": zaak.uuid})
-
-        titel = "some titel"
-        beschrijving = "some beschrijving"
-        content = {
-            "informatieobject": f"{INFORMATIEOBJECT}?versie=1",
-            "zaak": f"http://testserver{zaak_url}",
-            "titel": titel,
-            "beschrijving": beschrijving,
-            "aardRelatieWeergave": "bla",  # Should be ignored by the API
-        }
-
-        # Send to the API
-        with mock_client(RESPONSES):
-            response = self.client.post(self.list_url, content)
-
-        # Test response
-        self.assertEqual(
-            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
-        )
-
-        error = get_validation_errors(response, "informatieobject")
-        self.assertEqual(error["code"], "not-latest-version")
-
     @freeze_time("2018-09-20 12:00:00")
     def test_read_zaak(self):
         zio = ZaakInformatieObjectFactory.create(informatieobject=INFORMATIEOBJECT)
