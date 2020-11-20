@@ -1,4 +1,5 @@
 from datetime import date
+from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
 from django.db import models
@@ -11,6 +12,8 @@ from vng_api_common.models import APICredential
 from vng_api_common.validators import (
     UniekeIdentificatieValidator as _UniekeIdentificatieValidator,
 )
+
+from ..datamodel.models.core import Zaak
 
 
 def fetch_object(resource: str, url: str) -> dict:
@@ -189,4 +192,29 @@ class DateNotInFutureValidator:
             now = now.date()
 
         if value > now:
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class LatestVersionValidator:
+    code = "not-latest-version"
+    message = _(
+        "Er mag geen specifieke versie van een informatieobject worden opgegeven"
+    )
+
+    def __call__(self, value):
+        url = urlparse(value)
+
+        if "versie" in parse_qs(url.query):
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class ZaakBesluitValidator:
+    message = _(
+        "Zaak has related Besluit(en), these relations should be deleted "
+        "before deleting the Zaak"
+    )
+    code = "related-besluiten"
+
+    def __call__(self, zaak: Zaak):
+        if zaak.zaakbesluit_set.exists():
             raise serializers.ValidationError(self.message, code=self.code)
