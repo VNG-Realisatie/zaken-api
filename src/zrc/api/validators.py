@@ -1,5 +1,4 @@
 from datetime import date
-from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
 from django.db import models
@@ -195,19 +194,6 @@ class DateNotInFutureValidator:
             raise serializers.ValidationError(self.message, code=self.code)
 
 
-class LatestVersionValidator:
-    code = "not-latest-version"
-    message = _(
-        "Er mag geen specifieke versie van een informatieobject worden opgegeven"
-    )
-
-    def __call__(self, value):
-        url = urlparse(value)
-
-        if "versie" in parse_qs(url.query):
-            raise serializers.ValidationError(self.message, code=self.code)
-
-
 class ZaakBesluitValidator:
     message = _(
         "Zaak has related Besluit(en), these relations should be deleted "
@@ -218,3 +204,4 @@ class ZaakBesluitValidator:
     def __call__(self, zaak: Zaak):
         if zaak.zaakbesluit_set.exists():
             raise serializers.ValidationError(self.message, code=self.code)
+

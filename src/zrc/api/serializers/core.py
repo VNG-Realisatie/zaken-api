@@ -65,7 +65,6 @@ from ..validators import (
     DateNotInFutureValidator,
     HoofdZaaktypeRelationValidator,
     HoofdzaakValidator,
-    LatestVersionValidator,
     NotSelfValidator,
     RolOccurenceValidator,
     UniekeIdentificatieValidator,
@@ -777,7 +776,6 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             "uuid": {"read_only": True},
             "informatieobject": {
                 "validators": [
-                    LatestVersionValidator(),
                     ResourceValidator(
                         "EnkelvoudigInformatieObject",
                         settings.DRC_API_SPEC,
