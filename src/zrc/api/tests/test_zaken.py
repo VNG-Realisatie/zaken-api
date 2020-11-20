@@ -44,6 +44,7 @@ from zrc.tests.utils import (
 from ..scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN,
     SCOPE_ZAKEN_ALLES_LEZEN,
+    SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     SCOPE_ZAKEN_BIJWERKEN,
     SCOPE_ZAKEN_CREATE,
     SCOPEN_ZAKEN_HEROPENEN,
@@ -651,6 +652,37 @@ class ZakenTests(JWTAuthMixin, APITestCase):
             response, "rol__betrokkeneIdentificatie__medewerker__identificatie"
         )
         self.assertEqual(error["code"], "max_length")
+
+
+class ZakenDeleteTests(JWTAuthMixin, APITestCase):
+
+    scopes = [SCOPE_ZAKEN_ALLES_VERWIJDEREN]
+    zaaktype = ZAAKTYPE
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_delete_zaak(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        response = self.client.delete(zaak_url, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Zaak.objects.exists())
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_delete_zaak_with_related_besluit(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaakbesluit = ZaakBesluitFactory.create(zaak=zaak, besluit=BESLUIT)
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        response = self.client.delete(zaak_url, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "related-besluiten")
 
 
 class ZaakArchivingTests(JWTAuthMixin, APITestCase):

@@ -13,6 +13,8 @@ from vng_api_common.validators import (
     UniekeIdentificatieValidator as _UniekeIdentificatieValidator,
 )
 
+from ..datamodel.models.core import Zaak
+
 
 def fetch_object(resource: str, url: str) -> dict:
     Client = import_string(settings.ZDS_CLIENT_CLASS)
@@ -178,4 +180,16 @@ class LatestVersionValidator:
         url = urlparse(value)
 
         if "versie" in parse_qs(url.query):
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class ZaakBesluitValidator:
+    message = _(
+        "Zaak has related Besluit(en), these relations should be deleted "
+        "before deleting the Zaak"
+    )
+    code = "related-besluiten"
+
+    def __call__(self, zaak: Zaak):
+        if zaak.zaakbesluit_set.exists():
             raise serializers.ValidationError(self.message, code=self.code)
