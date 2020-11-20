@@ -2091,6 +2091,27 @@ paths:
       operationId: rol_delete
       summary: Verwijder een ROL van een ZAAK.
       description: Verwijder een ROL van een ZAAK.
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '204':
           description: No content
