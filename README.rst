@@ -2,7 +2,7 @@
 Zaken API
 =========
 
-:Version: 1.0.2
+:Version: master
 :Source: https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, ZRC
 
@@ -21,6 +21,9 @@ API specificaties
 ==========  ==============  =============================
 Versie      Release datum   API specificatie
 ==========  ==============  =============================
+master      n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaakregistratiecomponent/master/src/openapi.yaml>`_,
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaakregistratiecomponent/master/src/openapi.yaml>`_
+                            (`verschillen <https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/compare/stable/1.0.x..master?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
 1.0.x       n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaakregistratiecomponent/stable/1.0.x/src/openapi.yaml>`_,
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaakregistratiecomponent/stable/1.0.x/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/compare/1.0.2..stable/1.0.x?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
@@ -104,7 +107,7 @@ Licensed under the EUPL_
     :alt: Code style
     :target: https://github.com/psf/black
 
-.. |python-versions| image:: https://img.shields.io/badge/python-3.6%2B-blue.svg
+.. |python-versions| image:: https://img.shields.io/badge/python-3.7%2B-blue.svg
     :alt: Supported Python version
     :target: https://hub.docker.com/r/vngr/gemma-zrc/
 
