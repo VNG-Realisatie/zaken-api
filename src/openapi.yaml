@@ -80,7 +80,7 @@ info:
 
     - `klantcontact`: create
 
-    - `rol`: create
+    - `rol`: create, destroy
 
     - `resultaat`: create, update, destroy
 
@@ -6189,12 +6189,14 @@ paths:
         required: false
         schema:
           type: string
+          maxLength: 9
       - name: rol__betrokkeneIdentificatie__medewerker__identificatie
         in: query
         description: Een korte unieke aanduiding van de MEDEWERKER.
         required: false
         schema:
           type: string
+          maxLength: 24
       - name: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
         in: query
         description: Een korte identificatie van de organisatorische eenheid.
