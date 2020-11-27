@@ -65,6 +65,7 @@ from ..auth import get_auth
 from ..validators import (
     CorrectZaaktypeValidator,
     DateNotInFutureValidator,
+    HoofdZaaktypeRelationValidator,
     HoofdzaakValidator,
     NotSelfValidator,
     RolOccurenceValidator,
@@ -327,7 +328,7 @@ class ZaakSerializer(
             "laatste_betaaldatum": {"validators": [UntilNowValidator()]},
         }
         # Replace a default "unique together" constraint.
-        validators = [UniekeIdentificatieValidator()]
+        validators = [UniekeIdentificatieValidator(), HoofdZaaktypeRelationValidator()]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

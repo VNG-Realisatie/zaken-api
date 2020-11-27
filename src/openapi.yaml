@@ -1893,7 +1893,7 @@ paths:
         required: false
         schema:
           type: string
-      - name: betrokkeneIdentificatie__vestiging__identificatie
+      - name: betrokkeneIdentificatie__organisatorischeEenheid__identificatie
         in: query
         description: Een korte identificatie van de organisatorische eenheid.
         required: false
@@ -2458,6 +2458,27 @@ paths:
       operationId: rol_delete
       summary: Verwijder een ROL van een ZAAK.
       description: Verwijder een ROL van een ZAAK.
+      parameters:
+      - name: X-NLX-Request-Application-Id
+        in: header
+        description: Identificatie van de applicatie die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-NLX-Request-User-Id
+        in: header
+        description: Identificatie van de gebruiker die het verzoek stuurt (indien
+          NLX wordt gebruikt).
+        required: false
+        schema:
+          type: string
+      - name: X-Audit-Toelichting
+        in: header
+        description: Toelichting waarom een bepaald verzoek wordt gedaan
+        required: false
+        schema:
+          type: string
       responses:
         '204':
           description: No content
@@ -6171,6 +6192,12 @@ paths:
       - name: rol__betrokkeneIdentificatie__medewerker__identificatie
         in: query
         description: Een korte unieke aanduiding van de MEDEWERKER.
+        required: false
+        schema:
+          type: string
+      - name: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
+        in: query
+        description: Een korte identificatie van de organisatorische eenheid.
         required: false
         schema:
           type: string
@@ -11902,6 +11929,11 @@ components:
         rol__betrokkeneIdentificatie__medewerker__identificatie:
           title: Rol  betrokkeneidentificatie  medewerker  identificatie
           description: Een korte unieke aanduiding van de MEDEWERKER.
+          type: string
+          minLength: 1
+        rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie:
+          title: Rol  betrokkeneidentificatie  organisatorischeeenheid  identificatie
+          description: Een korte identificatie van de organisatorische eenheid.
           type: string
           minLength: 1
         ordering:
