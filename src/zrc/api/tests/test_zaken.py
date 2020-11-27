@@ -16,11 +16,21 @@ from vng_api_common.constants import (
     RolTypes,
     VertrouwelijkheidsAanduiding,
 )
-from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
+from vng_api_common.tests import (
+    JWTAuthMixin,
+    get_operation_url,
+    get_validation_errors,
+    reverse,
+)
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import BetalingsIndicatie
-from zrc.datamodel.models import Medewerker, NatuurlijkPersoon, Zaak
+from zrc.datamodel.models import (
+    Medewerker,
+    NatuurlijkPersoon,
+    OrganisatorischeEenheid,
+    Zaak,
+)
 from zrc.datamodel.tests.factories import (
     RolFactory,
     StatusFactory,
@@ -39,6 +49,7 @@ from zrc.tests.utils import (
 from ..scopes import (
     SCOPE_STATUSSEN_TOEVOEGEN,
     SCOPE_ZAKEN_ALLES_LEZEN,
+    SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     SCOPE_ZAKEN_BIJWERKEN,
     SCOPE_ZAKEN_CREATE,
     SCOPEN_ZAKEN_HEROPENEN,
@@ -48,6 +59,7 @@ from ..scopes import (
 ZTC_ROOT = "https://example.com/ztc/api/v1"
 CATALOGUS = f"{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04"
 ZAAKTYPE = f"{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f"
+ZAAKTYPE2 = f"{CATALOGUS}/zaaktypen/5dc4ebb0-67c5-4d24-9666-a11f169a6e8c"
 RESULTAATTYPE = f"{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785"
 STATUSTYPE = f"{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785"
 STATUSTYPE2 = f"{ZAAKTYPE}/statustypen/b86aa339-151e-45f0-ad6c-20698f50b6cd"
@@ -607,6 +619,148 @@ class ZakenTests(JWTAuthMixin, APITestCase):
             f"http://testserver{reverse(zaak2)}",
         )
 
+    def test_filter_rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn_max_length(
+        self,
+    ):
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-01-01")
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-03-01")
+        url = reverse("zaak-list")
+
+        response = self.client.get(
+            url,
+            {"rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "0" * 10},
+            **ZAAK_READ_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(
+            response, "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn"
+        )
+        self.assertEqual(error["code"], "max_length")
+
+    def test_filter_rol__betrokkeneIdentificatie__medewerker__identificatie_max_length(
+        self,
+    ):
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-01-01")
+        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-03-01")
+        url = reverse("zaak-list")
+
+        response = self.client.get(
+            url,
+            {"rol__betrokkeneIdentificatie__medewerker__identificatie": "0" * 25},
+            **ZAAK_READ_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(
+            response, "rol__betrokkeneIdentificatie__medewerker__identificatie"
+        )
+        self.assertEqual(error["code"], "max_length")
+
+
+@override_settings(
+    LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+    ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
+)
+class HoofdZaakTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @tag("mock_client")
+    def test_create_deelzaak_missing_deelzaaktype_relation(self, *mocks):
+        hoofdzaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        detail_url = reverse(hoofdzaak)
+
+        responses = {
+            ZAAKTYPE: {"url": ZAAKTYPE, "deelzaaktypen": []},
+        }
+
+        with mock_client(responses):
+
+            response = self.client.post(
+                reverse(Zaak),
+                {
+                    "zaaktype": ZAAKTYPE2,
+                    "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.openbaar,
+                    "hoofdzaak": detail_url,
+                    "bronorganisatie": "517439943",
+                    "verantwoordelijkeOrganisatie": "517439943",
+                    "registratiedatum": "2018-06-11",
+                    "startdatum": "2018-06-11",
+                },
+                **ZAAK_WRITE_KWARGS,
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "invalid-deelzaaktype")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @tag("mock_client")
+    def test_create_deelzaak_success(self, *mocks):
+        hoofdzaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        detail_url = reverse(hoofdzaak)
+
+        responses = {
+            ZAAKTYPE: {"url": ZAAKTYPE, "deelzaaktypen": [ZAAKTYPE2]},
+        }
+
+        with mock_client(responses):
+
+            response = self.client.post(
+                reverse(Zaak),
+                {
+                    "zaaktype": ZAAKTYPE2,
+                    "vertrouwelijkheidaanduiding": VertrouwelijkheidsAanduiding.openbaar,
+                    "hoofdzaak": detail_url,
+                    "bronorganisatie": "517439943",
+                    "verantwoordelijkeOrganisatie": "517439943",
+                    "registratiedatum": "2018-06-11",
+                    "startdatum": "2018-06-11",
+                },
+                **ZAAK_WRITE_KWARGS,
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(Zaak.objects.count(), 2)
+
+
+class ZakenDeleteTests(JWTAuthMixin, APITestCase):
+
+    scopes = [SCOPE_ZAKEN_ALLES_VERWIJDEREN]
+    zaaktype = ZAAKTYPE
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_delete_zaak(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        response = self.client.delete(zaak_url, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Zaak.objects.exists())
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_delete_zaak_with_related_besluit(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaakbesluit = ZaakBesluitFactory.create(zaak=zaak, besluit=BESLUIT)
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        response = self.client.delete(zaak_url, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(error["code"], "related-besluiten")
+
 
 class ZaakArchivingTests(JWTAuthMixin, APITestCase):
 
@@ -834,6 +988,41 @@ class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
                 url,
                 {
                     "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn": "129117729"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_rol_organisatorische_eenheid_identificatie(self):
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.organisatorische_eenheid,
+            omschrijving_generiek=RolOmschrijving.behandelaar,
+        )
+        OrganisatorischeEenheid.objects.create(
+            rol=rol,
+            identificatie="some-id",
+        )
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie": "no-match"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie": "some-id"
                 },
                 **ZAAK_READ_KWARGS,
             )

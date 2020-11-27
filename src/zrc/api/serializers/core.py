@@ -65,6 +65,7 @@ from ..auth import get_auth
 from ..validators import (
     CorrectZaaktypeValidator,
     DateNotInFutureValidator,
+    HoofdZaaktypeRelationValidator,
     HoofdzaakValidator,
     NotSelfValidator,
     RolOccurenceValidator,
@@ -274,6 +275,7 @@ class ZaakSerializer(
             "archiefstatus",
             "archiefactiedatum",
             "resultaat",
+            "opdrachtgevende_organisatie",
         )
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},
@@ -326,7 +328,7 @@ class ZaakSerializer(
             "laatste_betaaldatum": {"validators": [UntilNowValidator()]},
         }
         # Replace a default "unique together" constraint.
-        validators = [UniekeIdentificatieValidator()]
+        validators = [UniekeIdentificatieValidator(), HoofdZaaktypeRelationValidator()]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -470,7 +472,20 @@ class GeoWithinSerializer(serializers.Serializer):
 
 
 class ZaakZoekSerializer(serializers.Serializer):
-    zaakgeometrie = GeoWithinSerializer(required=True)
+    zaakgeometrie = GeoWithinSerializer(required=False)
+    uuid__in = serializers.ListField(
+        child=serializers.UUIDField(),
+        required=False,
+        help_text=_("Array of unieke resource identifiers (UUID4)"),
+    )
+
+    def validate(self, attrs):
+        validated_attrs = super().validate(attrs)
+        if not validated_attrs:
+            raise serializers.ValidationError(
+                _("Search parameters must be specified"), code="empty_search_body"
+            )
+        return validated_attrs
 
 
 class StatusSerializer(serializers.HyperlinkedModelSerializer):

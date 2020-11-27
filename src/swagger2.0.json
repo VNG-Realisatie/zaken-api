@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "Zaken API",
-        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Main resource**\n\n`zaak`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef\n* `zaaktype`: URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.\n\n**Resources en acties**\n- `zaak`: create, update, destroy\n- `status`: create\n- `zaakobject`: create\n- `zaakinformatieobject`: create\n- `zaakeigenschap`: create\n- `klantcontact`: create\n- `rol`: create\n- `resultaat`: create, update, destroy\n- `zaakbesluit`: create\n- `zaakcontactmoment`: create\n- `zaakverzoek`: create\n\n\n**Handige links**\n\n* [Documentatie](https://vng-realisatie.github.io/gemma-zaken/standaard)\n* [Zaakgericht werken](https://vng-realisatie.github.io/gemma-zaken)\n",
+        "description": "Een API om een zaakregistratiecomponent (ZRC) te benaderen.\n\nDe ZAAK is het kernobject in deze API, waaraan verschillende andere\nresources gerelateerd zijn. De Zaken API werkt samen met andere API's voor\nZaakgericht werken om tot volledige functionaliteit te komen.\n\n**Afhankelijkheden**\n\nDeze API is afhankelijk van:\n\n* Catalogi API\n* Notificaties API\n* Documenten API *(optioneel)*\n* Besluiten API *(optioneel)*\n* Autorisaties API *(optioneel)*\n\n**Autorisatie**\n\nDeze API vereist autorisatie. Je kan de\n[token-tool](https://zaken-auth.vng.cloud/) gebruiken om JWT-tokens te\ngenereren.\n\n### Notificaties\n\nDeze API publiceert notificaties op het kanaal `zaken`.\n\n**Main resource**\n\n`zaak`\n\n\n\n**Kenmerken**\n\n* `bronorganisatie`: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef\n* `zaaktype`: URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt\n* `vertrouwelijkheidaanduiding`: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is.\n\n**Resources en acties**\n- `zaak`: create, update, destroy\n- `status`: create\n- `zaakobject`: create\n- `zaakinformatieobject`: create\n- `zaakeigenschap`: create\n- `klantcontact`: create\n- `rol`: create, destroy\n- `resultaat`: create, update, destroy\n- `zaakbesluit`: create\n- `zaakcontactmoment`: create\n- `zaakverzoek`: create\n\n\n**Handige links**\n\n* [Documentatie](https://vng-realisatie.github.io/gemma-zaken/standaard)\n* [Zaakgericht werken](https://vng-realisatie.github.io/gemma-zaken)\n",
         "contact": {
             "url": "https://vng-realisatie.github.io/gemma-zaken",
             "email": "standaarden.ondersteuning@vng.nl"
@@ -22,9 +22,9 @@
     ],
     "securityDefinitions": {
         "JWT-Claims": {
-            "bearerFormat": "JWT",
+            "type": "http",
             "scheme": "bearer",
-            "type": "http"
+            "bearerFormat": "JWT"
         }
     },
     "security": [
@@ -575,13 +575,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -1243,13 +1243,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -1423,13 +1423,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -2153,7 +2153,7 @@
                         "type": "string"
                     },
                     {
-                        "name": "betrokkeneIdentificatie__vestiging__identificatie",
+                        "name": "betrokkeneIdentificatie__organisatorischeEenheid__identificatie",
                         "in": "query",
                         "description": "Een korte identificatie van de organisatorische eenheid.",
                         "required": false,
@@ -2604,13 +2604,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -2784,13 +2784,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -2827,7 +2827,29 @@
                 "operationId": "rol_delete",
                 "summary": "Verwijder een ROL van een ZAAK.",
                 "description": "Verwijder een ROL van een ZAAK.",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "X-NLX-Request-Application-Id",
+                        "in": "header",
+                        "description": "Identificatie van de applicatie die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-NLX-Request-User-Id",
+                        "in": "header",
+                        "description": "Identificatie van de gebruiker die het verzoek stuurt (indien NLX wordt gebruikt).",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Audit-Toelichting",
+                        "in": "header",
+                        "description": "Toelichting waarom een bepaald verzoek wordt gedaan",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No content",
@@ -3417,13 +3439,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -3597,13 +3619,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -4046,13 +4068,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -4800,13 +4822,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -4980,13 +5002,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -6099,13 +6121,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -6677,13 +6699,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -7215,12 +7237,21 @@
                         "in": "query",
                         "description": "Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "maxLength": 9
                     },
                     {
                         "name": "rol__betrokkeneIdentificatie__medewerker__identificatie",
                         "in": "query",
                         "description": "Een korte unieke aanduiding van de MEDEWERKER.",
+                        "required": false,
+                        "type": "string",
+                        "maxLength": 24
+                    },
+                    {
+                        "name": "rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie",
+                        "in": "query",
+                        "description": "Een korte identificatie van de organisatorische eenheid.",
                         "required": false,
                         "type": "string"
                     },
@@ -7985,13 +8016,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -8206,13 +8237,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -9132,13 +9163,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -9696,13 +9727,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -10437,13 +10468,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -10617,13 +10648,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -13592,6 +13623,12 @@
                     "format": "uri",
                     "readOnly": true,
                     "x-nullable": true
+                },
+                "opdrachtgevendeOrganisatie": {
+                    "title": "Opdrachtgevende organisatie",
+                    "description": "De krachtens publiekrecht ingestelde rechtspersoon dan wel ander niet-natuurlijk persoon waarbinnen het (bestuurs)orgaan zetelt dat opdracht heeft gegeven om taken uit te voeren waaraan de zaak invulling geeft.",
+                    "type": "string",
+                    "maxLength": 9
                 }
             }
         },
@@ -13605,13 +13642,18 @@
             }
         },
         "ZaakZoek": {
-            "required": [
-                "zaakgeometrie"
-            ],
             "type": "object",
             "properties": {
                 "zaakgeometrie": {
                     "$ref": "#/definitions/GeoWithin"
+                },
+                "uuid__in": {
+                    "description": "Array of unieke resource identifiers (UUID4)",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
                 },
                 "identificatie": {
                     "title": "Identificatie",
@@ -13768,6 +13810,12 @@
                 "rol__betrokkeneIdentificatie__medewerker__identificatie": {
                     "title": "Rol  betrokkeneidentificatie  medewerker  identificatie",
                     "description": "Een korte unieke aanduiding van de MEDEWERKER.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie": {
+                    "title": "Rol  betrokkeneidentificatie  organisatorischeeenheid  identificatie",
+                    "description": "Een korte identificatie van de organisatorische eenheid.",
                     "type": "string",
                     "minLength": 1
                 },
