@@ -204,4 +204,3 @@ class ZaakBesluitValidator:
     def __call__(self, zaak: Zaak):
         if zaak.zaakbesluit_set.exists():
             raise serializers.ValidationError(self.message, code=self.code)
-
