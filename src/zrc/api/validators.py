@@ -12,6 +12,8 @@ from vng_api_common.validators import (
     UniekeIdentificatieValidator as _UniekeIdentificatieValidator,
 )
 
+from ..datamodel.models.core import Zaak
+
 
 def fetch_object(resource: str, url: str) -> dict:
     Client = import_string(settings.ZDS_CLIENT_CLASS)
@@ -112,6 +114,31 @@ class HoofdzaakValidator:
             raise serializers.ValidationError(self.message, code=self.code)
 
 
+class HoofdZaaktypeRelationValidator:
+    code = "invalid-deelzaaktype"
+    message = _("Zaaktype niet vastgelegd in deelzaaktypen van hoofdzaak.zaaktype")
+
+    def set_context(self, serializer):
+        """
+        This hook is called by the serializer instance,
+        prior to the validation call being made.
+        """
+        # Determine the existing instance, if this is an update operation.
+        self.instance = getattr(serializer, "instance", None)
+
+    def __call__(self, attrs):
+        if not attrs.get("hoofdzaak"):
+            return
+
+        hoofdzaak = attrs.get("hoofdzaak") or self.instance.hoofdzaak
+        zaaktype = attrs.get("zaaktype") or self.instance.zaaktype
+
+        hoofdzaaktype = fetch_object("zaaktype", hoofdzaak.zaaktype)
+
+        if zaaktype not in hoofdzaaktype.get("deelzaaktypen", []):
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
 class CorrectZaaktypeValidator:
     code = "zaaktype-mismatch"
     message = _("De referentie hoort niet bij het zaaktype van de zaak.")
@@ -164,4 +191,16 @@ class DateNotInFutureValidator:
             now = now.date()
 
         if value > now:
+            raise serializers.ValidationError(self.message, code=self.code)
+
+
+class ZaakBesluitValidator:
+    message = _(
+        "Zaak has related Besluit(en), these relations should be deleted "
+        "before deleting the Zaak"
+    )
+    code = "related-besluiten"
+
+    def __call__(self, zaak: Zaak):
+        if zaak.zaakbesluit_set.exists():
             raise serializers.ValidationError(self.message, code=self.code)

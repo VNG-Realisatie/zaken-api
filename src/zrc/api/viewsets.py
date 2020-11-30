@@ -3,7 +3,7 @@ import logging
 from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
@@ -22,6 +22,7 @@ from vng_api_common.geo import GeoMixin
 from vng_api_common.notifications.kanalen import Kanaal
 from vng_api_common.notifications.viewsets import (
     NotificationCreateMixin,
+    NotificationDestroyMixin,
     NotificationViewSetMixin,
 )
 from vng_api_common.permissions import permission_class_factory
@@ -87,6 +88,7 @@ from .serializers import (
     ZaakVerzoekSerializer,
     ZaakZoekSerializer,
 )
+from .validators import ZaakBesluitValidator
 
 logger = logging.getLogger(__name__)
 
@@ -237,11 +239,13 @@ class ZaakViewSet(
         niet geschikt voor geo-zoekopdrachten.
         """
         search_input = self.get_search_input()
+        queryset = self.filter_queryset(self.get_queryset())
 
-        within = search_input["zaakgeometrie"]["within"]
-        queryset = self.filter_queryset(self.get_queryset()).filter(
-            zaakgeometrie__within=within
-        )
+        for name, value in search_input.items():
+            if name == "zaakgeometrie":
+                queryset = queryset.filter(zaakgeometrie__within=value["within"])
+            else:
+                queryset = queryset.filter(**{name: value})
 
         return self.get_search_output(queryset)
 
@@ -270,6 +274,18 @@ class ZaakViewSet(
                 msg = "Modifying a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)
         super().perform_update(serializer)
+
+    def perform_destroy(self, instance):
+        # destroy is only allowed if no Besluiten are related
+        validator = ZaakBesluitValidator()
+        try:
+            validator(instance)
+        except serializers.ValidationError as exc:
+            raise serializers.ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: exc}, code=exc.detail[0].code
+            )
+        else:
+            super().perform_destroy(instance)
 
 
 @conditional_retrieve()
@@ -634,7 +650,9 @@ class KlantContactViewSet(
 @conditional_retrieve()
 class RolViewSet(
     NotificationCreateMixin,
+    NotificationDestroyMixin,
     AuditTrailCreateMixin,
+    AuditTrailDestroyMixin,
     CheckQueryParamsMixin,
     ListFilterByAuthorizationsMixin,
     ClosedZaakMixin,

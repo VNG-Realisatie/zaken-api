@@ -15,6 +15,7 @@ from zds_client.tests.mocks import mock_client
 from zrc.datamodel.models import Resultaat, Zaak, ZaakInformatieObject
 from zrc.tests.utils import ZAAK_WRITE_KWARGS
 
+from ...datamodel.tests.factories import RolFactory
 from .mixins import ZaakInformatieObjectSyncMixin
 
 # ZTC
@@ -146,7 +147,9 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             response = self.client.put(url, modified_data, **ZAAK_WRITE_KWARGS)
             zaak_response = response.data
 
-        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_response["url"])
+        audittrails = AuditTrail.objects.filter(
+            hoofd_object=zaak_response["url"]
+        ).order_by("pk")
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the Zaak update contains the correct
@@ -193,7 +196,9 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         zaakinformatieobject_response = response.data
 
-        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_data["url"])
+        audittrails = AuditTrail.objects.filter(hoofd_object=zaak_data["url"]).order_by(
+            "pk"
+        )
         self.assertEqual(audittrails.count(), 2)
 
         # Verify that the audittrail for the ZaakInformatieObject creation
@@ -277,3 +282,18 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         # Verify that the resource weergave stored in the AuditTrail matches
         # the unique representation as defined in the Zaak model
         self.assertIn(audittrail.resource_weergave, zaak_unique_representation)
+
+    def test_delete_rol(self):
+        rol = RolFactory.create()
+
+        rol_url = reverse(rol)
+        zaak_url = reverse(rol.zaak)
+
+        # Delete the Rol
+        response = self.client.delete(rol_url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        audittrail = AuditTrail.objects.get()
+        self.assertEqual(audittrail.hoofd_object, f"http://testserver{zaak_url}")
+        self.assertEqual(audittrail.resource_url, f"http://testserver{rol_url}")

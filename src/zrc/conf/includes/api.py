@@ -30,6 +30,10 @@ SWAGGER_SETTINGS.update(
             "vng_api_common.inspectors.geojson.GeometryFieldInspector",
         )
         + BASE_SWAGGER_SETTINGS["DEFAULT_FIELD_INSPECTORS"],
+        "DEFAULT_FILTER_INSPECTORS": (
+            "vng_api_common.inspectors.query.FilterInspector",
+        )
+        + BASE_SWAGGER_SETTINGS["DEFAULT_FILTER_INSPECTORS"],
     }
 )
 
