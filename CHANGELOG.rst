@@ -2,6 +2,42 @@
 Wijzigingen
 ===========
 
+1.0.2 (2020-06-13)
+==================
+
+API spec changes
+----------------
+
+* Add ``zaken.geforceerd-bijwerken`` scope to allow fixing of data related to a closed ``Zaak`` (`Issue 1537`_)
+* Fix documentation references in API schema description (`Issue 1552`_)
+* Add ``maximaleVertrouwelijkheidaanduiding`` filter parameter on Zaken endpoint (`PR 1624`_)
+* Add filter parameters on Zaken endpoint to support werkvoorraad (`PR 1625`_):
+    - ``rol__betrokkeneType``
+    - ``rol__betrokkene``
+    - ``rol__omschrijvingGeneriek``
+    - ``rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn``
+    - ``rol__betrokkeneIdentificatie__medewerker__identificatie``
+
+
+Implementation changes
+----------------------
+
+* If a ``Zaak`` is closed, data mutations to it are now blocked (unless ``zaken.geforceerd-bijwerken`` is used). Also extends to related objects (`Issue 1537`_):
+    - ``ZaakInformatieObject``
+    - ``ZaakObject``
+    - ``Resultaat``
+    - ``KlantContact``
+    - ``Status``
+    - ``ZaakEigenschap``
+    - ``Rol``
+    - ``ZaakBesluit``
+
+.. _Issue 1552: https://github.com/VNG-Realisatie/gemma-zaken/issues/1552
+.. _PR 1624: https://github.com/VNG-Realisatie/gemma-zaken/pull/1624
+.. _PR 1625: https://github.com/VNG-Realisatie/gemma-zaken/pull/1625
+
+.. _Issue 1537: https://github.com/VNG-Realisatie/gemma-zaken/issues/1537
+
 1.0.1 (2019-12-16)
 ==================
 
