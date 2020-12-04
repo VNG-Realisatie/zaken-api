@@ -2,6 +2,79 @@
 Wijzigingen
 ===========
 
+1.1.0 (2020-06-13)
+==================
+
+API spec new features
+---------------------
+
+* Add ETag headers to the following resources (`Issue 1096`_):
+    - ``Zaak``
+    - ``Status``
+    - ``ZaakInformatieObject``
+    - ``ZaakEigenschap``
+    - ``Rol``
+    - ``Resultaat``
+* Add ``onderwerp`` and ``toelichting`` attributes to ``KlantContact`` resource (`Issue 1222`_)
+* Add ``zaak`` filter parameter on ``KlantContact`` resource (`Issue 1338`_)
+* Add inline ``eigenschappen`` attribute on ``Zaak`` resource (`Issue 536`_)
+* Add new ``ZaakContactMoment`` resource (`Issue 1323`_)
+    - With the introduction of this resource, the ``KlantContact`` has been marked deprecated
+* Add new ``ZaakVerzoek`` resource (`Issue 1392`_)
+* Add ``opdrachtgevendeOrganisatie`` attribute to ``Zaak`` resource (`Issue 654`_)
+* Add ``uuid__in`` attribute to ``zaak__zoek`` operation, allowing UUID based search (`Utrecht issue 611`_)
+* Add ``rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie`` filter parameter to ``Zaak`` endpoint (`Issue 1686`_)
+
+API spec bugfixes
+-----------------
+
+* Set proper ``maxLength`` for query parameters on ``Zaken`` endpoint (`Issue 1637`_):
+    - ``rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn`` ``maxLength``: 9
+    - ``rol__betrokkeneIdentificatie__medewerker__identificatie`` ``maxLength``: 24
+* Fix incorrect filter parameter name on ``rol_list`` operation (`Issue 1685`_):
+    - ``betrokkeneIdentificatie__vestiging__identificatie`` -> ``betrokkeneIdentificatie__organisatorischeEenheid__identificatie``
+* Add missing audit trail logging parameters for ``rol_delete`` operation (`Issue 1542`_)
+
+Implementation changes
+----------------------
+
+* Implement caching (conditional GET with ETag headers) (`Issue 1096`_)
+* Add synchronisation with Contactmomenten API for ``ZaakContactMoment`` resource (`Issue 1323`_)
+* Add synchronisation with Verzoeken API for ``ZaakVerzoek`` resource (`Issue 1392`_)
+* Add validation on ``Zaak`` resource that checks if ``Zaak.hoofdzaak`` is allowed given ``Zaak.hoofdzaak.deelzaaktypen`` (`Issue 1534`_)
+* Fix issue with audittrails not being logged and notifications not being sent for ``rol_delete`` operation (`Issue 1542`_)
+* Add validation on ``zaak_delete`` operation that checks if there are still ``Besluiten`` related to it, and if so returns a 400 (`Issue 1494`_)
+* Upgrade to Python 3.7 (`Commit fd3113`_)
+
+Breaking changes
+----------------
+
+* Add pagination to following resources (`Commit 25eb1c`_):
+    - ``Status``
+    - ``ZaakObject``
+    - ``KlantContact``
+    - ``Rol``
+    - ``Resultaat``
+* Add new ``ZaakContactMoment`` resource (`Issue 1323`_)
+    - With the introduction of this resource, the ``KlantContact`` has been marked deprecated
+
+.. _Issue 1096: https://github.com/VNG-Realisatie/gemma-zaken/issues/1096
+.. _Issue 1222: https://github.com/VNG-Realisatie/gemma-zaken/issues/1222
+.. _Commit 25eb1c: https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/pull/157/commits/25eb1c73028a21ada631a8b29c7b9f1bf1c39302
+.. _Issue 1338: https://github.com/VNG-Realisatie/gemma-zaken/issues/1338
+.. _Issue 536: https://github.com/VNG-Realisatie/gemma-zaken/issues/536
+.. _Issue 1323: https://github.com/VNG-Realisatie/gemma-zaken/issues/1323
+.. _Issue 1392: https://github.com/VNG-Realisatie/gemma-zaken/issues/1392
+.. _Issue 1637: https://github.com/VNG-Realisatie/gemma-zaken/issues/1637
+.. _Issue 654: https://github.com/VNG-Realisatie/gemma-zaken/issues/654
+.. _Issue 1685: https://github.com/VNG-Realisatie/gemma-zaken/issues/1685
+.. _Issue 1534: https://github.com/VNG-Realisatie/gemma-zaken/issues/1534
+.. _Issue 1542: https://github.com/VNG-Realisatie/gemma-zaken/issues/1542
+.. _Issue 1494: https://github.com/VNG-Realisatie/gemma-zaken/issues/1494
+.. _Utrecht issue 611: https://github.com/GemeenteUtrecht/ZGW/issues/611
+.. _Issue 1686: https://github.com/VNG-Realisatie/gemma-zaken/issues/1686
+.. _Commit fd3113: https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/commit/fd311363903e5f5cb1daddc42d07aa1174391b64
+
 1.0.2 (2020-06-13)
 ==================
 
