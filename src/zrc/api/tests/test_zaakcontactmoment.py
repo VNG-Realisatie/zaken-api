@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.db import transaction
 from django.test import override_settings
 
@@ -11,14 +13,15 @@ from zrc.sync.signals import SyncError
 
 from .mixins import ZaakContactMomentSyncMixin
 
-CONTACTMOMENT = "https://kcc.nl/api/v1/contactmomenten/1234"
+CONTACTMOMENT = "https://cmc.nl/api/v1/contactmomenten/1234"
 
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class ZaakContactMomentTests(ZaakContactMomentSyncMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_create(self):
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create(self, *m):
         zaak = ZaakFactory.create()
         url = reverse("zaakcontactmoment-list")
 
@@ -31,7 +34,8 @@ class ZaakContactMomentTests(ZaakContactMomentSyncMixin, JWTAuthMixin, APITestCa
         zaak_contactmoment = zaak.zaakcontactmoment_set.get()
         self.assertEqual(zaak_contactmoment.contactmoment, CONTACTMOMENT)
 
-    def test_create_fail_sync(self):
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_fail_sync(self, *m):
         self.mocked_sync_create_zcm.side_effect = SyncError("Sync failed")
 
         zaak = ZaakFactory.create()

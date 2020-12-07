@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.db import transaction
 from django.test import override_settings
 
@@ -11,14 +13,15 @@ from zrc.sync.signals import SyncError
 
 from .mixins import ZaakVerzoekSyncMixin
 
-VERZOEK = "https://kic.nl/api/v1/verzoeken/1234"
+VERZOEK = "https://vrc.nl/api/v1/verzoeken/1234"
 
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class ZaakVerzoekTests(ZaakVerzoekSyncMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
-    def test_create(self):
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create(self, *m):
         zaak = ZaakFactory.create()
         url = reverse("zaakverzoek-list")
 
@@ -29,7 +32,8 @@ class ZaakVerzoekTests(ZaakVerzoekSyncMixin, JWTAuthMixin, APITestCase):
         zaak_verzoek = zaak.zaakverzoek_set.get()
         self.assertEqual(zaak_verzoek.verzoek, VERZOEK)
 
-    def test_create_fail_sync(self):
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_fail_sync(self, *m):
         self.mocked_sync_create_zv.side_effect = SyncError("Sync failed")
 
         zaak = ZaakFactory.create()
