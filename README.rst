@@ -84,9 +84,9 @@ Licensed under the EUPL_
 
 .. _EUPL: LICENCE.md
 
-.. |build-status| image:: https://travis-ci.org/VNG-Realisatie/gemma-zaakregistratiecomponent.svg?branch=master
+.. |build-status| image:: https://travis-ci.com/VNG-Realisatie/gemma-zaakregistratiecomponent.svg?branch=master
     :alt: Build status
-    :target: https://travis-ci.org/VNG-Realisatie/gemma-zaakregistratiecomponent
+    :target: https://travis-ci.com/VNG-Realisatie/gemma-zaakregistratiecomponent
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements.svg?branch=master
      :target: https://requires.io/github/VNG-Realisatie/gemma-zaakregistratiecomponent/requirements/?branch=master
