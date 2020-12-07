@@ -1022,7 +1022,7 @@ class ZaakContactMomentSerializer(serializers.HyperlinkedModelSerializer):
             "contactmoment": {
                 "validators": [
                     ResourceValidator(
-                        "ContactMoment", settings.KIC_API_SPEC, get_auth=get_auth
+                        "ContactMoment", settings.CMC_API_SPEC, get_auth=get_auth
                     )
                 ]
             },
@@ -1053,7 +1053,7 @@ class ZaakVerzoekSerializer(serializers.HyperlinkedModelSerializer):
             "verzoek": {
                 "validators": [
                     ResourceValidator(
-                        "Verzoek", settings.KIC_API_SPEC, get_auth=get_auth
+                        "Verzoek", settings.VRC_API_SPEC, get_auth=get_auth
                     )
                 ]
             },

@@ -57,9 +57,19 @@ zrc_repo = "vng-Realisatie/gemma-zaakregistratiecomponent"
 zrc_commit = "8ea1950fe4ec2ad99504d345eba60a175eea3edf"
 ZRC_API_SPEC = f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/openapi.yaml"  # noqa
 
-kic_repo = "VNG-Realisatie/klantinteracties-api"
-kic_commit = "c62f0a2e9c47955316fe2f8f4caa6b522d71bbe9"
-KIC_API_SPEC = f"https://raw.githubusercontent.com/{kic_repo}/{kic_commit}/src/openapi.yaml"  # noqa
+cmc_repo = "VNG-Realisatie/contactmomenten-api"
+cmc_commit = "75980b03ca80c3359fd71cde2140bd88c98b6529"
+CMC_API_SPEC = f"https://raw.githubusercontent.com/{cmc_repo}/{cmc_commit}/src/openapi.yaml"  # noqa
+
+kc_repo = "VNG-Realisatie/klanten-api"
+kc_commit = "3048e71fb58e59fed334414a08949363cfe43e35"
+KC_API_SPEC = (
+    f"https://raw.githubusercontent.com/{kc_repo}/{kc_commit}/src/openapi.yaml"  # noqa
+)
+
+vrc_repo = "VNG-Realisatie/verzoeken-api"
+vrc_commit = "fc27f8b386dfe49f0b4a20adf93119c866c7047d"
+VRC_API_SPEC = f"https://raw.githubusercontent.com/{vrc_repo}/{vrc_commit}/src/openapi.yaml"  # noqa
 
 SPEC_CACHE_TIMEOUT = 60 * 60 * 24  # 24 hours
 
