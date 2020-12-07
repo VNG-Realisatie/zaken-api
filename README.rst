@@ -42,7 +42,7 @@ Ondersteuning
 ==========  ==============  ==========================  =================
 Versie      Release datum   Einddatum ondersteuning     Documentatie
 ==========  ==============  ==========================  =================
-1.x         2019-11-18      (nog niet bekend)           `Documentatie <https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/index>`_
+1.x         2019-11-18      (nog niet bekend)           `Documentatie <https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/index>`_
 ==========  ==============  ==========================  =================
 
 Referentie implementatie
@@ -51,7 +51,7 @@ Referentie implementatie
 |build-status| |coverage| |docker| |black| |python-versions|
 
 Referentieimplementatie van de Zaken API. Ook wel
-zaakregistratiecomponent (ZRC) genoemd)
+zaakregistratiecomponent (ZRC) genoemd.
 
 Ontwikkeld door `Maykin Media B.V. <https://www.maykinmedia.nl>`_ in opdracht
 van VNG Realisatie.
@@ -67,7 +67,7 @@ Links
 =====
 
 * Deze API is onderdeel van de `VNG standaard "API's voor Zaakgericht werken" <https://github.com/VNG-Realisatie/gemma-zaken>`_.
-* Lees de `functionele specificatie <https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/index>`_ bij de API specificatie.
+* Lees de `functionele specificatie <https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/index>`_ bij de API specificatie.
 * Bekijk de `demo omgeving`_ met de laatst gepubliceerde versie.
 * Bekijk de `test omgeving <https://zaken-api.test.vng.cloud/>`_ met de laatste ontwikkel versie.
 * Rapporteer `issues <https://github.com/VNG-Realisatie/gemma-zaken/issues>`_ bij vragen, fouten of wensen.
