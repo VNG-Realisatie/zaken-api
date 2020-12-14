@@ -159,7 +159,7 @@ class US169TestCase(JWTAuthMixin, APITestCase):
         """
         Test dat alle betrokkenen kunnen opgehaald worden, onafhankelijk van rol.
 
-        Zie https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/pull/9#issuecomment-407882637
+        Zie https://github.com/VNG-Realisatie/zaken-api/pull/9#issuecomment-407882637
         """
         zaak1 = ZaakFactory.create(zaaktype=ZAAKTYPE)
         rollen1 = RolFactory.create_batch(3, zaak=zaak1)

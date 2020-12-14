@@ -5,7 +5,7 @@ from vng_api_common.notifications.utils import notification_documentation
 
 from .kanalen import KANAAL_ZAKEN
 
-description = f"""Een API om een zaakregistratiecomponent (ZRC) te benaderen.
+description = f"""Een API om een Zaken API (ZRC) te benaderen.
 
 De ZAAK is het kernobject in deze API, waaraan verschillende andere
 resources gerelateerd zijn. De Zaken API werkt samen met andere API's voor

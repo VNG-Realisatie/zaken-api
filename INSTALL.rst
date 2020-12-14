@@ -47,7 +47,7 @@ development machine.
 
    .. code-block:: bash
 
-       $ git clone git@github.com:maykinmedia/gemma-zaakregistratiecomponent.git
+       $ git clone git@github.com:maykinmedia/zaken-api.git
        $ cd zrc
 
 3. Install all required libraries.
