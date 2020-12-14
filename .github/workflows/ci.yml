@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - stable/1.0.x
     tags:
       - '*'
   pull_request:
