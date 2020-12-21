@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Zaken API
-  description: 'Een API om een Zaken API (ZRC) te benaderen.
+  description: 'Een API om een zaakregistratiecomponent (ZRC) te benaderen.
 
 
     De ZAAK is het kernobject in deze API, waaraan verschillende andere
