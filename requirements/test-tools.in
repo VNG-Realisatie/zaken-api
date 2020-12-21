@@ -1,4 +1,5 @@
 # Dependencies only relevant for (unit) testing
+black
 coverage
 django-jenkins
 django-webtest
