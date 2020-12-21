@@ -7,6 +7,7 @@ from ..models import (
     Rol,
     Status,
     Zaak,
+    ZaakContactMoment,
     ZaakEigenschap,
     ZaakInformatieObject,
     ZaakObject,
@@ -46,6 +47,10 @@ class RelevanteZaakRelatieInline(admin.TabularInline):
     model = RelevanteZaakRelatie
 
 
+class ZaakContactMomentInline(admin.TabularInline):
+    model = ZaakContactMoment
+
+
 @admin.register(Zaak)
 class ZaakAdmin(admin.ModelAdmin):
     list_display = ["identificatie"]
@@ -58,14 +63,16 @@ class ZaakAdmin(admin.ModelAdmin):
         RolInline,
         ResultaatInline,
         RelevanteZaakRelatieInline,
+        ZaakContactMomentInline,
     ]
 
 
 @admin.register(Status)
 class StatusAdmin(admin.ModelAdmin):
-    list_display = ["zaak", "datum_status_gezet"]
+    list_display = ["zaak", "datum_status_gezet", "_etag"]
     list_select_related = ["zaak"]
     raw_id_fields = ["zaak"]
+    search_field = ("_etag",)
 
 
 @admin.register(ZaakObject)
@@ -99,5 +106,12 @@ class ZaakInformatieObjectAdmin(admin.ModelAdmin):
 @admin.register(Resultaat)
 class ResultaatAdmin(admin.ModelAdmin):
     list_display = ["zaak", "toelichting"]
+    list_select_related = ["zaak"]
+    raw_id_fields = ["zaak"]
+
+
+@admin.register(ZaakContactMoment)
+class ZaakContactMomentAdmin(admin.ModelAdmin):
+    list_display = ["zaak", "contactmoment"]
     list_select_related = ["zaak"]
     raw_id_fields = ["zaak"]

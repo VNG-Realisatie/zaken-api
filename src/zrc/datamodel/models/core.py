@@ -11,6 +11,7 @@ from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
+from vng_api_common.caching import ETagMixin
 from vng_api_common.constants import (
     Archiefnominatie,
     Archiefstatus,
@@ -49,10 +50,12 @@ __all__ = [
     "ZaakInformatieObject",
     "KlantContact",
     "ZaakBesluit",
+    "ZaakContactMoment",
+    "ZaakVerzoek",
 ]
 
 
-class Zaak(APIMixin, models.Model):
+class Zaak(ETagMixin, APIMixin, models.Model):
     """
     Modelleer de structuur van een ZAAK.
 
@@ -285,6 +288,15 @@ class Zaak(APIMixin, models.Model):
             "een RESULTAAT aan deze ZAAK indien nog leeg."
         ),
     )
+    opdrachtgevende_organisatie = RSINField(
+        help_text=_(
+            "De krachtens publiekrecht ingestelde rechtspersoon dan wel "
+            "ander niet-natuurlijk persoon waarbinnen het (bestuurs)orgaan zetelt "
+            "dat opdracht heeft gegeven om taken uit te voeren waaraan de zaak "
+            "invulling geeft."
+        ),
+        blank=True,
+    )
 
     objects = ZaakQuerySet.as_manager()
 
@@ -341,7 +353,7 @@ class RelevanteZaakRelatie(models.Model):
     )
 
 
-class Status(models.Model):
+class Status(ETagMixin, models.Model):
     """
     Modelleer een status van een ZAAK.
 
@@ -387,7 +399,7 @@ class Status(models.Model):
         return f"({self.zaak.unique_representation()}) - {self.datum_status_gezet}"
 
 
-class Resultaat(models.Model):
+class Resultaat(ETagMixin, models.Model):
     """
     Het behaalde RESULTAAT is een koppeling tussen een RESULTAATTYPE en een
     ZAAK.
@@ -432,7 +444,7 @@ class Resultaat(models.Model):
         return self._unique_representation
 
 
-class Rol(models.Model):
+class Rol(ETagMixin, models.Model):
     """
     Modelleer de rol van een BETROKKENE bij een ZAAK.
 
@@ -526,7 +538,7 @@ class Rol(models.Model):
         return f"({self.zaak.unique_representation()}) - {betrokkene.rsplit('/')[-1]}"
 
 
-class ZaakObject(models.Model):
+class ZaakObject(ETagMixin, models.Model):
     """
     Modelleer een object behorende bij een ZAAK.
 
@@ -595,7 +607,7 @@ class ZaakObject(models.Model):
         return f"({self.zaak.unique_representation()}) - {object.rsplit('/')[-1]}"
 
 
-class ZaakEigenschap(models.Model):
+class ZaakEigenschap(ETagMixin, models.Model):
     """
     Een relevant inhoudelijk gegeven waarvan waarden bij
     ZAAKen van eenzelfde ZAAKTYPE geregistreerd moeten
@@ -660,7 +672,7 @@ class ZaakKenmerk(models.Model):
         verbose_name_plural = "zaak kenmerken"
 
 
-class ZaakInformatieObject(models.Model):
+class ZaakInformatieObject(ETagMixin, models.Model):
     """
     Modelleer INFORMATIEOBJECTen die bij een ZAAK horen.
     """
@@ -824,3 +836,81 @@ class ZaakBesluit(models.Model):
 
     def unique_representation(self):
         return f"{self.zaak} - {self.besluit}"
+
+
+class ZaakContactMoment(models.Model):
+    """
+    Model ContactMoment belonged to Zaak
+    """
+
+    uuid = models.UUIDField(
+        unique=True,
+        default=uuid.uuid4,
+        help_text=_("Unieke resource identifier (UUID4)"),
+    )
+    zaak = models.ForeignKey(
+        Zaak, on_delete=models.CASCADE, help_text=_("URL-referentie naar de ZAAK.")
+    )
+    contactmoment = models.URLField(
+        "contactmoment",
+        help_text=_(
+            "URL-referentie naar het CONTACTMOMENT (in de Klantinteractie API)"
+        ),
+        max_length=1000,
+    )
+    _objectcontactmoment = models.URLField(
+        "objectcontactmoment",
+        blank=True,
+        help_text="Link to the related object in the Klantinteractie API",
+    )
+
+    objects = ZaakRelatedQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = "contactmoment"
+        verbose_name_plural = "contactmomenten"
+        unique_together = ("zaak", "contactmoment")
+
+    def __str__(self) -> str:
+        return f"{self.zaak} - {self.contactmoment}"
+
+    def unique_representation(self):
+        return f"{self.zaak} - {self.contactmoment}"
+
+
+class ZaakVerzoek(models.Model):
+    """
+    Model Verzoek belonged to Zaak
+    """
+
+    uuid = models.UUIDField(
+        unique=True,
+        default=uuid.uuid4,
+        help_text=_("Unieke resource identifier (UUID4)"),
+    )
+    zaak = models.ForeignKey(
+        Zaak, on_delete=models.CASCADE, help_text=_("URL-referentie naar de ZAAK.")
+    )
+    verzoek = models.URLField(
+        "verzoek",
+        help_text=_("URL-referentie naar het VERZOEK (in de Klantinteractie API)"),
+        max_length=1000,
+    )
+    _objectverzoek = models.URLField(
+        "objectverzoek",
+        blank=True,
+        help_text="Link to the related object in the Klantinteractie API",
+    )
+
+    objects = ZaakRelatedQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = "verzoek"
+        verbose_name_plural = "verzoeken"
+        unique_together = ("zaak", "verzoek")
+
+    def __str__(self) -> str:
+        return f"{self.zaak} - {self.verzoek}"
+
+    def unique_representation(self):
+        return f"{self.zaak} - {self.verzoek}"

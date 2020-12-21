@@ -1,5 +1,5 @@
 """
-Als KCC medewerker wil ik een behandelaar kunnen toewijzen zodat de melding
+Als KIC medewerker wil ik een behandelaar kunnen toewijzen zodat de melding
 kan worden gerouteerd.
 
 Ref: https://github.com/VNG-Realisatie/gemma-zaken/issues/45

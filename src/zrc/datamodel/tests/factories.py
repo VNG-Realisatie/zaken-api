@@ -28,6 +28,9 @@ class ZaakFactory(factory.django.DjangoModelFactory):
         model = "datamodel.Zaak"
 
     class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
         closed = factory.Trait(
             einddatum=factory.LazyFunction(date.today),
             status_set=factory.RelatedFactory(
@@ -44,6 +47,11 @@ class ZaakInformatieObjectFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "datamodel.ZaakInformatieObject"
 
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
+
 
 class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
@@ -53,6 +61,11 @@ class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "datamodel.ZaakEigenschap"
+
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
 
 
 class ZaakObjectFactory(factory.django.DjangoModelFactory):
@@ -76,6 +89,11 @@ class RolFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "datamodel.Rol"
 
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
+
 
 class StatusFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
@@ -85,6 +103,11 @@ class StatusFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "datamodel.Status"
 
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
+
 
 class ResultaatFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
@@ -92,6 +115,11 @@ class ResultaatFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "datamodel.Resultaat"
+
+    class Params:
+        with_etag = factory.Trait(
+            _etag=factory.PostGenerationMethodCall("calculate_etag_value")
+        )
 
 
 class KlantContactFactory(factory.django.DjangoModelFactory):
@@ -125,3 +153,19 @@ class WozWaardeFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "datamodel.WozWaarde"
+
+
+class ZaakContactMomentFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    contactmoment = factory.Faker("url")
+
+    class Meta:
+        model = "datamodel.ZaakContactMoment"
+
+
+class ZaakVerzoekFactory(factory.django.DjangoModelFactory):
+    zaak = factory.SubFactory(ZaakFactory)
+    verzoek = factory.Faker("url")
+
+    class Meta:
+        model = "datamodel.ZaakVerzoek"

@@ -2,7 +2,7 @@ import os
 
 from vng_api_common.conf.api import *  # noqa - imports white-listed
 
-API_VERSION = "1.0.2"
+API_VERSION = "1.1.0-alpha"
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
@@ -13,6 +13,7 @@ SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
 SWAGGER_SETTINGS.update(
     {
         "DEFAULT_INFO": "zrc.api.schema.info",
+        "DEFAULT_AUTO_SCHEMA_CLASS": "zrc.api.inspectors.AutoSchema",
         "SECURITY_DEFINITIONS": {
             SECURITY_DEFINITION_NAME: {
                 # OAS 3.0
@@ -61,6 +62,20 @@ ZRC_API_SPEC = f"https://raw.githubusercontent.com/{zrc_repo}/{zrc_commit}/src/o
 SELF_REPO = zrc_repo
 SELF_BRANCH = os.getenv("SELF_BRANCH") or API_VERSION
 GITHUB_API_SPEC = f"https://raw.githubusercontent.com/{SELF_REPO}/{SELF_BRANCH}/src/openapi.yaml"  # noqa
+
+cmc_repo = "VNG-Realisatie/contactmomenten-api"
+cmc_commit = "75980b03ca80c3359fd71cde2140bd88c98b6529"
+CMC_API_SPEC = f"https://raw.githubusercontent.com/{cmc_repo}/{cmc_commit}/src/openapi.yaml"  # noqa
+
+kc_repo = "VNG-Realisatie/klanten-api"
+kc_commit = "3048e71fb58e59fed334414a08949363cfe43e35"
+KC_API_SPEC = (
+    f"https://raw.githubusercontent.com/{kc_repo}/{kc_commit}/src/openapi.yaml"  # noqa
+)
+
+vrc_repo = "VNG-Realisatie/verzoeken-api"
+vrc_commit = "fc27f8b386dfe49f0b4a20adf93119c866c7047d"
+VRC_API_SPEC = f"https://raw.githubusercontent.com/{vrc_repo}/{vrc_commit}/src/openapi.yaml"  # noqa
 
 SPEC_CACHE_TIMEOUT = 60 * 60 * 24  # 24 hours
 
