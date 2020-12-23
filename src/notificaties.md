@@ -47,4 +47,8 @@ De architectuur van de notificaties staat beschreven op <a href="https://github.
 
 * <code>zaakbesluit</code>: create
 
+* <code>zaakcontactmoment</code>: create
+
+* <code>zaakverzoek</code>: create
+
 
