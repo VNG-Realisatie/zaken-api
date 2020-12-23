@@ -1,5 +1,7 @@
 # Dependencies only relevant for (unit) testing
+black
 coverage
+dataclasses==0.6
 django-jenkins
 django-webtest
 factory-boy

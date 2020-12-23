@@ -18,8 +18,9 @@ class AutoSchema(_AutoSchema):
             return responses
 
         for status_code, response in responses.items():
-            response.setdefault("headers", OrderedDict())
-            response["headers"][WARNING_HEADER] = warning_header
+            if "$ref" not in response:
+                response.setdefault("headers", OrderedDict())
+                response["headers"][WARNING_HEADER] = warning_header
 
         return responses
 

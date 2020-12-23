@@ -4,13 +4,17 @@
 #
 #    pip-compile --no-index --output-file=requirements/ci.txt requirements/base.txt requirements/test-tools.in
 #
+appdirs==1.4.4            # via black
 astroid==1.6.6            # via pylint
 beautifulsoup4==4.9.1     # via webtest
+black==20.8b1             # via -r requirements/test-tools.in
 certifi==2018.4.16        # via -r requirements/base.txt, requests
 chardet==3.0.4            # via -r requirements/base.txt, requests
+click==7.1.2              # via black
 coreapi==2.3.3            # via -r requirements/base.txt, drf-yasg
 coreschema==0.0.4         # via -r requirements/base.txt, coreapi, drf-yasg
 coverage==4.5.3           # via -r requirements/test-tools.in
+dataclasses==0.6          # via -r requirements/test-tools.in, black
 django-appconf==1.0.2     # via -r requirements/base.txt, django-axes
 django-axes==4.4.0        # via -r requirements/base.txt
 django-choices==1.7.0     # via -r requirements/base.txt, vng-api-common
@@ -45,7 +49,9 @@ lazy-object-proxy==1.4.1  # via astroid
 markdown==3.0.1           # via -r requirements/base.txt
 markupsafe==1.1.1         # via -r requirements/base.txt, jinja2
 mccabe==0.6.1             # via pylint
+mypy-extensions==0.4.3    # via black
 oyaml==0.7                # via -r requirements/base.txt, vng-api-common
+pathspec==0.8.1           # via black
 pep8==1.7.1               # via -r requirements/test-tools.in
 psycopg2==2.8.5           # via -r requirements/base.txt
 pyjwt==1.6.4              # via -r requirements/base.txt, gemma-zds-client, vng-api-common
@@ -57,6 +63,7 @@ pytz==2019.1              # via -r requirements/base.txt, django, django-axes
 pyyaml==5.1.2             # via -r requirements/base.txt, gemma-zds-client, oyaml, vng-api-common
 raven==6.9.0              # via -r requirements/base.txt
 redis==3.3.6              # via -r requirements/base.txt, django-redis
+regex==2020.11.13         # via black
 requests-mock==1.6.0      # via -r requirements/test-tools.in
 requests==2.21.0          # via -r requirements/base.txt, coreapi, gemma-zds-client, requests-mock, vng-api-common
 ruamel.yaml==0.15.37      # via -r requirements/base.txt, drf-yasg
@@ -65,11 +72,14 @@ soupsieve==2.0.1          # via beautifulsoup4
 sqlparse==0.3.0           # via -r requirements/base.txt, django
 tblib==1.4.0              # via -r requirements/test-tools.in
 text-unidecode==1.2       # via faker
+toml==0.10.2              # via black
+typed-ast==1.4.1          # via black
+typing-extensions==3.7.4.3  # via black
 unidecode==1.0.22         # via -r requirements/base.txt, vng-api-common
 uritemplate==3.0.0        # via -r requirements/base.txt, coreapi, drf-yasg
 urllib3==1.24.3           # via -r requirements/base.txt, requests
 uwsgi==2.0.18             # via -r requirements/base.txt
-vng-api-common==1.5.6     # via -r requirements/base.txt
+vng-api-common==1.5.10    # via -r requirements/base.txt
 waitress==1.4.4           # via webtest
 webob==1.8.6              # via webtest
 webtest==2.0.35           # via django-webtest
