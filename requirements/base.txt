@@ -142,5 +142,5 @@ urllib3==1.24.3
     # via requests
 uwsgi==2.0.18
     # via -r requirements/base.in
-vng-api-common==1.0.58
+vng-api-common==1.0.59
     # via -r requirements/base.in
