@@ -1,6 +1,7 @@
 # Dependencies only relevant for (unit) testing
 black
 coverage
+django-capture-on-commit-callbacks
 django-jenkins
 django-webtest
 factory-boy
