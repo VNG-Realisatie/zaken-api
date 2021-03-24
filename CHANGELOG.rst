@@ -15,9 +15,6 @@ API spec new features
     - ``ZaakEigenschap``
     - ``Rol``
     - ``Resultaat``
-* Add ``onderwerp`` and ``toelichting`` attributes to ``KlantContact`` resource (`Issue 1222`_)
-* Add ``zaak`` filter parameter on ``KlantContact`` resource (`Issue 1338`_)
-* Add inline ``eigenschappen`` attribute on ``Zaak`` resource (`Issue 536`_)
 * Add new ``ZaakContactMoment`` resource (`Issue 1323`_)
     - With the introduction of this resource, the ``KlantContact`` has been marked deprecated
 * Add new ``ZaakVerzoek`` resource (`Issue 1392`_)
