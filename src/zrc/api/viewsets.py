@@ -564,6 +564,11 @@ class ZaakEigenschapViewSet(
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
+    def get_queryset(self):
+        if not self.kwargs:  # this happens during schema generation, and causes crashes
+            return self.queryset.none()
+        return super().get_queryset()
+
     def _get_zaak(self):
         if not hasattr(self, "_zaak"):
             filters = lookup_kwargs_to_filters(self.parent_retrieve_kwargs, self.kwargs)
@@ -824,6 +829,11 @@ class ZaakBesluitViewSet(
     parent_retrieve_kwargs = {"zaak_uuid": "uuid"}
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
+    def get_queryset(self):
+        if not self.kwargs:  # this happens during schema generation, and causes crashes
+            return self.queryset.none()
+        return super().get_queryset()
 
     def _get_zaak(self):
         if not hasattr(self, "_zaak"):
