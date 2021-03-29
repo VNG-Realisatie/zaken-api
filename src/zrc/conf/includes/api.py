@@ -2,7 +2,7 @@ import os
 
 from vng_api_common.conf.api import *  # noqa - imports white-listed
 
-API_VERSION = "1.0.2"
+API_VERSION = "1.0.3"
 
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
