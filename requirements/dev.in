@@ -1,9 +1,8 @@
 # Helpers
-pip-tools
+pip-tools~=6.0.0
 
 # Code formatting
 black
-dataclasses==0.6
 isort
 
 # Debug tooling

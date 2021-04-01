@@ -72,6 +72,53 @@ Breaking changes
 .. _Issue 1686: https://github.com/VNG-Realisatie/gemma-zaken/issues/1686
 .. _Commit fd3113: https://github.com/VNG-Realisatie/gemma-zaakregistratiecomponent/commit/fd311363903e5f5cb1daddc42d07aa1174391b64
 
+1.0.3 (2021-03-29)
+==================
+
+API spec changes
+----------------
+
+* Filter parameter ``betrokkeneIdentificatie__vestiging__identificatie`` on ``rol_list``
+  operation was corrected to ``betrokkeneIdentificatie__organisatorischeEenheid__identificatie``
+* Added missing audittrail headers on some operations:
+
+    * ``X-Audit-Toelichting``
+
+* Renamed ``X-NLX-Request-Application-Id`` header to ``X-NLX-Logrecord-ID``.
+
+  The previously documented headers were never emitted by NLX and specified at a time
+  when this was not clear yet.
+
+* Dropped the ``X-NLX-Request-User-Id`` header - is was never emitted by NLX. You should
+  use the ``user_id`` claim in the JWT instead.
+
+* Added missing ``rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie``
+  filter to ``zaak_list`` operation
+
+* Added ``nullable: true`` attributes to some resources. The behaviour of the API was
+  already accepting ``null``, however the API schema did not reflect this:
+
+  * ``rol.betrokkeneIdentificatie.verblijfsadres``
+  * ``rol.betrokkeneIdentificatie.subVerblijfBuitenland``
+  * ``zaakobject.objectIdentificatie.adresAanduidingGrp``
+  * ``zaakobject.objectIdentificatie.isGehuisvestIn``
+  * ``zaakobject.objectIdentificatie.aanduidingWozObject``
+
+* Dropped some ``title`` attributes that were generated from code rather than
+  human-readable labels.
+
+Implementation changes
+----------------------
+
+* Upgraded libraries:
+
+  * Django
+  * djangorestframework
+  * djangorestframework-camel-case
+  * drf-nested-routers
+  * drf-yasg
+  * vng-api-common
+
 1.0.2 (2020-06-13)
 ==================
 

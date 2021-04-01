@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from django.test import override_settings
 
+from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -58,7 +59,8 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             },
         }
 
-        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
+        with capture_on_commit_callbacks(execute=True):
+            response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 
@@ -91,7 +93,8 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
         resultaat = ResultaatFactory.create(zaak=zaak)
         resultaat_url = get_operation_url("resultaat_update", uuid=resultaat.uuid)
 
-        response = self.client.delete(resultaat_url)
+        with capture_on_commit_callbacks(execute=True):
+            response = self.client.delete(resultaat_url)
 
         self.assertEqual(
             response.status_code, status.HTTP_204_NO_CONTENT, response.data
