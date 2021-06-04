@@ -5,7 +5,7 @@ from django.test import override_settings
 from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from freezegun import freeze_time
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APITransactionTestCase
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, get_operation_url
 
@@ -31,9 +31,25 @@ RESULTAATTYPE = f"{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785
 @override_settings(
     LINK_FETCHER="vng_api_common.mocks.link_fetcher_200", NOTIFICATIONS_DISABLED=False
 )
-class SendNotifTestCase(JWTAuthMixin, APITestCase):
+class SendNotifTestCase(JWTAuthMixin, APITransactionTestCase):
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
+
+    def setUp(self):
+        applicatie, autorisatie = self._create_credentials(
+            self.client_id,
+            self.secret,
+            heeft_alle_autorisaties=self.heeft_alle_autorisaties,
+            scopes=self.scopes,
+            zaaktype=self.zaaktype,
+            informatieobjecttype=self.informatieobjecttype,
+            besluittype=self.besluittype,
+            max_vertrouwelijkheidaanduiding=self.max_vertrouwelijkheidaanduiding,
+        )
+        self.applicatie = applicatie
+        self.autorisatie = autorisatie
+
+        super().setUp()
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
@@ -87,6 +103,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
         """
         Check if notifications will be send when resultaat is deleted
         """
+
         client = mock_client.return_value
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
