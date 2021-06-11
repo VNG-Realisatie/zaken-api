@@ -2,6 +2,17 @@
 Wijzigingen
 ===========
 
+1.1.1 (2021-06-11)
+==================
+
+* Several resources that can be part of ``Rol.betrokkeneIdentificatie`` have become nullable:
+    - ``VerblijfsAdres``
+    - ``SubVerblijfBuitenland``
+* Several resources that can be part of ``ZaakObject.objectIdentificatie`` have become nullable:
+    - ``TerreinGebouwdObjectAdres``
+    - ``ObjectTerreinGebouwdObject``
+    - ``WozObjectAdres``
+
 1.1.0 (2021-01-08)
 ==================
 
