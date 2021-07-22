@@ -760,11 +760,17 @@ class ZaakObjectSerializer(PolymorphicSerializer):
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},
             "uuid": {"read_only": True},
-            "zaak": {"lookup_field": "uuid"},
+            "zaak": {
+                "lookup_field": "uuid",
+                "validators": [IsImmutableValidator()]
+            },
             "object": {
                 "required": False,
-                "validators": [URLValidator(get_auth=get_auth)],
+                "validators": [URLValidator(get_auth=get_auth), IsImmutableValidator()],
             },
+            "object_type": {
+                "validators": [IsImmutableValidator()],
+            }
         }
         validators = [
             EitherFieldRequiredValidator(
