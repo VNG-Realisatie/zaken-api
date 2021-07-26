@@ -128,6 +128,29 @@ class ZaakEigenschappenTest(JWTAuthMixin, APITestCase):
 
         self.assertEqual("This is a changed value", zaakeigenschap.waarde)
 
+    def test_zaak_eigenschappen_partial_update_without_eigenschap(self):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaakeigenschap = ZaakEigenschapFactory.create(
+            zaak=zaak, eigenschap=EIGENSCHAP, waarde="This is a value"
+        )
+
+        zaakeigenschap_url = reverse(
+            "zaakeigenschap-detail",
+            kwargs={"version": 1, "zaak_uuid": zaak.uuid, "uuid": zaakeigenschap.uuid},
+        )
+
+        zaakeigenschap_data = {
+            "waarde": "This is a changed value",
+        }
+
+        response = self.client.patch(zaakeigenschap_url, data=zaakeigenschap_data)
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        zaakeigenschap.refresh_from_db()
+
+        self.assertEqual("This is a changed value", zaakeigenschap.waarde)
+
     def test_cannot_change_eigenschap(self):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaakeigenschap = ZaakEigenschapFactory.create(
