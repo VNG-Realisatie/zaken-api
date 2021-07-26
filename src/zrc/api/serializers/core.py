@@ -862,8 +862,10 @@ class ZaakEigenschapSerializer(NestedHyperlinkedModelSerializer):
     def validate(self, attrs):
         super().validate(attrs)
 
-        eigenschap = self._get_eigenschap(attrs["eigenschap"])
-        attrs["_naam"] = eigenschap["naam"]
+        # assign _naam only when creating zaak eigenschap
+        if not self.instance:
+            eigenschap = self._get_eigenschap(attrs["eigenschap"])
+            attrs["_naam"] = eigenschap["naam"]
 
         return attrs
 
