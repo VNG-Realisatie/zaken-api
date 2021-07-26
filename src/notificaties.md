@@ -37,7 +37,7 @@ De architectuur van de notificaties staat beschreven op <a href="https://github.
 
 * <code>zaakinformatieobject</code>: create
 
-* <code>zaakeigenschap</code>: create
+* <code>zaakeigenschap</code>: create, update, destroy
 
 * <code>klantcontact</code>: create
 

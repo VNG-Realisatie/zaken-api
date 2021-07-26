@@ -543,7 +543,7 @@ class ZaakInformatieObjectViewSet(
 
 @conditional_retrieve()
 class ZaakEigenschapViewSet(
-    NotificationCreateMixin,
+    NotificationViewSetMixin,
     AuditTrailCreateMixin,
     NestedViewSetMixin,
     ListFilterByAuthorizationsMixin,
@@ -627,7 +627,9 @@ class ZaakEigenschapViewSet(
 
     def initialize_request(self, request, *args, **kwargs):
         # workaround for drf-nested-viewset injecting the URL kwarg into request.data
-        return super(viewsets.ModelViewSet, self).initialize_request(request, *args, **kwargs)
+        return super(viewsets.ModelViewSet, self).initialize_request(
+            request, *args, **kwargs
+        )
 
 
 class KlantContactViewSet(

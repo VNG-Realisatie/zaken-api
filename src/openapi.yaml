@@ -76,7 +76,7 @@ info:
 
     - `zaakinformatieobject`: create
 
-    - `zaakeigenschap`: create
+    - `zaakeigenschap`: create, update, destroy
 
     - `klantcontact`: create
 
