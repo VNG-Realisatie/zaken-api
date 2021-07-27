@@ -295,12 +295,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -528,12 +528,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -593,12 +593,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -1078,12 +1078,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -1143,12 +1143,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -1402,12 +1402,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -1467,12 +1467,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -1653,12 +1653,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -1910,12 +1910,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -1975,12 +1975,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -2415,12 +2415,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -2622,12 +2622,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -3270,12 +3270,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -3365,12 +3365,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -3746,12 +3746,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -3958,12 +3958,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -4217,12 +4217,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -4282,12 +4282,12 @@ paths:
           \ voor meer informatie."
         required: false
         examples:
-          multipleValues:
-            summary: Meerdere ETag-waardes
-            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
           oneValue:
             summary: "E\xE9n ETag-waarde"
             value: '"79054025255fb1a26e4bc422aef54eb4"'
+          multipleValues:
+            summary: Meerdere ETag-waardes
+            value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
         schema:
           type: string
       responses:
@@ -4505,9 +4505,9 @@ components:
       required: true
   securitySchemes:
     JWT-Claims:
-      bearerFormat: JWT
-      scheme: bearer
       type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     KlantContact:
       required:
@@ -5276,6 +5276,57 @@ components:
           type: string
           format: date-time
           readOnly: true
+    ObjectTypeOverigeDefinitie:
+      description: 'Verwijzing naar het schema van het type OBJECT als `objectType`
+        de waarde "overige" heeft.
+
+
+        * De URL referentie moet naar een JSON endpoint   wijzen waarin het objecttype
+        gedefinieerd is, inclusief het   [JSON-schema](https://json-schema.org/).
+
+        * Gebruik het `schema` attribuut om te verwijzen naar het schema binnen   de
+        objecttype resource (deze gebruikt het   [jq](http://stedolan.github.io/jq/)
+        formaat.
+
+        * Gebruik het `objectData` attribuut om te verwijzen naar de gegevens   binnen
+        het OBJECT
+
+
+        De opgegeven OBJECT url wordt gevalideerd tegen het schema van het opgegeven
+        objecttype.'
+      required:
+      - url
+      - schema
+      - objectData
+      type: object
+      properties:
+        url:
+          title: Objecttype-URL
+          description: URL-referentie naar de objecttype resource in een API. Deze
+            resource moet de [JSON-schema](https://json-schema.org/)-definitie van
+            het objecttype bevatten.
+          type: string
+          format: uri
+          maxLength: 1000
+          minLength: 1
+        schema:
+          title: schema-pad
+          description: 'Een geldige [jq](http://stedolan.github.io/jq/) expressie.
+            Dit wordt gecombineerd met de resource uit het `url`-attribuut om het
+            schema van het objecttype uit te lezen. Bijvoorbeeld: `.jsonSchema`.'
+          type: string
+          maxLength: 100
+          minLength: 1
+        objectData:
+          title: objectgegevens-pad
+          description: 'Een geldige [jq](http://stedolan.github.io/jq/) expressie.
+            Dit wordt gecombineerd met de JSON data uit de OBJECT url om de objectgegevens
+            uit te lezen en de vorm van de gegevens tegen het schema te valideren.
+            Bijvoorbeeld: `.record.data`.'
+          type: string
+          maxLength: 100
+          minLength: 1
+      nullable: true
     ZaakObject:
       required:
       - zaak
@@ -5418,6 +5469,8 @@ components:
           type: string
           pattern: '[a-z\_]+'
           maxLength: 100
+        objectTypeOverigeDefinitie:
+          $ref: '#/components/schemas/ObjectTypeOverigeDefinitie'
         relatieomschrijving:
           title: Relatieomschrijving
           description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
