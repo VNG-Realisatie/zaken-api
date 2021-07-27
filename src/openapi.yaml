@@ -5289,11 +5289,12 @@ components:
         formaat.
 
         * Gebruik het `objectData` attribuut om te verwijzen naar de gegevens   binnen
-        het OBJECT
+        het OBJECT. Deze gebruikt ook het   [jq](http://stedolan.github.io/jq/) formaat.
 
 
-        De opgegeven OBJECT url wordt gevalideerd tegen het schema van het opgegeven
-        objecttype.'
+        Indien je hier gebruikt van maakt, dan moet je een OBJECT url opgeven en is
+        het gebruik van objectIdentificatie niet mogelijk. De opgegeven OBJECT url
+        wordt gevalideerd tegen het schema van het opgegeven objecttype.'
       required:
       - url
       - schema

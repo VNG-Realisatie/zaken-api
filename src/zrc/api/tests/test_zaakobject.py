@@ -1068,7 +1068,7 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     OBJECT_TYPE = {
-        "url": "https://objecttype.example.com/api/objecttypes/foo",
+        "url": "https://objecttypes.example.com/api/objecttypes/foo",
         "version": 123,
         "jsonSchema": {
             "$schema": "http://json-schema.org/draft-07/schema",
@@ -1124,7 +1124,7 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
             "object": object_url,
             "objectType": ZaakobjectTypes.overige,
             "objectTypeOverigeDefinitie": {
-                "url": "https://objecttype.example.com/api/objecttypes/foo",
+                "url": "https://objecttypes.example.com/api/objecttypes/foo",
                 # https://stedolan.github.io/jq/ format
                 "schema": ".jsonSchema",
                 "objectData": ".record.data",
@@ -1140,10 +1140,10 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
         self.assertEqual(
             zaakobject.object_type_overige_definitie,
             {
-                "url": "https://objecttype.example.com/api/objecttypes/foo",
+                "url": "https://objecttypes.example.com/api/objecttypes/foo",
                 # https://stedolan.github.io/jq/ format
                 "schema": ".jsonSchema",
-                "objectData": ".record.data",
+                "object_data": ".record.data",
             }
         )
 
@@ -1169,7 +1169,7 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
             "object": object_url,
             "objectType": ZaakobjectTypes.overige,
             "objectTypeOverigeDefinitie": {
-                "url": "https://objecttype.example.com/api/objecttypes/foo",
+                "url": "https://objecttypes.example.com/api/objecttypes/foo",
                 # https://stedolan.github.io/jq/ format
                 "schema": ".invalid",
                 "objectData": ".record.data",
@@ -1202,7 +1202,7 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
             "object": object_url,
             "objectType": ZaakobjectTypes.overige,
             "objectTypeOverigeDefinitie": {
-                "url": "https://objecttype.example.com/api/objecttypes/foo",
+                "url": "https://objecttypes.example.com/api/objecttypes/foo",
                 # https://stedolan.github.io/jq/ format
                 "schema": ".jsonSchema",
                 "objectData": ".record.data",
