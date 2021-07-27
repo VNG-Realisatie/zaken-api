@@ -1,9 +1,11 @@
-from django.test import override_settings
+from django.test import override_settings, tag
 
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import ZaakobjectTypes
 from vng_api_common.tests import JWTAuthMixin, get_operation_url, get_validation_errors
+
+import requests_mock
 
 from zrc.datamodel.models import (
     Adres,
@@ -1059,3 +1061,154 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
         )
         error = get_validation_errors(response, "nonFieldErrors")
         self.assertEqual(error["code"], "invalid-object-type-overige-usage")
+
+
+@tag("objecttype-overige-definitie")
+class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    OBJECT_TYPE = {
+        "url": "https://objecttype.example.com/api/objecttypes/foo",
+        "version": 123,
+        "jsonSchema": {
+            "$schema": "http://json-schema.org/draft-07/schema",
+            "$id": "http://gemeente.nl/beleidsveld.json",
+            "type": "object",
+            "title": "Beleidsvelden",
+            "description": "Beleidsvelden in gebruik binnen de gemeente",
+            "default": {},
+            "examples": [
+                {"name": "Burgerzaken"},
+            ],
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "$id": "#/properties/name",
+                    "type": "string",
+                    "title": "The name schema",
+                    "default": "",
+                    "examples": ["Burgerzaken"],
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "description": "The name identifying each beleidsveld."
+                },
+            },
+            "additionalProperties": False
+        }
+    }
+
+    @requests_mock.Mocker()
+    def test_create_zaakobject_overig_explicit_schema(self, m):
+        """
+        Assert that external object type definitions can be referenced.
+        """
+        object_url = "https://objects.example.com/api/objects/1234"
+        m.get("https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE)
+        m.get(object_url, json={
+            "url": object_url,
+            "type": "https://objecttypes.example.com/api/objecttypes/foo",
+            "record": {
+                "data": {
+                    "name": "Asiel en Migratie",
+                }
+            }
+        })
+
+        url = get_operation_url("zaakobject_create")
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": object_url,
+            "objectType": ZaakobjectTypes.overige,
+            "objectTypeOverigeDefinitie": {
+                "url": "https://objecttype.example.com/api/objecttypes/foo",
+                # https://stedolan.github.io/jq/ format
+                "schema": ".jsonSchema",
+                "objectData": ".record.data",
+            },
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+
+        zaakobject = ZaakObject.objects.get()
+        self.assertEqual(zaakobject.object, object_url)
+        self.assertEqual(
+            zaakobject.object_type_overige_definitie,
+            {
+                "url": "https://objecttype.example.com/api/objecttypes/foo",
+                # https://stedolan.github.io/jq/ format
+                "schema": ".jsonSchema",
+                "objectData": ".record.data",
+            }
+        )
+
+    @requests_mock.Mocker()
+    def test_invalid_schema_reference(self, m):
+        object_url = "https://objects.example.com/api/objects/1234"
+        m.get("https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE)
+        m.get(object_url, json={
+            "url": object_url,
+            "type": "https://objecttypes.example.com/api/objecttypes/foo",
+            "record": {
+                "data": {
+                    "name": "Asiel en Migratie",
+                }
+            }
+        })
+
+        url = get_operation_url("zaakobject_create")
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": object_url,
+            "objectType": ZaakobjectTypes.overige,
+            "objectTypeOverigeDefinitie": {
+                "url": "https://objecttype.example.com/api/objecttypes/foo",
+                # https://stedolan.github.io/jq/ format
+                "schema": ".invalid",
+                "objectData": ".record.data",
+            },
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.json())
+
+    @requests_mock.Mocker()
+    def test_invalid_object_url_passed(self, m):
+        object_url = "https://objects.example.com/api/objects/1234"
+        m.get("https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE)
+        m.get(object_url, json={
+            "url": object_url,
+            "type": "https://objecttypes.example.com/api/objecttypes/foo",
+            "record": {
+                "data": {
+                    "invalidKey": "should not validate",
+                }
+            }
+        })
+
+        url = get_operation_url("zaakobject_create")
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": object_url,
+            "objectType": ZaakobjectTypes.overige,
+            "objectTypeOverigeDefinitie": {
+                "url": "https://objecttype.example.com/api/objecttypes/foo",
+                # https://stedolan.github.io/jq/ format
+                "schema": ".jsonSchema",
+                "objectData": ".record.data",
+            },
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.json())
