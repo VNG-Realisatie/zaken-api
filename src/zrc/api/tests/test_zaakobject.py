@@ -59,6 +59,7 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
                 "objectType": ZaakobjectTypes.besluit,
                 "objectTypeOverige": "",
                 "relatieomschrijving": "",
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -150,6 +151,7 @@ class ZaakObjectAdresTestCase(JWTAuthMixin, APITestCase):
                     "huisnummertoevoeging": "",
                     "postcode": "",
                 },
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -249,6 +251,7 @@ class ZaakObjectHuishoudenTestCase(JWTAuthMixin, APITestCase):
                         },
                     },
                 },
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -341,6 +344,7 @@ class ZaakObjectMedewerkerTestCase(JWTAuthMixin, APITestCase):
                     "voorletters": "J",
                     "voorvoegselAchternaam": "van",
                 },
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -432,6 +436,7 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
                         "ogoLocatieAanduiding": "test",
                     },
                 },
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -533,6 +538,7 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
                         "locatieOmschrijving": "test",
                     },
                 },
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -640,7 +646,9 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
                         },
                     },
                 },
+                "objectTypeOverigeDefinitie": None,
             },
+
         )
 
     def test_create_zaakobject_wozDeelObject(self):
@@ -748,6 +756,7 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
                         },
                     },
                 },
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -880,6 +889,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                         },
                     },
                 },
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -974,6 +984,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
                 "objectType": ZaakobjectTypes.overige,
                 "objectTypeOverige": "",
                 "objectIdentificatie": {"overigeData": {"someField": "some value"}},
+                "objectTypeOverigeDefinitie": None,
             },
         )
 
@@ -988,6 +999,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
             "objectType": ZaakobjectTypes.overige,
             "objectTypeOverige": "test",
             "relatieomschrijving": "test",
+            "objectTypeOverigeDefinitie": None,
         }
 
         response = self.client.post(url, data)

@@ -225,7 +225,7 @@ class EitherFieldRequiredValidator:
         self.code = code or self.default_code
 
     def __call__(self, attrs: dict):
-        values = {attrs.get(field, None) for field in self.fields}
+        values = [attrs.get(field, None) for field in self.fields]
         if not any(values):
             raise serializers.ValidationError(self.message, code=self.code)
 
