@@ -1074,6 +1074,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
 
 
 @tag("objecttype-overige-definitie")
+@requests_mock.Mocker()
 class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
@@ -1107,7 +1108,6 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
         },
     }
 
-    @requests_mock.Mocker()
     def test_create_zaakobject_overig_explicit_schema(self, m):
         """
         Assert that external object type definitions can be referenced.
@@ -1160,7 +1160,6 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
             },
         )
 
-    @requests_mock.Mocker()
     def test_invalid_schema_reference(self, m):
         object_url = "https://objects.example.com/api/objects/1234"
         m.get(
@@ -1200,7 +1199,83 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
             response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
         )
 
-    @requests_mock.Mocker()
+    def test_not_json_objecttype(self, m):
+        object_url = "https://objects.example.com/api/objects/1234"
+        m.get(
+            "https://objecttypes.example.com/api/objecttypes/foo",
+            text="<DOCTYPE html><html><head></head><body></body></html>",
+        )
+        m.get(
+            object_url,
+            json={
+                "url": object_url,
+                "type": "https://objecttypes.example.com/api/objecttypes/foo",
+                "record": {
+                    "data": {
+                        "name": "Asiel en Migratie",
+                    }
+                },
+            },
+        )
+
+        url = get_operation_url("zaakobject_create")
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": object_url,
+            "objectType": ZaakobjectTypes.overige,
+            "objectTypeOverigeDefinitie": {
+                "url": "https://objecttypes.example.com/api/objecttypes/foo",
+                # https://stedolan.github.io/jq/ format
+                "schema": ".jsonSchema",
+                "objectData": ".record.data",
+            },
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+
+    def test_unexpected_objecttype_response(self, m):
+        object_url = "https://objects.example.com/api/objects/1234"
+        m.get("https://objecttypes.example.com/api/objecttypes/foo", json="foo")
+        m.get(
+            object_url,
+            json={
+                "url": object_url,
+                "type": "https://objecttypes.example.com/api/objecttypes/foo",
+                "record": {
+                    "data": {
+                        "name": "Asiel en Migratie",
+                    }
+                },
+            },
+        )
+
+        url = get_operation_url("zaakobject_create")
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": object_url,
+            "objectType": ZaakobjectTypes.overige,
+            "objectTypeOverigeDefinitie": {
+                "url": "https://objecttypes.example.com/api/objecttypes/foo",
+                # https://stedolan.github.io/jq/ format
+                "schema": ".jsonSchema",
+                "objectData": ".record.data",
+            },
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+
     def test_invalid_object_url_passed(self, m):
         object_url = "https://objects.example.com/api/objects/1234"
         m.get(
@@ -1218,6 +1293,62 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
                 },
             },
         )
+
+        url = get_operation_url("zaakobject_create")
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": object_url,
+            "objectType": ZaakobjectTypes.overige,
+            "objectTypeOverigeDefinitie": {
+                "url": "https://objecttypes.example.com/api/objecttypes/foo",
+                # https://stedolan.github.io/jq/ format
+                "schema": ".jsonSchema",
+                "objectData": ".record.data",
+            },
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+
+    def test_invalid_object_data_returned(self, m):
+        object_url = "https://objects.example.com/api/objects/1234"
+        m.get(
+            "https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE
+        )
+        m.get(object_url, json="foo")
+
+        url = get_operation_url("zaakobject_create")
+        zaak = ZaakFactory.create()
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": object_url,
+            "objectType": ZaakobjectTypes.overige,
+            "objectTypeOverigeDefinitie": {
+                "url": "https://objecttypes.example.com/api/objecttypes/foo",
+                # https://stedolan.github.io/jq/ format
+                "schema": ".jsonSchema",
+                "objectData": ".record.data",
+            },
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+
+    def test_not_json_object(self, m):
+        object_url = "https://objects.example.com/api/objects/1234"
+        m.get(
+            "https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE
+        )
+        m.get(object_url, text="<DOCTYPE html><html><head></head><body></body></html>")
 
         url = get_operation_url("zaakobject_create")
         zaak = ZaakFactory.create()
