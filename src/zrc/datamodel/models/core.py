@@ -4,7 +4,7 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.crypto import get_random_string
@@ -575,6 +575,14 @@ class ZaakObject(ETagMixin, models.Model):
         validators=[RegexValidator("[a-z\_]+")],
         help_text="Beschrijft het type OBJECT als `objectType` de waarde "
         '"overige" heeft.',
+    )
+
+    object_type_overige_definitie = JSONField(
+        _("definitie object type overige"),
+        blank=True,
+        null=True,
+        help_text="Verwijzing naar het schema van het type OBJECT als `objectType` de "
+        "waarde \"overige\" heeft.",
     )
 
     objects = ZaakRelatedQuerySet.as_manager()
