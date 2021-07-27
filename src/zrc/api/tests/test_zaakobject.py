@@ -1,11 +1,10 @@
 from django.test import override_settings, tag
 
+import requests_mock
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.constants import ZaakobjectTypes
 from vng_api_common.tests import JWTAuthMixin, get_operation_url, get_validation_errors
-
-import requests_mock
 
 from zrc.datamodel.models import (
     Adres,
@@ -648,7 +647,6 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
                 },
                 "objectTypeOverigeDefinitie": None,
             },
-
         )
 
     def test_create_zaakobject_wozDeelObject(self):
@@ -1092,9 +1090,7 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
             "examples": [
                 {"name": "Burgerzaken"},
             ],
-            "required": [
-                "name"
-            ],
+            "required": ["name"],
             "properties": {
                 "name": {
                     "$id": "#/properties/name",
@@ -1104,11 +1100,11 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
                     "examples": ["Burgerzaken"],
                     "maxLength": 100,
                     "minLength": 1,
-                    "description": "The name identifying each beleidsveld."
+                    "description": "The name identifying each beleidsveld.",
                 },
             },
-            "additionalProperties": False
-        }
+            "additionalProperties": False,
+        },
     }
 
     @requests_mock.Mocker()
@@ -1117,16 +1113,21 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
         Assert that external object type definitions can be referenced.
         """
         object_url = "https://objects.example.com/api/objects/1234"
-        m.get("https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE)
-        m.get(object_url, json={
-            "url": object_url,
-            "type": "https://objecttypes.example.com/api/objecttypes/foo",
-            "record": {
-                "data": {
-                    "name": "Asiel en Migratie",
-                }
-            }
-        })
+        m.get(
+            "https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE
+        )
+        m.get(
+            object_url,
+            json={
+                "url": object_url,
+                "type": "https://objecttypes.example.com/api/objecttypes/foo",
+                "record": {
+                    "data": {
+                        "name": "Asiel en Migratie",
+                    }
+                },
+            },
+        )
 
         url = get_operation_url("zaakobject_create")
         zaak = ZaakFactory.create()
@@ -1156,22 +1157,27 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
                 # https://stedolan.github.io/jq/ format
                 "schema": ".jsonSchema",
                 "object_data": ".record.data",
-            }
+            },
         )
 
     @requests_mock.Mocker()
     def test_invalid_schema_reference(self, m):
         object_url = "https://objects.example.com/api/objects/1234"
-        m.get("https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE)
-        m.get(object_url, json={
-            "url": object_url,
-            "type": "https://objecttypes.example.com/api/objecttypes/foo",
-            "record": {
-                "data": {
-                    "name": "Asiel en Migratie",
-                }
-            }
-        })
+        m.get(
+            "https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE
+        )
+        m.get(
+            object_url,
+            json={
+                "url": object_url,
+                "type": "https://objecttypes.example.com/api/objecttypes/foo",
+                "record": {
+                    "data": {
+                        "name": "Asiel en Migratie",
+                    }
+                },
+            },
+        )
 
         url = get_operation_url("zaakobject_create")
         zaak = ZaakFactory.create()
@@ -1190,21 +1196,28 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.json())
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
 
     @requests_mock.Mocker()
     def test_invalid_object_url_passed(self, m):
         object_url = "https://objects.example.com/api/objects/1234"
-        m.get("https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE)
-        m.get(object_url, json={
-            "url": object_url,
-            "type": "https://objecttypes.example.com/api/objecttypes/foo",
-            "record": {
-                "data": {
-                    "invalidKey": "should not validate",
-                }
-            }
-        })
+        m.get(
+            "https://objecttypes.example.com/api/objecttypes/foo", json=self.OBJECT_TYPE
+        )
+        m.get(
+            object_url,
+            json={
+                "url": object_url,
+                "type": "https://objecttypes.example.com/api/objecttypes/foo",
+                "record": {
+                    "data": {
+                        "invalidKey": "should not validate",
+                    }
+                },
+            },
+        )
 
         url = get_operation_url("zaakobject_create")
         zaak = ZaakFactory.create()
@@ -1223,4 +1236,6 @@ class ZaakObjectObjectTypeOverigeDefinitie(JWTAuthMixin, APITestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.json())
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )

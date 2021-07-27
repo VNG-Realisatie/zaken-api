@@ -1,7 +1,7 @@
-import logging
 import json
-from typing import Iterable, Optional
+import logging
 from datetime import date
+from typing import Iterable, Optional
 
 from django.conf import settings
 from django.db import models
@@ -18,8 +18,8 @@ from vng_api_common.validators import (
     URLValidator,
 )
 
-from .auth import get_auth
 from ..datamodel.models.core import Zaak
+from .auth import get_auth
 
 logger = logging.getLogger(__name__)
 
@@ -245,7 +245,9 @@ class ObjectTypeOverigeDefinitieValidator:
     code = "invalid"
 
     def __call__(self, attrs: dict):
-        object_type_overige_definitie: Optional[dict] = attrs.get("object_type_overige_definitie")
+        object_type_overige_definitie: Optional[dict] = attrs.get(
+            "object_type_overige_definitie"
+        )
         object_url: str = attrs.get("object", "")
 
         if not object_type_overige_definitie:
@@ -254,15 +256,19 @@ class ObjectTypeOverigeDefinitieValidator:
         # object type overige definitie can only be used with object URL reference
         if object_type_overige_definitie and not object_url:
             raise serializers.ValidationError(
-                {"object_url": _(
-                    "Indien je `objectTypeOverigeDefinitie` gebruikt, dan moet je "
-                    "een OBJECT url opgeven."
-                )},
-                code="required"
+                {
+                    "object_url": _(
+                        "Indien je `objectTypeOverigeDefinitie` gebruikt, dan moet je "
+                        "een OBJECT url opgeven."
+                    )
+                },
+                code="required",
             )
 
         if attrs.get("object_identificatie"):
-            logger.warning("Both object URL and objectIdentificatie supplied, clearing the latter.")
+            logger.warning(
+                "Both object URL and objectIdentificatie supplied, clearing the latter."
+            )
             attrs["object_identificatie"] = None
 
         # now validate the schema
@@ -272,9 +278,14 @@ class ObjectTypeOverigeDefinitieValidator:
         try:
             object_type = response.json()
         except json.JSONDecodeError:
-            raise serializers.ValidationError({
-                "objectTypeOverigeDefinitie.url": _("The endpoint did not return valid JSON.")
-            }, code="invalid")
+            raise serializers.ValidationError(
+                {
+                    "objectTypeOverigeDefinitie.url": _(
+                        "The endpoint did not return valid JSON."
+                    )
+                },
+                code="invalid",
+            )
 
         schema_jq = jq.compile(object_type_overige_definitie["schema"])
         record_data_jq = jq.compile(object_type_overige_definitie["object_data"])
@@ -285,32 +296,43 @@ class ObjectTypeOverigeDefinitieValidator:
             json_schema_definition = None
 
         if not json_schema_definition:
-            raise serializers.ValidationError({
-                "objectTypeOverigeDefinitie.schema": _("No schema was found at the specified path.")
-            }, code="invalid")
+            raise serializers.ValidationError(
+                {
+                    "objectTypeOverigeDefinitie.schema": _(
+                        "No schema was found at the specified path."
+                    )
+                },
+                code="invalid",
+            )
 
         # validate the object
         object_response = url_validator(object_url)
         try:
             object_resource = object_response.json()
         except json.JSONDecodeError:
-            raise serializers.ValidationError({
-                "object": _("The endpoint did not return valid JSON.")
-            }, code="invalid")
+            raise serializers.ValidationError(
+                {"object": _("The endpoint did not return valid JSON.")}, code="invalid"
+            )
 
         try:
             object_data = record_data_jq.input(object_resource).first()
         except ValueError:
             object_data = None
         if object_data is None:
-            raise serializers.ValidationError({
-                "objectTypeOverigeDefinitie.objectData": _("No data was found at the specified path.")
-            }, code="invalid")
+            raise serializers.ValidationError(
+                {
+                    "objectTypeOverigeDefinitie.objectData": _(
+                        "No data was found at the specified path."
+                    )
+                },
+                code="invalid",
+            )
 
         # validate the schema
         try:
             jsonschema.validate(instance=object_data, schema=json_schema_definition)
         except jsonschema.ValidationError:
-            raise serializers.ValidationError({
-                "object": _("The object data does not match the specified schema.")
-            }, code="invalid-schema")
+            raise serializers.ValidationError(
+                {"object": _("The object data does not match the specified schema.")},
+                code="invalid-schema",
+            )

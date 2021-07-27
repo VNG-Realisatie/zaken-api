@@ -65,15 +65,15 @@ from ..auth import get_auth
 from ..validators import (
     CorrectZaaktypeValidator,
     DateNotInFutureValidator,
+    EitherFieldRequiredValidator,
     HoofdZaaktypeRelationValidator,
     HoofdzaakValidator,
+    JQExpressionValidator,
     NotSelfValidator,
+    ObjectTypeOverigeDefinitieValidator,
     RolOccurenceValidator,
     UniekeIdentificatieValidator,
     ZaaktypeInformatieobjecttypeRelationValidator,
-    ObjectTypeOverigeDefinitieValidator,
-    EitherFieldRequiredValidator,
-    JQExpressionValidator,
 )
 from .address import ObjectAdresSerializer
 from .betrokkene import (
@@ -728,7 +728,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
         allow_null=True,
         help_text=(
             "Verwijzing naar het schema van het type OBJECT als `objectType` de "
-            "waarde \"overige\" heeft.\n\n"
+            'waarde "overige" heeft.\n\n'
             "* De URL referentie moet naar een JSON endpoint "
             "  wijzen waarin het objecttype gedefinieerd is, inclusief het "
             "  [JSON-schema](https://json-schema.org/).\n"
@@ -742,7 +742,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             "en is het gebruik van objectIdentificatie niet mogelijk. "
             "De opgegeven OBJECT url wordt gevalideerd tegen het schema van het "
             "opgegeven objecttype."
-        )
+        ),
     )
 
     class Meta:
@@ -770,7 +770,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             EitherFieldRequiredValidator(
                 fields=("object", "object_identificatie"),
                 message=_("object or objectIdentificatie must be provided"),
-                code="invalid-zaakobject"
+                code="invalid-zaakobject",
             ),
             ObjectTypeOverigeDefinitieValidator(),
         ]
@@ -787,9 +787,13 @@ class ZaakObjectSerializer(PolymorphicSerializer):
 
         object_type = validated_attrs.get("object_type", None)
         object_type_overige = validated_attrs.get("object_type_overige", None)
-        object_type_overige_definitie = validated_attrs.get("object_type_overige_definitie", None)
+        object_type_overige_definitie = validated_attrs.get(
+            "object_type_overige_definitie", None
+        )
 
-        if object_type == ZaakobjectTypes.overige and not (object_type_overige or object_type_overige_definitie):
+        if object_type == ZaakobjectTypes.overige and not (
+            object_type_overige or object_type_overige_definitie
+        ):
             raise serializers.ValidationError(
                 _(
                     'Als `objectType` de waarde "overige" heeft, moet '

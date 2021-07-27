@@ -7,13 +7,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datamodel', '0088_zaak_opdrachtgevende_organisatie'),
+        ("datamodel", "0088_zaak_opdrachtgevende_organisatie"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='zaakobject',
-            name='object_type_overige_definitie',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, help_text='Verwijzing naar het schema van het type OBJECT als `objectType` de waarde "overige" heeft.', null=True, verbose_name='definitie object type overige'),
+            model_name="zaakobject",
+            name="object_type_overige_definitie",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True,
+                help_text='Verwijzing naar het schema van het type OBJECT als `objectType` de waarde "overige" heeft.',
+                null=True,
+                verbose_name="definitie object type overige",
+            ),
         ),
     ]

@@ -582,7 +582,7 @@ class ZaakObject(ETagMixin, models.Model):
         blank=True,
         null=True,
         help_text="Verwijzing naar het schema van het type OBJECT als `objectType` de "
-        "waarde \"overige\" heeft.",
+        'waarde "overige" heeft.',
     )
 
     objects = ZaakRelatedQuerySet.as_manager()
