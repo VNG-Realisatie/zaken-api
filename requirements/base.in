@@ -1,4 +1,6 @@
 # Core python libraries
+jq
+jsonschema
 markdown
 psycopg2
 python-dateutil

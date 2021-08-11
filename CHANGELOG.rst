@@ -2,6 +2,23 @@
 Wijzigingen
 ===========
 
+1.2.0 (2021-08-??)
+==================
+
+New features
+------------
+
+* Added support for ``ZaakObject.objectTypeOverigeDefinitie``, so you can refer to
+  object type and object registrations that are not part of the standard while keeping
+  strict schema validation and retaining sufficient information for clients to visualize
+  the data.
+
+  ``ZaakObject.objectTypeOverigeDefinitie`` takes a URL pointing to the type definition,
+  a ``schema`` key which is a valid `jq <http://stedolan.github.io/jq/>`_ expression to
+  extract the JSON schema from the object type (currently only JSON schema is supported!)
+  and a ``objectData`` key which is also a valid ``jq`` expression pointing to the data
+  of the related object.
+
 1.1.1 (2021-06-11)
 ==================
 

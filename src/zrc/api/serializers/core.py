@@ -65,9 +65,12 @@ from ..auth import get_auth
 from ..validators import (
     CorrectZaaktypeValidator,
     DateNotInFutureValidator,
+    EitherFieldRequiredValidator,
     HoofdZaaktypeRelationValidator,
     HoofdzaakValidator,
+    JQExpressionValidator,
     NotSelfValidator,
+    ObjectTypeOverigeDefinitieValidator,
     RolOccurenceValidator,
     UniekeIdentificatieValidator,
     ZaaktypeInformatieobjecttypeRelationValidator,
@@ -646,6 +649,39 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         return obj
 
 
+class ObjectTypeOverigeDefinitieSerializer(serializers.Serializer):
+    url = serializers.URLField(
+        label="Objecttype-URL",
+        max_length=1000,
+        help_text=(
+            "URL-referentie naar de objecttype resource in een API. Deze resource "
+            "moet de [JSON-schema](https://json-schema.org/)-definitie van het objecttype "
+            "bevatten."
+        ),
+    )
+    schema = serializers.CharField(
+        label="schema-pad",
+        max_length=100,
+        help_text=(
+            "Een geldige [jq](http://stedolan.github.io/jq/) expressie. Dit wordt "
+            "gecombineerd met de resource uit het `url`-attribuut om het schema "
+            "van het objecttype uit te lezen. Bijvoorbeeld: `.jsonSchema`."
+        ),
+        validators=[JQExpressionValidator()],
+    )
+    object_data = serializers.CharField(
+        label="objectgegevens-pad",
+        max_length=100,
+        help_text=(
+            "Een geldige [jq](http://stedolan.github.io/jq/) expressie. Dit wordt "
+            "gecombineerd met de JSON data uit de OBJECT url om de objectgegevens uit "
+            "te lezen en de vorm van de gegevens tegen het schema te valideren. "
+            "Bijvoorbeeld: `.record.data`."
+        ),
+        validators=[JQExpressionValidator()],
+    )
+
+
 class ZaakObjectSerializer(PolymorphicSerializer):
     discriminator = Discriminator(
         discriminator_field="object_type",
@@ -686,6 +722,29 @@ class ZaakObjectSerializer(PolymorphicSerializer):
         same_model=False,
     )
 
+    object_type_overige_definitie = ObjectTypeOverigeDefinitieSerializer(
+        label=_("definitie object type overige"),
+        required=False,
+        allow_null=True,
+        help_text=(
+            "Verwijzing naar het schema van het type OBJECT als `objectType` de "
+            'waarde "overige" heeft.\n\n'
+            "* De URL referentie moet naar een JSON endpoint "
+            "  wijzen waarin het objecttype gedefinieerd is, inclusief het "
+            "  [JSON-schema](https://json-schema.org/).\n"
+            "* Gebruik het `schema` attribuut om te verwijzen naar het schema binnen "
+            "  de objecttype resource (deze gebruikt het "
+            "  [jq](http://stedolan.github.io/jq/) formaat.\n"
+            "* Gebruik het `objectData` attribuut om te verwijzen naar de gegevens "
+            "  binnen het OBJECT. Deze gebruikt ook het "
+            "  [jq](http://stedolan.github.io/jq/) formaat."
+            "\n\nIndien je hier gebruikt van maakt, dan moet je een OBJECT url opgeven "
+            "en is het gebruik van objectIdentificatie niet mogelijk. "
+            "De opgegeven OBJECT url wordt gevalideerd tegen het schema van het "
+            "opgegeven objecttype."
+        ),
+    )
+
     class Meta:
         model = ZaakObject
         fields = (
@@ -695,6 +754,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             "object",
             "object_type",
             "object_type_overige",
+            "object_type_overige_definitie",
             "relatieomschrijving",
         )
         extra_kwargs = {
@@ -706,6 +766,14 @@ class ZaakObjectSerializer(PolymorphicSerializer):
                 "validators": [URLValidator(get_auth=get_auth)],
             },
         }
+        validators = [
+            EitherFieldRequiredValidator(
+                fields=("object", "object_identificatie"),
+                message=_("object or objectIdentificatie must be provided"),
+                code="invalid-zaakobject",
+            ),
+            ObjectTypeOverigeDefinitieValidator(),
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -715,23 +783,22 @@ class ZaakObjectSerializer(PolymorphicSerializer):
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
-        object = validated_attrs.get("object", None)
         object_identificatie = validated_attrs.get("object_identificatie", None)
-
-        if not object and not object_identificatie:
-            raise serializers.ValidationError(
-                _("betrokkene or betrokkeneIdentificatie must be provided"),
-                code="invalid-zaakobject",
-            )
 
         object_type = validated_attrs.get("object_type", None)
         object_type_overige = validated_attrs.get("object_type_overige", None)
+        object_type_overige_definitie = validated_attrs.get(
+            "object_type_overige_definitie", None
+        )
 
-        if object_type == ZaakobjectTypes.overige and not object_type_overige:
+        if object_type == ZaakobjectTypes.overige and not (
+            object_type_overige or object_type_overige_definitie
+        ):
             raise serializers.ValidationError(
                 _(
                     'Als `objectType` de waarde "overige" heeft, moet '
-                    "`objectTypeOverige` van een waarde voorzien zijn."
+                    "`objectTypeOverige` of `objectTypeOverigeDefinitie` van een "
+                    "waarde voorzien zijn."
                 ),
                 code="missing-object-type-overige",
             )
