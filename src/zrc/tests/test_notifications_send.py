@@ -14,7 +14,11 @@ from zrc.api.scopes import (
     SCOPE_ZAKEN_BIJWERKEN,
     SCOPE_ZAKEN_CREATE,
 )
-from zrc.datamodel.tests.factories import ResultaatFactory, ZaakFactory
+from zrc.datamodel.tests.factories import (
+    ResultaatFactory,
+    ZaakEigenschapFactory,
+    ZaakFactory,
+)
 
 from .utils import ZAAK_WRITE_KWARGS
 
@@ -109,6 +113,40 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
                 "resource": "resultaat",
                 "resourceUrl": f"http://testserver{resultaat_url}",
                 "actie": "destroy",
+                "aanmaakdatum": "2012-01-14T00:00:00Z",
+                "kenmerken": {
+                    "bronorganisatie": zaak.bronorganisatie,
+                    "zaaktype": zaak.zaaktype,
+                    "vertrouwelijkheidaanduiding": zaak.vertrouwelijkheidaanduiding,
+                },
+            },
+        )
+
+    @patch("zds_client.Client.from_url")
+    def test_send_notif_update_zaak_eigenschap(self, mock_client):
+        """
+        Check if notifications will be send when zaak-eigenschap is updated
+        """
+        client = mock_client.return_value
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaakeigenschap = ZaakEigenschapFactory.create(zaak=zaak, waarde="old")
+        zaakeigenschap_url = get_operation_url(
+            "zaakeigenschap_update", uuid=zaakeigenschap.uuid, zaak_uuid=zaak.uuid
+        )
+
+        with capture_on_commit_callbacks(execute=True):
+            response = self.client.patch(zaakeigenschap_url, data={"waarde": "new"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        client.create.assert_called_once_with(
+            "notificaties",
+            {
+                "kanaal": "zaken",
+                "hoofdObject": f"http://testserver{zaak_url}",
+                "resource": "zaakeigenschap",
+                "resourceUrl": f"http://testserver{zaakeigenschap_url}",
+                "actie": "partial_update",
                 "aanmaakdatum": "2012-01-14T00:00:00Z",
                 "kenmerken": {
                     "bronorganisatie": zaak.bronorganisatie,
