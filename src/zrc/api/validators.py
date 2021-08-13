@@ -221,7 +221,13 @@ class EitherFieldRequiredValidator:
 
     requires_context = True
 
-    def __init__(self, fields: Iterable[str], message: str = "", code: str = "", skip_for_updates=False):
+    def __init__(
+        self,
+        fields: Iterable[str],
+        message: str = "",
+        code: str = "",
+        skip_for_updates=False,
+    ):
         self.fields = fields
         self.message = (message or self.default_message) % {"fields": ", ".join(fields)}
         self.code = code or self.default_code

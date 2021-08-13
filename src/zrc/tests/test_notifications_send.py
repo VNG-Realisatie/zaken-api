@@ -17,8 +17,8 @@ from zrc.api.scopes import (
 from zrc.datamodel.tests.factories import (
     ResultaatFactory,
     ZaakEigenschapFactory,
-    ZaakObjectFactory,
     ZaakFactory,
+    ZaakObjectFactory,
 )
 
 from .utils import ZAAK_WRITE_KWARGS
