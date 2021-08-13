@@ -18,6 +18,7 @@ from zrc.datamodel.tests.factories import (
     ResultaatFactory,
     ZaakEigenschapFactory,
     ZaakFactory,
+    ZaakObjectFactory,
 )
 
 from .utils import ZAAK_WRITE_KWARGS
@@ -146,6 +147,39 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
                 "hoofdObject": f"http://testserver{zaak_url}",
                 "resource": "zaakeigenschap",
                 "resourceUrl": f"http://testserver{zaakeigenschap_url}",
+                "actie": "partial_update",
+                "aanmaakdatum": "2012-01-14T00:00:00Z",
+                "kenmerken": {
+                    "bronorganisatie": zaak.bronorganisatie,
+                    "zaaktype": zaak.zaaktype,
+                    "vertrouwelijkheidaanduiding": zaak.vertrouwelijkheidaanduiding,
+                },
+            },
+        )
+
+    @patch("zds_client.Client.from_url")
+    def test_send_notif_update_zaakobject(self, mock_client):
+        """
+        Check if notifications will be send when zaakobject is updated
+        """
+
+        client = mock_client.return_value
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaakobject = ZaakObjectFactory.create(zaak=zaak, relatieomschrijving="old")
+        zaakobject_url = get_operation_url("zaakobject_update", uuid=zaakobject.uuid)
+
+        with capture_on_commit_callbacks(execute=True):
+            response = self.client.patch(zaakobject_url, {"relatieomschrijving": "new"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        client.create.assert_called_once_with(
+            "notificaties",
+            {
+                "kanaal": "zaken",
+                "hoofdObject": f"http://testserver{zaak_url}",
+                "resource": "zaakobject",
+                "resourceUrl": f"http://testserver{zaakobject_url}",
                 "actie": "partial_update",
                 "aanmaakdatum": "2012-01-14T00:00:00Z",
                 "kenmerken": {
