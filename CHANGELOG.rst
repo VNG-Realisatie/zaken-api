@@ -2,7 +2,7 @@
 Wijzigingen
 ===========
 
-1.2.0 (2021-08-??)
+1.2.0 (2021-08-27)
 ==================
 
 New features
@@ -18,6 +18,10 @@ New features
   extract the JSON schema from the object type (currently only JSON schema is supported!)
   and a ``objectData`` key which is also a valid ``jq`` expression pointing to the data
   of the related object.
+
+* Added PUT/PATCH/DELETE operations for the following API resources:
+    - ``ZaakEigenschap``
+    - ``ZaakObject``
 
 1.1.1 (2021-06-11)
 ==================
