@@ -207,7 +207,12 @@ class ZaakViewSet(
     - `klantcontact` - alle klantcontacten bij een zaak
     """
 
-    queryset = Zaak.objects.prefetch_related("deelzaken").order_by("-pk")
+    queryset = Zaak.objects.prefetch_related(
+        "deelzaken",
+        "rol_set",
+        "zaakobject_set",
+        "zaakinformatieobject_set",
+    ).order_by("-pk")
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
     filter_backends = (Backend,)
