@@ -15,6 +15,7 @@ django-choices
 django-cors-middleware
 django-markup
 django-redis
+django-solo>=1.2.0
 
 # API libraries
 djangorestframework
