@@ -547,21 +547,57 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response_gte.data["results"][0]["startdatum"], "2019-03-01")
         self.assertEqual(response_lte.data["results"][0]["startdatum"], "2019-01-01")
 
-    def test_sort_startdatum(self):
-        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-01-01")
-        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-03-01")
-        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-02-01")
-        url = reverse("zaak-list")
+    def test_sort_datum_ascending(self):
+        sorting_params = [
+            "startdatum",
+            "einddatum",
+            "publicatiedatum",
+            "archiefactiedatum",
+        ]
 
-        response = self.client.get(url, {"ordering": "-startdatum"}, **ZAAK_READ_KWARGS)
+        for param in sorting_params:
+            with self.subTest(param=param):
+                Zaak.objects.all().delete()
+                ZaakFactory.create(**{param: "2019-01-01"}, zaaktype=ZAAKTYPE)
+                ZaakFactory.create(**{param: "2019-03-01"}, zaaktype=ZAAKTYPE)
+                ZaakFactory.create(**{param: "2019-02-01"}, zaaktype=ZAAKTYPE)
+                url = reverse("zaak-list")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+                response = self.client.get(url, {"ordering": param}, **ZAAK_READ_KWARGS)
 
-        data = response.data["results"]
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(data[0]["startdatum"], "2019-03-01")
-        self.assertEqual(data[1]["startdatum"], "2019-02-01")
-        self.assertEqual(data[2]["startdatum"], "2019-01-01")
+                data = response.data["results"]
+
+                self.assertEqual(data[0][param], "2019-01-01")
+                self.assertEqual(data[1][param], "2019-02-01")
+                self.assertEqual(data[2][param], "2019-03-01")
+
+    def test_sort_datum_descending(self):
+        sorting_params = [
+            "startdatum",
+            "einddatum",
+            "publicatiedatum",
+            "archiefactiedatum",
+        ]
+
+        for param in sorting_params:
+            with self.subTest(param=param):
+                Zaak.objects.all().delete()
+                ZaakFactory.create(**{param: "2019-01-01"}, zaaktype=ZAAKTYPE)
+                ZaakFactory.create(**{param: "2019-03-01"}, zaaktype=ZAAKTYPE)
+                ZaakFactory.create(**{param: "2019-02-01"}, zaaktype=ZAAKTYPE)
+                url = reverse("zaak-list")
+
+                response = self.client.get(url, {"ordering": param}, **ZAAK_READ_KWARGS)
+
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+                data = response.data["results"]
+
+                self.assertEqual(data[0][param], "2019-01-01")
+                self.assertEqual(data[1][param], "2019-02-01")
+                self.assertEqual(data[2][param], "2019-03-01")
 
     def test_zaak_eigenschappen_as_inline(self):
         zaak1 = ZaakFactory.create(zaaktype=ZAAKTYPE)
