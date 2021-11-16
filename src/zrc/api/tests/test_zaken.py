@@ -37,6 +37,8 @@ from zrc.datamodel.tests.factories import (
     ZaakBesluitFactory,
     ZaakEigenschapFactory,
     ZaakFactory,
+    ZaakInformatieObjectFactory,
+    ZaakObjectFactory,
 )
 from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
 from zrc.tests.utils import (
@@ -54,6 +56,7 @@ from ..scopes import (
     SCOPE_ZAKEN_CREATE,
     SCOPEN_ZAKEN_HEROPENEN,
 )
+from .mixins import ZaakInformatieObjectSyncMixin
 
 # ZTC
 ZTC_ROOT = "https://example.com/ztc/api/v1"
@@ -244,7 +247,7 @@ class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
     LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
     ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
 )
-class ZakenTests(JWTAuthMixin, APITestCase):
+class ZakenTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
@@ -694,6 +697,68 @@ class ZakenTests(JWTAuthMixin, APITestCase):
             response, "rol__betrokkeneIdentificatie__medewerker__identificatie"
         )
         self.assertEqual(error["code"], "max_length")
+
+    def test_get_zaak_inline_resources(self):
+        self.applicatie.heeft_alle_autorisaties = True
+        self.applicatie.save()
+
+        zaak = ZaakFactory.create()
+        url = reverse(zaak)
+
+        rol = RolFactory.create(zaak=zaak)
+        zio = ZaakInformatieObjectFactory.create(zaak=zaak)
+        zaakobject = ZaakObjectFactory.create(zaak=zaak)
+
+        rol_url = f"http://testserver{reverse(rol)}"
+        zio_url = f"http://testserver{reverse(zio)}"
+        zaakobject_url = f"http://testserver{reverse(zaakobject)}"
+
+        response = self.client.get(url, **ZAAK_READ_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        expected_data = {
+            "archiefactiedatum": None,
+            "archiefnominatie": None,
+            "archiefstatus": zaak.archiefstatus,
+            "betalingsindicatie": "",
+            "betalingsindicatie_weergave": "",
+            "bronorganisatie": zaak.bronorganisatie,
+            "communicatiekanaal": "",
+            "deelzaken": [],
+            "eigenschappen": [],
+            "einddatum": None,
+            "einddatum_gepland": None,
+            "hoofdzaak": None,
+            "identificatie": zaak.identificatie,
+            "kenmerken": [],
+            "laatste_betaaldatum": None,
+            "omschrijving": "",
+            "opdrachtgevende_organisatie": "",
+            "opschorting": {"indicatie": False, "reden": ""},
+            "producten_of_diensten": [],
+            "publicatiedatum": None,
+            "registratiedatum": str(zaak.registratiedatum),
+            "relevante_andere_zaken": [],
+            "resultaat": None,
+            "rollen": [rol_url],
+            "selectielijstklasse": "",
+            "startdatum": str(zaak.startdatum),
+            "status": None,
+            "toelichting": "",
+            "uiterlijke_einddatum_afdoening": None,
+            "url": f"http://testserver{url}",
+            "uuid": str(zaak.uuid),
+            "verantwoordelijke_organisatie": zaak.verantwoordelijke_organisatie,
+            "verlenging": {"reden": "", "duur": None},
+            "vertrouwelijkheidaanduiding": zaak.vertrouwelijkheidaanduiding,
+            "zaakgeometrie": None,
+            "zaakinformatieobjecten": [zio_url],
+            "zaakobjecten": [zaakobject_url],
+            "zaaktype": zaak.zaaktype,
+        }
+
+        self.assertDictEqual(dict(response.data), expected_data)
 
 
 @override_settings(
