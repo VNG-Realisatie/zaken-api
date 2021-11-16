@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.serializers import ValidationError
 from rest_framework.settings import api_settings
@@ -211,9 +210,8 @@ class ZaakViewSet(
     queryset = Zaak.objects.prefetch_related("deelzaken").order_by("-pk")
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
-    filter_backends = (Backend, OrderingFilter)
+    filter_backends = (Backend,)
     filterset_class = ZaakFilter
-    ordering_fields = ("startdatum",)
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
 

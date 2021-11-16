@@ -68,6 +68,15 @@ class ZaakFilter(FilterSet):
             ),
         )
     )
+    ordering = filters.OrderingFilter(
+        fields=(
+            "startdatum",
+            "einddatum",
+            "publicatiedatum",
+            "archiefactiedatum",
+        ),
+        help_text="Het veld waarop de resultaten geordend worden.",
+    )
 
     class Meta:
         model = Zaak
