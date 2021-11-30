@@ -3057,6 +3057,43 @@ paths:
         schema:
           type: string
           maxLength: 9
+      - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
+        in: query
+        description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+          NATUURLIJK PERSOON
+        required: false
+        schema:
+          type: string
+          maxLength: 17
+      - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer
+        in: query
+        description: Het administratienummer van de persoon, bedoeld in de Wet BRP
+        required: false
+        schema:
+          type: string
+          maxLength: 10
+      - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
+        in: query
+        description: Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
+          NIET-NATUURLIJK PERSOON
+        required: false
+        schema:
+          type: string
+      - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
+        in: query
+        description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+          NIET-NATUURLIJK PERSOON
+        required: false
+        schema:
+          type: string
+          maxLength: 17
+      - name: rol__betrokkeneIdentificatie__vestiging__vestigingsNummer
+        in: query
+        description: Een korte unieke aanduiding van de Vestiging.
+        required: false
+        schema:
+          type: string
+          maxLength: 24
       - name: rol__betrokkeneIdentificatie__medewerker__identificatie
         in: query
         description: Een korte unieke aanduiding van de MEDEWERKER.
@@ -3072,10 +3109,19 @@ paths:
           type: string
       - name: ordering
         in: query
-        description: Which field to use when ordering the results.
+        description: Het veld waarop de resultaten geordend worden.
         required: false
         schema:
           type: string
+          enum:
+          - startdatum
+          - -startdatum
+          - einddatum
+          - -einddatum
+          - publicatiedatum
+          - -publicatiedatum
+          - archiefactiedatum
+          - -archiefactiedatum
       - name: page
         in: query
         description: Een pagina binnen de gepagineerde set resultaten.
@@ -7548,6 +7594,34 @@ components:
             algemene bepalingen burgerservicenummer.
           type: string
           minLength: 1
+        rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie:
+          title: Rol  betrokkeneidentificatie  natuurlijkpersoon  anpidentificatie
+          description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+            NATUURLIJK PERSOON
+          type: string
+          minLength: 1
+        rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer:
+          title: Rol  betrokkeneidentificatie  natuurlijkpersoon  inpa nummer
+          description: Het administratienummer van de persoon, bedoeld in de Wet BRP
+          type: string
+          minLength: 1
+        rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId:
+          title: Rol  betrokkeneidentificatie  nietnatuurlijkpersoon  innnnpid
+          description: Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
+            NIET-NATUURLIJK PERSOON
+          type: string
+          minLength: 1
+        rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie:
+          title: Rol  betrokkeneidentificatie  nietnatuurlijkpersoon  annidentificatie
+          description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+            NIET-NATUURLIJK PERSOON
+          type: string
+          minLength: 1
+        rol__betrokkeneIdentificatie__vestiging__vestigingsNummer:
+          title: Rol  betrokkeneidentificatie  vestiging  vestigingsnummer
+          description: Een korte unieke aanduiding van de Vestiging.
+          type: string
+          minLength: 1
         rol__betrokkeneIdentificatie__medewerker__identificatie:
           title: Rol  betrokkeneidentificatie  medewerker  identificatie
           description: Een korte unieke aanduiding van de MEDEWERKER.
@@ -7560,9 +7634,37 @@ components:
           minLength: 1
         ordering:
           title: Ordering
-          description: Which field to use when ordering the results.
+          description: 'Het veld waarop de resultaten geordend worden.
+
+
+            Uitleg bij mogelijke waarden:
+
+
+            * `startdatum` - Startdatum
+
+            * `-startdatum` - Startdatum (descending)
+
+            * `einddatum` - Einddatum
+
+            * `-einddatum` - Einddatum (descending)
+
+            * `publicatiedatum` - Publicatiedatum
+
+            * `-publicatiedatum` - Publicatiedatum (descending)
+
+            * `archiefactiedatum` - Archiefactiedatum
+
+            * `-archiefactiedatum` - Archiefactiedatum (descending)'
           type: string
-          minLength: 1
+          enum:
+          - startdatum
+          - -startdatum
+          - einddatum
+          - -einddatum
+          - publicatiedatum
+          - -publicatiedatum
+          - archiefactiedatum
+          - -archiefactiedatum
     Wijzigingen:
       type: object
       properties:

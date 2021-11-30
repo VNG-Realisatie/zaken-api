@@ -53,6 +53,48 @@ class ZaakFilter(FilterSet):
             "datamodel.NatuurlijkPersoon", "inp_bsn", "max_length"
         ),
     )
+    rol__betrokkene_identificatie__natuurlijk_persoon__anp_identificatie = (
+        filters.CharFilter(
+            field_name="rol__natuurlijkpersoon__anp_identificatie",
+            help_text=get_help_text("datamodel.NatuurlijkPersoon", "anp_identificatie"),
+            max_length=get_field_attribute(
+                "datamodel.NatuurlijkPersoon", "anp_identificatie", "max_length"
+            ),
+        )
+    )
+    rol__betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer = (
+        filters.CharFilter(
+            field_name="rol__natuurlijkpersoon__inp_a_nummer",
+            help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_a_nummer"),
+            max_length=get_field_attribute(
+                "datamodel.NatuurlijkPersoon", "inp_a_nummer", "max_length"
+            ),
+        )
+    )
+    rol__betrokkene_identificatie__niet_natuurlijk_persoon__inn_nnp_id = (
+        filters.CharFilter(
+            field_name="rol__nietnatuurlijkpersoon__inn_nnp_id",
+            help_text=get_help_text("datamodel.NietNatuurlijkPersoon", "inn_nnp_id"),
+        )
+    )
+    rol__betrokkene_identificatie__niet_natuurlijk_persoon__ann_identificatie = (
+        filters.CharFilter(
+            field_name="rol__nietnatuurlijkpersoon__ann_identificatie",
+            help_text=get_help_text(
+                "datamodel.NietNatuurlijkPersoon", "ann_identificatie"
+            ),
+            max_length=get_field_attribute(
+                "datamodel.NietNatuurlijkPersoon", "ann_identificatie", "max_length"
+            ),
+        )
+    )
+    rol__betrokkene_identificatie__vestiging__vestigings_nummer = filters.CharFilter(
+        field_name="rol__vestiging__vestigings_nummer",
+        help_text=get_help_text("datamodel.Vestiging", "vestigings_nummer"),
+        max_length=get_field_attribute(
+            "datamodel.Vestiging", "vestigings_nummer", "max_length"
+        ),
+    )
     rol__betrokkene_identificatie__medewerker__identificatie = filters.CharFilter(
         field_name="rol__medewerker__identificatie",
         help_text=get_help_text("datamodel.Medewerker", "identificatie"),
@@ -67,6 +109,15 @@ class ZaakFilter(FilterSet):
                 "datamodel.OrganisatorischeEenheid", "identificatie"
             ),
         )
+    )
+    ordering = filters.OrderingFilter(
+        fields=(
+            "startdatum",
+            "einddatum",
+            "publicatiedatum",
+            "archiefactiedatum",
+        ),
+        help_text="Het veld waarop de resultaten geordend worden.",
     )
 
     class Meta:

@@ -28,7 +28,9 @@ from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     Medewerker,
     NatuurlijkPersoon,
+    NietNatuurlijkPersoon,
     OrganisatorischeEenheid,
+    Vestiging,
     Zaak,
 )
 from zrc.datamodel.tests.factories import (
@@ -547,21 +549,57 @@ class ZakenTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response_gte.data["results"][0]["startdatum"], "2019-03-01")
         self.assertEqual(response_lte.data["results"][0]["startdatum"], "2019-01-01")
 
-    def test_sort_startdatum(self):
-        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-01-01")
-        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-03-01")
-        ZaakFactory.create(zaaktype=ZAAKTYPE, startdatum="2019-02-01")
-        url = reverse("zaak-list")
+    def test_sort_datum_ascending(self):
+        sorting_params = [
+            "startdatum",
+            "einddatum",
+            "publicatiedatum",
+            "archiefactiedatum",
+        ]
 
-        response = self.client.get(url, {"ordering": "-startdatum"}, **ZAAK_READ_KWARGS)
+        for param in sorting_params:
+            with self.subTest(param=param):
+                Zaak.objects.all().delete()
+                ZaakFactory.create(**{param: "2019-01-01"}, zaaktype=ZAAKTYPE)
+                ZaakFactory.create(**{param: "2019-03-01"}, zaaktype=ZAAKTYPE)
+                ZaakFactory.create(**{param: "2019-02-01"}, zaaktype=ZAAKTYPE)
+                url = reverse("zaak-list")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+                response = self.client.get(url, {"ordering": param}, **ZAAK_READ_KWARGS)
 
-        data = response.data["results"]
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(data[0]["startdatum"], "2019-03-01")
-        self.assertEqual(data[1]["startdatum"], "2019-02-01")
-        self.assertEqual(data[2]["startdatum"], "2019-01-01")
+                data = response.data["results"]
+
+                self.assertEqual(data[0][param], "2019-01-01")
+                self.assertEqual(data[1][param], "2019-02-01")
+                self.assertEqual(data[2][param], "2019-03-01")
+
+    def test_sort_datum_descending(self):
+        sorting_params = [
+            "startdatum",
+            "einddatum",
+            "publicatiedatum",
+            "archiefactiedatum",
+        ]
+
+        for param in sorting_params:
+            with self.subTest(param=param):
+                Zaak.objects.all().delete()
+                ZaakFactory.create(**{param: "2019-01-01"}, zaaktype=ZAAKTYPE)
+                ZaakFactory.create(**{param: "2019-03-01"}, zaaktype=ZAAKTYPE)
+                ZaakFactory.create(**{param: "2019-02-01"}, zaaktype=ZAAKTYPE)
+                url = reverse("zaak-list")
+
+                response = self.client.get(url, {"ordering": param}, **ZAAK_READ_KWARGS)
+
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+                data = response.data["results"]
+
+                self.assertEqual(data[0][param], "2019-01-01")
+                self.assertEqual(data[1][param], "2019-02-01")
+                self.assertEqual(data[2][param], "2019-03-01")
 
     def test_zaak_eigenschappen_as_inline(self):
         zaak1 = ZaakFactory.create(zaaktype=ZAAKTYPE)
@@ -851,6 +889,168 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
         self.assertEqual(
             zaak.archiefactiedatum, date(2030, 5, 3)  # 2020-05-03 + 10 years
         )
+
+
+class ZakenFilterTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    def test_rol_nnp_id(self):
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.niet_natuurlijk_persoon,
+            omschrijving_generiek=RolOmschrijving.initiator,
+        )
+        NietNatuurlijkPersoon.objects.create(rol=rol, inn_nnp_id="129117729")
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId": "000000000"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId": "129117729"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_rol_nnp_ann_identificatie(self):
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.niet_natuurlijk_persoon,
+            omschrijving_generiek=RolOmschrijving.initiator,
+        )
+        NietNatuurlijkPersoon.objects.create(rol=rol, ann_identificatie="12345")
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie": "000000000"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie": "12345"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_rol_np_anp_identificatie(self):
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.natuurlijk_persoon,
+            omschrijving_generiek=RolOmschrijving.initiator,
+        )
+        NatuurlijkPersoon.objects.create(rol=rol, anp_identificatie="12345")
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie": "000000000"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie": "12345"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_rol_np_inp_a_nummer(self):
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.natuurlijk_persoon,
+            omschrijving_generiek=RolOmschrijving.initiator,
+        )
+        NatuurlijkPersoon.objects.create(rol=rol, inp_a_nummer="12345")
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer": "000000000"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer": "12345"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_rol_vestiging_vestigings_nummer(self):
+        url = reverse(Zaak)
+        rol = RolFactory.create(
+            betrokkene_type=RolTypes.vestiging,
+            omschrijving_generiek=RolOmschrijving.initiator,
+        )
+        Vestiging.objects.create(rol=rol, vestigings_nummer="12345")
+
+        with self.subTest(expected="no-match"):
+            response = self.client.get(
+                url,
+                {
+                    "rol__betrokkeneIdentificatie__vestiging__vestigingsNummer": "000000000"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 0)
+
+        with self.subTest(expected="match"):
+            response = self.client.get(
+                url,
+                {"rol__betrokkeneIdentificatie__vestiging__vestigingsNummer": "12345"},
+                **ZAAK_READ_KWARGS,
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
