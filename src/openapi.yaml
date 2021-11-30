@@ -3122,6 +3122,18 @@ paths:
           - -publicatiedatum
           - archiefactiedatum
           - -archiefactiedatum
+      - name: expand
+        in: query
+        description: Haal details van inline resources direct op.
+        schema:
+          type: string
+          enum:
+          - status
+          - resultaat
+          - eigenschappen
+          - rollen
+          - zaakobjecten
+          - zaakinformatieobjecten
       - name: page
         in: query
         description: Een pagina binnen de gepagineerde set resultaten.
@@ -3337,6 +3349,18 @@ paths:
         required: false
         schema:
           type: integer
+      - name: expand
+        in: query
+        description: Haal details van inline resources direct op.
+        schema:
+          type: string
+          enum:
+          - status
+          - resultaat
+          - eigenschappen
+          - rollen
+          - zaakobjecten
+          - zaakinformatieobjecten
       - name: Accept-Crs
         in: header
         description: Het gewenste 'Coordinate Reference System' (CRS) van de geometrie
@@ -3434,6 +3458,18 @@ paths:
       summary: Een specifieke ZAAK opvragen.
       description: Een specifieke ZAAK opvragen.
       parameters:
+      - name: expand
+        in: query
+        description: Haal details van inline resources direct op.
+        schema:
+          type: string
+          enum:
+          - status
+          - resultaat
+          - eigenschappen
+          - rollen
+          - zaakobjecten
+          - zaakinformatieobjecten
       - name: Accept-Crs
         in: header
         description: Het gewenste 'Coordinate Reference System' (CRS) van de geometrie
@@ -7284,6 +7320,13 @@ components:
             format: uri
           readOnly: true
           uniqueItems: true
+        rollen:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          uniqueItems: true
         status:
           title: Status
           description: Indien geen status bekend is, dan is de waarde 'null'
@@ -7291,6 +7334,20 @@ components:
           format: uri
           readOnly: true
           nullable: true
+        zaakinformatieobjecten:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          uniqueItems: true
+        zaakobjecten:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          uniqueItems: true
         kenmerken:
           description: Lijst van kenmerken. Merk op dat refereren naar gerelateerde
             objecten beter kan via `ZaakObject`.
@@ -7665,6 +7722,33 @@ components:
           - -publicatiedatum
           - archiefactiedatum
           - -archiefactiedatum
+        expand:
+          title: Expand
+          description: 'Haal details van inline resources direct op.
+
+
+            Uitleg bij mogelijke waarden:
+
+
+            * `status` - status
+
+            * `resultaat` - resultaat
+
+            * `eigenschappen` - eigenschappen
+
+            * `rollen` - rollen
+
+            * `zaakobjecten` - zaakobjecten
+
+            * `zaakinformatieobjecten` - zaakinformatieobjecten'
+          type: string
+          enum:
+          - status
+          - resultaat
+          - eigenschappen
+          - rollen
+          - zaakobjecten
+          - zaakinformatieobjecten
     Wijzigingen:
       type: object
       properties:

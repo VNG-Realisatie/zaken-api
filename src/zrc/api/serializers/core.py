@@ -60,6 +60,7 @@ from zrc.datamodel.models.core import ZaakVerzoek
 from zrc.datamodel.utils import BrondatumCalculator
 from zrc.sync.signals import SyncError
 from zrc.utils.exceptions import DetermineProcessEndDateException
+from zrc.utils.serializers import ExpandSerializer
 
 from ..auth import get_auth
 from ..validators import (
@@ -157,317 +158,6 @@ class RelevanteZaakSerializer(serializers.ModelSerializer):
 
         value_display_mapping = add_choice_values_help_text(AardZaakRelatie)
         self.fields["aard_relatie"].help_text += f"\n\n{value_display_mapping}"
-
-
-class ZaakSerializer(
-    NestedGegevensGroepMixin,
-    NestedCreateMixin,
-    NestedUpdateMixin,
-    serializers.HyperlinkedModelSerializer,
-):
-    eigenschappen = NestedHyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        lookup_field="uuid",
-        view_name="zaakeigenschap-detail",
-        parent_lookup_kwargs={"zaak_uuid": "zaak__uuid"},
-        source="zaakeigenschap_set",
-    )
-    status = serializers.HyperlinkedRelatedField(
-        source="current_status_uuid",
-        read_only=True,
-        allow_null=True,
-        view_name="status-detail",
-        lookup_url_kwarg="uuid",
-        help_text=_("Indien geen status bekend is, dan is de waarde 'null'"),
-    )
-
-    kenmerken = ZaakKenmerkSerializer(
-        source="zaakkenmerk_set",
-        many=True,
-        required=False,
-        help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
-        "beter kan via `ZaakObject`.",
-    )
-
-    betalingsindicatie_weergave = serializers.CharField(
-        source="get_betalingsindicatie_display",
-        read_only=True,
-        help_text=_("Uitleg bij `betalingsindicatie`."),
-    )
-
-    verlenging = VerlengingSerializer(
-        required=False,
-        allow_null=True,
-        help_text=_(
-            "Gegevens omtrent het verlengen van de doorlooptijd van de behandeling van de ZAAK"
-        ),
-    )
-
-    opschorting = OpschortingSerializer(
-        required=False,
-        allow_null=True,
-        help_text=_(
-            "Gegevens omtrent het tijdelijk opschorten van de behandeling van de ZAAK"
-        ),
-    )
-
-    deelzaken = serializers.HyperlinkedRelatedField(
-        read_only=True,
-        many=True,
-        view_name="zaak-detail",
-        lookup_url_kwarg="uuid",
-        lookup_field="uuid",
-        help_text=_("URL-referenties naar deel ZAAKen."),
-    )
-
-    resultaat = serializers.HyperlinkedRelatedField(
-        read_only=True,
-        allow_null=True,
-        view_name="resultaat-detail",
-        lookup_url_kwarg="uuid",
-        lookup_field="uuid",
-        help_text=_(
-            "URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde 'null'"
-        ),
-    )
-
-    relevante_andere_zaken = RelevanteZaakSerializer(
-        many=True, required=False, help_text=_("Een lijst van relevante andere zaken.")
-    )
-
-    class Meta:
-        model = Zaak
-        fields = (
-            "url",
-            "uuid",
-            "identificatie",
-            "bronorganisatie",
-            "omschrijving",
-            "toelichting",
-            "zaaktype",
-            "registratiedatum",
-            "verantwoordelijke_organisatie",
-            "startdatum",
-            "einddatum",
-            "einddatum_gepland",
-            "uiterlijke_einddatum_afdoening",
-            "publicatiedatum",
-            "communicatiekanaal",
-            # TODO: add shape validator once we know the shape
-            "producten_of_diensten",
-            "vertrouwelijkheidaanduiding",
-            "betalingsindicatie",
-            "betalingsindicatie_weergave",
-            "laatste_betaaldatum",
-            "zaakgeometrie",
-            "verlenging",
-            "opschorting",
-            "selectielijstklasse",
-            "hoofdzaak",
-            "deelzaken",
-            "relevante_andere_zaken",
-            "eigenschappen",
-            # read-only veld, on-the-fly opgevraagd
-            "status",
-            # Writable inline resource, as opposed to eigenschappen for demo
-            # purposes. Eventually, we need to choose one form.
-            "kenmerken",
-            # Archiving
-            "archiefnominatie",
-            "archiefstatus",
-            "archiefactiedatum",
-            "resultaat",
-            "opdrachtgevende_organisatie",
-        )
-        extra_kwargs = {
-            "url": {"lookup_field": "uuid"},
-            "uuid": {"read_only": True},
-            "zaakgeometrie": {
-                "help_text": "Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON."
-            },
-            "identificatie": {"validators": [IsImmutableValidator()]},
-            "zaaktype": {
-                # TODO: does order matter here with the default validators?
-                "validators": [
-                    IsImmutableValidator(),
-                    PublishValidator(
-                        "ZaakType", settings.ZTC_API_SPEC, get_auth=get_auth
-                    ),
-                ]
-            },
-            "einddatum": {"read_only": True, "allow_null": True},
-            "communicatiekanaal": {
-                "validators": [
-                    ResourceValidator(
-                        "CommunicatieKanaal", settings.REFERENTIELIJSTEN_API_SPEC
-                    )
-                ]
-            },
-            "vertrouwelijkheidaanduiding": {
-                "required": False,
-                "help_text": _(
-                    "Aanduiding van de mate waarin het zaakdossier van de "
-                    "ZAAK voor de openbaarheid bestemd is. Optioneel - indien "
-                    "geen waarde gekozen wordt, dan wordt de waarde van het "
-                    "ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een "
-                    "waarde teruggeeft."
-                ),
-            },
-            "selectielijstklasse": {
-                "validators": [
-                    ResourceValidator(
-                        "Resultaat",
-                        settings.REFERENTIELIJSTEN_API_SPEC,
-                        get_auth=get_auth,
-                    )
-                ]
-            },
-            "hoofdzaak": {
-                "lookup_field": "uuid",
-                "queryset": Zaak.objects.all(),
-                "validators": [NotSelfValidator(), HoofdzaakValidator()],
-            },
-            "laatste_betaaldatum": {"validators": [UntilNowValidator()]},
-        }
-        # Replace a default "unique together" constraint.
-        validators = [UniekeIdentificatieValidator(), HoofdZaaktypeRelationValidator()]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
-        self.fields["betalingsindicatie"].help_text += f"\n\n{value_display_mapping}"
-
-        value_display_mapping = add_choice_values_help_text(Archiefstatus)
-        self.fields["archiefstatus"].help_text += f"\n\n{value_display_mapping}"
-
-        value_display_mapping = add_choice_values_help_text(Archiefnominatie)
-        self.fields["archiefnominatie"].help_text += f"\n\n{value_display_mapping}"
-
-    def _get_zaaktype(self, zaaktype_url: str) -> dict:
-        if not hasattr(self, "_zaaktype"):
-            # dynamic so that it can be mocked in tests easily
-            Client = import_string(settings.ZDS_CLIENT_CLASS)
-            client = Client.from_url(zaaktype_url)
-            client.auth = APICredential.get_auth(
-                zaaktype_url, scopes=["zds.scopes.zaaktypes.lezen"]
-            )
-            self._zaaktype = client.request(zaaktype_url, "zaaktype")
-        return self._zaaktype
-
-    def _get_information_objects(self) -> list:
-        if not hasattr(self, "_information_objects"):
-            self._information_objects = []
-
-            if self.instance:
-                Client = import_string(settings.ZDS_CLIENT_CLASS)
-
-                zios = self.instance.zaakinformatieobject_set.all()
-                for zio in zios:
-                    io_url = zio.informatieobject
-                    client = Client.from_url(io_url)
-                    client.auth = APICredential.get_auth(
-                        io_url, scopes=["scopes.documenten.lezen"]
-                    )
-                    informatieobject = client.request(
-                        io_url, "enkelvoudiginformatieobject"
-                    )
-                    self._information_objects.append(informatieobject)
-
-        return self._information_objects
-
-    def validate(self, attrs):
-        super().validate(attrs)
-
-        default_betalingsindicatie = (
-            self.instance.betalingsindicatie if self.instance else None
-        )
-        betalingsindicatie = attrs.get("betalingsindicatie", default_betalingsindicatie)
-        if betalingsindicatie == BetalingsIndicatie.nvt and attrs.get(
-            "laatste_betaaldatum"
-        ):
-            raise serializers.ValidationError(
-                {
-                    "laatste_betaaldatum": _(
-                        'Laatste betaaldatum kan niet gezet worden als de betalingsindicatie "nvt" is'
-                    )
-                },
-                code="betaling-nvt",
-            )
-
-        # check that productenOfDiensten are part of the ones on the zaaktype
-        default_zaaktype = self.instance.zaaktype if self.instance else None
-        zaaktype = attrs.get("zaaktype", default_zaaktype)
-        assert zaaktype, "Should not have passed validation - a zaaktype is needed"
-        producten_of_diensten = attrs.get("producten_of_diensten")
-        if producten_of_diensten:
-            zaaktype = self._get_zaaktype(zaaktype)
-            if not set(producten_of_diensten).issubset(
-                set(zaaktype["productenOfDiensten"])
-            ):
-                raise serializers.ValidationError(
-                    {
-                        "producten_of_diensten": _(
-                            "Niet alle producten/diensten komen voor in "
-                            "de producten/diensten op het zaaktype"
-                        )
-                    },
-                    code="invalid-products-services",
-                )
-
-        # Archiving
-        default_archiefstatus = (
-            self.instance.archiefstatus
-            if self.instance
-            else Archiefstatus.nog_te_archiveren
-        )
-        archiefstatus = (
-            attrs.get("archiefstatus", default_archiefstatus)
-            != Archiefstatus.nog_te_archiveren
-        )
-        if archiefstatus:
-            ios = self._get_information_objects()
-            for io in ios:
-                if io["status"] != "gearchiveerd":
-                    raise serializers.ValidationError(
-                        {
-                            "archiefstatus",
-                            _(
-                                "Er zijn gerelateerde informatieobjecten waarvan de `status` nog niet gelijk is aan "
-                                "`gearchiveerd`. Dit is een voorwaarde voor het zetten van de `archiefstatus` op een andere "
-                                "waarde dan `nog_te_archiveren`."
-                            ),
-                        },
-                        code="documents-not-archived",
-                    )
-
-            for attr in ["archiefnominatie", "archiefactiedatum"]:
-                if not attrs.get(
-                    attr, getattr(self.instance, attr) if self.instance else None
-                ):
-                    raise serializers.ValidationError(
-                        {
-                            attr: _(
-                                "Moet van een waarde voorzien zijn als de 'Archiefstatus' een waarde heeft anders dan "
-                                "'nog_te_archiveren'."
-                            )
-                        },
-                        code=f"{attr}-not-set",
-                    )
-        # End archiving
-
-        return attrs
-
-    def create(self, validated_data: dict):
-        # set the derived value from ZTC
-        if "vertrouwelijkheidaanduiding" not in validated_data:
-            zaaktype = self._get_zaaktype(validated_data["zaaktype"])
-            validated_data["vertrouwelijkheidaanduiding"] = zaaktype[
-                "vertrouwelijkheidaanduiding"
-            ]
-
-        return super().create(validated_data)
 
 
 class GeoWithinSerializer(serializers.Serializer):
@@ -1178,3 +868,393 @@ class ZaakVerzoekSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError(
                 {api_settings.NON_FIELD_ERRORS_KEY: sync_error.args[0]}
             ) from sync_error
+
+
+class ZaakSerializer(
+    NestedGegevensGroepMixin,
+    NestedCreateMixin,
+    NestedUpdateMixin,
+    serializers.HyperlinkedModelSerializer,
+):
+    eigenschappen = ExpandSerializer(
+        name="eigenschappen",
+        source="zaakeigenschap_set",
+        default_serializer=NestedHyperlinkedRelatedField,
+        expanded_serializer=ZaakEigenschapSerializer,
+        many=True,
+        read_only=True,
+        common_kwargs={
+            "read_only": True,
+        },
+        default_serializer_kwargs={
+            "parent_lookup_kwargs": {"zaak_uuid": "zaak__uuid"},
+            "lookup_field": "uuid",
+            "view_name": "zaakeigenschap-detail",
+        },
+    )
+    rollen = ExpandSerializer(
+        name="rollen",
+        source="rol_set",
+        default_serializer=NestedHyperlinkedRelatedField,
+        expanded_serializer=RolSerializer,
+        many=True,
+        read_only=True,
+        common_kwargs={
+            "read_only": True,
+        },
+        default_serializer_kwargs={
+            "lookup_field": "uuid",
+            "view_name": "rol-detail",
+        },
+    )
+    status = ExpandSerializer(
+        name="status",
+        source="current_status",
+        default_serializer=serializers.HyperlinkedRelatedField,
+        expanded_serializer=StatusSerializer,
+        read_only=True,
+        common_kwargs={
+            "allow_null": True,
+            "read_only": True,
+        },
+        default_serializer_kwargs={
+            "lookup_field": "uuid",
+            "view_name": "status-detail",
+        },
+        help_text=_("Indien geen status bekend is, dan is de waarde 'null'"),
+    )
+    zaakinformatieobjecten = ExpandSerializer(
+        name="zaakinformatieobjecten",
+        source="zaakinformatieobject_set",
+        default_serializer=NestedHyperlinkedRelatedField,
+        expanded_serializer=ZaakInformatieObjectSerializer,
+        many=True,
+        read_only=True,
+        common_kwargs={
+            "read_only": True,
+        },
+        default_serializer_kwargs={
+            "lookup_field": "uuid",
+            "view_name": "zaakinformatieobject-detail",
+        },
+    )
+    zaakobjecten = ExpandSerializer(
+        name="zaakobjecten",
+        source="zaakobject_set",
+        default_serializer=NestedHyperlinkedRelatedField,
+        expanded_serializer=ZaakObjectSerializer,
+        many=True,
+        read_only=True,
+        common_kwargs={
+            "read_only": True,
+        },
+        default_serializer_kwargs={
+            "lookup_field": "uuid",
+            "view_name": "zaakobject-detail",
+        },
+    )
+
+    kenmerken = ZaakKenmerkSerializer(
+        source="zaakkenmerk_set",
+        many=True,
+        required=False,
+        help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
+        "beter kan via `ZaakObject`.",
+    )
+
+    betalingsindicatie_weergave = serializers.CharField(
+        source="get_betalingsindicatie_display",
+        read_only=True,
+        help_text=_("Uitleg bij `betalingsindicatie`."),
+    )
+
+    verlenging = VerlengingSerializer(
+        required=False,
+        allow_null=True,
+        help_text=_(
+            "Gegevens omtrent het verlengen van de doorlooptijd van de behandeling van de ZAAK"
+        ),
+    )
+
+    opschorting = OpschortingSerializer(
+        required=False,
+        allow_null=True,
+        help_text=_(
+            "Gegevens omtrent het tijdelijk opschorten van de behandeling van de ZAAK"
+        ),
+    )
+
+    deelzaken = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        many=True,
+        view_name="zaak-detail",
+        lookup_url_kwarg="uuid",
+        lookup_field="uuid",
+        help_text=_("URL-referenties naar deel ZAAKen."),
+    )
+
+    resultaat = ExpandSerializer(
+        name="resultaat",
+        default_serializer=serializers.HyperlinkedRelatedField,
+        expanded_serializer=ResultaatSerializer,
+        read_only=True,
+        common_kwargs={
+            "allow_null": True,
+            "read_only": True,
+        },
+        default_serializer_kwargs={
+            "lookup_field": "uuid",
+            "view_name": "resultaat-detail",
+        },
+        help_text=_(
+            "URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde 'null'"
+        ),
+    )
+
+    relevante_andere_zaken = RelevanteZaakSerializer(
+        many=True, required=False, help_text=_("Een lijst van relevante andere zaken.")
+    )
+
+    class Meta:
+        model = Zaak
+        fields = (
+            "url",
+            "uuid",
+            "identificatie",
+            "bronorganisatie",
+            "omschrijving",
+            "toelichting",
+            "zaaktype",
+            "registratiedatum",
+            "verantwoordelijke_organisatie",
+            "startdatum",
+            "einddatum",
+            "einddatum_gepland",
+            "uiterlijke_einddatum_afdoening",
+            "publicatiedatum",
+            "communicatiekanaal",
+            # TODO: add shape validator once we know the shape
+            "producten_of_diensten",
+            "vertrouwelijkheidaanduiding",
+            "betalingsindicatie",
+            "betalingsindicatie_weergave",
+            "laatste_betaaldatum",
+            "zaakgeometrie",
+            "verlenging",
+            "opschorting",
+            "selectielijstklasse",
+            "hoofdzaak",
+            "deelzaken",
+            "relevante_andere_zaken",
+            "eigenschappen",
+            # read-only veld, on-the-fly opgevraagd
+            "rollen",
+            "status",
+            "zaakinformatieobjecten",
+            "zaakobjecten",
+            # Writable inline resource, as opposed to eigenschappen for demo
+            # purposes. Eventually, we need to choose one form.
+            "kenmerken",
+            # Archiving
+            "archiefnominatie",
+            "archiefstatus",
+            "archiefactiedatum",
+            "resultaat",
+            "opdrachtgevende_organisatie",
+        )
+        extra_kwargs = {
+            "url": {"lookup_field": "uuid"},
+            "uuid": {"read_only": True},
+            "zaakgeometrie": {
+                "help_text": "Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON."
+            },
+            "identificatie": {"validators": [IsImmutableValidator()]},
+            "zaaktype": {
+                # TODO: does order matter here with the default validators?
+                "validators": [
+                    IsImmutableValidator(),
+                    PublishValidator(
+                        "ZaakType", settings.ZTC_API_SPEC, get_auth=get_auth
+                    ),
+                ]
+            },
+            "einddatum": {"read_only": True, "allow_null": True},
+            "communicatiekanaal": {
+                "validators": [
+                    ResourceValidator(
+                        "CommunicatieKanaal", settings.REFERENTIELIJSTEN_API_SPEC
+                    )
+                ]
+            },
+            "vertrouwelijkheidaanduiding": {
+                "required": False,
+                "help_text": _(
+                    "Aanduiding van de mate waarin het zaakdossier van de "
+                    "ZAAK voor de openbaarheid bestemd is. Optioneel - indien "
+                    "geen waarde gekozen wordt, dan wordt de waarde van het "
+                    "ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een "
+                    "waarde teruggeeft."
+                ),
+            },
+            "selectielijstklasse": {
+                "validators": [
+                    ResourceValidator(
+                        "Resultaat",
+                        settings.REFERENTIELIJSTEN_API_SPEC,
+                        get_auth=get_auth,
+                    )
+                ]
+            },
+            "hoofdzaak": {
+                "lookup_field": "uuid",
+                "queryset": Zaak.objects.all(),
+                "validators": [NotSelfValidator(), HoofdzaakValidator()],
+            },
+            "laatste_betaaldatum": {"validators": [UntilNowValidator()]},
+        }
+        # Replace a default "unique together" constraint.
+        validators = [UniekeIdentificatieValidator(), HoofdZaaktypeRelationValidator()]
+        expandable_fields = [
+            "status",
+            "resultaat",
+            "eigenschappen",
+            "rollen",
+            "zaakobjecten",
+            "zaakinformatieobjecten",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        value_display_mapping = add_choice_values_help_text(BetalingsIndicatie)
+        self.fields["betalingsindicatie"].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(Archiefstatus)
+        self.fields["archiefstatus"].help_text += f"\n\n{value_display_mapping}"
+
+        value_display_mapping = add_choice_values_help_text(Archiefnominatie)
+        self.fields["archiefnominatie"].help_text += f"\n\n{value_display_mapping}"
+
+    def _get_zaaktype(self, zaaktype_url: str) -> dict:
+        if not hasattr(self, "_zaaktype"):
+            # dynamic so that it can be mocked in tests easily
+            Client = import_string(settings.ZDS_CLIENT_CLASS)
+            client = Client.from_url(zaaktype_url)
+            client.auth = APICredential.get_auth(
+                zaaktype_url, scopes=["zds.scopes.zaaktypes.lezen"]
+            )
+            self._zaaktype = client.request(zaaktype_url, "zaaktype")
+        return self._zaaktype
+
+    def _get_information_objects(self) -> list:
+        if not hasattr(self, "_information_objects"):
+            self._information_objects = []
+
+            if self.instance:
+                Client = import_string(settings.ZDS_CLIENT_CLASS)
+
+                zios = self.instance.zaakinformatieobject_set.all()
+                for zio in zios:
+                    io_url = zio.informatieobject
+                    client = Client.from_url(io_url)
+                    client.auth = APICredential.get_auth(
+                        io_url, scopes=["scopes.documenten.lezen"]
+                    )
+                    informatieobject = client.request(
+                        io_url, "enkelvoudiginformatieobject"
+                    )
+                    self._information_objects.append(informatieobject)
+
+        return self._information_objects
+
+    def validate(self, attrs):
+        super().validate(attrs)
+
+        default_betalingsindicatie = (
+            self.instance.betalingsindicatie if self.instance else None
+        )
+        betalingsindicatie = attrs.get("betalingsindicatie", default_betalingsindicatie)
+        if betalingsindicatie == BetalingsIndicatie.nvt and attrs.get(
+            "laatste_betaaldatum"
+        ):
+            raise serializers.ValidationError(
+                {
+                    "laatste_betaaldatum": _(
+                        'Laatste betaaldatum kan niet gezet worden als de betalingsindicatie "nvt" is'
+                    )
+                },
+                code="betaling-nvt",
+            )
+
+        # check that productenOfDiensten are part of the ones on the zaaktype
+        default_zaaktype = self.instance.zaaktype if self.instance else None
+        zaaktype = attrs.get("zaaktype", default_zaaktype)
+        assert zaaktype, "Should not have passed validation - a zaaktype is needed"
+        producten_of_diensten = attrs.get("producten_of_diensten")
+        if producten_of_diensten:
+            zaaktype = self._get_zaaktype(zaaktype)
+            if not set(producten_of_diensten).issubset(
+                set(zaaktype["productenOfDiensten"])
+            ):
+                raise serializers.ValidationError(
+                    {
+                        "producten_of_diensten": _(
+                            "Niet alle producten/diensten komen voor in "
+                            "de producten/diensten op het zaaktype"
+                        )
+                    },
+                    code="invalid-products-services",
+                )
+
+        # Archiving
+        default_archiefstatus = (
+            self.instance.archiefstatus
+            if self.instance
+            else Archiefstatus.nog_te_archiveren
+        )
+        archiefstatus = (
+            attrs.get("archiefstatus", default_archiefstatus)
+            != Archiefstatus.nog_te_archiveren
+        )
+        if archiefstatus:
+            ios = self._get_information_objects()
+            for io in ios:
+                if io["status"] != "gearchiveerd":
+                    raise serializers.ValidationError(
+                        {
+                            "archiefstatus",
+                            _(
+                                "Er zijn gerelateerde informatieobjecten waarvan de `status` nog niet gelijk is aan "
+                                "`gearchiveerd`. Dit is een voorwaarde voor het zetten van de `archiefstatus` op een andere "
+                                "waarde dan `nog_te_archiveren`."
+                            ),
+                        },
+                        code="documents-not-archived",
+                    )
+
+            for attr in ["archiefnominatie", "archiefactiedatum"]:
+                if not attrs.get(
+                    attr, getattr(self.instance, attr) if self.instance else None
+                ):
+                    raise serializers.ValidationError(
+                        {
+                            attr: _(
+                                "Moet van een waarde voorzien zijn als de 'Archiefstatus' een waarde heeft anders dan "
+                                "'nog_te_archiveren'."
+                            )
+                        },
+                        code=f"{attr}-not-set",
+                    )
+        # End archiving
+
+        return attrs
+
+    def create(self, validated_data: dict):
+        # set the derived value from ZTC
+        if "vertrouwelijkheidaanduiding" not in validated_data:
+            zaaktype = self._get_zaaktype(validated_data["zaaktype"])
+            validated_data["vertrouwelijkheidaanduiding"] = zaaktype[
+                "vertrouwelijkheidaanduiding"
+            ]
+
+        return super().create(validated_data)

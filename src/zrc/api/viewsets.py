@@ -3,6 +3,8 @@ import logging
 from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -90,6 +92,15 @@ from .serializers import (
 from .validators import ZaakBesluitValidator
 
 logger = logging.getLogger(__name__)
+
+
+EXPAND_PARAMETER = openapi.Parameter(
+    "expand",
+    openapi.IN_QUERY,
+    description="Haal details van inline resources direct op.",
+    type=openapi.TYPE_STRING,
+    enum=ZaakSerializer.Meta.expandable_fields,
+)
 
 
 @conditional_retrieve()
@@ -207,7 +218,12 @@ class ZaakViewSet(
     - `klantcontact` - alle klantcontacten bij een zaak
     """
 
-    queryset = Zaak.objects.prefetch_related("deelzaken").order_by("-pk")
+    queryset = Zaak.objects.prefetch_related(
+        "deelzaken",
+        "rol_set",
+        "zaakobject_set",
+        "zaakinformatieobject_set",
+    ).order_by("-pk")
     serializer_class = ZaakSerializer
     search_input_serializer_class = ZaakZoekSerializer
     filter_backends = (Backend,)
@@ -228,6 +244,15 @@ class ZaakViewSet(
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
+    @swagger_auto_schema(manual_parameters=[EXPAND_PARAMETER])
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[EXPAND_PARAMETER])
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(manual_parameters=[EXPAND_PARAMETER])
     @action(methods=("post",), detail=False)
     def _zoek(self, request, *args, **kwargs):
         """
