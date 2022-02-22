@@ -156,3 +156,20 @@ class IndicatieMachtiging(DjangoChoices):
             "bij dezelfde zaak gemachtigd om namens hem of haar te handelen"
         ),
     )
+
+
+class AardExterneRelatie(DjangoChoices):
+    opdrachtgever = ChoiceItem(
+        "opdrachtgever",
+        _(
+            "De gerelateerde zaak levert een bijdrage aan het bereiken van de "
+            "uitkomst van de onderhanden zaak."
+        ),
+    )
+    opdrachtnemer = ChoiceItem(
+        "opdrachtnemer",
+        _(
+            "Aan het bereiken van de uitkomst van de gerelateerde zaak levert de "
+            "onderhanden zaak een bijdrage."
+        ),
+    )

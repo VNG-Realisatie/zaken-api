@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.utils.translation import gettext as  _
+
+from zrc.datamodel.forms import ZakenForm
 
 from ..models import (
     KlantContact,
@@ -53,6 +56,8 @@ class ZaakContactMomentInline(admin.TabularInline):
 
 @admin.register(Zaak)
 class ZaakAdmin(admin.ModelAdmin):
+    form = ZakenForm
+
     list_display = ["identificatie"]
     inlines = [
         StatusInline,
@@ -65,6 +70,100 @@ class ZaakAdmin(admin.ModelAdmin):
         RelevanteZaakRelatieInline,
         ZaakContactMomentInline,
     ]
+
+    fieldsets = (
+        (
+            _("Algemeen"),
+            {
+                "fields": (
+                    "uuid",
+                    "hoofdzaak",
+                    "identificatie",
+                    "bronorganisatie",
+                    "omschrijving",
+                    "toelichting",
+                    "zaaktype",
+                    "registratiedatum",
+                    "verantwoordelijke_organisatie",
+                    "startdatum",
+                    "einddatum",
+                    "einddatum_gepland",
+                    "uiterlijke_einddatum_afdoening",
+                    "publicatiedatum",
+                    "producten_of_diensten",
+                    "communicatiekanaal",
+                    "vertrouwelijkheidaanduiding",
+                    "betalingsindicatie",
+                    "laatste_betaaldatum",
+                    "zaakgeometrie",
+                    "selectielijstklasse",
+                    "opdrachtgevende_organisatie",
+                    "processobjectaard",
+                    "resultaattoelichting",
+                    "startdatum_bewaartermijn",
+                ),
+             }
+        ),
+        (
+            _("Verlenging"),
+            {
+                "fields": (
+                    "verlenging_reden",
+                    "verlenging_duur",
+                ),
+             }
+        ),
+        (
+            _("Opschorting"),
+            {
+                "fields": (
+                    "opschorting_indicatie",
+                    "opschorting_reden",
+                ),
+             }
+        ),
+        (
+            _("Archievering"),
+            {
+                "fields": (
+                    "archiefnominatie",
+                    "archiefstatus",
+                    "archiefactiedatum",
+                ),
+             }
+        ),
+        (
+            _("Gerelateerde externe zaken"),
+            {
+                "fields": (
+                    "gerelateerde_externe_zaken_aanvraagdatum",
+                    "gerelateerde_externe_zaken_aard_relatie",
+                    "gerelateerde_externe_zaken_datum_status_gezet",
+                    "gerelateerde_externe_zaken_einddatum",
+                    "gerelateerde_externe_zaken_resultaatomschrijving",
+                    "gerelateerde_externe_zaken_startdatum",
+                    "gerelateerde_externe_zaken_status_omschrijving_generiek",
+                    "gerelateerde_externe_zaken_verantwoordelijke_organisatie",
+                    "gerelateerde_externe_zaken_zaakidentificatie",
+                    "gerelateerde_externe_zaken_zaaktype_omschrijving_generiek",
+                    "gerelateerde_externe_zaken_zaaktypecode",
+                    "gerelateerde_externe_zaken_url",
+                ),
+             }
+        ),
+
+        (
+            _("Processobject"),
+            {
+                "fields": (
+                    "processobject_datumkenmerk",
+                    "processobject_identificatie",
+                    "processobject_objecttype",
+                    "processobject_registratie",
+                ),
+             }
+        ),
+    )
 
 
 @admin.register(Status)

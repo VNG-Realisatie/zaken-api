@@ -33,7 +33,7 @@ from vng_api_common.utils import (
 )
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from ..constants import AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
+from ..constants import AardExterneRelatie, AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
 from ..query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -296,6 +296,207 @@ class Zaak(ETagMixin, APIMixin, models.Model):
             "invulling geeft."
         ),
         blank=True,
+    )
+
+    processobjectaard = models.CharField(
+        _("procesobjectaard"),
+        max_length=200,
+        null=True,
+        blank=True,
+        help_text=_(
+            "Omschrijving van het object, subject of gebeurtenis waarop, vanuit"
+            " archiveringsoptiek, de zaak betrekking heeft."
+        )
+    )
+
+    resultaattoelichting = models.TextField(
+        _("resultaattoelichting"),
+        max_length=1000,
+        blank=True,
+        help_text=_("Een toelichting op wat het resultaat van de zaak inhoudt.")
+    )
+
+    startdatum_bewaartermijn = models.DateField(
+        _("startdatum bewaartermijn"),
+        null=True,
+        blank=True,
+        help_text=_(
+            "De datum die de start markeert van de termijn waarop het zaakdossier"
+            " vernietigd moet worden."
+        )
+    )
+
+    gerelateerde_externe_zaken_aanvraagdatum = models.DateField(
+        _("aanvraagdatum"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "De datum waarop verzocht is om de behandeling van de gerelateerde ZAAK"
+            " uit te gaan voeren."
+        )
+    )
+
+    gerelateerde_externe_zaken_aard_relatie = models.CharField(
+        _("aard relatie"),
+        max_length=14,
+        blank=True,
+        choices=AardExterneRelatie.choices,
+        help_text=_(
+            "De datum waarop verzocht is om de behandeling van de gerelateerde ZAAK"
+            " uit te gaan voeren."
+        )
+    )
+
+    gerelateerde_externe_zaken_datum_status_gezet = models.DateTimeField(
+        _("datum status gezet"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "De datum waarop de gerelateerde ZAAK de laatst bekende status heeft verkregen."
+        )
+    )
+
+    gerelateerde_externe_zaken_einddatum = models.DateField(
+        _("einddatum"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "De datum waarop de uitvoering van de gerelateerde ZAAK afgerond is."
+        )
+    )
+
+    gerelateerde_externe_zaken_resultaatomschrijving = models.CharField(
+        _("resultaatomschrijving"),
+        max_length=80,
+        blank=True,
+        help_text=_(
+            "Een korte omschrijving wat het resultaat van de gerelateerde ZAAK inhoudt."
+        )
+    )
+
+    gerelateerde_externe_zaken_startdatum = models.DateField(
+        _("startdatum"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "De datum waarop met de uitvoering van de gerelateerde ZAAK is gestart."
+        )
+    )
+
+    gerelateerde_externe_zaken_status_omschrijving_generiek = models.CharField(
+        _("status-omschrijving generiek"),
+        max_length=80,
+        blank=True,
+        help_text=_(
+            "Algemeen gehanteerde omschrijving van de aard van de laatst bekende "
+            "status van de gerelateerde ZAAK."
+        )
+    )
+
+    gerelateerde_externe_zaken_verantwoordelijke_organisatie = RSINField(
+        _("verantwoordelijke organisatie"),
+        blank=True,
+        help_text=_(
+            "Het RSIN van de organisatie die verantwoordelijk is voor de behandeling "
+            "van de gerelateerde ZAAK."
+        )
+    )
+
+    gerelateerde_externe_zaken_zaakidentificatie = models.CharField(
+        _("zaakidentificatie"),
+        max_length=40,
+        blank=True,
+        help_text=_("De unieke identificatie van de gerelateerde ZAAK."),
+    )
+
+    gerelateerde_externe_zaken_zaaktype_omschrijving_generiek = models.CharField(
+        _("zaaktype-omschrijving generiek"),
+        max_length=80,
+        blank=True,
+        help_text=_(
+            "Algemeen gehanteerde omschrijving van de aard van ZAAKen van het ZAAKTYPE "
+            "waartoe de gerelateerde zaak behoort."
+        )
+    )
+
+    gerelateerde_externe_zaken_zaaktypecode = models.CharField(
+        _("zaaktypecode"),
+        max_length=10,
+        blank=True,
+        help_text=_(
+            "De algemeen gehanteerde code van de aard van ZAAKen van het ZAAKTYPE "
+            "waartoe de gerelateerde zaak behoort."
+        )
+    )
+
+    gerelateerde_externe_zaken_url = models.URLField(
+        _("url"), blank=True,
+    )
+
+    gerelateerde_externe_zaken = GegevensGroepType(
+        {
+            "aanvraagdatum": gerelateerde_externe_zaken_aanvraagdatum,
+            "aard_relatie": gerelateerde_externe_zaken_aard_relatie,
+            "datum_status_gezet": gerelateerde_externe_zaken_datum_status_gezet,
+            "eind_datum": gerelateerde_externe_zaken_einddatum,
+            "resultaatomschrijving": gerelateerde_externe_zaken_resultaatomschrijving,
+            "startdatum": gerelateerde_externe_zaken_startdatum,
+            "status_omschrijving_generiek": gerelateerde_externe_zaken_status_omschrijving_generiek,
+            "verantwoordelijke_organisatie": gerelateerde_externe_zaken_verantwoordelijke_organisatie,
+            "zaakidentificatie": gerelateerde_externe_zaken_zaakidentificatie,
+            "zaaktype_omschrijving_generiek": gerelateerde_externe_zaken_zaaktype_omschrijving_generiek,
+            "zaaktypecode": gerelateerde_externe_zaken_zaaktypecode,
+            "url": gerelateerde_externe_zaken_url,
+        },
+        optional=(
+            "eind_datum",
+            "resultaatomschrijving",
+            "startdatum",
+            "status_omschrijving_generiek",
+            "verantwoordelijke_organisatie",
+            "zaakidentificatie",
+            "url",
+        )
+    )
+
+    processobject_datumkenmerk = models.CharField(
+        _("datumkenmerk"),
+        max_length=250,
+        blank=True,
+        help_text=_(
+            "De naam van de attribuutsoort van het procesobject dat bepalend is "
+            "voor het einde van de procestermijn."
+        )
+    )
+
+    processobject_identificatie = models.CharField(
+        _("identificatie"),
+        max_length=250,
+        blank=True,
+        help_text=_("De unieke aanduiding van het procesobject.")
+    )
+
+    processobject_objecttype = models.CharField(
+        _("objecttype"),
+        max_length=250,
+        blank=True,
+        help_text=_("Het soort object dat het procesobject representeert.")
+    )
+
+    processobject_registratie = models.CharField(
+        _("registratie"),
+        max_length=250,
+        blank=True,
+        help_text=_("De naam van de registratie waarvan het procesobject deel uit maakt.")
+    )
+
+    processobject = GegevensGroepType(
+        {
+            "datumkenmerk": processobject_datumkenmerk,
+            "identificatie": processobject_identificatie,
+            "objecttype": processobject_objecttype,
+            "registratie": processobject_registratie,
+        },
     )
 
     objects = ZaakQuerySet.as_manager()
