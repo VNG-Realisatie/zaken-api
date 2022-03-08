@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.translation import gettext as  _
+from django.utils.translation import gettext as _
 
 from zrc.datamodel.forms import ZakenForm
 from zrc.utils.forms import GegevensGroepTypeMixin
@@ -142,7 +142,7 @@ class ZaakAdmin(admin.ModelAdmin):
                     "resultaattoelichting",
                     "startdatum_bewaartermijn",
                 ),
-             }
+            },
         ),
         (
             _("Verlenging"),
@@ -151,7 +151,7 @@ class ZaakAdmin(admin.ModelAdmin):
                     "verlenging_reden",
                     "verlenging_duur",
                 ),
-             }
+            },
         ),
         (
             _("Opschorting"),
@@ -160,7 +160,7 @@ class ZaakAdmin(admin.ModelAdmin):
                     "opschorting_indicatie",
                     "opschorting_reden",
                 ),
-             }
+            },
         ),
         (
             _("Archievering"),
@@ -170,7 +170,7 @@ class ZaakAdmin(admin.ModelAdmin):
                     "archiefstatus",
                     "archiefactiedatum",
                 ),
-             }
+            },
         ),
         (
             _("Gerelateerde externe zaken"),
@@ -189,9 +189,8 @@ class ZaakAdmin(admin.ModelAdmin):
                     "gerelateerde_externe_zaken_zaaktypecode",
                     "gerelateerde_externe_zaken_url",
                 ),
-             }
+            },
         ),
-
         (
             _("Processobject"),
             {
@@ -201,7 +200,7 @@ class ZaakAdmin(admin.ModelAdmin):
                     "processobject_objecttype",
                     "processobject_registratie",
                 ),
-             }
+            },
         ),
     )
 

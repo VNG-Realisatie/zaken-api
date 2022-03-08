@@ -16,7 +16,11 @@ from vng_api_common.validators import IsImmutableValidator
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import Zaak, ZaakInformatieObject
-from zrc.datamodel.tests.factories import StatusFactory, ZaakFactory, ZaakInformatieObjectFactory
+from zrc.datamodel.tests.factories import (
+    StatusFactory,
+    ZaakFactory,
+    ZaakInformatieObjectFactory,
+)
 from zrc.sync.signals import SyncError
 
 from .mixins import ZaakInformatieObjectSyncMixin
@@ -83,7 +87,9 @@ class ZaakInformatieObjectAPITests(
             response = self.client.post(self.list_url, content)
 
         # Test response
-        self.assertEqual(response.status_code, rest_framework_status.HTTP_201_CREATED, response.data)
+        self.assertEqual(
+            response.status_code, rest_framework_status.HTTP_201_CREATED, response.data
+        )
 
         # Test database
         self.assertEqual(ZaakInformatieObject.objects.count(), 1)
@@ -157,7 +163,9 @@ class ZaakInformatieObjectAPITests(
             response = self.client.post(self.list_url, content)
 
         self.assertEqual(
-            response.status_code, rest_framework_status.HTTP_400_BAD_REQUEST, response.data
+            response.status_code,
+            rest_framework_status.HTTP_400_BAD_REQUEST,
+            response.data,
         )
         error = get_validation_errors(response, "nonFieldErrors")
         self.assertEqual(error["code"], "unique")
@@ -231,7 +239,9 @@ class ZaakInformatieObjectAPITests(
         )
 
         self.assertEqual(
-            response.status_code, rest_framework_status.HTTP_400_BAD_REQUEST, response.data
+            response.status_code,
+            rest_framework_status.HTTP_400_BAD_REQUEST,
+            response.data,
         )
 
         for field in ["zaak", "informatieobject"]:
@@ -257,7 +267,9 @@ class ZaakInformatieObjectAPITests(
 
         # Test response
         self.assertEqual(
-            response.status_code, rest_framework_status.HTTP_400_BAD_REQUEST, response.data
+            response.status_code,
+            rest_framework_status.HTTP_400_BAD_REQUEST,
+            response.data,
         )
 
         # transaction must be rolled back
@@ -274,7 +286,9 @@ class ZaakInformatieObjectAPITests(
 
         response = self.client.delete(zio_url)
         self.assertEqual(
-            response.status_code, rest_framework_status.HTTP_204_NO_CONTENT, response.data
+            response.status_code,
+            rest_framework_status.HTTP_204_NO_CONTENT,
+            response.data,
         )
 
         self.assertEqual(self.mocked_sync_delete.call_count, 1)
@@ -352,7 +366,9 @@ class ExternalDocumentsAPITransactionTests(JWTAuthMixin, APITransactionTestCase)
                 response = self.client.post(self.list_url, content)
 
         # Test response
-        self.assertEqual(response.status_code, rest_framework_status.HTTP_201_CREATED, response.data)
+        self.assertEqual(
+            response.status_code, rest_framework_status.HTTP_201_CREATED, response.data
+        )
 
         # Test database
         self.assertEqual(ZaakInformatieObject.objects.count(), 1)

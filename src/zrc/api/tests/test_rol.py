@@ -425,9 +425,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
         validation_error = get_validation_errors(response, "contactpersoonRol.naam")
 
-        self.assertEqual(
-            validation_error["reason"], _("Dit veld is vereist.")
-        )
+        self.assertEqual(validation_error["reason"], _("Dit veld is vereist."))
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)

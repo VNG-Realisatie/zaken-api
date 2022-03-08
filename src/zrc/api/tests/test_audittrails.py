@@ -142,7 +142,9 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         url = modified_data.pop("url")
 
         excluded_fields = (
-            "verlenging", "gerelateerde_externe_zaken", "processobject",
+            "verlenging",
+            "gerelateerde_externe_zaken",
+            "processobject",
         )
 
         for field in excluded_fields:

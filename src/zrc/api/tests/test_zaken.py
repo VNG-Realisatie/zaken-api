@@ -820,7 +820,9 @@ class ZakenTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             reverse(zaak),
             {
                 "gerelateerdeExterneZaken": {
-                    "aanvraagdatum": (timezone.now() - timedelta(days=3)).strftime("%Y-%m-%d"),
+                    "aanvraagdatum": (timezone.now() - timedelta(days=3)).strftime(
+                        "%Y-%m-%d"
+                    ),
                     "datumStatusGezet": timezone.now() - timedelta(days=1),
                     "zaaktypeOmschrijvingGeneriek": "Omschrijving XY",
                     "zaaktypecode": "XYZ",

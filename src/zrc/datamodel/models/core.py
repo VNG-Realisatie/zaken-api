@@ -33,7 +33,12 @@ from vng_api_common.utils import (
 )
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from ..constants import AardExterneRelatie, AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
+from ..constants import (
+    AardExterneRelatie,
+    AardZaakRelatie,
+    BetalingsIndicatie,
+    IndicatieMachtiging,
+)
 from ..query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -306,14 +311,14 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "Omschrijving van het object, subject of gebeurtenis waarop, vanuit"
             " archiveringsoptiek, de zaak betrekking heeft."
-        )
+        ),
     )
 
     resultaattoelichting = models.TextField(
         _("resultaattoelichting"),
         max_length=1000,
         blank=True,
-        help_text=_("Een toelichting op wat het resultaat van de zaak inhoudt.")
+        help_text=_("Een toelichting op wat het resultaat van de zaak inhoudt."),
     )
 
     startdatum_bewaartermijn = models.DateField(
@@ -323,7 +328,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "De datum die de start markeert van de termijn waarop het zaakdossier"
             " vernietigd moet worden."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_aanvraagdatum = models.DateField(
@@ -333,7 +338,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "De datum waarop verzocht is om de behandeling van de gerelateerde ZAAK"
             " uit te gaan voeren."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_aard_relatie = models.CharField(
@@ -344,7 +349,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "De datum waarop verzocht is om de behandeling van de gerelateerde ZAAK"
             " uit te gaan voeren."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_datum_status_gezet = models.DateTimeField(
@@ -353,7 +358,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         null=True,
         help_text=_(
             "De datum waarop de gerelateerde ZAAK de laatst bekende status heeft verkregen."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_einddatum = models.DateField(
@@ -362,7 +367,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         null=True,
         help_text=_(
             "De datum waarop de uitvoering van de gerelateerde ZAAK afgerond is."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_resultaatomschrijving = models.CharField(
@@ -371,7 +376,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         blank=True,
         help_text=_(
             "Een korte omschrijving wat het resultaat van de gerelateerde ZAAK inhoudt."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_startdatum = models.DateField(
@@ -380,7 +385,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         null=True,
         help_text=_(
             "De datum waarop met de uitvoering van de gerelateerde ZAAK is gestart."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_status_omschrijving_generiek = models.CharField(
@@ -390,7 +395,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "Algemeen gehanteerde omschrijving van de aard van de laatst bekende "
             "status van de gerelateerde ZAAK."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_verantwoordelijke_organisatie = RSINField(
@@ -399,7 +404,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "Het RSIN van de organisatie die verantwoordelijk is voor de behandeling "
             "van de gerelateerde ZAAK."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_zaakidentificatie = models.CharField(
@@ -416,7 +421,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "Algemeen gehanteerde omschrijving van de aard van ZAAKen van het ZAAKTYPE "
             "waartoe de gerelateerde zaak behoort."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_zaaktypecode = models.CharField(
@@ -426,11 +431,12 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "De algemeen gehanteerde code van de aard van ZAAKen van het ZAAKTYPE "
             "waartoe de gerelateerde zaak behoort."
-        )
+        ),
     )
 
     gerelateerde_externe_zaken_url = models.URLField(
-        _("url"), blank=True,
+        _("url"),
+        blank=True,
     )
 
     gerelateerde_externe_zaken = GegevensGroepType(
@@ -466,28 +472,30 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         help_text=_(
             "De naam van de attribuutsoort van het procesobject dat bepalend is "
             "voor het einde van de procestermijn."
-        )
+        ),
     )
 
     processobject_identificatie = models.CharField(
         _("identificatie"),
         max_length=250,
         blank=True,
-        help_text=_("De unieke aanduiding van het procesobject.")
+        help_text=_("De unieke aanduiding van het procesobject."),
     )
 
     processobject_objecttype = models.CharField(
         _("objecttype"),
         max_length=250,
         blank=True,
-        help_text=_("Het soort object dat het procesobject representeert.")
+        help_text=_("Het soort object dat het procesobject representeert."),
     )
 
     processobject_registratie = models.CharField(
         _("registratie"),
         max_length=250,
         blank=True,
-        help_text=_("De naam van de registratie waarvan het procesobject deel uit maakt.")
+        help_text=_(
+            "De naam van de registratie waarvan het procesobject deel uit maakt."
+        ),
     )
 
     processobject = GegevensGroepType(
@@ -692,7 +700,7 @@ class Rol(ETagMixin, models.Model):
             "aangesproken wil worden."
         ),
         max_length=625,
-        blank=True
+        blank=True,
     )
 
     roltype = models.URLField(
@@ -772,7 +780,11 @@ class Rol(ETagMixin, models.Model):
             "telefoonnummer": contactpersoon_telefoonnummer,
             "naam": contactpersoon_naam,
         },
-        optional=("emailadres", "functie", "telefoonnummer",),
+        optional=(
+            "emailadres",
+            "functie",
+            "telefoonnummer",
+        ),
     )
 
     # TODO: update Status admin/serializer to require rol? see
