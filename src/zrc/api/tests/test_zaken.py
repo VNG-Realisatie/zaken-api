@@ -820,10 +820,9 @@ class ZakenTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             reverse(zaak),
             {
                 "gerelateerdeExterneZaken": {
-                    "aanvraagdatum": timezone.now() - timedelta(days=3),
-                    "aardRelatie": AardExterneRelatie.opdrachtgever,
+                    "aanvraagdatum": (timezone.now() - timedelta(days=3)).strftime("%Y-%m-%d"),
                     "datumStatusGezet": timezone.now() - timedelta(days=1),
-                    "zaakTypeOmschrijvingGeneriek": "Omschrijving XY",
+                    "zaaktypeOmschrijvingGeneriek": "Omschrijving XY",
                     "zaaktypecode": "XYZ",
                 }
             },
@@ -832,7 +831,7 @@ class ZakenTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        error = get_validation_errors(response, "gerelateerdeExterneZaken.verantwoordelijkeOrganisatie")
+        error = get_validation_errors(response, "gerelateerdeExterneZaken.aardRelatie")
         self.assertEqual(error["code"], "required")
 
 
