@@ -1,4 +1,7 @@
 from unittest.mock import patch
+from uuid import uuid4
+
+from django.utils.translation import gettext as _
 
 import requests_mock
 from freezegun import freeze_time
@@ -22,7 +25,7 @@ from zrc.datamodel.models import (
     SubVerblijfBuitenland,
     Vestiging,
 )
-from zrc.datamodel.tests.factories import RolFactory, ZaakFactory
+from zrc.datamodel.tests.factories import RolFactory, StatusFactory, ZaakFactory
 
 ZAAKTYPE = "https://ztc.nl/zaaktypen/123"
 BETROKKENE = (
@@ -39,7 +42,6 @@ ROLTYPE_RESPONSE = {
 
 
 class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
-
     heeft_alle_autorisaties = True
 
     @freeze_time("2018-01-01")
@@ -70,7 +72,12 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             lnd_landnaam="United Kingdom",
             sub_adres_buitenland_1="some uk adres",
         )
+
+        status_uuid = uuid4()
+        rol.statussen.add(StatusFactory(zaak=zaak, uuid=status_uuid))
+
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        status_url = get_operation_url("status_read", uuid=status_uuid)
         url = get_operation_url("rol_read", uuid=rol.uuid)
 
         response = self.client.get(url)
@@ -87,6 +94,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 "zaak": f"http://testserver{zaak_url}",
                 "betrokkene": BETROKKENE,
                 "betrokkeneType": RolTypes.natuurlijk_persoon,
+                "afwijkendeNaamBetrokkene": "",
                 "roltype": rol.roltype,
                 "omschrijving": "Beslisser",
                 "omschrijvingGeneriek": "Beslisser",
@@ -121,6 +129,15 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                         "subAdresBuitenland_3": "",
                     },
                 },
+                "contactpersoonRol": {
+                    "emailadres": "",
+                    "functie": "",
+                    "telefoonnummer": "",
+                    "naam": "",
+                },
+                "statussen": [
+                    f"http://testserver{status_url}",
+                ],
             },
         )
 
@@ -144,7 +161,12 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             lnd_landnaam="United Kingdom",
             sub_adres_buitenland_1="some uk adres",
         )
+
+        status_uuid = uuid4()
+        rol.statussen.add(StatusFactory(zaak=zaak, uuid=status_uuid))
+
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        status_url = get_operation_url("status_read", uuid=status_uuid)
         url = get_operation_url("rol_read", uuid=rol.uuid)
 
         response = self.client.get(url)
@@ -161,6 +183,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 "zaak": f"http://testserver{zaak_url}",
                 "betrokkene": BETROKKENE,
                 "betrokkeneType": RolTypes.niet_natuurlijk_persoon,
+                "afwijkendeNaamBetrokkene": "",
                 "roltype": rol.roltype,
                 "omschrijving": "Beslisser",
                 "omschrijvingGeneriek": "Beslisser",
@@ -181,6 +204,15 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                         "subAdresBuitenland_3": "",
                     },
                 },
+                "contactpersoonRol": {
+                    "emailadres": "",
+                    "functie": "",
+                    "telefoonnummer": "",
+                    "naam": "",
+                },
+                "statussen": [
+                    f"http://testserver{status_url}",
+                ],
             },
         )
 
@@ -210,7 +242,12 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             lnd_landnaam="United Kingdom",
             sub_adres_buitenland_1="some uk adres",
         )
+
+        status_uuid = uuid4()
+        rol.statussen.add(StatusFactory(zaak=zaak, uuid=status_uuid))
+
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        status_url = get_operation_url("status_read", uuid=status_uuid)
         url = get_operation_url("rol_read", uuid=rol.uuid)
 
         response = self.client.get(url)
@@ -227,6 +264,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 "zaak": f"http://testserver{zaak_url}",
                 "betrokkene": BETROKKENE,
                 "betrokkeneType": RolTypes.vestiging,
+                "afwijkendeNaamBetrokkene": "",
                 "roltype": rol.roltype,
                 "omschrijving": "Beslisser",
                 "omschrijvingGeneriek": "Beslisser",
@@ -254,6 +292,15 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                         "subAdresBuitenland_3": "",
                     },
                 },
+                "contactpersoonRol": {
+                    "emailadres": "",
+                    "functie": "",
+                    "telefoonnummer": "",
+                    "naam": "",
+                },
+                "statussen": [
+                    f"http://testserver{status_url}",
+                ],
             },
         )
 
@@ -335,6 +382,52 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         rol = Rol.objects.get()
 
         self.assertEqual(rol.betrokkene, BETROKKENE)
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_with_contactpersoon_rol(self, *mocks):
+        url = get_operation_url("rol_create")
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "betrokkene_type": RolTypes.natuurlijk_persoon,
+            "roltype": ROLTYPE,
+            "roltoelichting": "awerw",
+            "betrokkeneIdentificatie": {
+                "anpIdentificatie": "12345",
+                "verblijfsadres": {
+                    "aoaIdentificatie": "123",
+                    "wplWoonplaatsNaam": "test city",
+                    "gorOpenbareRuimteNaam": "test",
+                    "aoaPostcode": "1111",
+                    "aoaHuisnummer": 1,
+                },
+                "subVerblijfBuitenland": {
+                    "lndLandcode": "UK",
+                    "lndLandnaam": "United Kingdom",
+                    "subAdresBuitenland_1": "some uk adres",
+                },
+            },
+            "contactpersoonRol": {
+                "email": "foo@email.com",
+                "functie": "Applicatie beheerder",
+                "telefoonnummer": "0612345678",
+            },
+        }
+
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, "contactpersoonRol.naam")
+
+        self.assertEqual(
+            validation_error["reason"], _("Dit veld is vereist.")
+        )
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)

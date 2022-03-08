@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.translation import gettext as  _
 
 from zrc.datamodel.forms import ZakenForm
+from zrc.utils.forms import GegevensGroepTypeMixin
 
 from ..models import (
     KlantContact,
@@ -39,7 +40,46 @@ class KlantContactInline(admin.TabularInline):
 
 class RolInline(admin.TabularInline):
     model = Rol
+
     raw_id_fields = ["zaak"]
+    readonly_fields = ("uuid",)
+
+    fieldsets = (
+        (
+            _("Algemeen"),
+            {
+                "fields": (
+                    "uuid",
+                    "zaak",
+                    "roltype",
+                    "roltoelichting",
+                    "indicatie_machtiging",
+                    "statussen",
+                ),
+            },
+        ),
+        (
+            _("Betrokkene"),
+            {
+                "fields": (
+                    "betrokkene",
+                    "betrokkene_type",
+                    "afwijkende_naam_betrokkene",
+                ),
+            },
+        ),
+        (
+            _("Contactpersoon"),
+            {
+                "fields": (
+                    "contactpersoon_email",
+                    "contactpersoon_functie",
+                    "contactpersoon_telefoonnummer",
+                    "contactpersoon_naam",
+                ),
+            },
+        ),
+    )
 
 
 class ResultaatInline(admin.TabularInline):

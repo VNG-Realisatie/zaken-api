@@ -667,6 +667,16 @@ class Rol(ETagMixin, models.Model):
         max_length=100, choices=RolTypes.choices, help_text="Type van de `betrokkene`."
     )
 
+    afwijkende_naam_betrokkene = models.TextField(
+        _("afwijkende naam betrokkene"),
+        help_text=_(
+            "De naam van de betrokkene waaronder deze in relatie tot de zaak "
+            "aangesproken wil worden."
+        ),
+        max_length=625,
+        blank=True
+    )
+
     roltype = models.URLField(
         help_text="URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK.",
         max_length=1000,
@@ -699,6 +709,65 @@ class Rol(ETagMixin, models.Model):
         choices=IndicatieMachtiging.choices,
         blank=True,
         help_text="Indicatie machtiging",
+    )
+
+    contactpersoon_email = models.EmailField(
+        _("email"),
+        help_text=_(
+            "Elektronich postadres waaronder de contactpersoon in de regel "
+            "bereikbaar is."
+        ),
+        max_length=254,
+        blank=True,
+    )
+
+    contactpersoon_functie = models.CharField(
+        _("functie"),
+        help_text=_(
+            "De aanduiding van de taken, rechten en plichten die de contactpersoon "
+            "heeft binnen de organisatie van BETROKKENE. "
+        ),
+        max_length=50,
+        blank=True,
+    )
+
+    contactpersoon_telefoonnummer = models.CharField(
+        _("telefoonnummer"),
+        help_text=_(
+            "Telefoonnummer waaronder de contactpersoon in de regel bereikbaar is."
+        ),
+        max_length=20,
+        blank=True,
+    )
+
+    contactpersoon_naam = models.CharField(
+        _("naam"),
+        help_text=_("De opgemaakte naam van de contactpersoon namens de BETROKKENE."),
+        max_length=40,
+        blank=True,
+    )
+
+    contactpersoon_rol = GegevensGroepType(
+        {
+            "emailadres": contactpersoon_email,
+            "functie": contactpersoon_functie,
+            "telefoonnummer": contactpersoon_telefoonnummer,
+            "naam": contactpersoon_naam,
+        },
+        optional=("emailadres", "functie", "telefoonnummer",),
+    )
+
+    # TODO: update Status admin/serializer to require rol see
+    # https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/objecttype/status.
+    statussen = models.ManyToManyField(
+        "datamodel.Status",
+        verbose_name=_("statussen"),
+        help_text=_(
+            "De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd "
+            "dat STATUSsen in die ZAAK bereikt zijn."
+        ),
+        related_name="rollen",
+        blank=True,
     )
 
     objects = ZaakRelatedQuerySet.as_manager()

@@ -692,6 +692,12 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
+class ContactPersoonRolSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = Rol
+        gegevensgroep = "contactpersoon_rol"
+
+
 class RolSerializer(PolymorphicSerializer):
     discriminator = Discriminator(
         discriminator_field="betrokkene_type",
@@ -706,6 +712,17 @@ class RolSerializer(PolymorphicSerializer):
         same_model=False,
     )
 
+    contactpersoon_rol = ContactPersoonRolSerializer(
+        allow_null=True,
+        required=False,
+        help_text=_(
+            "De gegevens van de persoon die anderen desgevraagd in contact brengt "
+            "met medewerkers van de BETROKKENE, een NIET-NATUURLIJK PERSOON of "
+            "VESTIGING zijnde, of met BETROKKENE zelf, een NATUURLIJK PERSOON zijnde "
+            ", vanuit het belang van BETROKKENE in haar ROL bij een ZAAK."
+        ),
+    )
+
     class Meta:
         model = Rol
         fields = (
@@ -714,12 +731,15 @@ class RolSerializer(PolymorphicSerializer):
             "zaak",
             "betrokkene",
             "betrokkene_type",
+            "afwijkende_naam_betrokkene",
             "roltype",
             "omschrijving",
             "omschrijving_generiek",
             "roltoelichting",
             "registratiedatum",
             "indicatie_machtiging",
+            "contactpersoon_rol",
+            "statussen",
         )
         validators = [
             RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),
@@ -739,6 +759,7 @@ class RolSerializer(PolymorphicSerializer):
                     ),
                 ]
             },
+            "statussen": {"lookup_field": "uuid", "read_only": True},
         }
 
     def __init__(self, *args, **kwargs):
