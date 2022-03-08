@@ -456,7 +456,7 @@ class Zaak(ETagMixin, APIMixin, models.Model):
             "verantwoordelijke_organisatie",
             "zaakidentificatie",
             "url",
-        )
+        ),
     )
 
     processobject_datumkenmerk = models.CharField(

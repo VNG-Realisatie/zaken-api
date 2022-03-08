@@ -140,7 +140,14 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         modified_data = deepcopy(zaak_data)
         url = modified_data.pop("url")
-        modified_data.pop("verlenging")
+
+        excluded_fields = (
+            "verlenging", "gerelateerde_externe_zaken", "processobject",
+        )
+
+        for field in excluded_fields:
+            modified_data.pop(field)
+
         modified_data["toelichting"] = "aangepast"
 
         with mock_client(self.responses):
