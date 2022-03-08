@@ -1,6 +1,6 @@
 from django.test import override_settings
 
-from rest_framework import status
+from rest_framework import status as rest_framework_status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, reverse
 
@@ -31,11 +31,41 @@ class StatusTests(JWTAuthMixin, APITestCase):
 
         response_data = response.json()["results"]
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, rest_framework_status.HTTP_200_OK)
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]["url"], f"http://testserver.com{status1_url}")
         self.assertNotEqual(
             response_data[0]["url"], f"http://testserver.com{status2_url}"
+        )
+
+    @override_settings(
+        LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+        ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
+    )
+    def test_status_detail(self):
+        status = StatusFactory()
+        url = reverse("status-detail", kwargs={"uuid": status.uuid})
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": status.zaak.uuid})
+
+        response = self.client.get(url, HTTP_HOST="testserver.com")
+
+        self.assertEqual(response.status_code, rest_framework_status.HTTP_200_OK)
+
+        self.assertEqual(
+            response.json(),
+            {
+                "url": f"http://testserver.com{url}",
+                "uuid": str(status.uuid),
+                "zaak": f"http://testserver.com{zaak_url}",
+                "statustype": status.statustype,
+                "datumStatusGezet": status.datum_status_gezet,
+                "statustoelichting": status.statustoelichting,
+                "indicatieLaatstGezetteStatus": (
+                    status.indicatie_laatst_gezette_status
+                ),
+                "gezetdoor": status.gezetdoor,
+                "zaakinformatieobjecten": [],
+            }
         )
 
     def test_filter_statussen_on_zaak_external_url(self):
@@ -52,5 +82,5 @@ class StatusTests(JWTAuthMixin, APITestCase):
             with self.subTest(bad_url=bad_url):
                 response = self.client.get(list_url, {"zaak": bad_url})
 
-                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertEqual(response.status_code, rest_framework_status.HTTP_200_OK)
                 self.assertEqual(response.data["count"], 0)

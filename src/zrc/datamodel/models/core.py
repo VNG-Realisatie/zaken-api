@@ -579,11 +579,41 @@ class Status(ETagMixin, models.Model):
     datum_status_gezet = models.DateTimeField(
         help_text="De datum waarop de ZAAK de status heeft verkregen."
     )
+
+    indicatie_laatst_gezette_status = models.BooleanField(
+        _("indicatie laatst gezette status"),
+        help_text=_(
+            "Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum "
+            "status gezet van van alle statussen bij de desbetreffende zaak."
+        ),
+        default=False,
+    )
+    gezetdoor = models.URLField(
+        _("gezet door"),
+        help_text=_(
+            "De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd "
+            "dat STATUSsen in die ZAAK bereikt zijn."
+        ),
+        blank=True,
+    )
+
     statustoelichting = models.TextField(
         max_length=1000,
         blank=True,
         help_text="Een, voor de initiator van de zaak relevante, toelichting "
         "op de status van een zaak.",
+    )
+
+    zaakinformatieobjecten = models.ManyToManyField(
+        "datamodel.ZaakInformatieObject",
+        verbose_name=_("zaakinformatieobjecten"),
+        help_text=_(
+            "De bij de desbetreffende ZAAK behorende STATUS waarvoor het "
+            "ZAAK-INFORMATIEOBJECT relevant is (geweest) met het oog op het bereiken "
+            "van die STATUS en/of de communicatie daarover."
+        ),
+        related_name="statussen",
+        blank=True,
     )
 
     objects = ZaakRelatedQuerySet.as_manager()
@@ -757,7 +787,7 @@ class Rol(ETagMixin, models.Model):
         optional=("emailadres", "functie", "telefoonnummer",),
     )
 
-    # TODO: update Status admin/serializer to require rol see
+    # TODO: update Status admin/serializer to require rol? see
     # https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/objecttype/status.
     statussen = models.ManyToManyField(
         "datamodel.Status",

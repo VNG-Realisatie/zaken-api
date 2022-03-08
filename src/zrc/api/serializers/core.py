@@ -203,6 +203,9 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             "statustype",
             "datum_status_gezet",
             "statustoelichting",
+            "indicatie_laatst_gezette_status",
+            "gezetdoor",
+            "zaakinformatieobjecten",
         )
         validators = [
             CorrectZaaktypeValidator("statustype"),
@@ -222,6 +225,8 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 ]
             },
             "datum_status_gezet": {"validators": [DateNotInFutureValidator()]},
+            "indicatie_laatst_gezette_status": {"required": False},
+            "zaakinformatieobjecten": {"lookup_field": "uuid", "read_only": True},
         }
 
     def validate(self, attrs):

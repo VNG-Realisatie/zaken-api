@@ -212,6 +212,7 @@ class StatusAdmin(admin.ModelAdmin):
     list_select_related = ["zaak"]
     raw_id_fields = ["zaak"]
     search_field = ("_etag",)
+    filter_horizontal = ("zaakinformatieobjecten",)
 
 
 @admin.register(ZaakObject)
