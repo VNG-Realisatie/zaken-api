@@ -3,6 +3,7 @@ from django.test import override_settings
 from rest_framework import status as rest_framework_status
 from rest_framework.test import APITestCase
 from vng_api_common.tests import JWTAuthMixin, reverse
+from zrc.api.tests.test_zaakinformatieobjecten import dt_to_api
 
 from zrc.datamodel.tests.factories import StatusFactory
 
@@ -58,7 +59,7 @@ class StatusTests(JWTAuthMixin, APITestCase):
                 "uuid": str(status.uuid),
                 "zaak": f"http://testserver.com{zaak_url}",
                 "statustype": status.statustype,
-                "datumStatusGezet": status.datum_status_gezet,
+                "datumStatusGezet": dt_to_api(status.datum_status_gezet),
                 "statustoelichting": status.statustoelichting,
                 "indicatieLaatstGezetteStatus": (
                     status.indicatie_laatst_gezette_status

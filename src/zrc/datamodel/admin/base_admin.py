@@ -212,7 +212,6 @@ class StatusAdmin(admin.ModelAdmin):
     list_select_related = ["zaak"]
     raw_id_fields = ["zaak"]
     search_field = ("_etag",)
-    filter_horizontal = ("zaakinformatieobjecten",)
 
 
 @admin.register(ZaakObject)
@@ -240,7 +239,7 @@ class ZaakEigenschapAdmin(admin.ModelAdmin):
 class ZaakInformatieObjectAdmin(admin.ModelAdmin):
     list_display = ["zaak", "informatieobject"]
     list_select_related = ["zaak"]
-    raw_id_fields = ["zaak"]
+    raw_id_fields = ["zaak", "status"]
 
 
 @admin.register(Resultaat)

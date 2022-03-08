@@ -604,18 +604,6 @@ class Status(ETagMixin, models.Model):
         "op de status van een zaak.",
     )
 
-    zaakinformatieobjecten = models.ManyToManyField(
-        "datamodel.ZaakInformatieObject",
-        verbose_name=_("zaakinformatieobjecten"),
-        help_text=_(
-            "De bij de desbetreffende ZAAK behorende STATUS waarvoor het "
-            "ZAAK-INFORMATIEOBJECT relevant is (geweest) met het oog op het bereiken "
-            "van die STATUS en/of de communicatie daarover."
-        ),
-        related_name="statussen",
-        blank=True,
-    )
-
     objects = ZaakRelatedQuerySet.as_manager()
 
     class Meta:
@@ -1021,6 +1009,30 @@ class ZaakInformatieObject(ETagMixin, models.Model):
         "INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. "
         "Geldige waardes zijn datumtijden gelegen op of voor de "
         "huidige datum en tijd.",
+    )
+
+    vernietigingsdatum = models.DateTimeField(
+        _("vernietigingsdatum"),
+        help_text=_(
+            "De datum waarop het informatieobject uit het zaakdossier verwijderd "
+            "moet worden."
+        ),
+        null=True,
+        blank=True,
+    )
+
+    status = models.ForeignKey(
+        "datamodel.Status",
+        on_delete=models.CASCADE,
+        verbose_name=_("status"),
+        related_name="zaakinformatieobjecten",
+        help_text=_(
+            "De bij de desbetreffende ZAAK behorende STATUS waarvoor het "
+            "ZAAK-INFORMATIEOBJECT relevant is (geweest) met het oog op het bereiken "
+            "van die STATUS en/of de communicatie daarover."
+        ),
+        blank=True,
+        null=True,
     )
 
     objects = ZaakRelatedQuerySet.as_manager()

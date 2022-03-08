@@ -584,6 +584,8 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             "titel",
             "beschrijving",
             "registratiedatum",
+            "vernietigingsdatum",
+            "status",
         )
         validators = [
             UniqueTogetherValidator(
@@ -606,6 +608,7 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 ]
             },
             "zaak": {"lookup_field": "uuid", "validators": [IsImmutableValidator()]},
+            "status": {"lookup_field": "uuid"},
         }
 
     def save(self, **kwargs):
