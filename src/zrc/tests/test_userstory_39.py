@@ -150,10 +150,14 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
         response_data = response.json()
         status_ = Status.objects.get()
+
         self.assertEqual(status_.zaak, zaak)
+
         detail_url = get_operation_url("status_read", uuid=status_.uuid)
+
         self.assertEqual(
             response_data,
             {
@@ -162,7 +166,10 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 "zaak": f"http://testserver{zaak_url}",
                 "statustype": STATUS_TYPE,
                 "datumStatusGezet": "2018-06-06T17:23:43Z",  # UTC
+                "gezetdoor": "",
+                "indicatieLaatstGezetteStatus": False,
                 "statustoelichting": "",
+                "zaakinformatieobjecten": [],
             },
         )
 
@@ -293,19 +300,30 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
         response_data = response.json()
         rol = Rol.objects.get()
+
         self.assertEqual(rol.zaak, zaak)
         self.assertEqual(rol.betrokkene, betrokkene)
+
         detail_url = get_operation_url("rol_read", uuid=rol.uuid)
+
         self.assertEqual(
             response_data,
             {
                 "url": f"http://testserver{detail_url}",
                 "uuid": str(rol.uuid),
                 "zaak": f"http://testserver{zaak_url}",
+                "afwijkendeNaamBetrokkene": "",
                 "betrokkene": betrokkene,
                 "betrokkeneType": "vestiging",
+                "contactpersoonRol": {
+                    "emailadres": "",
+                    "functie": "",
+                    "telefoonnummer": "",
+                    "naam": "",
+                },
                 "roltype": ROLTYPE,
                 "omschrijving": RolOmschrijving.behandelaar,
                 "omschrijvingGeneriek": RolOmschrijving.behandelaar,
@@ -313,5 +331,6 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 "registratiedatum": "2018-01-01T00:00:00Z",
                 "indicatieMachtiging": "",
                 "betrokkeneIdentificatie": None,
+                "statussen": [],
             },
         )

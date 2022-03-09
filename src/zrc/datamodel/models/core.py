@@ -33,7 +33,12 @@ from vng_api_common.utils import (
 )
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from ..constants import AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
+from ..constants import (
+    AardExterneRelatie,
+    AardZaakRelatie,
+    BetalingsIndicatie,
+    IndicatieMachtiging,
+)
 from ..query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -298,6 +303,210 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         blank=True,
     )
 
+    processobjectaard = models.CharField(
+        _("procesobjectaard"),
+        max_length=200,
+        null=True,
+        blank=True,
+        help_text=_(
+            "Omschrijving van het object, subject of gebeurtenis waarop, vanuit"
+            " archiveringsoptiek, de zaak betrekking heeft."
+        ),
+    )
+
+    resultaattoelichting = models.TextField(
+        _("resultaattoelichting"),
+        max_length=1000,
+        blank=True,
+        help_text=_("Een toelichting op wat het resultaat van de zaak inhoudt."),
+    )
+
+    startdatum_bewaartermijn = models.DateField(
+        _("startdatum bewaartermijn"),
+        null=True,
+        blank=True,
+        help_text=_(
+            "De datum die de start markeert van de termijn waarop het zaakdossier"
+            " vernietigd moet worden."
+        ),
+    )
+
+    gerelateerde_externe_zaken_aanvraagdatum = models.DateField(
+        _("aanvraagdatum"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "De datum waarop verzocht is om de behandeling van de gerelateerde ZAAK"
+            " uit te gaan voeren."
+        ),
+    )
+
+    gerelateerde_externe_zaken_aard_relatie = models.CharField(
+        _("aard relatie"),
+        max_length=14,
+        blank=True,
+        choices=AardExterneRelatie.choices,
+        help_text=_(
+            "De datum waarop verzocht is om de behandeling van de gerelateerde ZAAK"
+            " uit te gaan voeren."
+        ),
+    )
+
+    gerelateerde_externe_zaken_datum_status_gezet = models.DateTimeField(
+        _("datum status gezet"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "De datum waarop de gerelateerde ZAAK de laatst bekende status heeft verkregen."
+        ),
+    )
+
+    gerelateerde_externe_zaken_einddatum = models.DateField(
+        _("einddatum"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "De datum waarop de uitvoering van de gerelateerde ZAAK afgerond is."
+        ),
+    )
+
+    gerelateerde_externe_zaken_resultaatomschrijving = models.CharField(
+        _("resultaatomschrijving"),
+        max_length=80,
+        blank=True,
+        help_text=_(
+            "Een korte omschrijving wat het resultaat van de gerelateerde ZAAK inhoudt."
+        ),
+    )
+
+    gerelateerde_externe_zaken_startdatum = models.DateField(
+        _("startdatum"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "De datum waarop met de uitvoering van de gerelateerde ZAAK is gestart."
+        ),
+    )
+
+    gerelateerde_externe_zaken_status_omschrijving_generiek = models.CharField(
+        _("status-omschrijving generiek"),
+        max_length=80,
+        blank=True,
+        help_text=_(
+            "Algemeen gehanteerde omschrijving van de aard van de laatst bekende "
+            "status van de gerelateerde ZAAK."
+        ),
+    )
+
+    gerelateerde_externe_zaken_verantwoordelijke_organisatie = RSINField(
+        _("verantwoordelijke organisatie"),
+        blank=True,
+        help_text=_(
+            "Het RSIN van de organisatie die verantwoordelijk is voor de behandeling "
+            "van de gerelateerde ZAAK."
+        ),
+    )
+
+    gerelateerde_externe_zaken_zaakidentificatie = models.CharField(
+        _("zaakidentificatie"),
+        max_length=40,
+        blank=True,
+        help_text=_("De unieke identificatie van de gerelateerde ZAAK."),
+    )
+
+    gerelateerde_externe_zaken_zaaktype_omschrijving_generiek = models.CharField(
+        _("zaaktype-omschrijving generiek"),
+        max_length=80,
+        blank=True,
+        help_text=_(
+            "Algemeen gehanteerde omschrijving van de aard van ZAAKen van het ZAAKTYPE "
+            "waartoe de gerelateerde zaak behoort."
+        ),
+    )
+
+    gerelateerde_externe_zaken_zaaktypecode = models.CharField(
+        _("zaaktypecode"),
+        max_length=10,
+        blank=True,
+        help_text=_(
+            "De algemeen gehanteerde code van de aard van ZAAKen van het ZAAKTYPE "
+            "waartoe de gerelateerde zaak behoort."
+        ),
+    )
+
+    gerelateerde_externe_zaken_url = models.URLField(
+        _("url"),
+        blank=True,
+    )
+
+    gerelateerde_externe_zaken = GegevensGroepType(
+        {
+            "aanvraagdatum": gerelateerde_externe_zaken_aanvraagdatum,
+            "aard_relatie": gerelateerde_externe_zaken_aard_relatie,
+            "datum_status_gezet": gerelateerde_externe_zaken_datum_status_gezet,
+            "eind_datum": gerelateerde_externe_zaken_einddatum,
+            "resultaatomschrijving": gerelateerde_externe_zaken_resultaatomschrijving,
+            "startdatum": gerelateerde_externe_zaken_startdatum,
+            "status_omschrijving_generiek": gerelateerde_externe_zaken_status_omschrijving_generiek,
+            "verantwoordelijke_organisatie": gerelateerde_externe_zaken_verantwoordelijke_organisatie,
+            "zaakidentificatie": gerelateerde_externe_zaken_zaakidentificatie,
+            "zaaktype_omschrijving_generiek": gerelateerde_externe_zaken_zaaktype_omschrijving_generiek,
+            "zaaktypecode": gerelateerde_externe_zaken_zaaktypecode,
+            "url": gerelateerde_externe_zaken_url,
+        },
+        optional=(
+            "eind_datum",
+            "resultaatomschrijving",
+            "startdatum",
+            "status_omschrijving_generiek",
+            "verantwoordelijke_organisatie",
+            "zaakidentificatie",
+            "url",
+        ),
+    )
+
+    processobject_datumkenmerk = models.CharField(
+        _("datumkenmerk"),
+        max_length=250,
+        blank=True,
+        help_text=_(
+            "De naam van de attribuutsoort van het procesobject dat bepalend is "
+            "voor het einde van de procestermijn."
+        ),
+    )
+
+    processobject_identificatie = models.CharField(
+        _("identificatie"),
+        max_length=250,
+        blank=True,
+        help_text=_("De unieke aanduiding van het procesobject."),
+    )
+
+    processobject_objecttype = models.CharField(
+        _("objecttype"),
+        max_length=250,
+        blank=True,
+        help_text=_("Het soort object dat het procesobject representeert."),
+    )
+
+    processobject_registratie = models.CharField(
+        _("registratie"),
+        max_length=250,
+        blank=True,
+        help_text=_(
+            "De naam van de registratie waarvan het procesobject deel uit maakt."
+        ),
+    )
+
+    processobject = GegevensGroepType(
+        {
+            "datumkenmerk": processobject_datumkenmerk,
+            "identificatie": processobject_identificatie,
+            "objecttype": processobject_objecttype,
+            "registratie": processobject_registratie,
+        },
+    )
+
     objects = ZaakQuerySet.as_manager()
 
     class Meta:
@@ -378,6 +587,24 @@ class Status(ETagMixin, models.Model):
     datum_status_gezet = models.DateTimeField(
         help_text="De datum waarop de ZAAK de status heeft verkregen."
     )
+
+    indicatie_laatst_gezette_status = models.BooleanField(
+        _("indicatie laatst gezette status"),
+        help_text=_(
+            "Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum "
+            "status gezet van van alle statussen bij de desbetreffende zaak."
+        ),
+        default=False,
+    )
+    gezetdoor = models.URLField(
+        _("gezet door"),
+        help_text=_(
+            "De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd "
+            "dat STATUSsen in die ZAAK bereikt zijn."
+        ),
+        blank=True,
+    )
+
     statustoelichting = models.TextField(
         max_length=1000,
         blank=True,
@@ -466,6 +693,16 @@ class Rol(ETagMixin, models.Model):
         max_length=100, choices=RolTypes.choices, help_text="Type van de `betrokkene`."
     )
 
+    afwijkende_naam_betrokkene = models.TextField(
+        _("afwijkende naam betrokkene"),
+        help_text=_(
+            "De naam van de betrokkene waaronder deze in relatie tot de zaak "
+            "aangesproken wil worden."
+        ),
+        max_length=625,
+        blank=True,
+    )
+
     roltype = models.URLField(
         help_text="URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK.",
         max_length=1000,
@@ -498,6 +735,69 @@ class Rol(ETagMixin, models.Model):
         choices=IndicatieMachtiging.choices,
         blank=True,
         help_text="Indicatie machtiging",
+    )
+
+    contactpersoon_email = models.EmailField(
+        _("email"),
+        help_text=_(
+            "Elektronich postadres waaronder de contactpersoon in de regel "
+            "bereikbaar is."
+        ),
+        max_length=254,
+        blank=True,
+    )
+
+    contactpersoon_functie = models.CharField(
+        _("functie"),
+        help_text=_(
+            "De aanduiding van de taken, rechten en plichten die de contactpersoon "
+            "heeft binnen de organisatie van BETROKKENE. "
+        ),
+        max_length=50,
+        blank=True,
+    )
+
+    contactpersoon_telefoonnummer = models.CharField(
+        _("telefoonnummer"),
+        help_text=_(
+            "Telefoonnummer waaronder de contactpersoon in de regel bereikbaar is."
+        ),
+        max_length=20,
+        blank=True,
+    )
+
+    contactpersoon_naam = models.CharField(
+        _("naam"),
+        help_text=_("De opgemaakte naam van de contactpersoon namens de BETROKKENE."),
+        max_length=40,
+        blank=True,
+    )
+
+    contactpersoon_rol = GegevensGroepType(
+        {
+            "emailadres": contactpersoon_email,
+            "functie": contactpersoon_functie,
+            "telefoonnummer": contactpersoon_telefoonnummer,
+            "naam": contactpersoon_naam,
+        },
+        optional=(
+            "emailadres",
+            "functie",
+            "telefoonnummer",
+        ),
+    )
+
+    # TODO: update Status admin/serializer to require rol? see
+    # https://www.gemmaonline.nl/index.php/Rgbz_2.0/doc/objecttype/status.
+    statussen = models.ManyToManyField(
+        "datamodel.Status",
+        verbose_name=_("statussen"),
+        help_text=_(
+            "De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd "
+            "dat STATUSsen in die ZAAK bereikt zijn."
+        ),
+        related_name="rollen",
+        blank=True,
     )
 
     objects = ZaakRelatedQuerySet.as_manager()
@@ -721,6 +1021,30 @@ class ZaakInformatieObject(ETagMixin, models.Model):
         "INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. "
         "Geldige waardes zijn datumtijden gelegen op of voor de "
         "huidige datum en tijd.",
+    )
+
+    vernietigingsdatum = models.DateTimeField(
+        _("vernietigingsdatum"),
+        help_text=_(
+            "De datum waarop het informatieobject uit het zaakdossier verwijderd "
+            "moet worden."
+        ),
+        null=True,
+        blank=True,
+    )
+
+    status = models.ForeignKey(
+        "datamodel.Status",
+        on_delete=models.CASCADE,
+        verbose_name=_("status"),
+        related_name="zaakinformatieobjecten",
+        help_text=_(
+            "De bij de desbetreffende ZAAK behorende STATUS waarvoor het "
+            "ZAAK-INFORMATIEOBJECT relevant is (geweest) met het oog op het bereiken "
+            "van die STATUS en/of de communicatie daarover."
+        ),
+        blank=True,
+        null=True,
     )
 
     objects = ZaakRelatedQuerySet.as_manager()

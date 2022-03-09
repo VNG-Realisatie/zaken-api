@@ -50,6 +50,7 @@ Uitleg bij mogelijke waarden:
 * `vestiging` - Vestiging
 * `organisatorische_eenheid` - Organisatorische eenheid
 * `medewerker` - Medewerker | string | ja | C​R​U​D |
+| afwijkendeNaamBetrokkene | De naam van de betrokkene waaronder deze in relatie tot de zaak aangesproken wil worden. | string | nee | C​R​U​D |
 | roltype | URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK. | string | ja | C​R​U​D |
 | omschrijving | Omschrijving van de aard van de ROL, afgeleid uit het ROLTYPE. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | omschrijvingGeneriek | Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.
@@ -72,6 +73,7 @@ Uitleg bij mogelijke waarden:
 
 * `gemachtigde` - De betrokkene in de rol bij de zaak is door een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen
 * `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen | string | nee | C​R​U​D |
+| statussen | De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd dat STATUSsen in die ZAAK bereikt zijn. | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## SubVerblijfBuitenland
 
@@ -97,6 +99,9 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | statustype | URL-referentie naar het STATUSTYPE (in de Catalogi API). | string | ja | C​R​U​D |
 | datumStatusGezet | De datum waarop de ZAAK de status heeft verkregen. | string | ja | C​R​U​D |
 | statustoelichting | Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak. | string | nee | C​R​U​D |
+| indicatieLaatstGezetteStatus | Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum status gezet van van alle statussen bij de desbetreffende zaak. | boolean | nee | C​R​U​D |
+| gezetdoor | De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd dat STATUSsen in die ZAAK bereikt zijn. | string | nee | C​R​U​D |
+| zaakinformatieobjecten |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 
 ## ZaakContactMoment
 
@@ -123,6 +128,8 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | titel | De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend is. | string | nee | C​R​U​D |
 | beschrijving | Een op het object gerichte beschrijving van de inhoud vanhet INFORMATIEOBJECT. | string | nee | C​R​U​D |
 | registratiedatum | De datum waarop de behandelende organisatie het INFORMATIEOBJECT heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen op of voor de huidige datum en tijd. | string | nee | ~~C~~​R​~~U~~​~~D~~ |
+| vernietigingsdatum | De datum waarop het informatieobject uit het zaakdossier verwijderd moet worden. | string | nee | C​R​U​D |
+| status | De bij de desbetreffende ZAAK behorende STATUS waarvoor het ZAAK-INFORMATIEOBJECT relevant is (geweest) met het oog op het bereiken van die STATUS en/of de communicatie daarover. | string | nee | C​R​U​D |
 
 ## ZaakObject
 
@@ -259,6 +266,9 @@ Uitleg bij mogelijke waarden:
 | archiefactiedatum | De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan deze ZAAK indien nog leeg. | string | nee | C​R​U​D |
 | resultaat | URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | opdrachtgevendeOrganisatie | De krachtens publiekrecht ingestelde rechtspersoon dan wel ander niet-natuurlijk persoon waarbinnen het (bestuurs)orgaan zetelt dat opdracht heeft gegeven om taken uit te voeren waaraan de zaak invulling geeft. | string | nee | C​R​U​D |
+| processobjectaard | Omschrijving van het object, subject of gebeurtenis waarop, vanuit archiveringsoptiek, de zaak betrekking heeft. | string | nee | C​R​U​D |
+| resultaattoelichting | Een toelichting op wat het resultaat van de zaak inhoudt. | string | nee | C​R​U​D |
+| startdatumBewaartermijn | De datum die de start markeert van de termijn waarop het zaakdossier vernietigd moet worden. | string | nee | C​R​U​D |
 
 ## AuditTrail
 

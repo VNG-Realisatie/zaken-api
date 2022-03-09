@@ -136,6 +136,18 @@ class OpschortingSerializer(GegevensGroepSerializer):
         }
 
 
+class GerelateerdeExterneZakenSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = Zaak
+        gegevensgroep = "gerelateerde_externe_zaken"
+
+
+class ProcessobjectSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = Zaak
+        gegevensgroep = "processobject"
+
+
 class RelevanteZaakSerializer(serializers.ModelSerializer):
     class Meta:
         model = RelevanteZaakRelatie
@@ -191,6 +203,9 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
             "statustype",
             "datum_status_gezet",
             "statustoelichting",
+            "indicatie_laatst_gezette_status",
+            "gezetdoor",
+            "zaakinformatieobjecten",
         )
         validators = [
             CorrectZaaktypeValidator("statustype"),
@@ -210,6 +225,8 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 ]
             },
             "datum_status_gezet": {"validators": [DateNotInFutureValidator()]},
+            "indicatie_laatst_gezette_status": {"required": False},
+            "zaakinformatieobjecten": {"lookup_field": "uuid", "read_only": True},
         }
 
     def validate(self, attrs):
@@ -567,6 +584,8 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
             "titel",
             "beschrijving",
             "registratiedatum",
+            "vernietigingsdatum",
+            "status",
         )
         validators = [
             UniqueTogetherValidator(
@@ -589,6 +608,7 @@ class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
                 ]
             },
             "zaak": {"lookup_field": "uuid", "validators": [IsImmutableValidator()]},
+            "status": {"lookup_field": "uuid"},
         }
 
     def save(self, **kwargs):
@@ -680,6 +700,12 @@ class KlantContactSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
+class ContactPersoonRolSerializer(GegevensGroepSerializer):
+    class Meta:
+        model = Rol
+        gegevensgroep = "contactpersoon_rol"
+
+
 class RolSerializer(PolymorphicSerializer):
     discriminator = Discriminator(
         discriminator_field="betrokkene_type",
@@ -694,6 +720,17 @@ class RolSerializer(PolymorphicSerializer):
         same_model=False,
     )
 
+    contactpersoon_rol = ContactPersoonRolSerializer(
+        allow_null=True,
+        required=False,
+        help_text=_(
+            "De gegevens van de persoon die anderen desgevraagd in contact brengt "
+            "met medewerkers van de BETROKKENE, een NIET-NATUURLIJK PERSOON of "
+            "VESTIGING zijnde, of met BETROKKENE zelf, een NATUURLIJK PERSOON zijnde "
+            ", vanuit het belang van BETROKKENE in haar ROL bij een ZAAK."
+        ),
+    )
+
     class Meta:
         model = Rol
         fields = (
@@ -702,12 +739,15 @@ class RolSerializer(PolymorphicSerializer):
             "zaak",
             "betrokkene",
             "betrokkene_type",
+            "afwijkende_naam_betrokkene",
             "roltype",
             "omschrijving",
             "omschrijving_generiek",
             "roltoelichting",
             "registratiedatum",
             "indicatie_machtiging",
+            "contactpersoon_rol",
+            "statussen",
         )
         validators = [
             RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),
@@ -727,6 +767,7 @@ class RolSerializer(PolymorphicSerializer):
                     ),
                 ]
             },
+            "statussen": {"lookup_field": "uuid", "read_only": True},
         }
 
     def __init__(self, *args, **kwargs):
@@ -1015,6 +1056,25 @@ class ZaakSerializer(
         many=True, required=False, help_text=_("Een lijst van relevante andere zaken.")
     )
 
+    gerelateerde_externe_zaken = GerelateerdeExterneZakenSerializer(
+        required=False,
+        allow_null=True,
+        help_text=_(
+            "Een ZAAK bij een andere organisatie waarin een bijdrage geleverd wordt "
+            "aan het bereiken van de uitkomst van de onderhanden ZAAK."
+        ),
+    )
+
+    processobject = ProcessobjectSerializer(
+        required=False,
+        allow_null=True,
+        help_text=_(
+            "Specificatie van de attribuutsoort van het object, subject of gebeurtenis "
+            " waarop, vanuit archiveringsoptiek, de zaak betrekking heeft en dat "
+            "bepalend is voor de start van de archiefactietermijn."
+        ),
+    )
+
     class Meta:
         model = Zaak
         fields = (
@@ -1061,6 +1121,11 @@ class ZaakSerializer(
             "archiefactiedatum",
             "resultaat",
             "opdrachtgevende_organisatie",
+            "processobjectaard",
+            "resultaattoelichting",
+            "startdatum_bewaartermijn",
+            "gerelateerde_externe_zaken",
+            "processobject",
         )
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},

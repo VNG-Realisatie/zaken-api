@@ -1,5 +1,5 @@
 import unittest
-from datetime import date
+from datetime import date, timedelta
 from unittest.mock import patch
 
 from django.contrib.gis.geos import Point
@@ -25,7 +25,7 @@ from vng_api_common.tests import (
 )
 from zds_client.tests.mocks import mock_client
 
-from zrc.datamodel.constants import BetalingsIndicatie
+from zrc.datamodel.constants import AardExterneRelatie, BetalingsIndicatie
 from zrc.datamodel.models import (
     Medewerker,
     NatuurlijkPersoon,
@@ -760,9 +760,81 @@ class ZakenTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             "zaakinformatieobjecten": [zio_url],
             "zaakobjecten": [zaakobject_url],
             "zaaktype": zaak.zaaktype,
+            "processobjectaard": None,
+            "resultaattoelichting": "",
+            "startdatum_bewaartermijn": None,
+            "gerelateerde_externe_zaken": {
+                "aanvraagdatum": None,
+                "aard_relatie": "",
+                "datum_status_gezet": None,
+                "eind_datum": None,
+                "resultaatomschrijving": "",
+                "startdatum": None,
+                "status_omschrijving_generiek": "",
+                "verantwoordelijke_organisatie": "",
+                "zaakidentificatie": "",
+                "zaaktype_omschrijving_generiek": "",
+                "zaaktypecode": "",
+                "url": "",
+            },
+            "processobject": {
+                "datumkenmerk": "",
+                "identificatie": "",
+                "objecttype": "",
+                "registratie": "",
+            },
         }
 
         self.assertDictEqual(dict(response.data), expected_data)
+
+    def test_missing_processobject(self):
+        self.applicatie.heeft_alle_autorisaties = True
+        self.applicatie.save()
+
+        zaak = ZaakFactory()
+
+        response = self.client.patch(
+            reverse(zaak),
+            {
+                "processobject": {
+                    "datumkenmerk": "XYZ",
+                    "identificatie": "YZX",
+                    "objecttype": "XZY",
+                }
+            },
+            **ZAAK_WRITE_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "processobject.registratie")
+        self.assertEqual(error["code"], "required")
+
+    def test_missing_gerelateerde_externe_zaken(self):
+        self.applicatie.heeft_alle_autorisaties = True
+        self.applicatie.save()
+
+        zaak = ZaakFactory()
+
+        response = self.client.patch(
+            reverse(zaak),
+            {
+                "gerelateerdeExterneZaken": {
+                    "aanvraagdatum": (timezone.now() - timedelta(days=3)).strftime(
+                        "%Y-%m-%d"
+                    ),
+                    "datumStatusGezet": timezone.now() - timedelta(days=1),
+                    "zaaktypeOmschrijvingGeneriek": "Omschrijving XY",
+                    "zaaktypecode": "XYZ",
+                }
+            },
+            **ZAAK_WRITE_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "gerelateerdeExterneZaken.aardRelatie")
+        self.assertEqual(error["code"], "required")
 
 
 @override_settings(

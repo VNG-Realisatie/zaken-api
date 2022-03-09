@@ -8,7 +8,7 @@ from django.test import override_settings
 from django.utils import timezone
 
 from freezegun import freeze_time
-from rest_framework import status
+from rest_framework import status as rest_framework_status
 from rest_framework.test import APITestCase, APITransactionTestCase
 from vng_api_common.constants import RelatieAarden
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
@@ -16,7 +16,11 @@ from vng_api_common.validators import IsImmutableValidator
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import Zaak, ZaakInformatieObject
-from zrc.datamodel.tests.factories import ZaakFactory, ZaakInformatieObjectFactory
+from zrc.datamodel.tests.factories import (
+    StatusFactory,
+    ZaakFactory,
+    ZaakInformatieObjectFactory,
+)
 from zrc.sync.signals import SyncError
 
 from .mixins import ZaakInformatieObjectSyncMixin
@@ -63,7 +67,9 @@ class ZaakInformatieObjectAPITests(
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_create(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        status = StatusFactory(zaak=zaak)
         zaak_url = reverse("zaak-detail", kwargs={"version": "1", "uuid": zaak.uuid})
+        status_url = reverse("status-detail", kwargs={"uuid": status.uuid})
 
         titel = "some titel"
         beschrijving = "some beschrijving"
@@ -73,6 +79,7 @@ class ZaakInformatieObjectAPITests(
             "titel": titel,
             "beschrijving": beschrijving,
             "aardRelatieWeergave": "bla",  # Should be ignored by the API
+            "status": f"http://testserver{status_url}",
         }
 
         # Send to the API
@@ -80,7 +87,9 @@ class ZaakInformatieObjectAPITests(
             response = self.client.post(self.list_url, content)
 
         # Test response
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+        self.assertEqual(
+            response.status_code, rest_framework_status.HTTP_201_CREATED, response.data
+        )
 
         # Test database
         self.assertEqual(ZaakInformatieObject.objects.count(), 1)
@@ -99,6 +108,8 @@ class ZaakInformatieObjectAPITests(
                 "beschrijving": beschrijving,
                 "registratiedatum": "2018-09-19T10:25:19Z",
                 "aardRelatieWeergave": RelatieAarden.labels[RelatieAarden.hoort_bij],
+                "vernietigingsdatum": None,
+                "status": f"http://testserver{status_url}",
             }
         )
         self.assertEqual(response.json(), expected_response)
@@ -152,7 +163,9 @@ class ZaakInformatieObjectAPITests(
             response = self.client.post(self.list_url, content)
 
         self.assertEqual(
-            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+            response.status_code,
+            rest_framework_status.HTTP_400_BAD_REQUEST,
+            response.data,
         )
         error = get_validation_errors(response, "nonFieldErrors")
         self.assertEqual(error["code"], "unique")
@@ -168,7 +181,7 @@ class ZaakInformatieObjectAPITests(
         response = self.client.get(zio_detail_url)
 
         # Test response
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, rest_framework_status.HTTP_200_OK)
 
         zaak_url = reverse(
             "zaak-detail", kwargs={"version": "1", "uuid": zio.zaak.uuid}
@@ -183,6 +196,8 @@ class ZaakInformatieObjectAPITests(
             "titel": "",
             "beschrijving": "",
             "registratiedatum": "2018-09-20T12:00:00Z",
+            "vernietigingsdatum": None,
+            "status": None,
         }
 
         self.assertEqual(response.json(), expected)
@@ -224,7 +239,9 @@ class ZaakInformatieObjectAPITests(
         )
 
         self.assertEqual(
-            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+            response.status_code,
+            rest_framework_status.HTTP_400_BAD_REQUEST,
+            response.data,
         )
 
         for field in ["zaak", "informatieobject"]:
@@ -250,7 +267,9 @@ class ZaakInformatieObjectAPITests(
 
         # Test response
         self.assertEqual(
-            response.status_code, status.HTTP_400_BAD_REQUEST, response.data
+            response.status_code,
+            rest_framework_status.HTTP_400_BAD_REQUEST,
+            response.data,
         )
 
         # transaction must be rolled back
@@ -267,7 +286,9 @@ class ZaakInformatieObjectAPITests(
 
         response = self.client.delete(zio_url)
         self.assertEqual(
-            response.status_code, status.HTTP_204_NO_CONTENT, response.data
+            response.status_code,
+            rest_framework_status.HTTP_204_NO_CONTENT,
+            response.data,
         )
 
         self.assertEqual(self.mocked_sync_delete.call_count, 1)
@@ -345,7 +366,9 @@ class ExternalDocumentsAPITransactionTests(JWTAuthMixin, APITransactionTestCase)
                 response = self.client.post(self.list_url, content)
 
         # Test response
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+        self.assertEqual(
+            response.status_code, rest_framework_status.HTTP_201_CREATED, response.data
+        )
 
         # Test database
         self.assertEqual(ZaakInformatieObject.objects.count(), 1)
@@ -364,6 +387,8 @@ class ExternalDocumentsAPITransactionTests(JWTAuthMixin, APITransactionTestCase)
                 "beschrijving": beschrijving,
                 "registratiedatum": "2018-09-19T10:25:19Z",
                 "aardRelatieWeergave": RelatieAarden.labels[RelatieAarden.hoort_bij],
+                "vernietigingsdatum": None,
+                "status": None,
             }
         )
         self.assertEqual(response.json(), expected_response)

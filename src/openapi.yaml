@@ -5085,6 +5085,41 @@ components:
           description: Een toelichting op wat het resultaat van de zaak inhoudt.
           type: string
           maxLength: 1000
+    ContactPersoonRol:
+      description: De gegevens van de persoon die anderen desgevraagd in contact brengt
+        met medewerkers van de BETROKKENE, een NIET-NATUURLIJK PERSOON of VESTIGING
+        zijnde, of met BETROKKENE zelf, een NATUURLIJK PERSOON zijnde , vanuit het
+        belang van BETROKKENE in haar ROL bij een ZAAK.
+      required:
+      - naam
+      type: object
+      properties:
+        emailadres:
+          title: Email
+          description: Elektronich postadres waaronder de contactpersoon in de regel
+            bereikbaar is.
+          type: string
+          format: email
+          maxLength: 254
+        functie:
+          title: Functie
+          description: 'De aanduiding van de taken, rechten en plichten die de contactpersoon
+            heeft binnen de organisatie van BETROKKENE. '
+          type: string
+          maxLength: 50
+        telefoonnummer:
+          title: Telefoonnummer
+          description: Telefoonnummer waaronder de contactpersoon in de regel bereikbaar
+            is.
+          type: string
+          maxLength: 20
+        naam:
+          title: Naam
+          description: De opgemaakte naam van de contactpersoon namens de BETROKKENE.
+          type: string
+          maxLength: 40
+          minLength: 1
+      nullable: true
     Rol:
       required:
       - zaak
@@ -5143,6 +5178,12 @@ components:
           - vestiging
           - organisatorische_eenheid
           - medewerker
+        afwijkendeNaamBetrokkene:
+          title: Afwijkende naam betrokkene
+          description: De naam van de betrokkene waaronder deze in relatie tot de
+            zaak aangesproken wil worden.
+          type: string
+          maxLength: 625
         roltype:
           title: Roltype
           description: URL-referentie naar een roltype binnen het ZAAKTYPE van de
@@ -5204,6 +5245,19 @@ components:
           enum:
           - gemachtigde
           - machtiginggever
+        contactpersoonRol:
+          $ref: '#/components/schemas/ContactPersoonRol'
+        statussen:
+          description: De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd
+            dat STATUSsen in die ZAAK bereikt zijn.
+          type: array
+          items:
+            description: De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd
+              dat STATUSsen in die ZAAK bereikt zijn.
+            type: string
+            format: uri
+          readOnly: true
+          uniqueItems: true
       discriminator:
         propertyName: betrokkeneType
     VerblijfsAdres:
@@ -5565,6 +5619,25 @@ components:
             de status van een zaak.
           type: string
           maxLength: 1000
+        indicatieLaatstGezetteStatus:
+          title: Indicatie laatst gezette status
+          description: Het gegeven is afleidbaar uit de historie van de attribuutsoort
+            Datum status gezet van van alle statussen bij de desbetreffende zaak.
+          type: boolean
+        gezetdoor:
+          title: Gezet door
+          description: De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd
+            dat STATUSsen in die ZAAK bereikt zijn.
+          type: string
+          format: uri
+          maxLength: 200
+        zaakinformatieobjecten:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          uniqueItems: true
     ZaakContactMoment:
       required:
       - zaak
@@ -5659,6 +5732,21 @@ components:
           type: string
           format: date-time
           readOnly: true
+        vernietigingsdatum:
+          title: Vernietigingsdatum
+          description: De datum waarop het informatieobject uit het zaakdossier verwijderd
+            moet worden.
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          title: Status
+          description: De bij de desbetreffende ZAAK behorende STATUS waarvoor het
+            ZAAK-INFORMATIEOBJECT relevant is (geweest) met het oog op het bereiken
+            van die STATUS en/of de communicatie daarover.
+          type: string
+          format: uri
+          nullable: true
     ObjectTypeOverigeDefinitie:
       description: 'Verwijzing naar het schema van het type OBJECT als `objectType`
         de waarde "overige" heeft.
@@ -7104,6 +7192,130 @@ components:
           type: string
           maxLength: 40
           minLength: 1
+    GerelateerdeExterneZaken:
+      description: Een ZAAK bij een andere organisatie waarin een bijdrage geleverd
+        wordt aan het bereiken van de uitkomst van de onderhanden ZAAK.
+      required:
+      - aanvraagdatum
+      - aardRelatie
+      - datumStatusGezet
+      - zaaktypeOmschrijvingGeneriek
+      - zaaktypecode
+      type: object
+      properties:
+        aanvraagdatum:
+          title: Aanvraagdatum
+          description: De datum waarop verzocht is om de behandeling van de gerelateerde
+            ZAAK uit te gaan voeren.
+          type: string
+          format: date
+        aardRelatie:
+          title: Aard relatie
+          description: De datum waarop verzocht is om de behandeling van de gerelateerde
+            ZAAK uit te gaan voeren.
+          type: string
+          enum:
+          - opdrachtgever
+          - opdrachtnemer
+        datumStatusGezet:
+          title: Datum status gezet
+          description: De datum waarop de gerelateerde ZAAK de laatst bekende status
+            heeft verkregen.
+          type: string
+          format: date-time
+        eindDatum:
+          title: Einddatum
+          description: De datum waarop de uitvoering van de gerelateerde ZAAK afgerond
+            is.
+          type: string
+          format: date
+        resultaatomschrijving:
+          title: Resultaatomschrijving
+          description: Een korte omschrijving wat het resultaat van de gerelateerde
+            ZAAK inhoudt.
+          type: string
+          maxLength: 80
+        startdatum:
+          title: Startdatum
+          description: De datum waarop met de uitvoering van de gerelateerde ZAAK
+            is gestart.
+          type: string
+          format: date
+        statusOmschrijvingGeneriek:
+          title: Status-omschrijving generiek
+          description: Algemeen gehanteerde omschrijving van de aard van de laatst
+            bekende status van de gerelateerde ZAAK.
+          type: string
+          maxLength: 80
+        verantwoordelijkeOrganisatie:
+          title: Verantwoordelijke organisatie
+          description: Het RSIN van de organisatie die verantwoordelijk is voor de
+            behandeling van de gerelateerde ZAAK.
+          type: string
+          maxLength: 9
+        zaakidentificatie:
+          title: Zaakidentificatie
+          description: De unieke identificatie van de gerelateerde ZAAK.
+          type: string
+          maxLength: 40
+        zaaktypeOmschrijvingGeneriek:
+          title: Zaaktype-omschrijving generiek
+          description: Algemeen gehanteerde omschrijving van de aard van ZAAKen van
+            het ZAAKTYPE waartoe de gerelateerde zaak behoort.
+          type: string
+          maxLength: 80
+          minLength: 1
+        zaaktypecode:
+          title: Zaaktypecode
+          description: De algemeen gehanteerde code van de aard van ZAAKen van het
+            ZAAKTYPE waartoe de gerelateerde zaak behoort.
+          type: string
+          maxLength: 10
+          minLength: 1
+        url:
+          title: Url
+          type: string
+          format: uri
+          maxLength: 200
+      nullable: true
+    Processobject:
+      description: Specificatie van de attribuutsoort van het object, subject of gebeurtenis  waarop,
+        vanuit archiveringsoptiek, de zaak betrekking heeft en dat bepalend is voor
+        de start van de archiefactietermijn.
+      required:
+      - datumkenmerk
+      - identificatie
+      - objecttype
+      - registratie
+      type: object
+      properties:
+        datumkenmerk:
+          title: Datumkenmerk
+          description: De naam van de attribuutsoort van het procesobject dat bepalend
+            is voor het einde van de procestermijn.
+          type: string
+          maxLength: 250
+          minLength: 1
+        identificatie:
+          title: Identificatie
+          description: De unieke aanduiding van het procesobject.
+          type: string
+          maxLength: 250
+          minLength: 1
+        objecttype:
+          title: Objecttype
+          description: Het soort object dat het procesobject representeert.
+          type: string
+          maxLength: 250
+          minLength: 1
+        registratie:
+          title: Registratie
+          description: De naam van de registratie waarvan het procesobject deel uit
+            maakt.
+          type: string
+          maxLength: 250
+          minLength: 1
+      nullable: true
     Zaak:
       required:
       - bronorganisatie
@@ -7425,6 +7637,29 @@ components:
             geeft.
           type: string
           maxLength: 9
+        processobjectaard:
+          title: Procesobjectaard
+          description: Omschrijving van het object, subject of gebeurtenis waarop,
+            vanuit archiveringsoptiek, de zaak betrekking heeft.
+          type: string
+          maxLength: 200
+          nullable: true
+        resultaattoelichting:
+          title: Resultaattoelichting
+          description: Een toelichting op wat het resultaat van de zaak inhoudt.
+          type: string
+          maxLength: 1000
+        startdatumBewaartermijn:
+          title: Startdatum bewaartermijn
+          description: De datum die de start markeert van de termijn waarop het zaakdossier
+            vernietigd moet worden.
+          type: string
+          format: date
+          nullable: true
+        gerelateerdeExterneZaken:
+          $ref: '#/components/schemas/GerelateerdeExterneZaken'
+        processobject:
+          $ref: '#/components/schemas/Processobject'
     GeoWithin:
       type: object
       properties:

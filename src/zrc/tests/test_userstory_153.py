@@ -128,8 +128,16 @@ class US153TestCase(JWTAuthMixin, APITestCase):
 
         zaak_update_url = get_operation_url("zaak_update", uuid=zaak.uuid)
         data["kenmerken"].append({"kenmerk": "kenmerk 2", "bron": "bron 2"})
-        data["verlenging"] = None
-        data["opschorting"] = None
+
+        excluded_fields = (
+            "verlenging",
+            "gerelateerdeExterneZaken",
+            "processobject",
+            "opschorting",
+        )
+
+        for field in excluded_fields:
+            data.pop(field)
 
         response = self.client.put(zaak_update_url, data, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
@@ -225,8 +233,16 @@ class US153TestCase(JWTAuthMixin, APITestCase):
             end_date_planned = datetime.datetime.now()
 
         data = zaak.copy()
-        data["verlenging"] = None
-        data["opschorting"] = None
+        excluded_fields = (
+            "verlenging",
+            "gerelateerdeExterneZaken",
+            "processobject",
+            "opschorting",
+        )
+
+        for field in excluded_fields:
+            data.pop(field)
+
         data["einddatumGepland"] = (
             end_date_planned + datetime.timedelta(days=14)
         ).strftime("%Y-%m-%d")
