@@ -137,8 +137,6 @@ six==1.11.0
     #   python-dateutil
 sqlparse==0.3.0
     # via django
-unidecode==1.0.22
-    # via vng-api-common
 uritemplate==3.0.0
     # via
     #   coreapi
@@ -147,5 +145,5 @@ urllib3==1.24.3
     # via requests
 uwsgi==2.0.18
     # via -r requirements/base.in
-vng-api-common==1.6.2
+vng-api-common==1.7.3
     # via -r requirements/base.in
