@@ -15,6 +15,7 @@ from zrc.datamodel.tests.factories import (
     ResultaatFactory,
     RolFactory,
     StatusFactory,
+    SubStatusFactory,
     ZaakBesluitFactory,
     ZaakEigenschapFactory,
     ZaakFactory,
@@ -23,7 +24,12 @@ from zrc.datamodel.tests.factories import (
 )
 from zrc.tests.utils import ZAAK_READ_KWARGS
 
-from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
+from ..scopes import (
+    SCOPE_STATUSSEN_TOEVOEGEN,
+    SCOPE_ZAKEN_ALLES_LEZEN,
+    SCOPE_ZAKEN_BIJWERKEN,
+    SCOPE_ZAKEN_CREATE,
+)
 from .mixins import ZaakInformatieObjectSyncMixin
 
 INFORMATIEOBJECT = (
@@ -418,6 +424,131 @@ class ZaakEigenschapTests(JWTAuthMixin, APITestCase):
                 response = self.client.get(url)
 
                 self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class SubStatusTests(JWTAuthMixin, APITestCase):
+    scopes = [SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_STATUSSEN_TOEVOEGEN]
+    max_vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.beperkt_openbaar
+    zaaktype = "https://zaaktype.nl/zaaktypen/1234"
+
+    def test_list_substatus_limited_to_authorized_zaken(self):
+        # must show up
+        substatus1 = SubStatusFactory.create(
+            zaak__zaaktype=self.zaaktype,
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+        )
+        # must not show up
+        SubStatusFactory.create(
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        SubStatusFactory.create(
+            zaak__zaaktype=self.zaaktype,
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk,
+        )
+
+        with self.subTest(
+            zaaktype=substatus1.zaak.zaaktype,
+            vertrouwelijkheidaanduiding=substatus1.zaak.vertrouwelijkheidaanduiding,
+        ):
+            url = reverse("substatus-list")
+            substatus1_url = reverse(substatus1)
+
+            response = self.client.get(url)
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response_data = response.json()
+            self.assertEqual(response_data["count"], 1)
+            self.assertEqual(
+                response_data["results"][0]["url"], f"http://testserver{substatus1_url}"
+            )
+
+    def test_detail_substatus_limited_to_authorized_zaken(self):
+        # must show up
+        substatus1 = SubStatusFactory.create(
+            zaak__zaaktype=self.zaaktype,
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+        )
+        # must not show up
+        substatus2 = SubStatusFactory.create(
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        # must not show up
+        substatus3 = SubStatusFactory.create(
+            zaak__zaaktype=self.zaaktype,
+            zaak__vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk,
+        )
+
+        with self.subTest(
+            zaaktype=substatus1.zaak.zaaktype,
+            vertrouwelijkheidaanduiding=substatus1.zaak.vertrouwelijkheidaanduiding,
+        ):
+            url = reverse(substatus1)
+
+            response = self.client.get(url)
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # not allowed to see these
+        for substatus in (substatus2, substatus3):
+            with self.subTest(
+                zaaktype=substatus.zaak.zaaktype,
+                vertrouwelijkheidaanduiding=substatus.zaak.vertrouwelijkheidaanduiding,
+            ):
+                url = reverse(substatus)
+
+                response = self.client.get(url)
+
+                self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_substatus_limited_to_authorized_zaken(self):
+        zaak1 = ZaakFactory.create(
+            zaaktype=self.zaaktype,
+            vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar,
+        )
+        zaak2 = ZaakFactory.create(
+            vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.openbaar
+        )
+        zaak3 = ZaakFactory.create(
+            zaaktype=self.zaaktype,
+            vertrouwelijkheidaanduiding=VertrouwelijkheidsAanduiding.vertrouwelijk,
+        )
+        with self.subTest(
+            zaaktype=zaak1.zaaktype,
+            vertrouwelijkheidaanduiding=zaak1.vertrouwelijkheidaanduiding,
+        ):
+            url = reverse("substatus-list")
+
+            response = self.client.post(
+                url,
+                {
+                    "zaak": reverse(zaak1),
+                    "omschrijving": "test",
+                },
+            )
+
+            self.assertEqual(
+                response.status_code, status.HTTP_201_CREATED, response.data
+            )
+
+        for zaak in (zaak2, zaak3):
+            with self.subTest(
+                zaaktype=zaak.zaaktype,
+                vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding,
+            ):
+                url = reverse("substatus-list")
+
+                response = self.client.post(
+                    url,
+                    {
+                        "zaak": reverse(zaak),
+                        "omschrijving": "test",
+                    },
+                )
+
+                self.assertEqual(
+                    response.status_code, status.HTTP_403_FORBIDDEN, response.data
+                )
 
 
 class RolReadTests(JWTAuthMixin, APITestCase):
