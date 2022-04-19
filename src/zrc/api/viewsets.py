@@ -36,6 +36,7 @@ from zrc.datamodel.models import (
     Resultaat,
     Rol,
     Status,
+    SubStatus,
     Zaak,
     ZaakBesluit,
     ZaakContactMoment,
@@ -52,6 +53,7 @@ from .filters import (
     ResultaatFilter,
     RolFilter,
     StatusFilter,
+    SubStatusFilter,
     ZaakContactMomentFilter,
     ZaakFilter,
     ZaakInformatieObjectFilter,
@@ -79,6 +81,7 @@ from .serializers import (
     ResultaatSerializer,
     RolSerializer,
     StatusSerializer,
+    SubStatusSerializer,
     ZaakBesluitSerializer,
     ZaakContactMomentSerializer,
     ZaakEigenschapSerializer,
@@ -400,6 +403,54 @@ class StatusViewSet(
                 raise PermissionDenied(detail=msg)
 
         super().perform_create(serializer)
+
+
+class SubStatusViewSet(
+    NotificationCreateMixin,
+    AuditTrailCreateMixin,
+    CheckQueryParamsMixin,
+    ListFilterByAuthorizationsMixin,
+    mixins.CreateModelMixin,
+    viewsets.ReadOnlyModelViewSet,
+):
+    """
+    Opvragen en beheren van substatussen.
+
+    list:
+    Alle SUBSTATUSsen van STATUSsen opvragen.
+
+    Deze lijst kan gefilterd wordt met query-string parameters.
+
+    retrieve:
+    Een specifieke SUBSTATUS bij een STATUS van een ZAAK opvragen.
+
+    Een specifieke SUBSTATUS bij een STATUS van een ZAAK opvragen.
+
+    create:
+    Maak een SUBSTATUS aan bij een STATUS voor een ZAAK.
+
+    **Er wordt gevalideerd op**
+    - geldigheid URL naar de ZAAK
+    - geldigheid URL naar de STATUS
+    - STATUS moet horen bij de ZAAK
+
+    """
+
+    queryset = SubStatus.objects.select_related("zaak", "status").order_by("-tijdstip")
+    serializer_class = SubStatusSerializer
+    filterset_class = SubStatusFilter
+    lookup_field = "uuid"
+    pagination_class = PageNumberPagination
+
+    permission_classes = (ZaakRelatedAuthScopesRequired,)
+    permission_main_object = "zaak"
+    required_scopes = {
+        "list": SCOPE_ZAKEN_ALLES_LEZEN,
+        "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
+        "create": SCOPE_ZAKEN_CREATE | SCOPE_STATUSSEN_TOEVOEGEN,
+    }
+    notifications_kanaal = KANAAL_ZAKEN
+    audit = AUDIT_ZRC
 
 
 class ZaakObjectViewSet(

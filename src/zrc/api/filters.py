@@ -8,6 +8,7 @@ from zrc.datamodel.models import (
     Resultaat,
     Rol,
     Status,
+    SubStatus,
     Zaak,
     ZaakContactMoment,
     ZaakInformatieObject,
@@ -225,6 +226,15 @@ class StatusFilter(FilterSet):
     class Meta:
         model = Status
         fields = ("zaak", "statustype")
+
+
+class SubStatusFilter(FilterSet):
+    class Meta:
+        model = SubStatus
+        fields = (
+            "zaak",
+            "doelgroep",
+        )
 
 
 class ResultaatFilter(FilterSet):

@@ -6,6 +6,7 @@ from ..models import (
     Resultaat,
     Rol,
     Status,
+    SubStatus,
     Zaak,
     ZaakContactMoment,
     ZaakEigenschap,
@@ -16,6 +17,10 @@ from ..models import (
 
 class StatusInline(admin.TabularInline):
     model = Status
+
+
+class SubStatusInline(admin.TabularInline):
+    model = SubStatus
 
 
 class ZaakObjectInline(admin.TabularInline):
@@ -56,6 +61,7 @@ class ZaakAdmin(admin.ModelAdmin):
     list_display = ["identificatie"]
     inlines = [
         StatusInline,
+        SubStatusInline,
         ZaakObjectInline,
         ZaakInformatieObjectInline,
         KlantContactInline,
@@ -73,6 +79,20 @@ class StatusAdmin(admin.ModelAdmin):
     list_select_related = ["zaak"]
     raw_id_fields = ["zaak"]
     search_field = ("_etag",)
+
+
+@admin.register(SubStatus)
+class SubStatusAdmin(admin.ModelAdmin):
+    list_display = ["zaak", "status"]
+    list_select_related = ["zaak", "status"]
+    search_fields = (
+        "uuid",
+        "zaak__identificatie",
+        "zaak__uuid",
+        "status__uuid",
+    )
+    raw_id_fields = ["zaak", "status"]
+    viewset = "openzaak.components.zaken.api.viewsets.SubStatusViewSet"
 
 
 @admin.register(ZaakObject)
