@@ -1,6 +1,8 @@
 """
 Test that the caching mechanisms are in place.
 """
+from django.db import transaction
+
 from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -68,6 +70,10 @@ class ZaakCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
         zaak.calculate_etag_value()
         etag = zaak._etag
         assert etag
+
+        # reset the on_commit callbacks from the test setup
+        conn = transaction.get_connection()
+        conn.run_on_commit = []
 
         with capture_on_commit_callbacks(execute=True):
             # create new status
