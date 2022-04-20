@@ -1,8 +1,9 @@
 """
 Test that the caching mechanisms are in place.
 """
+from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from rest_framework import status
-from rest_framework.test import APITestCase, APITransactionTestCase
+from rest_framework.test import APITestCase
 from vng_api_common.tests import CacheMixin, JWTAuthMixin, reverse
 from vng_api_common.tests.schema import get_spec
 
@@ -59,29 +60,18 @@ class ZaakCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-
-class ZaakCacheTransactionTests(JWTAuthMixin, APITransactionTestCase):
-    heeft_alle_autorisaties = True
-
-    def setUp(self):
-        super().setUp()
-
-        self._create_credentials(
-            self.client_id,
-            self.secret,
-            self.heeft_alle_autorisaties,
-            self.max_vertrouwelijkheidaanduiding,
-        )
-
     def test_invalidate_new_status(self):
         """
         Status URL is part of the resource, so new status invalidates the ETag.
         """
-        zaak = ZaakFactory.create(with_etag=True)
+        zaak = ZaakFactory.create()
+        zaak.calculate_etag_value()
         etag = zaak._etag
+        assert etag
 
-        # create new status
-        StatusFactory.create(zaak=zaak)
+        with capture_on_commit_callbacks(execute=True):
+            # create new status
+            StatusFactory.create(zaak=zaak)
 
         response = self.client.get(
             reverse(zaak), HTTP_IF_NONE_MATCH=f'"{etag}"', **ZAAK_READ_KWARGS
