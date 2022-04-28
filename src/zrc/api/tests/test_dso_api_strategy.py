@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.test import override_settings
 from django.utils.translation import ugettext as _
 
@@ -34,7 +35,7 @@ class DSOApiStrategyTests(APITestCase):
     @override_settings(ROOT_URLCONF="zrc.api.tests.test_urls")
     def test_api_24_version_header(self):
         response = self.client.get("/test-view")
-        self.assertEqual(response["API-version"], "1.2.0")
+        self.assertEqual(response["API-version"], settings.API_VERSION)
 
 
 class DSOApi50Tests(APITestCase):
