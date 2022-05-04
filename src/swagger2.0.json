@@ -11,7 +11,7 @@
             "name": "EUPL 1.2",
             "url": "https://opensource.org/licenses/EUPL-1.2"
         },
-        "version": "1.1.1"
+        "version": "1.1.2"
     },
     "basePath": "/api/v1",
     "consumes": [
@@ -22,9 +22,9 @@
     ],
     "securityDefinitions": {
         "JWT-Claims": {
-            "bearerFormat": "JWT",
+            "type": "http",
             "scheme": "bearer",
-            "type": "http"
+            "bearerFormat": "JWT"
         }
     },
     "security": [
@@ -254,25 +254,7 @@
                 "operationId": "klantcontact_read",
                 "summary": "Een specifiek KLANTCONTACT bij een ZAAK opvragen.",
                 "description": "Een specifiek KLANTCONTACT bij een ZAAK opvragen.\n\n**DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -280,10 +262,6 @@
                             "$ref": "#/definitions/KlantContact"
                         },
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -572,13 +550,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -645,33 +623,11 @@
                 "operationId": "resultaat_headers",
                 "summary": "De headers voor een specifiek(e) RESULTAAT opvragen",
                 "description": "Vraag de headers op die je bij een GET request zou krijgen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -1289,13 +1245,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -1362,33 +1318,11 @@
                 "operationId": "rol_headers",
                 "summary": "De headers voor een specifiek(e) ROL opvragen",
                 "description": "Vraag de headers op die je bij een GET request zou krijgen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -1714,13 +1648,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -1787,33 +1721,11 @@
                 "operationId": "status_headers",
                 "summary": "De headers voor een specifiek(e) STATUS opvragen",
                 "description": "Vraag de headers op die je bij een GET request zou krijgen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -2031,25 +1943,7 @@
                 "operationId": "zaakcontactmoment_read",
                 "summary": "Een specifiek ZAAKCONTACTMOMENT opvragen.",
                 "description": "Een specifiek ZAAKCONTACTMOMENT opvragen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2057,10 +1951,6 @@
                             "$ref": "#/definitions/ZaakContactMoment"
                         },
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -2383,13 +2273,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -2456,33 +2346,11 @@
                 "operationId": "zaakinformatieobject_headers",
                 "summary": "De headers voor een specifiek(e) ZAAKINFORMATIEOBJECT opvragen",
                 "description": "Vraag de headers op die je bij een GET request zou krijgen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -3030,25 +2898,7 @@
                 "operationId": "zaakobject_read",
                 "summary": "Een specifiek ZAAKOBJECT opvragen.",
                 "description": "Een specifiek ZAAKOBJECT opvragen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -3056,10 +2906,6 @@
                             "$ref": "#/definitions/ZaakObject"
                         },
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -3304,25 +3150,7 @@
                 "operationId": "zaakverzoek_read",
                 "summary": "Een specifiek ZAAK-VERZOEK opvragen.",
                 "description": "Een specifiek ZAAK-VERZOEK opvragen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -3330,10 +3158,6 @@
                             "$ref": "#/definitions/ZaakVerzoek"
                         },
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -4087,13 +3911,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -4190,23 +4014,6 @@
                         "enum": [
                             "EPSG:4326"
                         ]
-                    },
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
                     }
                 ],
                 "responses": {
@@ -4219,10 +4026,6 @@
                                 "enum": [
                                     "EPSG:4326"
                                 ]
-                            },
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
                             },
                             "API-version": {
                                 "schema": {
@@ -4655,25 +4458,7 @@
                 "operationId": "audittrail_read",
                 "summary": "Een specifieke audit trail regel opvragen.",
                 "description": "Een specifieke audit trail regel opvragen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -4681,10 +4466,6 @@
                             "$ref": "#/definitions/AuditTrail"
                         },
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -4926,25 +4707,7 @@
                 "operationId": "zaakbesluit_read",
                 "summary": "Een specifiek ZAAKBESLUIT opvragen.",
                 "description": "Een specifiek ZAAKBESLUIT opvragen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -4952,10 +4715,6 @@
                             "$ref": "#/definitions/ZaakBesluit"
                         },
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -5276,13 +5035,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -5349,33 +5108,11 @@
                 "operationId": "zaakeigenschap_headers",
                 "summary": "De headers voor een specifiek(e) ZAAKEIGENSCHAP opvragen",
                 "description": "Vraag de headers op die je bij een GET request zou krijgen.",
-                "parameters": [
-                    {
-                        "name": "If-None-Match",
-                        "in": "header",
-                        "description": "Voer een voorwaardelijk verzoek uit. Deze header moet \u00e9\u00e9n of meerdere ETag-waardes bevatten van resources die de consumer gecached heeft. Indien de waarde van de ETag van de huidige resource voorkomt in deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) voor meer informatie.",
-                        "required": false,
-                        "type": "string",
-                        "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
-                            "oneValue": {
-                                "summary": "E\u00e9n ETag-waarde",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\""
-                            }
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "headers": {
-                            "ETag": {
-                                "description": "De ETag berekend op de response body JSON. Indien twee resources exact dezelfde ETag hebben, dan zijn deze resources identiek aan elkaar. Je kan de ETag gebruiken om caching te implementeren.",
-                                "type": "string"
-                            },
                             "API-version": {
                                 "schema": {
                                     "type": "string"
@@ -8541,7 +8278,7 @@
                 },
                 "bron": {
                     "title": "Bron",
-                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisaties API\n* `nrc` - Notificaties API\n* `zrc` - Zaken API\n* `ztc` - Catalogi API\n* `drc` - Documenten API\n* `brc` - Besluiten API\n* `cmc` - Contactmomenten API\n* `kc` - Klanten API",
+                    "description": "De naam van het component waar de wijziging in is gedaan.\n\nUitleg bij mogelijke waarden:\n\n* `ac` - Autorisaties API\n* `nrc` - Notificaties API\n* `zrc` - Zaken API\n* `ztc` - Catalogi API\n* `drc` - Documenten API\n* `brc` - Besluiten API\n* `cmc` - Contactmomenten API\n* `kc` - Klanten API\n* `vrc` - Verzoeken API",
                     "type": "string",
                     "enum": [
                         "ac",
@@ -8551,7 +8288,8 @@
                         "drc",
                         "brc",
                         "cmc",
-                        "kc"
+                        "kc",
+                        "vrc"
                     ]
                 },
                 "applicatieId": {
