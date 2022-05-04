@@ -93,7 +93,7 @@ from .validators import ZaakBesluitValidator
 logger = logging.getLogger(__name__)
 
 
-@conditional_retrieve()
+@conditional_retrieve(extra_depends_on={"status"})
 class ZaakViewSet(
     NotificationViewSetMixin,
     AuditTrailViewsetMixin,
