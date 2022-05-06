@@ -1,6 +1,6 @@
 {
   "name": "zrc",
-  "version": "1.0.2",
+  "version": "1.3.0-alpha5",
   "description": "zrc referentie implementatie API",
   "main": "src/index.js",
   "directories": {
