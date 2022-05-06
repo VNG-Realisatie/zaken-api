@@ -2,6 +2,12 @@
 Wijzigingen
 ===========
 
+1.1.2 (2022-05-06)
+==================
+
+* Removed incorrect ``ETag``/``If-None-Match`` header documentation from schema where these were not implemted (nor intended to be)
+* Fixed bug in ETag re-calculation for Zaak-resource in implementation
+
 1.1.1 (2021-06-11)
 ==================
 
