@@ -25,7 +25,7 @@ from zrc.datamodel.models import (
 from zrc.datamodel.tests.factories import ZaakFactory, ZaakObjectFactory
 
 OBJECT = "http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd"
-
+ZAAKOBJECTTYPE = 'http://testserver/api/v1/zaakobjecttypen/c340323d-31a5-46b4-93e8-fdc2d621be13'
 
 class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
     """
@@ -105,6 +105,8 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak, object=OBJECT, object_type=ZaakobjectTypes.besluit
         )
+        print(zaak.__dict__)
+        print(zaakobject.__dict__)
         url = get_operation_url("zaakobject_update", uuid=zaakobject.uuid)
         data = {"relatieomschrijving": "new"}
 

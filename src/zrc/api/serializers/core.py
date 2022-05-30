@@ -793,6 +793,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             "uuid",
             "zaak",
             "object",
+            "zaakobjecttype",
             "object_type",
             "object_type_overige",
             "object_type_overige_definitie",
@@ -805,6 +806,14 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             "object": {
                 "required": False,
                 "validators": [URLValidator(get_auth=get_auth), IsImmutableValidator()],
+            },
+            "zaakobjecttype": {
+                "validators": [
+                    IsImmutableValidator(),
+                    ResourceValidator(
+                        "ZaakObjectType", settings.ZTC_API_SPEC, get_auth=get_auth
+                    ),
+                ]
             },
             "object_type": {
                 "validators": [IsImmutableValidator()],
