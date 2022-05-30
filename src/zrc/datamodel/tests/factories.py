@@ -71,6 +71,7 @@ class ZaakEigenschapFactory(factory.django.DjangoModelFactory):
 class ZaakObjectFactory(factory.django.DjangoModelFactory):
     zaak = factory.SubFactory(ZaakFactory)
     object = factory.Faker("url")
+
     # Excluded: overige
     object_type = factory.fuzzy.FuzzyChoice(choices=list(ZaakobjectTypes.values)[:-1])
 

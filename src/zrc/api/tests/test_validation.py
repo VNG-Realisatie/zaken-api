@@ -8,7 +8,7 @@ import requests_mock
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.constants import VertrouwelijkheidsAanduiding
+from vng_api_common.constants import VertrouwelijkheidsAanduiding, ZaakobjectTypes
 from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
 from vng_api_common.validators import (
     IsImmutableValidator,
@@ -24,6 +24,7 @@ from zrc.tests.utils import ZAAK_WRITE_KWARGS, isodatetime
 
 from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from .mixins import ZaakInformatieObjectSyncMixin
+from ...datamodel.tests.factories import ZaakObjectFactory
 
 ZAAKTYPE = "https://example.com/foo/bar"
 ZAAKTYPE2 = "https://ztc.com/zaaktypen/1234"
@@ -35,6 +36,8 @@ INFORMATIEOBJECT_TYPE = (
     f"http://example.com/ztc/api/v1/informatieobjecttypen/{uuid.uuid4().hex}"
 )
 RESULTAATTYPE = f"https://ztc.com/resultaattypen/{uuid.uuid4().hex}"
+ZAAKOBJECTTYPE = f"http://example.com/ztc/api/v1/zaakobjecttypen/{uuid.uuid4().hex}"
+
 
 RESPONSES = {
     STATUSTYPE: {
@@ -1103,6 +1106,7 @@ class ZaakEigenschapValidationTests(JWTAuthMixin, APITestCase):
 
 class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
+    OBJECT = "http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd"
 
     @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
     @patch("vng_api_common.validators.fetcher")
@@ -1151,3 +1155,27 @@ class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
 
         validation_error = get_validation_errors(response, "object")
         self.assertEqual(validation_error["code"], "bad-url")
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    def test_zaakobjecttype_invalid_resource(self, *mocks):
+        list_url = reverse("zaakobject-list")
+        zaak = ZaakFactory.create()
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": self.OBJECT,
+            "objectType": ZaakobjectTypes.besluit,
+            "relatieomschrijving": "test",
+            "zaakobjecttype": ZAAKOBJECTTYPE,
+        }
+
+        responses = {ZAAKOBJECTTYPE: {"some": "incorrect property"}}
+
+        with mock_client(responses):
+            response = self.client.post(list_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, "resultaattype")
+        self.assertEqual(validation_error["code"], "invalid-resource")

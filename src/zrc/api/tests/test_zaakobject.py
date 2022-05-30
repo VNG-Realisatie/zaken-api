@@ -53,9 +53,6 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.json()
-        from pprint import pprint
-
-        pprint(data)
         self.assertEqual(
             data,
             {
@@ -89,7 +86,6 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(ZaakObject.objects.count(), 1)
 
         zaakobject = ZaakObject.objects.get()
-
         self.assertEqual(zaakobject.object, OBJECT)
 
     def test_create_zaakobject_fail_validation(self):
@@ -114,8 +110,7 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak, object=OBJECT, object_type=ZaakobjectTypes.besluit
         )
-        print(zaak.__dict__)
-        print(zaakobject.__dict__)
+
         url = get_operation_url("zaakobject_update", uuid=zaakobject.uuid)
         data = {"relatieomschrijving": "new"}
 
