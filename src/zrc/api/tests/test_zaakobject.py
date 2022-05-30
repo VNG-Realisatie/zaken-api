@@ -25,7 +25,10 @@ from zrc.datamodel.models import (
 from zrc.datamodel.tests.factories import ZaakFactory, ZaakObjectFactory
 
 OBJECT = "http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd"
-ZAAKOBJECTTYPE = 'http://testserver/api/v1/zaakobjecttypen/c340323d-31a5-46b4-93e8-fdc2d621be13'
+ZAAKOBJECTTYPE = (
+    "http://testserver/api/v1/zaakobjecttypen/c340323d-31a5-46b4-93e8-fdc2d621be13"
+)
+
 
 class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
     """
@@ -37,7 +40,10 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
     def test_read_zaakobject_without_identificatie(self):
         zaak = ZaakFactory.create()
         zaakobject = ZaakObjectFactory.create(
-            zaak=zaak, object=OBJECT, object_type=ZaakobjectTypes.besluit
+            zaak=zaak,
+            object=OBJECT,
+            object_type=ZaakobjectTypes.besluit,
+            zaakobjecttype=ZAAKOBJECTTYPE,
         )
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
         url = get_operation_url("zaakobject_read", uuid=zaakobject.uuid)
@@ -47,13 +53,16 @@ class ZaakObjectBaseTestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.json()
+        from pprint import pprint
 
+        pprint(data)
         self.assertEqual(
             data,
             {
                 "url": f"http://testserver{url}",
                 "uuid": str(zaakobject.uuid),
                 "zaak": f"http://testserver{zaak_url}",
+                "zaakobjecttype": ZAAKOBJECTTYPE,
                 "object": OBJECT,
                 "objectType": ZaakobjectTypes.besluit,
                 "objectTypeOverige": "",
@@ -1156,7 +1165,6 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     def test_read_zaakobject_overige(self):
-
         zaak = ZaakFactory.create()
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak, object="", object_type=ZaakobjectTypes.overige

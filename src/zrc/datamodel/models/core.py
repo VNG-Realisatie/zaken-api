@@ -856,6 +856,7 @@ class ZaakObject(ETagMixin, models.Model):
         _("zaakobjecttype"),
         max_length=1000,
         help_text=_("URL-referentie naar het ZAAKOBJECTTYPE (in de Catalogi API)."),
+        blank=True,
     )
     object = models.URLField(
         help_text="URL-referentie naar de resource die het OBJECT beschrijft.",
