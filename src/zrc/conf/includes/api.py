@@ -48,7 +48,7 @@ REFERENTIELIJSTEN_API_SPEC = (
 )
 
 ztc_repo = "vng-Realisatie/catalogi-api"
-ztc_commit = "b8cc38484ad862b9bbbf975e24718ede3f662e1e"
+ztc_commit = "e2e037d3b901d38c58b0e1339610347bf02279a5"
 ZTC_API_SPEC = f"https://raw.githubusercontent.com/{ztc_repo}/{ztc_commit}/src/openapi.yaml"  # noqa
 
 drc_repo = "vng-Realisatie/documenten-api"

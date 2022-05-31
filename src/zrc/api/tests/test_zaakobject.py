@@ -199,6 +199,7 @@ class ZaakObjectAdresTestCase(JWTAuthMixin, APITestCase):
                     "postcode": "",
                 },
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 
@@ -352,6 +353,7 @@ class ZaakObjectHuishoudenTestCase(JWTAuthMixin, APITestCase):
                         },
                     },
                 },
+                "zaakobjecttype": "",
                 "objectTypeOverigeDefinitie": None,
             },
         )
@@ -446,6 +448,7 @@ class ZaakObjectMedewerkerTestCase(JWTAuthMixin, APITestCase):
                     "voorvoegselAchternaam": "van",
                 },
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 
@@ -562,6 +565,7 @@ class ZaakObjectTerreinGebouwdObjectTestCase(JWTAuthMixin, APITestCase):
                     },
                 },
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 
@@ -664,6 +668,7 @@ class ZaakObjectWozObjectTestCase(JWTAuthMixin, APITestCase):
                     },
                 },
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 
@@ -811,6 +816,7 @@ class ZaakObjectWozDeelobjectTestCase(JWTAuthMixin, APITestCase):
                     },
                 },
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 
@@ -920,6 +926,7 @@ class ZaakObjectWozWaardeTestCase(JWTAuthMixin, APITestCase):
                     },
                 },
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 
@@ -1053,6 +1060,7 @@ class ZaakObjectZakelijkRechtTestCase(JWTAuthMixin, APITestCase):
                     },
                 },
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 
@@ -1189,6 +1197,7 @@ class ZaakObjectOverigeTestCase(JWTAuthMixin, APITestCase):
                 "objectTypeOverige": "",
                 "objectIdentificatie": {"overigeData": {"someField": "some value"}},
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 

@@ -827,6 +827,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
                 skip_for_updates=True,
             ),
             ObjectTypeOverigeDefinitieValidator(),
+            CorrectZaaktypeValidator("zaakobjecttype"),
         ]
 
     def __init__(self, *args, **kwargs):

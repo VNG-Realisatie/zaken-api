@@ -38,7 +38,6 @@ INFORMATIEOBJECT_TYPE = (
 RESULTAATTYPE = f"https://ztc.com/resultaattypen/{uuid.uuid4().hex}"
 ZAAKOBJECTTYPE = f"http://example.com/ztc/api/v1/zaakobjecttypen/{uuid.uuid4().hex}"
 
-
 RESPONSES = {
     STATUSTYPE: {
         "url": STATUSTYPE,
@@ -60,7 +59,6 @@ RESPONSES = {
 
 
 class ZaakValidationTests(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
 
@@ -987,7 +985,6 @@ class ResultaatValidationTests(JWTAuthMixin, APITestCase):
 
 
 class KlantContactValidationTests(JWTAuthMixin, APITestCase):
-
     heeft_alle_autorisaties = True
 
     @freeze_time("2019-07-22T12:00:00")
@@ -1177,5 +1174,48 @@ class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        validation_error = get_validation_errors(response, "resultaattype")
+        validation_error = get_validation_errors(response, "zaakobjecttype")
         self.assertEqual(validation_error["code"], "invalid-resource")
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    def test_not_allowed_to_change_zaakobjecttype(self):
+        zaak = ZaakFactory.create()
+        zaakobject = ZaakObjectFactory.create(
+            zaak=zaak,
+            zaakobjecttype=ZAAKOBJECTTYPE,
+        )
+        url = reverse(zaakobject)
+
+        response = self.client.patch(
+            url, {"zaakobjecttype": "https://ander.zaakobjecttype.nl/foo/bar"}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        validation_error = get_validation_errors(response, "zaakobjecttype")
+        self.assertEqual(validation_error["code"], IsImmutableValidator.code)
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_zaakobjecttype_incorrect_zaaktype(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        list_url = reverse("zaakobject-list")
+
+        responses = {ZAAKOBJECTTYPE: {"url": ZAAKOBJECTTYPE, "zaaktype": ZAAKTYPE2}}
+
+        with mock_client(responses):
+            response = self.client.post(
+                list_url,
+                {
+                    "zaak": zaak_url,
+                    "zaakobjecttype": ZAAKOBJECTTYPE,
+                    "object": self.OBJECT,
+                    "objectType": ZaakobjectTypes.besluit,
+                },
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        validation_error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(validation_error["code"], "zaaktype-mismatch")
