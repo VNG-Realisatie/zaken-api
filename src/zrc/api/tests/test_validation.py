@@ -22,9 +22,9 @@ from zrc.datamodel.models import ZaakInformatieObject
 from zrc.datamodel.tests.factories import ResultaatFactory, StatusFactory, ZaakFactory
 from zrc.tests.utils import ZAAK_WRITE_KWARGS, isodatetime
 
+from ...datamodel.tests.factories import ZaakObjectFactory
 from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from .mixins import ZaakInformatieObjectSyncMixin
-from ...datamodel.tests.factories import ZaakObjectFactory
 
 ZAAKTYPE = "https://example.com/foo/bar"
 ZAAKTYPE2 = "https://ztc.com/zaaktypen/1234"
