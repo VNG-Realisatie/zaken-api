@@ -15,6 +15,23 @@ from zrc.datamodel.models import (
     ZaakVerzoek,
 )
 
+from .inclusion import get_include_options_for_serializer
+from .serializers import ZaakSerializer
+
+
+class IncludeFilter(filters.BaseInFilter, filters.ChoiceFilter):
+    def __init__(self, *args, **kwargs):
+        serializer_class = kwargs.pop("serializer_class")
+
+        kwargs.setdefault(
+            "choices", get_include_options_for_serializer(serializer_class)
+        )
+
+        super().__init__(*args, **kwargs)
+
+    def filter(self, qs, value):
+        return qs
+
 
 class MaximaleVertrouwelijkheidaanduidingFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
@@ -118,6 +135,13 @@ class ZaakFilter(FilterSet):
             "archiefactiedatum",
         ),
         help_text="Het veld waarop de resultaten geordend worden.",
+    )
+    include = IncludeFilter(
+        serializer_class=ZaakSerializer,
+        help_text=(
+            "Sluit de gespecifieerde gerelateerde resources in in het antwoord. "
+            "Indien de waarde '*' opgegeven is, dan worden alle mogelijke inclusions opgenomen."
+        ),
     )
 
     class Meta:

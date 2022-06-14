@@ -4022,6 +4022,35 @@
                         ]
                     },
                     {
+                        "name": "include",
+                        "in": "query",
+                        "description": "Sluit de gespecifieerde gerelateerde resources in in het antwoord. Indien de waarde '*' opgegeven is, dan worden alle mogelijke inclusions opgenomen.",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "zaaktype",
+                            "hoofdzaak",
+                            "deelzaken",
+                            "eigenschappen",
+                            "status",
+                            "resultaat",
+                            "hoofdzaak.zaaktype",
+                            "hoofdzaak.status",
+                            "hoofdzaak.status.statustype",
+                            "hoofdzaak.resultaat",
+                            "hoofdzaak.resultaat.resultaattype",
+                            "deelzaken.zaaktype",
+                            "deelzaken.status",
+                            "deelzaken.status.statustype",
+                            "deelzaken.resultaat",
+                            "deelzaken.resultaat.resultaattype",
+                            "eigenschappen.eigenschap",
+                            "status.statustype",
+                            "resultaat.resultaattype",
+                            "*"
+                        ]
+                    },
+                    {
                         "name": "page",
                         "in": "query",
                         "description": "Een pagina binnen de gepagineerde set resultaten.",
@@ -4055,7 +4084,8 @@
                         "schema": {
                             "required": [
                                 "count",
-                                "results"
+                                "results",
+                                "inclusions"
                             ],
                             "type": "object",
                             "properties": {
@@ -4076,6 +4106,75 @@
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/definitions/Zaak"
+                                    }
+                                },
+                                "inclusions": {
+                                    "type": "object",
+                                    "properties": {
+                                        "catalogi:zaaktype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ZaakType"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "zaken:zaak": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Zaak"
+                                            }
+                                        },
+                                        "zaken:zaakeigenschap": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ZaakEigenschap"
+                                            }
+                                        },
+                                        "zaken:status": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "zaken:resultaat": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resultaat"
+                                            }
+                                        },
+                                        "catalogi:statustype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/StatusType"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "catalogi:resultaattype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ResultaatType"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "catalogi:eigenschap": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/Eigenschap"
+                                                    }
+                                                ]
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -4320,7 +4419,8 @@
                         "schema": {
                             "required": [
                                 "count",
-                                "results"
+                                "results",
+                                "inclusions"
                             ],
                             "type": "object",
                             "properties": {
@@ -4341,6 +4441,75 @@
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/definitions/Zaak"
+                                    }
+                                },
+                                "inclusions": {
+                                    "type": "object",
+                                    "properties": {
+                                        "catalogi:zaaktype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ZaakType"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "zaken:zaak": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Zaak"
+                                            }
+                                        },
+                                        "zaken:zaakeigenschap": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ZaakEigenschap"
+                                            }
+                                        },
+                                        "zaken:status": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "zaken:resultaat": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resultaat"
+                                            }
+                                        },
+                                        "catalogi:statustype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/StatusType"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "catalogi:resultaattype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ResultaatType"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "catalogi:eigenschap": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/Eigenschap"
+                                                    }
+                                                ]
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -9500,6 +9669,33 @@
                         "-publicatiedatum",
                         "archiefactiedatum",
                         "-archiefactiedatum"
+                    ]
+                },
+                "include": {
+                    "title": "Include",
+                    "description": "Sluit de gespecifieerde gerelateerde resources in in het antwoord. Indien de waarde '*' opgegeven is, dan worden alle mogelijke inclusions opgenomen.\n\nUitleg bij mogelijke waarden:\n\n* `zaaktype` - zaaktype\n* `hoofdzaak` - hoofdzaak\n* `deelzaken` - deelzaken\n* `eigenschappen` - eigenschappen\n* `status` - status\n* `resultaat` - resultaat\n* `hoofdzaak.zaaktype` - hoofdzaak.zaaktype\n* `hoofdzaak.status` - hoofdzaak.status\n* `hoofdzaak.status.statustype` - hoofdzaak.status.statustype\n* `hoofdzaak.resultaat` - hoofdzaak.resultaat\n* `hoofdzaak.resultaat.resultaattype` - hoofdzaak.resultaat.resultaattype\n* `deelzaken.zaaktype` - deelzaken.zaaktype\n* `deelzaken.status` - deelzaken.status\n* `deelzaken.status.statustype` - deelzaken.status.statustype\n* `deelzaken.resultaat` - deelzaken.resultaat\n* `deelzaken.resultaat.resultaattype` - deelzaken.resultaat.resultaattype\n* `eigenschappen.eigenschap` - eigenschappen.eigenschap\n* `status.statustype` - status.statustype\n* `resultaat.resultaattype` - resultaat.resultaattype\n* `*` - *",
+                    "type": "string",
+                    "enum": [
+                        "zaaktype",
+                        "hoofdzaak",
+                        "deelzaken",
+                        "eigenschappen",
+                        "status",
+                        "resultaat",
+                        "hoofdzaak.zaaktype",
+                        "hoofdzaak.status",
+                        "hoofdzaak.status.statustype",
+                        "hoofdzaak.resultaat",
+                        "hoofdzaak.resultaat.resultaattype",
+                        "deelzaken.zaaktype",
+                        "deelzaken.status",
+                        "deelzaken.status.statustype",
+                        "deelzaken.resultaat",
+                        "deelzaken.resultaat.resultaattype",
+                        "eigenschappen.eigenschap",
+                        "status.statustype",
+                        "resultaat.resultaattype",
+                        "*"
                     ]
                 }
             }

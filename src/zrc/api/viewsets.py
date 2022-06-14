@@ -29,6 +29,7 @@ from vng_api_common.search import SearchMixin
 from vng_api_common.utils import lookup_kwargs_to_filters
 from vng_api_common.viewsets import CheckQueryParamsMixin, NestedViewSetMixin
 
+from zrc.api.inclusion import InclusionJSONRenderer
 from zrc.datamodel.models import (
     KlantContact,
     Resultaat,
@@ -219,6 +220,7 @@ class ZaakViewSet(
     filterset_class = ZaakFilter
     lookup_field = "uuid"
     pagination_class = PageNumberPagination
+    renderer_classes = (InclusionJSONRenderer,)
 
     permission_classes = (ZaakAuthScopesRequired,)
     required_scopes = {
@@ -232,6 +234,15 @@ class ZaakViewSet(
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
+    def include_allowed(self):
+        return self.action in ["list", "_zoek"]
+
+    def get_requested_inclusions(self, request):
+        # Pull include parameter from request body in case of _zoek operation
+        if request.method == "POST":
+            return ",".join(request.data.get("include", []))
+        return request.GET.get("include")
 
     @action(methods=("post",), detail=False)
     def _zoek(self, request, *args, **kwargs):

@@ -3206,6 +3206,35 @@ paths:
           - -publicatiedatum
           - archiefactiedatum
           - -archiefactiedatum
+      - name: include
+        in: query
+        description: Sluit de gespecifieerde gerelateerde resources in in het antwoord.
+          Indien de waarde '*' opgegeven is, dan worden alle mogelijke inclusions
+          opgenomen.
+        required: false
+        schema:
+          type: string
+          enum:
+          - zaaktype
+          - hoofdzaak
+          - deelzaken
+          - eigenschappen
+          - status
+          - resultaat
+          - hoofdzaak.zaaktype
+          - hoofdzaak.status
+          - hoofdzaak.status.statustype
+          - hoofdzaak.resultaat
+          - hoofdzaak.resultaat.resultaattype
+          - deelzaken.zaaktype
+          - deelzaken.status
+          - deelzaken.status.statustype
+          - deelzaken.resultaat
+          - deelzaken.resultaat.resultaattype
+          - eigenschappen.eigenschap
+          - status.statustype
+          - resultaat.resultaattype
+          - '*'
       - name: page
         in: query
         description: Een pagina binnen de gepagineerde set resultaten.
@@ -3255,6 +3284,7 @@ paths:
                 required:
                 - count
                 - results
+                - inclusions
                 type: object
                 properties:
                   count:
@@ -3271,6 +3301,45 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Zaak'
+                  inclusions:
+                    type: object
+                    properties:
+                      catalogi:zaaktype:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ZaakType
+                      zaken:zaak:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Zaak'
+                      zaken:zaakeigenschap:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ZaakEigenschap'
+                      zaken:status:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Status'
+                      zaken:resultaat:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Resultaat'
+                      catalogi:statustype:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/StatusType
+                      catalogi:resultaattype:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ResultaatType
+                      catalogi:eigenschap:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/Eigenschap
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -3470,6 +3539,7 @@ paths:
                 required:
                 - count
                 - results
+                - inclusions
                 type: object
                 properties:
                   count:
@@ -3486,6 +3556,45 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Zaak'
+                  inclusions:
+                    type: object
+                    properties:
+                      catalogi:zaaktype:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ZaakType
+                      zaken:zaak:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Zaak'
+                      zaken:zaakeigenschap:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ZaakEigenschap'
+                      zaken:status:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Status'
+                      zaken:resultaat:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Resultaat'
+                      catalogi:statustype:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/StatusType
+                      catalogi:resultaattype:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ResultaatType
+                      catalogi:eigenschap:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/Eigenschap
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -8083,6 +8192,77 @@ components:
           - -publicatiedatum
           - archiefactiedatum
           - -archiefactiedatum
+        include:
+          title: Include
+          description: 'Sluit de gespecifieerde gerelateerde resources in in het antwoord.
+            Indien de waarde ''*'' opgegeven is, dan worden alle mogelijke inclusions
+            opgenomen.
+
+
+            Uitleg bij mogelijke waarden:
+
+
+            * `zaaktype` - zaaktype
+
+            * `hoofdzaak` - hoofdzaak
+
+            * `deelzaken` - deelzaken
+
+            * `eigenschappen` - eigenschappen
+
+            * `status` - status
+
+            * `resultaat` - resultaat
+
+            * `hoofdzaak.zaaktype` - hoofdzaak.zaaktype
+
+            * `hoofdzaak.status` - hoofdzaak.status
+
+            * `hoofdzaak.status.statustype` - hoofdzaak.status.statustype
+
+            * `hoofdzaak.resultaat` - hoofdzaak.resultaat
+
+            * `hoofdzaak.resultaat.resultaattype` - hoofdzaak.resultaat.resultaattype
+
+            * `deelzaken.zaaktype` - deelzaken.zaaktype
+
+            * `deelzaken.status` - deelzaken.status
+
+            * `deelzaken.status.statustype` - deelzaken.status.statustype
+
+            * `deelzaken.resultaat` - deelzaken.resultaat
+
+            * `deelzaken.resultaat.resultaattype` - deelzaken.resultaat.resultaattype
+
+            * `eigenschappen.eigenschap` - eigenschappen.eigenschap
+
+            * `status.statustype` - status.statustype
+
+            * `resultaat.resultaattype` - resultaat.resultaattype
+
+            * `*` - *'
+          type: string
+          enum:
+          - zaaktype
+          - hoofdzaak
+          - deelzaken
+          - eigenschappen
+          - status
+          - resultaat
+          - hoofdzaak.zaaktype
+          - hoofdzaak.status
+          - hoofdzaak.status.statustype
+          - hoofdzaak.resultaat
+          - hoofdzaak.resultaat.resultaattype
+          - deelzaken.zaaktype
+          - deelzaken.status
+          - deelzaken.status.statustype
+          - deelzaken.resultaat
+          - deelzaken.resultaat.resultaattype
+          - eigenschappen.eigenschap
+          - status.statustype
+          - resultaat.resultaattype
+          - '*'
     Wijzigingen:
       type: object
       properties:

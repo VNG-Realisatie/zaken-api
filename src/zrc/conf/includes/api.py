@@ -30,6 +30,7 @@ SWAGGER_SETTINGS.update(
         },
         "DEFAULT_FIELD_INSPECTORS": (
             "vng_api_common.inspectors.geojson.GeometryFieldInspector",
+            "zrc.utils.inspectors.IncludeSerializerInspector",
         )
         + BASE_SWAGGER_SETTINGS["DEFAULT_FIELD_INSPECTORS"],
         "DEFAULT_FILTER_INSPECTORS": (
@@ -80,3 +81,9 @@ VRC_API_SPEC = f"https://raw.githubusercontent.com/{vrc_repo}/{vrc_commit}/src/o
 SPEC_CACHE_TIMEOUT = 60 * 60 * 24  # 24 hours
 
 NOTIFICATIONS_KANAAL = "zaken"
+
+COMPONENT_TO_API_SPEC_MAPPING = {
+    "catalogi": ZTC_API_SPEC,
+    "documenten": DRC_API_SPEC,
+    "zaken": ZRC_API_SPEC,
+}
