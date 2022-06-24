@@ -10,17 +10,24 @@ from vng_api_common.tests import JWTAuthMixin, get_operation_url, reverse
 
 from zrc.datamodel.tests.factories import (
     ResultaatFactory,
+    RolFactory,
     StatusFactory,
     ZaakEigenschapFactory,
     ZaakFactory,
+    ZaakInformatieObjectFactory,
+    ZaakObjectFactory,
 )
 from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
 from zrc.tests.utils import ZAAK_READ_KWARGS, ZAAK_WRITE_KWARGS
 
+from .mixins import ZaakInformatieObjectSyncMixin
 from .utils import (
     get_catalogus_response,
     get_eigenschap_response,
+    get_enkelvoudiginformatieobject_response,
+    get_informatieobjecttype_response,
     get_resultaattype_response,
+    get_roltype_response,
     get_statustype_response,
     get_zaaktype_response,
 )
@@ -32,10 +39,16 @@ CATALOGUS = "https://externe.catalogus.nl/api/v1/catalogussen/1c8e36be-338c-4c07
 RESULTAATTYPE = "https://externe.catalogus.nl/api/v1/resultaattypen/309b0a3c-f198-4f09-bad9-d804486d6e02"
 STATUSTYPE = "https://externe.catalogus.nl/api/v1/statustypen/f3663a5d-d395-42c9-87db-5512a7a4ad08"
 EIGENSCHAP = "https://externe.catalogus.nl/api/v1/eigenschappen/e02d9200-a891-45f9-9d29-93cc5e809db3"
+ROLTYPE = (
+    "https://externe.catalogus.nl/api/v1/roltypen/4bcc973e-0356-4e3f-8192-95d2fde3ba4d"
+)
+INFORMATIEOBJECTTYPE = "https://externe.catalogus.nl/api/v1/informatieobjecttype/526965c5-0039-4462-84b7-560451512a5c"
+
+INFORMATIEOBJECT = "https://externe.documenten.nl/api/v1/enkelvoudiginformatieobjecten/2174bd14-3d1f-488b-8f5c-18113fb5ff22"
 
 
 @tag("inclusions")
-class ZakenIncludeTests(JWTAuthMixin, APITestCase):
+class ZakenIncludeTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
     maxDiff = None
 
@@ -179,6 +192,17 @@ class ZakenIncludeTests(JWTAuthMixin, APITestCase):
             uuid="bedc3f70-bcb9-4ee7-b3c8-1782c3dd8707",
         )
         eigenschap = ZaakEigenschapFactory(zaak=zaak, eigenschap=EIGENSCHAP)
+        rol = RolFactory(
+            zaak=zaak,
+            roltype=ROLTYPE,
+        )
+        zaakobject = ZaakObjectFactory(
+            zaak=zaak,
+        )
+        zaakinformatieobject = ZaakInformatieObjectFactory(
+            zaak=zaak,
+            informatieobject=INFORMATIEOBJECT,
+        )
 
         url = reverse("zaak-list")
 
@@ -195,18 +219,33 @@ class ZakenIncludeTests(JWTAuthMixin, APITestCase):
         zaakeigenschap_data = self.client.get(
             reverse(eigenschap, kwargs={"zaak_uuid": zaak.uuid})
         ).json()
+        zaakobject_data = self.client.get(reverse(zaakobject)).json()
+        zaakinformatieobject_data = self.client.get(
+            reverse(zaakinformatieobject)
+        ).json()
+        rol_data = self.client.get(reverse(rol)).json()
 
         # catalogus_data = get_catalogus_response(CATALOGUS, ZAAKTYPE)
         zaaktype_data = get_zaaktype_response(CATALOGUS, ZAAKTYPE)
         zaak_resultaattype_data = get_resultaattype_response(CATALOGUS, RESULTAATTYPE)
         zaak_statustype_data = get_statustype_response(CATALOGUS, STATUSTYPE)
         zaak_eigenschap_data = get_eigenschap_response(CATALOGUS, EIGENSCHAP)
+        roltype_data = get_roltype_response(CATALOGUS, ROLTYPE)
+        eio_data = get_enkelvoudiginformatieobject_response(
+            INFORMATIEOBJECTTYPE, INFORMATIEOBJECT
+        )
+        informatieobjecttype_data = get_informatieobjecttype_response(
+            CATALOGUS, INFORMATIEOBJECTTYPE
+        )
 
         with requests_mock.Mocker() as m:
             m.get(ZAAKTYPE, json=zaaktype_data)
             m.get(STATUSTYPE, json=zaak_statustype_data)
             m.get(RESULTAATTYPE, json=zaak_resultaattype_data)
             m.get(EIGENSCHAP, json=zaak_eigenschap_data)
+            m.get(ROLTYPE, json=roltype_data)
+            m.get(INFORMATIEOBJECT, json=eio_data)
+            m.get(INFORMATIEOBJECTTYPE, json=informatieobjecttype_data)
             response = self.client.get(url, {"include": "*"}, **ZAAK_READ_KWARGS)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -222,10 +261,16 @@ class ZakenIncludeTests(JWTAuthMixin, APITestCase):
                 zaakeigenschap_data,
                 hoofdzaak_zaakeigenschap_data,
             ],
+            "zaken:zaakobject": [zaakobject_data],
+            "zaken:rol": [rol_data],
+            "zaken:zaakinformatieobject": [zaakinformatieobject_data],
             "catalogi:zaaktype": [zaaktype_data],
             "catalogi:statustype": [zaak_statustype_data],
+            "catalogi:informatieobjecttype": [informatieobjecttype_data],
+            "catalogi:roltype": [roltype_data],
             "catalogi:resultaattype": [zaak_resultaattype_data],
             "catalogi:eigenschap": [zaak_eigenschap_data],
+            "documenten:enkelvoudiginformatieobject": [eio_data],
         }
 
         self.assertEqual(data["results"], [zaak_data, hoofdzaak_data])

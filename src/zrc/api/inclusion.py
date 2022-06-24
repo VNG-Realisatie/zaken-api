@@ -1,16 +1,11 @@
-from typing import List, Type
+from typing import List, Optional, Type
 
 from django.conf import settings
 from django.utils.module_loading import import_string
 
 import requests
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
-from rest_framework.serializers import (
-    BaseSerializer,
-    HyperlinkedRelatedField,
-    Serializer,
-    URLField,
-)
+from rest_framework.serializers import BaseSerializer, Serializer, URLField
 from rest_framework_inclusions.core import InclusionLoader as _InclusionLoader, sort_key
 from rest_framework_inclusions.renderer import (
     InclusionJSONRenderer as _InclusionJSONRenderer,
@@ -113,10 +108,7 @@ class InclusionLoader(_InclusionLoader):
             if self._has_been_seen_external(value):
                 return
 
-            try:
-                yield getattr(instance, field.field_name)  # ._initial_data
-            except requests.RequestException:  # Something failed during fetching, ignore this instance
-                return []
+            yield value
         else:
             for entry in self._primary_key_related_field_inclusions(
                 path, field, instance, inclusion_serializer
@@ -181,7 +173,7 @@ def get_include_options_for_serializer(serializer_class: Serializer) -> List[tup
 
 
 def external_serializer_factory(
-    app_label: str, model_name: str
+    app_label: str, model_name: str, fields: Optional[dict] = None
 ) -> Type[BaseSerializer]:
     """
     Create a custom serializer that simply retrieves external resources and returns that
@@ -209,7 +201,21 @@ def external_serializer_factory(
             "to_representation": lambda self, url: fetch_object(
                 model_name.lower(), url
             ),
-            "fields": {},  # Do not attempt to further include subresources from external resources
+            # Do not attempt to further include subresources from external resources by default
+            "fields": {},
         },
     )
+    if fields:
+        for name, field in fields.items():
+            field.bind(name, ExternalSerializer)
+        ExternalSerializer.fields = fields
+
     return ExternalSerializer
+
+
+class InclusionsURLField(URLField):
+    def get_attribute(self, instance):
+        from zrc.api.validators import fetch_object
+
+        remote_object = fetch_object(self.source, instance)
+        return remote_object[self.source]

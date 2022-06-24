@@ -62,7 +62,7 @@ from zrc.sync.signals import SyncError
 from zrc.utils.exceptions import DetermineProcessEndDateException
 
 from ..auth import get_auth
-from ..inclusion import external_serializer_factory
+from ..inclusion import InclusionsURLField, external_serializer_factory
 from ..validators import (
     CorrectZaaktypeValidator,
     DateNotInFutureValidator,
@@ -1144,6 +1144,54 @@ class RolSerializer(PolymorphicSerializer):
             ", vanuit het belang van BETROKKENE in haar ROL bij een ZAAK."
         ),
     )
+
+    inclusion_serializers = {
+        "zaaktype": external_serializer_factory("catalogi", "ZaakType"),
+        "hoofdzaak": "zrc.api.serializers.ZaakSerializer",
+        "deelzaken": "zrc.api.serializers.ZaakSerializer",
+        "eigenschappen": "zrc.api.serializers.ZaakEigenschapSerializer",
+        "status": "zrc.api.serializers.StatusSerializer",
+        "resultaat": "zrc.api.serializers.ResultaatSerializer",
+        "hoofdzaak.zaaktype": external_serializer_factory("catalogi", "ZaakType"),
+        "hoofdzaak.status": "zrc.api.serializers.StatusSerializer",
+        "hoofdzaak.status.statustype": external_serializer_factory(
+            "catalogi", "StatusType"
+        ),
+        "hoofdzaak.resultaat": "zrc.api.serializers.ResultaatSerializer",
+        "hoofdzaak.resultaat.resultaattype": external_serializer_factory(
+            "catalogi", "ResultaatType"
+        ),
+        "deelzaken.zaaktype": external_serializer_factory("catalogi", "ZaakType"),
+        "deelzaken.status": "zrc.api.serializers.StatusSerializer",
+        "deelzaken.status.statustype": external_serializer_factory(
+            "catalogi", "StatusType"
+        ),
+        "deelzaken.resultaat": "zrc.api.serializers.ResultaatSerializer",
+        "deelzaken.resultaat.resultaattype": external_serializer_factory(
+            "catalogi", "ResultaatType"
+        ),
+        "eigenschappen.eigenschap": external_serializer_factory(
+            "catalogi", "Eigenschap"
+        ),
+        "status.statustype": external_serializer_factory("catalogi", "StatusType"),
+        "resultaat.resultaattype": external_serializer_factory(
+            "catalogi", "ResultaatType"
+        ),
+        "rollen": "zrc.api.serializers.RolSerializer",
+        "zaakinformatieobjecten": "zrc.api.serializers.ZaakInformatieObjectSerializer",
+        "zaakobjecten": "zrc.api.serializers.ZaakObjectSerializer",
+        "rollen.roltype": external_serializer_factory("catalogi", "RolType"),
+        "zaakinformatieobjecten.informatieobject": external_serializer_factory(
+            "documenten",
+            "EnkelvoudigInformatieObject",
+            fields={
+                "informatieobjecttype": InclusionsURLField(),
+            },
+        ),
+        "zaakinformatieobjecten.informatieobject.informatieobjecttype": external_serializer_factory(
+            "catalogi", "InformatieObjectType"
+        ),
+    }
 
     class Meta:
         model = Rol

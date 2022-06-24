@@ -53,6 +53,26 @@ def get_zaaktype_response(catalogus: str, zaaktype: str, **overrides) -> dict:
     }
 
 
+def get_informatieobjecttype_response(
+    catalogus: str, informatieobjecttype: str, **overrides
+) -> dict:
+    return {
+        "url": informatieobjecttype,
+        "catalogus": catalogus,
+        **overrides,
+    }
+
+
+def get_enkelvoudiginformatieobject_response(
+    informatieobjecttype: str, eio: str, **overrides
+) -> dict:
+    return {
+        "url": eio,
+        "informatieobjecttype": informatieobjecttype,
+        **overrides,
+    }
+
+
 def get_catalogus_response(catalogus: str, zaaktype: str) -> dict:
     return {
         "url": catalogus,
