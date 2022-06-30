@@ -238,7 +238,6 @@ class ZaakViewSet(
         """
         search_input = self.get_search_input()
         queryset = self.filter_queryset(self.get_queryset())
-
         for name, value in search_input.items():
             if name == "zaakgeometrie":
                 queryset = queryset.filter(zaakgeometrie__within=value["within"])
