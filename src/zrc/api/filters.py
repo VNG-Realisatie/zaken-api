@@ -150,6 +150,10 @@ class ZaakFilter(FilterSet):
             "archiefactiedatum": ["exact", "lt", "gt"],
             "archiefstatus": ["exact", "in"],
             "startdatum": ["exact", "gt", "gte", "lt", "lte"],
+            "registratiedatum": ["exact", "gt", "gte", "lt", "lte"],
+            "einddatum": ["exact", "gt", "gte", "lt", "lte"],
+            "einddatum_gepland": ["exact", "gt", "gte", "lt", "lte"],
+            "uiterlijke_einddatum_afdoening": ["exact", "gt", "gte", "lt", "lte"],
             # filters for werkvoorraad
             "rol__betrokkene_type": ["exact"],
             "rol__betrokkene": ["exact"],
