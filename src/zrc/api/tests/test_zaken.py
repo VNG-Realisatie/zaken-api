@@ -1068,18 +1068,8 @@ class ZakenFilterTests(JWTAuthMixin, APITestCase):
                     {f"{convert_to_camelcase(filter_to_test)}__lt": "2019-02-01"},
                     **ZAAK_READ_KWARGS,
                 )
-                response_gte = self.client.get(
-                    url,
-                    {f"{convert_to_camelcase(filter_to_test)}__gte": "2019-03-01"},
-                    **ZAAK_READ_KWARGS,
-                )
-                response_lte = self.client.get(
-                    url,
-                    {f"{convert_to_camelcase(filter_to_test)}__lte": "2019-01-01"},
-                    **ZAAK_READ_KWARGS,
-                )
 
-                for response in [response_gt, response_lt, response_gte, response_lte]:
+                for response in [response_gt, response_lt]:
                     self.assertEqual(response.status_code, status.HTTP_200_OK)
                     self.assertEqual(response.data["count"], 1)
 
@@ -1088,12 +1078,6 @@ class ZakenFilterTests(JWTAuthMixin, APITestCase):
                 )
                 self.assertEqual(
                     response_lt.data["results"][0][filter_to_test], "2019-01-01"
-                )
-                self.assertEqual(
-                    response_gte.data["results"][0][filter_to_test], "2019-03-01"
-                )
-                self.assertEqual(
-                    response_lte.data["results"][0][filter_to_test], "2019-01-01"
                 )
 
     def test_rol_nnp_id(self):
