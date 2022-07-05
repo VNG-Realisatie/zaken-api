@@ -244,10 +244,7 @@ Uitleg bij mogelijke waarden:
 | deelzaken | URL-referenties naar deel ZAAKen. | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 | relevanteAndereZaken | Een lijst van relevante andere zaken. | array | nee | C​R​U​D |
 | eigenschappen |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
-| rollen |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 | status | Indien geen status bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
-| zaakinformatieobjecten |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
-| zaakobjecten |  | array | nee | ~~C~~​R​~~U~~​~~D~~ |
 | kenmerken | Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`. | array | nee | C​R​U​D |
 | archiefnominatie | Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.
 
@@ -266,9 +263,6 @@ Uitleg bij mogelijke waarden:
 | archiefactiedatum | De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan deze ZAAK indien nog leeg. | string | nee | C​R​U​D |
 | resultaat | URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde &#39;null&#39; | string | nee | ~~C~~​R​~~U~~​~~D~~ |
 | opdrachtgevendeOrganisatie | De krachtens publiekrecht ingestelde rechtspersoon dan wel ander niet-natuurlijk persoon waarbinnen het (bestuurs)orgaan zetelt dat opdracht heeft gegeven om taken uit te voeren waaraan de zaak invulling geeft. | string | nee | C​R​U​D |
-| processobjectaard | Omschrijving van het object, subject of gebeurtenis waarop, vanuit archiveringsoptiek, de zaak betrekking heeft. | string | nee | C​R​U​D |
-| resultaattoelichting | Een toelichting op wat het resultaat van de zaak inhoudt. | string | nee | C​R​U​D |
-| startdatumBewaartermijn | De datum die de start markeert van de termijn waarop het zaakdossier vernietigd moet worden. | string | nee | C​R​U​D |
 
 ## AuditTrail
 
@@ -288,8 +282,7 @@ Uitleg bij mogelijke waarden:
 * `drc` - Documenten API
 * `brc` - Besluiten API
 * `cmc` - Contactmomenten API
-* `kc` - Klanten API
-* `vrc` - Verzoeken API | string | ja | C​R​U​D |
+* `kc` - Klanten API | string | ja | C​R​U​D |
 | applicatieId | Unieke identificatie van de applicatie, binnen de organisatie. | string | nee | C​R​U​D |
 | applicatieWeergave | Vriendelijke naam van de applicatie. | string | nee | C​R​U​D |
 | gebruikersId | Unieke identificatie van de gebruiker die binnen de organisatie herleid kan worden naar een persoon. | string | nee | C​R​U​D |
