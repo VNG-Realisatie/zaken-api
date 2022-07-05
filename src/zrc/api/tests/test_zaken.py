@@ -90,7 +90,6 @@ RESPONSES = {
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class ApiStrategyTests(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = "https://example.com/foo/bar"
 
@@ -155,7 +154,6 @@ class ApiStrategyTests(JWTAuthMixin, APITestCase):
     ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
 )
 class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
-
     scopes = [
         SCOPE_ZAKEN_CREATE,
         SCOPE_ZAKEN_BIJWERKEN,
@@ -252,7 +250,6 @@ class ZakenAfsluitenTests(JWTAuthMixin, APITestCase):
     ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
 )
 class ZakenTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
 
@@ -856,7 +853,6 @@ class HoofdZaakTests(JWTAuthMixin, APITestCase):
         }
 
         with mock_client(responses):
-
             response = self.client.post(
                 reverse(Zaak),
                 {
@@ -888,7 +884,6 @@ class HoofdZaakTests(JWTAuthMixin, APITestCase):
         }
 
         with mock_client(responses):
-
             response = self.client.post(
                 reverse(Zaak),
                 {
@@ -909,7 +904,6 @@ class HoofdZaakTests(JWTAuthMixin, APITestCase):
 
 
 class ZakenDeleteTests(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_ALLES_VERWIJDEREN]
     zaaktype = ZAAKTYPE
 
@@ -940,7 +934,6 @@ class ZakenDeleteTests(JWTAuthMixin, APITestCase):
 
 
 class ZaakArchivingTests(JWTAuthMixin, APITestCase):
-
     heeft_alle_autorisaties = True
 
     @patch("vng_api_common.validators.fetcher")
@@ -1032,6 +1025,60 @@ class ZaakArchivingTests(JWTAuthMixin, APITestCase):
 
 class ZakenFilterTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
+
+    def test_four_date_filters(self):
+        ZaakFactory.create(
+            zaaktype=ZAAKTYPE,
+            registratiedatum=date(2019, 1, 1),
+            einddatum=date(2019, 1, 1),
+            einddatum_gepland=date(2019, 1, 1),
+            uiterlijke_einddatum_afdoening=date(2019, 1, 1),
+        )
+
+        ZaakFactory.create(
+            zaaktype=ZAAKTYPE,
+            registratiedatum=date(2019, 3, 1),
+            einddatum=date(2019, 3, 1),
+            einddatum_gepland=date(2019, 3, 1),
+            uiterlijke_einddatum_afdoening=date(2019, 3, 1),
+        )
+        url = reverse("zaak-list")
+
+        def convert_to_camelcase(word):
+            temp = word.split("_")
+            res = temp[0] + "".join(ele.title() for ele in temp[1:])
+            return res
+
+        for filter_to_test in [
+            "registratiedatum",
+            "einddatum",
+            "einddatum_gepland",
+            "uiterlijke_einddatum_afdoening",
+        ]:
+
+            with self.subTest(filter_on=filter_to_test):
+
+                response_gt = self.client.get(
+                    url,
+                    {f"{convert_to_camelcase(filter_to_test)}__gt": "2019-02-01"},
+                    **ZAAK_READ_KWARGS,
+                )
+                response_lt = self.client.get(
+                    url,
+                    {f"{convert_to_camelcase(filter_to_test)}__lt": "2019-02-01"},
+                    **ZAAK_READ_KWARGS,
+                )
+
+                for response in [response_gt, response_lt]:
+                    self.assertEqual(response.status_code, status.HTTP_200_OK)
+                    self.assertEqual(response.data["count"], 1)
+
+                self.assertEqual(
+                    response_gt.data["results"][0][filter_to_test], "2019-03-01"
+                )
+                self.assertEqual(
+                    response_lt.data["results"][0][filter_to_test], "2019-01-01"
+                )
 
     def test_rol_nnp_id(self):
         url = reverse(Zaak)
@@ -1371,7 +1418,6 @@ class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
 
 
 class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
     component = ComponentTypes.zrc
