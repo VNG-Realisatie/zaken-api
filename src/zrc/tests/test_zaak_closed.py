@@ -324,7 +324,7 @@ class ClosedZaakRelatedDataNotAllowedTests(MocksMixin, JWTAuthMixin, APITestCase
     def test_resultaten(self):
         resultaat = ResultaatFactory.create(zaak=self.zaak, resultaattype=RESULTAATTYPE)
         resultaat_url = reverse(resultaat)
-        print(resultaat.__dict__)
+
         self.assertUpdateBlocked(resultaat_url)
         self.assertPartialUpdateBlocked(resultaat_url)
         self.assertDestroyBlocked(resultaat_url)

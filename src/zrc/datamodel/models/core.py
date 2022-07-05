@@ -869,7 +869,6 @@ class ZaakObject(ETagMixin, models.Model):
         help_text="Omschrijving van de betrekking tussen de ZAAK en het OBJECT.",
     )
     object_type = models.CharField(
-        blank=True,
         max_length=100,
         choices=ZaakobjectTypes.choices,
         help_text="Beschrijft het type OBJECT gerelateerd aan de ZAAK. Als er "

@@ -56,6 +56,7 @@ RESPONSES = {
     },
     ZAAKTYPE2: {"url": ZAAKTYPE2, "informatieobjecttypen": [INFORMATIEOBJECT_TYPE]},
 }
+ZAAKOBJECT = "http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd"
 
 
 class ZaakValidationTests(JWTAuthMixin, APITestCase):
@@ -1103,7 +1104,6 @@ class ZaakEigenschapValidationTests(JWTAuthMixin, APITestCase):
 
 class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
-    OBJECT = "http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd"
 
     @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
     @patch("vng_api_common.validators.fetcher")
@@ -1161,7 +1161,7 @@ class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
 
         data = {
             "zaak": f"http://testserver{zaak_url}",
-            "object": self.OBJECT,
+            "object": ZAAKOBJECT,
             "objectType": ZaakobjectTypes.besluit,
             "relatieomschrijving": "test",
             "zaakobjecttype": ZAAKOBJECTTYPE,
@@ -1211,7 +1211,7 @@ class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
                 {
                     "zaak": zaak_url,
                     "zaakobjecttype": ZAAKOBJECTTYPE,
-                    "object": self.OBJECT,
+                    "object": ZAAKOBJECT,
                     "objectType": ZaakobjectTypes.besluit,
                 },
             )
