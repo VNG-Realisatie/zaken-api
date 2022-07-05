@@ -310,6 +310,9 @@ class ZaakSerializer(
             "archiefactiedatum",
             "resultaat",
             "opdrachtgevende_organisatie",
+            "processobjectaard",
+            "resultaattoelichting",
+            "startdatum_bewaartermijn",
             "gerelateerde_externe_zaken",
             "processobject",
         )

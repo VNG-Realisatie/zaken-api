@@ -24,6 +24,7 @@ from vng_api_common.tests import (
 )
 from zds_client.tests.mocks import mock_client
 
+from zrc.api.tests.mixins import ZaakInformatieObjectSyncMixin
 from zrc.datamodel.constants import BetalingsIndicatie
 from zrc.datamodel.models import (
     Medewerker,

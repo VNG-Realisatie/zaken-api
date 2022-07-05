@@ -7580,6 +7580,25 @@ components:
             geeft.
           type: string
           maxLength: 9
+        processobjectaard:
+          title: Procesobjectaard
+          description: Omschrijving van het object, subject of gebeurtenis waarop,
+            vanuit archiveringsoptiek, de zaak betrekking heeft.
+          type: string
+          maxLength: 200
+          nullable: true
+        resultaattoelichting:
+          title: Resultaattoelichting
+          description: Een toelichting op wat het resultaat van de zaak inhoudt.
+          type: string
+          maxLength: 1000
+        startdatumBewaartermijn:
+          title: Startdatum bewaartermijn
+          description: De datum die de start markeert van de termijn waarop het zaakdossier
+            vernietigd moet worden.
+          type: string
+          format: date
+          nullable: true
         gerelateerdeExterneZaken:
           $ref: '#/components/schemas/GerelateerdeExterneZaken'
         processobject:
