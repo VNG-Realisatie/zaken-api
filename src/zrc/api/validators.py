@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 import jq
 import jsonschema
 from rest_framework import serializers
+from vng_api_common.constants import Archiefstatus
 from vng_api_common.models import APICredential
 from vng_api_common.validators import (
     UniekeIdentificatieValidator as _UniekeIdentificatieValidator,
@@ -166,6 +167,31 @@ class CorrectZaaktypeValidator:
         obj = fetch_object(self.resource, url)
         if obj["zaaktype"] != zaak.zaaktype:
             raise serializers.ValidationError(self.message, code=self.code)
+
+
+class ZaakArchiefStatusValidator:
+    code = "zaak-archiefstatus-invalid"
+    message = _(
+        f"De huidige zaak archiefstatus staat dit request niet toe. Archiefstatus moet gelijk zijn aan {Archiefstatus.nog_te_archiveren}"
+    )
+
+    def set_context(self, serializer):
+        """
+        This hook is called by the serializer instance,
+        prior to the validation call being made.
+        """
+        # Determine the existing instance, if this is an update operation.
+        self.instance = getattr(serializer, "instance", None)
+
+    def __call__(self, attrs):
+        if self.instance:
+            if self.instance.zaak.archiefstatus != Archiefstatus.nog_te_archiveren:
+                raise serializers.ValidationError(self.message, code=self.code)
+
+        elif attrs.get("zaak"):
+            zaak = attrs.get("zaak")
+            if zaak.archiefstatus != Archiefstatus.nog_te_archiveren:
+                raise serializers.ValidationError(self.message, code=self.code)
 
 
 class ZaaktypeInformatieobjecttypeRelationValidator:

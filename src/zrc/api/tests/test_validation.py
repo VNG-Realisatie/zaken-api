@@ -1,15 +1,28 @@
+import datetime
 import uuid
 from unittest import skip
 from unittest.mock import patch
 
 from django.test import override_settings
+from django.utils import timezone
 
 import requests_mock
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APITestCase
-from vng_api_common.constants import VertrouwelijkheidsAanduiding
-from vng_api_common.tests import JWTAuthMixin, get_validation_errors, reverse
+from vng_api_common.constants import (
+    Archiefstatus,
+    RelatieAarden,
+    RolOmschrijving,
+    RolTypes,
+    VertrouwelijkheidsAanduiding,
+)
+from vng_api_common.tests import (
+    JWTAuthMixin,
+    get_operation_url,
+    get_validation_errors,
+    reverse,
+)
 from vng_api_common.validators import (
     IsImmutableValidator,
     ResourceValidator,
@@ -19,11 +32,20 @@ from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.constants import AardZaakRelatie, BetalingsIndicatie
 from zrc.datamodel.models import ZaakInformatieObject
-from zrc.datamodel.tests.factories import ResultaatFactory, StatusFactory, ZaakFactory
+from zrc.datamodel.tests.factories import (
+    ResultaatFactory,
+    StatusFactory,
+    ZaakFactory,
+    ZaakObjectFactory,
+)
 from zrc.tests.utils import ZAAK_WRITE_KWARGS, isodatetime
 
 from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
-from .mixins import ZaakInformatieObjectSyncMixin
+from .mixins import (
+    ZaakContactMomentSyncMixin,
+    ZaakInformatieObjectSyncMixin,
+    ZaakVerzoekSyncMixin,
+)
 
 ZAAKTYPE = "https://example.com/foo/bar"
 ZAAKTYPE2 = "https://ztc.com/zaaktypen/1234"
@@ -35,6 +57,7 @@ INFORMATIEOBJECT_TYPE = (
     f"http://example.com/ztc/api/v1/informatieobjecttypen/{uuid.uuid4().hex}"
 )
 RESULTAATTYPE = f"https://ztc.com/resultaattypen/{uuid.uuid4().hex}"
+CONTACTMOMENT = "https://cmc.nl/api/v1/contactmomenten/1234"
 
 RESPONSES = {
     STATUSTYPE: {
@@ -53,11 +76,25 @@ RESPONSES = {
         "productenOfDiensten": ["https://example.com/product/123"],
     },
     ZAAKTYPE2: {"url": ZAAKTYPE2, "informatieobjecttypen": [INFORMATIEOBJECT_TYPE]},
+    RESULTAATTYPE: {"url": RESULTAATTYPE, "zaaktype": ZAAKTYPE},
 }
+
+BETROKKENE = (
+    "http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd"
+)
+ROLTYPE = "https://ztc.nl/roltypen/123"
+
+ROLTYPE_RESPONSE = {
+    "url": ROLTYPE,
+    "zaaktype": ZAAKTYPE,
+    "omschrijving": RolOmschrijving.initiator,
+    "omschrijvingGeneriek": RolOmschrijving.initiator,
+}
+
+VERZOEK = "https://vrc.nl/api/v1/verzoeken/1234"
 
 
 class ZaakValidationTests(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
 
@@ -648,6 +685,7 @@ class ZaakInformatieObjectValidationTests(
     ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
 ):
     heeft_alle_autorisaties = True
+    list_url = reverse(ZaakInformatieObject)
 
     @override_settings(
         LINK_FETCHER="vng_api_common.mocks.link_fetcher_404",
@@ -687,6 +725,98 @@ class ZaakInformatieObjectValidationTests(
 
         error = get_validation_errors(response, "informatieobject")
         self.assertEqual(error["code"], "invalid-resource")
+
+    @override_settings(
+        LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+        ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
+    )
+    @freeze_time("2018-09-19T12:25:19+0200")
+    @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_fails_with_unacceptable_zaak_archief_status(self, *mocks):
+        zaak = ZaakFactory.create(
+            zaaktype=ZAAKTYPE, archiefstatus=Archiefstatus.gearchiveerd
+        )
+        status_obj = StatusFactory(zaak=zaak)
+        zaak_url = reverse("zaak-detail", kwargs={"version": "1", "uuid": zaak.uuid})
+        status_url = reverse("status-detail", kwargs={"uuid": status_obj.uuid})
+
+        titel = "some titel"
+        beschrijving = "some beschrijving"
+        content = {
+            "informatieobject": INFORMATIEOBJECT,
+            "zaak": f"http://testserver{zaak_url}",
+            "titel": titel,
+            "beschrijving": beschrijving,
+            "aardRelatieWeergave": "bla",  # Should be ignored by the API
+            "status": f"http://testserver{status_url}",
+        }
+
+        # Send to the API
+        with mock_client(RESPONSES):
+            response = self.client.post(self.list_url, content)
+        # Test response
+        data = response.json()
+        invalid_params = data["invalidParams"][0]
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(invalid_params["code"], "zaak-archiefstatus-invalid")
+
+    @override_settings(
+        LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+        ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
+    )
+    @freeze_time("2018-09-19T12:25:19+0200")
+    @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_with_acceptable_zaak_archief_status(self, *mocks):
+        zaak = ZaakFactory.create(
+            zaaktype=ZAAKTYPE2, archiefstatus=Archiefstatus.nog_te_archiveren
+        )
+        status_obj = StatusFactory(zaak=zaak)
+        zaak_url = reverse("zaak-detail", kwargs={"version": "1", "uuid": zaak.uuid})
+        status_url = reverse("status-detail", kwargs={"uuid": status_obj.uuid})
+
+        titel = "some titel"
+        beschrijving = "some beschrijving"
+        content = {
+            "informatieobject": INFORMATIEOBJECT,
+            "zaak": f"http://testserver{zaak_url}",
+            "titel": titel,
+            "beschrijving": beschrijving,
+            "aardRelatieWeergave": "bla",  # Should be ignored by the API
+            "status": f"http://testserver{status_url}",
+        }
+
+        # Send to the API
+        with mock_client(RESPONSES):
+            response = self.client.post(self.list_url, content)
+        # Test response
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+
+        # Test database
+        self.assertEqual(ZaakInformatieObject.objects.count(), 1)
+        stored_object = ZaakInformatieObject.objects.get()
+        self.assertEqual(stored_object.zaak, zaak)
+        self.assertEqual(stored_object.aard_relatie, RelatieAarden.hoort_bij)
+
+        expected_url = reverse(stored_object)
+
+        expected_response = content.copy()
+        expected_response.update(
+            {
+                "url": f"http://testserver{expected_url}",
+                "uuid": str(stored_object.uuid),
+                "titel": titel,
+                "beschrijving": beschrijving,
+                "registratiedatum": "2018-09-19T10:25:19Z",
+                "aardRelatieWeergave": RelatieAarden.labels[RelatieAarden.hoort_bij],
+                "vernietigingsdatum": None,
+                "status": f"http://testserver{status_url}",
+            }
+        )
+        self.assertEqual(response.json(), expected_response)
 
     @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
     @patch("vng_api_common.validators.fetcher")
@@ -775,8 +905,122 @@ class FilterValidationTests(JWTAuthMixin, APITestCase):
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
+@override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+class ZaakVerzoekValidationTests(ZaakVerzoekSyncMixin, JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_fails_with_invalid_archiefstatus(self, *m):
+        zaak = ZaakFactory.create(
+            archiefstatus=Archiefstatus.gearchiveerd_procestermijn_onbekend
+        )
+        url = reverse("zaakverzoek-list")
+
+        response = self.client.post(url, {"verzoek": VERZOEK, "zaak": reverse(zaak)})
+
+        data = response.json()
+        invalid_params = data["invalidParams"][0]
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(invalid_params["code"], "zaak-archiefstatus-invalid")
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_nog_te_archiveren(self, *m):
+        zaak = ZaakFactory.create(archiefstatus=Archiefstatus.nog_te_archiveren)
+        url = reverse("zaakverzoek-list")
+
+        response = self.client.post(url, {"verzoek": VERZOEK, "zaak": reverse(zaak)})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        zaak_verzoek = zaak.zaakverzoek_set.get()
+        self.assertEqual(zaak_verzoek.verzoek, VERZOEK)
+
+
+@override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+class ZaakContactMomentValidationTests(
+    ZaakContactMomentSyncMixin, JWTAuthMixin, APITestCase
+):
+    heeft_alle_autorisaties = True
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_fails_with_unacceptable_archiefstatus(self, *m):
+        zaak = ZaakFactory.create(
+            archiefstatus=Archiefstatus.gearchiveerd_procestermijn_onbekend
+        )
+        url = reverse("zaakcontactmoment-list")
+
+        response = self.client.post(
+            url, {"contactmoment": CONTACTMOMENT, "zaak": reverse(zaak)}
+        )
+
+        data = response.json()
+        invalid_params = data["invalidParams"][0]
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(invalid_params["code"], "zaak-archiefstatus-invalid")
+
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_nog_te_archiveren(self, *m):
+        zaak = ZaakFactory.create(archiefstatus=Archiefstatus.nog_te_archiveren)
+        url = reverse("zaakcontactmoment-list")
+
+        response = self.client.post(
+            url, {"contactmoment": CONTACTMOMENT, "zaak": reverse(zaak)}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        zaak_contactmoment = zaak.zaakcontactmoment_set.get()
+        self.assertEqual(zaak_contactmoment.contactmoment, CONTACTMOMENT)
+
+
+@override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class StatusValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
+    zaaktype = ZAAKTYPE
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
+    def test_invalid_zaak_archiefstatus(self, *mocks):
+        zaak = ZaakFactory.create(
+            einddatum=timezone.now().date(),
+            zaaktype=ZAAKTYPE,
+            archiefstatus=Archiefstatus.gearchiveerd_procestermijn_onbekend,
+        )
+        status_create_url = get_operation_url("status_create")
+
+        data = {
+            "zaak": reverse(zaak),
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": datetime.datetime.now().isoformat(),
+        }
+        with mock_client(RESPONSES):
+            response = self.client.post(status_create_url, data)
+        data = response.json()
+        invalid_params = data["invalidParams"][0]
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(invalid_params["code"], "zaak-archiefstatus-invalid")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
+    def test_valid_zaak_archiefstatus(self, *mocks):
+        zaak = ZaakFactory.create(
+            einddatum=timezone.now().date(),
+            zaaktype=ZAAKTYPE,
+            archiefstatus=Archiefstatus.nog_te_archiveren,
+        )
+        status_create_url = get_operation_url("status_create")
+
+        data = {
+            "zaak": reverse(zaak),
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": datetime.datetime.now().isoformat(),
+        }
+        with mock_client(RESPONSES):
+            response = self.client.post(status_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_not_allowed_to_change_statustype(self):
         _status = StatusFactory.create()
@@ -926,6 +1170,59 @@ class StatusValidationTests(JWTAuthMixin, APITestCase):
         self.assertEqual(error["code"], "unique")
 
 
+class RolValidationTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_rol_fail_with_invalid_zaak_archiefstatus(self, *mocks):
+        url = get_operation_url("rol_create")
+        zaak = ZaakFactory.create(
+            zaaktype=ZAAKTYPE, archiefstatus=Archiefstatus.gearchiveerd
+        )
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "betrokkene": BETROKKENE,
+            "betrokkene_type": RolTypes.natuurlijk_persoon,
+            "roltype": ROLTYPE,
+            "roltoelichting": "foobar",
+        }
+
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(url, data)
+
+        data = response.json()
+        invalid_params = data["invalidParams"][0]
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(invalid_params["code"], "zaak-archiefstatus-invalid")
+
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_rol_valid_zaak_archiefstatus(self, *mocks):
+        url = get_operation_url("rol_create")
+        zaak = ZaakFactory.create(
+            zaaktype=ZAAKTYPE, archiefstatus=Archiefstatus.nog_te_archiveren
+        )
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "betrokkene": BETROKKENE,
+            "betrokkene_type": RolTypes.natuurlijk_persoon,
+            "roltype": ROLTYPE,
+            "roltoelichting": "foobar",
+        }
+
+        with requests_mock.Mocker() as m:
+            m.get(ROLTYPE, json=ROLTYPE_RESPONSE)
+            with mock_client({ROLTYPE: ROLTYPE_RESPONSE}):
+                response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
 class ResultaatValidationTests(JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
 
@@ -964,6 +1261,48 @@ class ResultaatValidationTests(JWTAuthMixin, APITestCase):
     @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_invalid_zaak_archiefstatus(self, *mocks):
+        zaak = ZaakFactory.create(
+            einddatum=timezone.now().date(),
+            zaaktype=ZAAKTYPE,
+            archiefstatus=Archiefstatus.gearchiveerd_procestermijn_onbekend,
+        )
+        status_create_url = get_operation_url("resultaat_create")
+
+        data = {
+            "zaak": reverse(zaak),
+            "resultaattype": RESULTAATTYPE,
+        }
+        with mock_client(RESPONSES):
+            response = self.client.post(status_create_url, data)
+        data = response.json()
+        invalid_params = data["invalidParams"][0]
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(invalid_params["code"], "zaak-archiefstatus-invalid")
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_valid_zaak_archiefstatus(self, *mocks):
+        zaak = ZaakFactory.create(
+            einddatum=timezone.now().date(),
+            zaaktype=ZAAKTYPE,
+            archiefstatus=Archiefstatus.nog_te_archiveren,
+        )
+        resultaattype_create_url = get_operation_url("resultaat_create")
+
+        data = {
+            "zaak": reverse(zaak),
+            "resultaattype": RESULTAATTYPE,
+        }
+        with mock_client(RESPONSES):
+            response = self.client.post(resultaattype_create_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_resultaattype_incorrect_zaaktype(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
@@ -984,7 +1323,6 @@ class ResultaatValidationTests(JWTAuthMixin, APITestCase):
 
 
 class KlantContactValidationTests(JWTAuthMixin, APITestCase):
-
     heeft_alle_autorisaties = True
 
     @freeze_time("2019-07-22T12:00:00")
@@ -1131,6 +1469,38 @@ class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_create_zaakobject_fails_with_archived_zaak(self, *mocks):
+        zaak = ZaakFactory.create(
+            archiefstatus=Archiefstatus.gearchiveerd_procestermijn_onbekend
+        )
+        zaak_url = reverse(zaak)
+
+        list_url = reverse("zaakobject-list")
+
+        responses = {
+            "http://some-api.com/objecten/1234": {
+                "url": "http://some-api.com/objecten/1234"
+            }
+        }
+
+        with mock_client(responses):
+            response = self.client.post(
+                list_url,
+                {
+                    "zaak": zaak_url,
+                    "object": "http://some-api.com/objecten/1234",
+                    "objectType": "adres",
+                },
+            )
+
+        data = response.json()
+        invalid_params = data["invalidParams"][0]
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(invalid_params["code"], "zaak-archiefstatus-invalid")
+
     @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_404")
     def test_create_zaakobject_invalid_url(self, *mocks):
         zaak = ZaakFactory.create()
@@ -1151,3 +1521,21 @@ class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
 
         validation_error = get_validation_errors(response, "object")
         self.assertEqual(validation_error["code"], "bad-url")
+
+    @patch("zds_client.Client.from_url")
+    def test_send_notif_update_zaakobject(self, mock_client):
+        client = mock_client.return_value
+        zaak = ZaakFactory.create(
+            zaaktype=ZAAKTYPE,
+            archiefstatus=Archiefstatus.gearchiveerd_procestermijn_onbekend,
+        )
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaakobject = ZaakObjectFactory.create(zaak=zaak, relatieomschrijving="old")
+        zaakobject_url = get_operation_url("zaakobject_update", uuid=zaakobject.uuid)
+
+        response = self.client.patch(zaakobject_url, {"relatieomschrijving": "new"})
+
+        data = response.json()
+        invalid_params = data["invalidParams"][0]
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(invalid_params["code"], "zaak-archiefstatus-invalid")
