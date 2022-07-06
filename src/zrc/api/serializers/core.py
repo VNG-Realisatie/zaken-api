@@ -200,7 +200,7 @@ class ZaakSerializer(
         many=True,
         required=False,
         help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
-                  "beter kan via `ZaakObject`.",
+        "beter kan via `ZaakObject`.",
     )
 
     betalingsindicatie_weergave = serializers.CharField(
@@ -1090,7 +1090,7 @@ class RolSerializer(PolymorphicSerializer):
             RolOccurenceValidator(RolOmschrijving.initiator, max_amount=1),
             RolOccurenceValidator(RolOmschrijving.zaakcoordinator, max_amount=1),
             CorrectZaaktypeValidator("roltype"),
-            ZaakArchiefStatusValidator()
+            ZaakArchiefStatusValidator(),
         ]
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},
@@ -1153,7 +1153,10 @@ class ResultaatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Resultaat
         fields = ("url", "uuid", "zaak", "resultaattype", "toelichting")
-        validators = [CorrectZaaktypeValidator("resultaattype"), ZaakArchiefStatusValidator()]
+        validators = [
+            CorrectZaaktypeValidator("resultaattype"),
+            ZaakArchiefStatusValidator(),
+        ]
         extra_kwargs = {
             "url": {"lookup_field": "uuid"},
             "uuid": {"read_only": True},
