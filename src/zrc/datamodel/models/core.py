@@ -852,6 +852,12 @@ class ZaakObject(ETagMixin, models.Model):
     zaak = models.ForeignKey(
         "Zaak", on_delete=models.CASCADE, help_text=("URL-referentie naar de ZAAK.")
     )
+    zaakobjecttype = models.URLField(
+        _("zaakobjecttype"),
+        max_length=1000,
+        help_text=_("URL-referentie naar het ZAAKOBJECTTYPE (in de Catalogi API)."),
+        blank=True,
+    )
     object = models.URLField(
         help_text="URL-referentie naar de resource die het OBJECT beschrijft.",
         max_length=1000,

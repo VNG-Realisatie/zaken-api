@@ -101,10 +101,8 @@ class ZaakClosedTests(JWTAuthMixin, APITestCase):
     def test_update_zaak_closed_allowed(self):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE, closed=True)
         url = reverse(zaak)
-
         self.autorisatie.scopes = [SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN]
         self.autorisatie.save()
-
         response = self.client.patch(
             url, {"betalingsindicatie": BetalingsIndicatie.nvt}, **ZAAK_WRITE_KWARGS
         )

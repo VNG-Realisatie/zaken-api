@@ -206,6 +206,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 "objectTypeOverige": "",
                 "relatieomschrijving": "Het adres waar de overlast vastgesteld werd.",
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 
@@ -274,6 +275,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 "objectTypeOverige": "",
                 "relatieomschrijving": "Afgeleid gebied",
                 "objectTypeOverigeDefinitie": None,
+                "zaakobjecttype": "",
             },
         )
 

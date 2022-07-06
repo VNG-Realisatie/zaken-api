@@ -16,6 +16,7 @@ from vng_api_common.constants import (
     RolOmschrijving,
     RolTypes,
     VertrouwelijkheidsAanduiding,
+    ZaakobjectTypes,
 )
 from vng_api_common.tests import (
     JWTAuthMixin,
@@ -40,6 +41,7 @@ from zrc.datamodel.tests.factories import (
 )
 from zrc.tests.utils import ZAAK_WRITE_KWARGS, isodatetime
 
+from ...datamodel.tests.factories import ZaakObjectFactory
 from ..scopes import SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_CREATE
 from .mixins import (
     ZaakContactMomentSyncMixin,
@@ -57,6 +59,7 @@ INFORMATIEOBJECT_TYPE = (
     f"http://example.com/ztc/api/v1/informatieobjecttypen/{uuid.uuid4().hex}"
 )
 RESULTAATTYPE = f"https://ztc.com/resultaattypen/{uuid.uuid4().hex}"
+ZAAKOBJECTTYPE = f"http://example.com/ztc/api/v1/zaakobjecttypen/{uuid.uuid4().hex}"
 CONTACTMOMENT = "https://cmc.nl/api/v1/contactmomenten/1234"
 
 RESPONSES = {
@@ -92,6 +95,7 @@ ROLTYPE_RESPONSE = {
 }
 
 VERZOEK = "https://vrc.nl/api/v1/verzoeken/1234"
+ZAAKOBJECT = "http://example.org/api/zaakobjecten/8768c581-2817-4fe5-933d-37af92d819dd"
 
 
 class ZaakValidationTests(JWTAuthMixin, APITestCase):
@@ -1521,6 +1525,73 @@ class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
 
         validation_error = get_validation_errors(response, "object")
         self.assertEqual(validation_error["code"], "bad-url")
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    def test_zaakobjecttype_invalid_resource(self, *mocks):
+        list_url = reverse("zaakobject-list")
+        zaak = ZaakFactory.create()
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        data = {
+            "zaak": f"http://testserver{zaak_url}",
+            "object": ZAAKOBJECT,
+            "objectType": ZaakobjectTypes.besluit,
+            "relatieomschrijving": "test",
+            "zaakobjecttype": ZAAKOBJECTTYPE,
+        }
+
+        responses = {ZAAKOBJECTTYPE: {"some": "incorrect property"}}
+
+        with mock_client(responses):
+            response = self.client.post(list_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        validation_error = get_validation_errors(response, "zaakobjecttype")
+        self.assertEqual(validation_error["code"], "invalid-resource")
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    def test_not_allowed_to_change_zaakobjecttype(self):
+        zaak = ZaakFactory.create()
+        zaakobject = ZaakObjectFactory.create(
+            zaak=zaak,
+            zaakobjecttype=ZAAKOBJECTTYPE,
+        )
+        url = reverse(zaakobject)
+
+        response = self.client.patch(
+            url, {"zaakobjecttype": "https://ander.zaakobjecttype.nl/foo/bar"}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        validation_error = get_validation_errors(response, "zaakobjecttype")
+        self.assertEqual(validation_error["code"], IsImmutableValidator.code)
+
+    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_zaakobjecttype_incorrect_zaaktype(self, *mocks):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        list_url = reverse("zaakobject-list")
+
+        responses = {ZAAKOBJECTTYPE: {"url": ZAAKOBJECTTYPE, "zaaktype": ZAAKTYPE2}}
+
+        with mock_client(responses):
+            response = self.client.post(
+                list_url,
+                {
+                    "zaak": zaak_url,
+                    "zaakobjecttype": ZAAKOBJECTTYPE,
+                    "object": ZAAKOBJECT,
+                    "objectType": ZaakobjectTypes.besluit,
+                },
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        validation_error = get_validation_errors(response, "nonFieldErrors")
+        self.assertEqual(validation_error["code"], "zaaktype-mismatch")
 
     @patch("zds_client.Client.from_url")
     def test_send_notif_update_zaakobject(self, mock_client):

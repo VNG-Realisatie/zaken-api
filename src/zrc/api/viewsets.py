@@ -238,7 +238,6 @@ class ZaakViewSet(
         """
         search_input = self.get_search_input()
         queryset = self.filter_queryset(self.get_queryset())
-
         for name, value in search_input.items():
             if name == "zaakgeometrie":
                 queryset = queryset.filter(zaakgeometrie__within=value["within"])
@@ -268,6 +267,7 @@ class ZaakViewSet(
             zaaktype=zaak.zaaktype,
             vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding,
         ):
+
             if zaak.is_closed:
                 msg = "Modifying a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)
