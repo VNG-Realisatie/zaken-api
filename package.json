@@ -23,15 +23,16 @@
   "devDependencies": {
     "autoprefixer": "^10.4.7",
     "cssnano": "^5.1.12",
-    "postcss-selector-lint": "^1.0.2",
-    "swagger2openapi": "^7.0.8",
-    "yargs": "^17.5.1",
     "gulp": "^4.0.2",
     "gulp-file": "^0.4.0",
     "gulp-hub": "^4.2.0",
     "gulp-if": "^3.0.0",
     "gulp-postcss": "^9.0.1",
     "gulp-sass": "^5.1.0",
-    "gulp-sourcemaps": "^3.0.0"
+    "gulp-sourcemaps": "^3.0.0",
+    "postcss-selector-lint": "^1.0.2",
+    "swagger2openapi": "^7.0.8",
+     "sass": "^1.53.0",
+    "yargs": "^17.5.1"
   }
 }
