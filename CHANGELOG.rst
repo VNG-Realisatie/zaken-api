@@ -2,6 +2,31 @@
 Wijzigingen
 ===========
 
+1.3.0 (2022-07-7)
+==================
+
+New features
+------------
+
+* Query parameter added to retreive a list of Zaken on UUIDs.
+* Check added so related resources cannot be added or updated once a Zaak is `gearchiveerd`
+* Add missing RGBZ attributes for existing resources. Among other things to supprt TMLO
+* Zaakobject can be configured in Catalogi API and refered to via zaakobjecttype
+* Zaaktypeidentificatie added to Zaken resource
+* Query Statussen on a specific Zaak,  Statustype and indicatieActueleStatus to retrieve the current status.
+* Ordering of a list of Zaken can be done on the following attributes:
+
+  - startdatum
+  - startdatum
+  - einddatum
+  - -einddatum
+  - publicatiedatum
+  - -publicatiedatum
+  - archiefactiedatum
+
+
+
+
 1.2.0 (2021-08-27)
 ==================
 
