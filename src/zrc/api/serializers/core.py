@@ -136,12 +136,6 @@ class OpschortingSerializer(GegevensGroepSerializer):
         }
 
 
-class GerelateerdeExterneZakenSerializer(GegevensGroepSerializer):
-    class Meta:
-        model = Zaak
-        gegevensgroep = "gerelateerde_externe_zaken"
-
-
 class ProcessobjectSerializer(GegevensGroepSerializer):
     class Meta:
         model = Zaak
@@ -249,15 +243,6 @@ class ZaakSerializer(
         many=True, required=False, help_text=_("Een lijst van relevante andere zaken.")
     )
 
-    gerelateerde_externe_zaken = GerelateerdeExterneZakenSerializer(
-        required=False,
-        allow_null=True,
-        help_text=_(
-            "Een ZAAK bij een andere organisatie waarin een bijdrage geleverd wordt "
-            "aan het bereiken van de uitkomst van de onderhanden ZAAK."
-        ),
-    )
-
     processobject = ProcessobjectSerializer(
         required=False,
         allow_null=True,
@@ -314,7 +299,6 @@ class ZaakSerializer(
             "processobjectaard",
             "resultaattoelichting",
             "startdatum_bewaartermijn",
-            "gerelateerde_externe_zaken",
             "processobject",
         )
         extra_kwargs = {

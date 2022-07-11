@@ -718,32 +718,6 @@ class ZakenTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         error = get_validation_errors(response, "processobject.registratie")
         self.assertEqual(error["code"], "required")
 
-    def test_missing_gerelateerde_externe_zaken(self):
-        self.applicatie.heeft_alle_autorisaties = True
-        self.applicatie.save()
-
-        zaak = ZaakFactory()
-
-        response = self.client.patch(
-            reverse(zaak),
-            {
-                "gerelateerdeExterneZaken": {
-                    "aanvraagdatum": (timezone.now() - timedelta(days=3)).strftime(
-                        "%Y-%m-%d"
-                    ),
-                    "datumStatusGezet": timezone.now() - timedelta(days=1),
-                    "zaaktypeOmschrijvingGeneriek": "Omschrijving XY",
-                    "zaaktypecode": "XYZ",
-                }
-            },
-            **ZAAK_WRITE_KWARGS,
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        error = get_validation_errors(response, "gerelateerdeExterneZaken.aardRelatie")
-        self.assertEqual(error["code"], "required")
-
 
 @override_settings(
     LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",

@@ -439,32 +439,6 @@ class Zaak(ETagMixin, APIMixin, models.Model):
         blank=True,
     )
 
-    gerelateerde_externe_zaken = GegevensGroepType(
-        {
-            "aanvraagdatum": gerelateerde_externe_zaken_aanvraagdatum,
-            "aard_relatie": gerelateerde_externe_zaken_aard_relatie,
-            "datum_status_gezet": gerelateerde_externe_zaken_datum_status_gezet,
-            "eind_datum": gerelateerde_externe_zaken_einddatum,
-            "resultaatomschrijving": gerelateerde_externe_zaken_resultaatomschrijving,
-            "startdatum": gerelateerde_externe_zaken_startdatum,
-            "status_omschrijving_generiek": gerelateerde_externe_zaken_status_omschrijving_generiek,
-            "verantwoordelijke_organisatie": gerelateerde_externe_zaken_verantwoordelijke_organisatie,
-            "zaakidentificatie": gerelateerde_externe_zaken_zaakidentificatie,
-            "zaaktype_omschrijving_generiek": gerelateerde_externe_zaken_zaaktype_omschrijving_generiek,
-            "zaaktypecode": gerelateerde_externe_zaken_zaaktypecode,
-            "url": gerelateerde_externe_zaken_url,
-        },
-        optional=(
-            "eind_datum",
-            "resultaatomschrijving",
-            "startdatum",
-            "status_omschrijving_generiek",
-            "verantwoordelijke_organisatie",
-            "zaakidentificatie",
-            "url",
-        ),
-    )
-
     processobject_datumkenmerk = models.CharField(
         _("datumkenmerk"),
         max_length=250,
