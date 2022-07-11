@@ -43,6 +43,39 @@ class StatusTests(JWTAuthMixin, APITestCase):
         LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
         ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
     )
+    def test_filter_statussen_op_indicatie_laatst_gezette_status(self):
+        status1, status2 = StatusFactory.create_batch(2)
+        assert status1.zaak != status2.zaak
+        status1.indicatie_laatst_gezette_status = False
+        status2.indicatie_laatst_gezette_status = True
+
+        status1.save()
+        status2.save()
+
+        status1_url = reverse("status-detail", kwargs={"uuid": status1.uuid})
+        status2_url = reverse("status-detail", kwargs={"uuid": status2.uuid})
+
+        list_url = reverse("status-list")
+
+        response = self.client.get(
+            list_url,
+            {"indicatieLaatstGezetteStatus": True},
+            HTTP_HOST="testserver.com",
+        )
+
+        response_data = response.json()["results"]
+
+        self.assertEqual(response.status_code, rest_framework_status.HTTP_200_OK)
+        self.assertEqual(len(response_data), 1)
+        self.assertEqual(response_data[0]["url"], f"http://testserver.com{status2_url}")
+        self.assertNotEqual(
+            response_data[0]["url"], f"http://testserver.com{status1_url}"
+        )
+
+    @override_settings(
+        LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+        ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
+    )
     def test_status_detail(self):
         status = StatusFactory()
         url = reverse("status-detail", kwargs={"uuid": status.uuid})

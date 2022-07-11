@@ -208,7 +208,7 @@ class RolFilter(FilterSet):
 class StatusFilter(FilterSet):
     class Meta:
         model = Status
-        fields = ("zaak", "statustype")
+        fields = ("zaak", "statustype", "indicatie_laatst_gezette_status")
 
 
 class ResultaatFilter(FilterSet):
