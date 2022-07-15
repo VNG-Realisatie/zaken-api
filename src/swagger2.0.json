@@ -1102,8 +1102,7 @@
                         "schema": {
                             "required": [
                                 "count",
-                                "results",
-                                "inclusions"
+                                "results"
                             ],
                             "type": "object",
                             "properties": {
@@ -1124,123 +1123,6 @@
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/definitions/Rol"
-                                    }
-                                },
-                                "inclusions": {
-                                    "type": "object",
-                                    "properties": {
-                                        "catalogi:zaaktype": {
-                                            "type": "array",
-                                            "items": {
-                                                "oneOf": [
-                                                    {
-                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ZaakType"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "zaken:zaak": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Zaak"
-                                            }
-                                        },
-                                        "zaken:zaakeigenschap": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/ZaakEigenschap"
-                                            }
-                                        },
-                                        "zaken:status": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Status"
-                                            }
-                                        },
-                                        "zaken:resultaat": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Resultaat"
-                                            }
-                                        },
-                                        "catalogi:statustype": {
-                                            "type": "array",
-                                            "items": {
-                                                "oneOf": [
-                                                    {
-                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/StatusType"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "catalogi:resultaattype": {
-                                            "type": "array",
-                                            "items": {
-                                                "oneOf": [
-                                                    {
-                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/ResultaatType"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "catalogi:eigenschap": {
-                                            "type": "array",
-                                            "items": {
-                                                "oneOf": [
-                                                    {
-                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/Eigenschap"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "zaken:rol": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Rol"
-                                            }
-                                        },
-                                        "zaken:zaakinformatieobject": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/ZaakInformatieObject"
-                                            }
-                                        },
-                                        "zaken:zaakobject": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/ZaakObject"
-                                            }
-                                        },
-                                        "catalogi:roltype": {
-                                            "type": "array",
-                                            "items": {
-                                                "oneOf": [
-                                                    {
-                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/RolType"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "documenten:enkelvoudiginformatieobject": {
-                                            "type": "array",
-                                            "items": {
-                                                "oneOf": [
-                                                    {
-                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/documenten-api/e82802907c24ea6a11a39c77595c29338d55e8c3/src/openapi.yaml#/components/schemas/EnkelvoudigInformatieObject"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "catalogi:informatieobjecttype": {
-                                            "type": "array",
-                                            "items": {
-                                                "oneOf": [
-                                                    {
-                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/InformatieObjectType"
-                                                    }
-                                                ]
-                                            }
-                                        }
                                     }
                                 }
                             }
@@ -4165,6 +4047,12 @@
                             "eigenschappen.eigenschap",
                             "status.statustype",
                             "resultaat.resultaattype",
+                            "rollen",
+                            "zaakinformatieobjecten",
+                            "zaakobjecten",
+                            "rollen.roltype",
+                            "zaakinformatieobjecten.informatieobject",
+                            "zaakinformatieobjecten.informatieobject.informatieobjecttype",
                             "*"
                         ]
                     },
@@ -4289,6 +4177,54 @@
                                                 "oneOf": [
                                                     {
                                                         "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/Eigenschap"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "zaken:rol": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Rol"
+                                            }
+                                        },
+                                        "zaken:zaakinformatieobject": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ZaakInformatieObject"
+                                            }
+                                        },
+                                        "zaken:zaakobject": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ZaakObject"
+                                            }
+                                        },
+                                        "catalogi:roltype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/RolType"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "documenten:enkelvoudiginformatieobject": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/documenten-api/e82802907c24ea6a11a39c77595c29338d55e8c3/src/openapi.yaml#/components/schemas/EnkelvoudigInformatieObject"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "catalogi:informatieobjecttype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/InformatieObjectType"
                                                     }
                                                 ]
                                             }
@@ -4624,6 +4560,54 @@
                                                 "oneOf": [
                                                     {
                                                         "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/Eigenschap"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "zaken:rol": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Rol"
+                                            }
+                                        },
+                                        "zaken:zaakinformatieobject": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ZaakInformatieObject"
+                                            }
+                                        },
+                                        "zaken:zaakobject": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ZaakObject"
+                                            }
+                                        },
+                                        "catalogi:roltype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/RolType"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "documenten:enkelvoudiginformatieobject": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/documenten-api/e82802907c24ea6a11a39c77595c29338d55e8c3/src/openapi.yaml#/components/schemas/EnkelvoudigInformatieObject"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "catalogi:informatieobjecttype": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "$ref": "https://raw.githubusercontent.com/vng-Realisatie/catalogi-api/e2e037d3b901d38c58b0e1339610347bf02279a5/src/openapi.yaml#/components/schemas/InformatieObjectType"
                                                     }
                                                 ]
                                             }
@@ -9791,7 +9775,7 @@
                 },
                 "include": {
                     "title": "Include",
-                    "description": "Sluit de gespecifieerde gerelateerde resources in in het antwoord. Indien de waarde '*' opgegeven is, dan worden alle mogelijke inclusions opgenomen.\n\nUitleg bij mogelijke waarden:\n\n* `zaaktype` - zaaktype\n* `hoofdzaak` - hoofdzaak\n* `deelzaken` - deelzaken\n* `eigenschappen` - eigenschappen\n* `status` - status\n* `resultaat` - resultaat\n* `hoofdzaak.zaaktype` - hoofdzaak.zaaktype\n* `hoofdzaak.status` - hoofdzaak.status\n* `hoofdzaak.status.statustype` - hoofdzaak.status.statustype\n* `hoofdzaak.resultaat` - hoofdzaak.resultaat\n* `hoofdzaak.resultaat.resultaattype` - hoofdzaak.resultaat.resultaattype\n* `deelzaken.zaaktype` - deelzaken.zaaktype\n* `deelzaken.status` - deelzaken.status\n* `deelzaken.status.statustype` - deelzaken.status.statustype\n* `deelzaken.resultaat` - deelzaken.resultaat\n* `deelzaken.resultaat.resultaattype` - deelzaken.resultaat.resultaattype\n* `eigenschappen.eigenschap` - eigenschappen.eigenschap\n* `status.statustype` - status.statustype\n* `resultaat.resultaattype` - resultaat.resultaattype\n* `*` - *",
+                    "description": "Sluit de gespecifieerde gerelateerde resources in in het antwoord. Indien de waarde '*' opgegeven is, dan worden alle mogelijke inclusions opgenomen.\n\nUitleg bij mogelijke waarden:\n\n* `zaaktype` - zaaktype\n* `hoofdzaak` - hoofdzaak\n* `deelzaken` - deelzaken\n* `eigenschappen` - eigenschappen\n* `status` - status\n* `resultaat` - resultaat\n* `hoofdzaak.zaaktype` - hoofdzaak.zaaktype\n* `hoofdzaak.status` - hoofdzaak.status\n* `hoofdzaak.status.statustype` - hoofdzaak.status.statustype\n* `hoofdzaak.resultaat` - hoofdzaak.resultaat\n* `hoofdzaak.resultaat.resultaattype` - hoofdzaak.resultaat.resultaattype\n* `deelzaken.zaaktype` - deelzaken.zaaktype\n* `deelzaken.status` - deelzaken.status\n* `deelzaken.status.statustype` - deelzaken.status.statustype\n* `deelzaken.resultaat` - deelzaken.resultaat\n* `deelzaken.resultaat.resultaattype` - deelzaken.resultaat.resultaattype\n* `eigenschappen.eigenschap` - eigenschappen.eigenschap\n* `status.statustype` - status.statustype\n* `resultaat.resultaattype` - resultaat.resultaattype\n* `rollen` - rollen\n* `zaakinformatieobjecten` - zaakinformatieobjecten\n* `zaakobjecten` - zaakobjecten\n* `rollen.roltype` - rollen.roltype\n* `zaakinformatieobjecten.informatieobject` - zaakinformatieobjecten.informatieobject\n* `zaakinformatieobjecten.informatieobject.informatieobjecttype` - zaakinformatieobjecten.informatieobject.informatieobjecttype\n* `*` - *",
                     "type": "string",
                     "enum": [
                         "zaaktype",
@@ -9813,6 +9797,12 @@
                         "eigenschappen.eigenschap",
                         "status.statustype",
                         "resultaat.resultaattype",
+                        "rollen",
+                        "zaakinformatieobjecten",
+                        "zaakobjecten",
+                        "rollen.roltype",
+                        "zaakinformatieobjecten.informatieobject",
+                        "zaakinformatieobjecten.informatieobject.informatieobjecttype",
                         "*"
                     ]
                 }

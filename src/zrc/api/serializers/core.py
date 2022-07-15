@@ -195,7 +195,7 @@ class ZaakSerializer(
         source="rol_set",
     )
     status = serializers.HyperlinkedRelatedField(
-        source="current_status_uuid",
+        source="current_status",
         read_only=True,
         allow_null=True,
         view_name="status-detail",
@@ -322,13 +322,20 @@ class ZaakSerializer(
         "resultaat.resultaattype": external_serializer_factory(
             "catalogi", "ResultaatType"
         ),
-        # Not yet part of spec for `Zaak` as of 1.1.x (should be added in 1.2.x):
-        # "rollen": "...",
-        # "zaakinformatieobjecten": "...",
-        # "zaakobjecten": "...",
-        # "rollen.roltype": "...",
-        # "zaakinformatieobjecten.informatieobject": "...",
-        # "zaakinformatieobjecten.informatieobject.informatieobjecttype": "...",
+        "rollen": "zrc.api.serializers.RolSerializer",
+        "zaakinformatieobjecten": "zrc.api.serializers.ZaakInformatieObjectSerializer",
+        "zaakobjecten": "zrc.api.serializers.ZaakObjectSerializer",
+        "rollen.roltype": external_serializer_factory("catalogi", "RolType"),
+        "zaakinformatieobjecten.informatieobject": external_serializer_factory(
+            "documenten",
+            "EnkelvoudigInformatieObject",
+            fields={
+                "informatieobjecttype": InclusionsURLField(),
+            },
+        ),
+        "zaakinformatieobjecten.informatieobject.informatieobjecttype": external_serializer_factory(
+            "catalogi", "InformatieObjectType"
+        ),
     }
 
     class Meta:
@@ -1144,54 +1151,6 @@ class RolSerializer(PolymorphicSerializer):
             ", vanuit het belang van BETROKKENE in haar ROL bij een ZAAK."
         ),
     )
-
-    inclusion_serializers = {
-        "zaaktype": external_serializer_factory("catalogi", "ZaakType"),
-        "hoofdzaak": "zrc.api.serializers.ZaakSerializer",
-        "deelzaken": "zrc.api.serializers.ZaakSerializer",
-        "eigenschappen": "zrc.api.serializers.ZaakEigenschapSerializer",
-        "status": "zrc.api.serializers.StatusSerializer",
-        "resultaat": "zrc.api.serializers.ResultaatSerializer",
-        "hoofdzaak.zaaktype": external_serializer_factory("catalogi", "ZaakType"),
-        "hoofdzaak.status": "zrc.api.serializers.StatusSerializer",
-        "hoofdzaak.status.statustype": external_serializer_factory(
-            "catalogi", "StatusType"
-        ),
-        "hoofdzaak.resultaat": "zrc.api.serializers.ResultaatSerializer",
-        "hoofdzaak.resultaat.resultaattype": external_serializer_factory(
-            "catalogi", "ResultaatType"
-        ),
-        "deelzaken.zaaktype": external_serializer_factory("catalogi", "ZaakType"),
-        "deelzaken.status": "zrc.api.serializers.StatusSerializer",
-        "deelzaken.status.statustype": external_serializer_factory(
-            "catalogi", "StatusType"
-        ),
-        "deelzaken.resultaat": "zrc.api.serializers.ResultaatSerializer",
-        "deelzaken.resultaat.resultaattype": external_serializer_factory(
-            "catalogi", "ResultaatType"
-        ),
-        "eigenschappen.eigenschap": external_serializer_factory(
-            "catalogi", "Eigenschap"
-        ),
-        "status.statustype": external_serializer_factory("catalogi", "StatusType"),
-        "resultaat.resultaattype": external_serializer_factory(
-            "catalogi", "ResultaatType"
-        ),
-        "rollen": "zrc.api.serializers.RolSerializer",
-        "zaakinformatieobjecten": "zrc.api.serializers.ZaakInformatieObjectSerializer",
-        "zaakobjecten": "zrc.api.serializers.ZaakObjectSerializer",
-        "rollen.roltype": external_serializer_factory("catalogi", "RolType"),
-        "zaakinformatieobjecten.informatieobject": external_serializer_factory(
-            "documenten",
-            "EnkelvoudigInformatieObject",
-            fields={
-                "informatieobjecttype": InclusionsURLField(),
-            },
-        ),
-        "zaakinformatieobjecten.informatieobject.informatieobjecttype": external_serializer_factory(
-            "catalogi", "InformatieObjectType"
-        ),
-    }
 
     class Meta:
         model = Rol
