@@ -40,6 +40,8 @@ from zrc.datamodel.tests.factories import (
     ZaakBesluitFactory,
     ZaakEigenschapFactory,
     ZaakFactory,
+    ZaakInformatieObjectFactory,
+    ZaakObjectFactory,
 )
 from zrc.tests.constants import POLYGON_AMSTERDAM_CENTRUM
 from zrc.tests.utils import (
@@ -717,6 +719,55 @@ class ZakenTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         error = get_validation_errors(response, "processobject.registratie")
         self.assertEqual(error["code"], "required")
+
+    def test_missing_gerelateerde_externe_zaken(self):
+        self.applicatie.heeft_alle_autorisaties = True
+        self.applicatie.save()
+
+        zaak = ZaakFactory()
+
+        response = self.client.patch(
+            reverse(zaak),
+            {
+                "gerelateerdeExterneZaken": {
+                    "aanvraagdatum": (timezone.now() - timedelta(days=3)).strftime(
+                        "%Y-%m-%d"
+                    ),
+                    "datumStatusGezet": timezone.now() - timedelta(days=1),
+                    "zaaktypeOmschrijvingGeneriek": "Omschrijving XY",
+                    "zaaktypecode": "XYZ",
+                }
+            },
+            **ZAAK_WRITE_KWARGS,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        error = get_validation_errors(response, "gerelateerdeExterneZaken.aardRelatie")
+        self.assertEqual(error["code"], "required")
+
+    def test_relations(self):
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
+
+        rol = RolFactory(zaak=zaak)
+        zaakinformatieobject = ZaakInformatieObjectFactory(zaak=zaak)
+        zaakobject = ZaakObjectFactory(zaak=zaak)
+
+        zaak_url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+        response = self.client.get(zaak_url, **ZAAK_READ_KWARGS)
+
+        response_data = response.json()
+
+        self.assertEqual(response_data["rollen"], [f"http://testserver{reverse(rol)}"])
+
+        self.assertEqual(
+            response_data["zaakinformatieobjecten"],
+            [f"http://testserver{reverse(zaakinformatieobject)}"],
+        )
+
+        self.assertEqual(
+            response_data["zaakobjecten"], [f"http://testserver{reverse(zaakobject)}"]
+        )
 
 
 @override_settings(

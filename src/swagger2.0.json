@@ -22,9 +22,9 @@
     ],
     "securityDefinitions": {
         "JWT-Claims": {
-            "bearerFormat": "JWT",
+            "type": "http",
             "scheme": "bearer",
-            "type": "http"
+            "bearerFormat": "JWT"
         }
     },
     "security": [
@@ -262,13 +262,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -572,13 +572,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -653,13 +653,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -1289,13 +1289,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -1370,13 +1370,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -1714,13 +1714,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -1795,13 +1795,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -2039,13 +2039,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -2383,13 +2383,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -2464,13 +2464,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -3038,13 +3038,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -3530,13 +3530,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -4438,13 +4438,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -4549,13 +4549,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -5014,13 +5014,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -5285,13 +5285,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -5627,13 +5627,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -5708,13 +5708,13 @@
                         "required": false,
                         "type": "string",
                         "examples": {
-                            "multipleValues": {
-                                "summary": "Meerdere ETag-waardes",
-                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
-                            },
                             "oneValue": {
                                 "summary": "E\u00e9n ETag-waarde",
                                 "value": "\"79054025255fb1a26e4bc422aef54eb4\""
+                            },
+                            "multipleValues": {
+                                "summary": "Meerdere ETag-waardes",
+                                "value": "\"79054025255fb1a26e4bc422aef54eb4\", \"e4d909c290d0fb1ca068ffaddf22cbd0\""
                             }
                         }
                     }
@@ -9087,6 +9087,15 @@
                     "readOnly": true,
                     "uniqueItems": true
                 },
+                "rollen": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "readOnly": true,
+                    "uniqueItems": true
+                },
                 "status": {
                     "title": "Status",
                     "description": "Indien geen status bekend is, dan is de waarde 'null'",
@@ -9094,6 +9103,24 @@
                     "format": "uri",
                     "readOnly": true,
                     "x-nullable": true
+                },
+                "zaakinformatieobjecten": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "readOnly": true,
+                    "uniqueItems": true
+                },
+                "zaakobjecten": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "readOnly": true,
+                    "uniqueItems": true
                 },
                 "kenmerken": {
                     "description": "Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`.",
