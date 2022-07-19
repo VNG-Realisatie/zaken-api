@@ -131,7 +131,6 @@ class US153TestCase(JWTAuthMixin, APITestCase):
 
         excluded_fields = (
             "verlenging",
-            "gerelateerdeExterneZaken",
             "processobject",
             "opschorting",
         )
@@ -235,7 +234,6 @@ class US153TestCase(JWTAuthMixin, APITestCase):
         data = zaak.copy()
         excluded_fields = (
             "verlenging",
-            "gerelateerdeExterneZaken",
             "processobject",
             "opschorting",
         )

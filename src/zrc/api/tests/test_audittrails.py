@@ -143,7 +143,6 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         excluded_fields = (
             "verlenging",
-            "gerelateerde_externe_zaken",
             "processobject",
         )
 
