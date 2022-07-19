@@ -8741,97 +8741,6 @@
                 }
             }
         },
-        "GerelateerdeExterneZaken": {
-            "description": "Een ZAAK bij een andere organisatie waarin een bijdrage geleverd wordt aan het bereiken van de uitkomst van de onderhanden ZAAK.",
-            "required": [
-                "aanvraagdatum",
-                "aardRelatie",
-                "datumStatusGezet",
-                "zaaktypeOmschrijvingGeneriek",
-                "zaaktypecode"
-            ],
-            "type": "object",
-            "properties": {
-                "aanvraagdatum": {
-                    "title": "Aanvraagdatum",
-                    "description": "De datum waarop verzocht is om de behandeling van de gerelateerde ZAAK uit te gaan voeren.",
-                    "type": "string",
-                    "format": "date"
-                },
-                "aardRelatie": {
-                    "title": "Aard relatie",
-                    "description": "De datum waarop verzocht is om de behandeling van de gerelateerde ZAAK uit te gaan voeren.",
-                    "type": "string",
-                    "enum": [
-                        "opdrachtgever",
-                        "opdrachtnemer"
-                    ]
-                },
-                "datumStatusGezet": {
-                    "title": "Datum status gezet",
-                    "description": "De datum waarop de gerelateerde ZAAK de laatst bekende status heeft verkregen.",
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "eindDatum": {
-                    "title": "Einddatum",
-                    "description": "De datum waarop de uitvoering van de gerelateerde ZAAK afgerond is.",
-                    "type": "string",
-                    "format": "date"
-                },
-                "resultaatomschrijving": {
-                    "title": "Resultaatomschrijving",
-                    "description": "Een korte omschrijving wat het resultaat van de gerelateerde ZAAK inhoudt.",
-                    "type": "string",
-                    "maxLength": 80
-                },
-                "startdatum": {
-                    "title": "Startdatum",
-                    "description": "De datum waarop met de uitvoering van de gerelateerde ZAAK is gestart.",
-                    "type": "string",
-                    "format": "date"
-                },
-                "statusOmschrijvingGeneriek": {
-                    "title": "Status-omschrijving generiek",
-                    "description": "Algemeen gehanteerde omschrijving van de aard van de laatst bekende status van de gerelateerde ZAAK.",
-                    "type": "string",
-                    "maxLength": 80
-                },
-                "verantwoordelijkeOrganisatie": {
-                    "title": "Verantwoordelijke organisatie",
-                    "description": "Het RSIN van de organisatie die verantwoordelijk is voor de behandeling van de gerelateerde ZAAK.",
-                    "type": "string",
-                    "maxLength": 9
-                },
-                "zaakidentificatie": {
-                    "title": "Zaakidentificatie",
-                    "description": "De unieke identificatie van de gerelateerde ZAAK.",
-                    "type": "string",
-                    "maxLength": 40
-                },
-                "zaaktypeOmschrijvingGeneriek": {
-                    "title": "Zaaktype-omschrijving generiek",
-                    "description": "Algemeen gehanteerde omschrijving van de aard van ZAAKen van het ZAAKTYPE waartoe de gerelateerde zaak behoort.",
-                    "type": "string",
-                    "maxLength": 80,
-                    "minLength": 1
-                },
-                "zaaktypecode": {
-                    "title": "Zaaktypecode",
-                    "description": "De algemeen gehanteerde code van de aard van ZAAKen van het ZAAKTYPE waartoe de gerelateerde zaak behoort.",
-                    "type": "string",
-                    "maxLength": 10,
-                    "minLength": 1
-                },
-                "url": {
-                    "title": "Url",
-                    "type": "string",
-                    "format": "uri",
-                    "maxLength": 200
-                }
-            },
-            "x-nullable": true
-        },
         "Processobject": {
             "description": "Specificatie van de attribuutsoort van het object, subject of gebeurtenis  waarop, vanuit archiveringsoptiek, de zaak betrekking heeft en dat bepalend is voor de start van de archiefactietermijn.",
             "required": [
@@ -9190,9 +9099,6 @@
                     "type": "string",
                     "format": "date",
                     "x-nullable": true
-                },
-                "gerelateerdeExterneZaken": {
-                    "$ref": "#/definitions/GerelateerdeExterneZaken"
                 },
                 "processobject": {
                     "$ref": "#/definitions/Processobject"
