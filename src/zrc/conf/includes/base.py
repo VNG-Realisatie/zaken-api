@@ -193,6 +193,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 MEDIA_URL = "/media/"
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 #
 # Sending EMAIL
 #
@@ -309,7 +311,7 @@ X_FRAME_OPTIONS = "DENY"
 #
 # Silenced checks
 #
-SILENCED_SYSTEM_CHECKS = ["rest_framework.W001"]
+SILENCED_SYSTEM_CHECKS = ["rest_framework.W001", "axes.W002", "axes.W003"]
 
 #
 # Custom settings
