@@ -1,10 +1,17 @@
 """
 Test that the caching mechanisms are in place.
 """
+from unittest.mock import patch
+
 from rest_framework import status
-from rest_framework.test import APITestCase, APITransactionTestCase
-from vng_api_common.tests import CacheMixin, JWTAuthMixin, reverse
+from rest_framework.test import APITestCase, APITransactionTestCase, override_settings
+from vng_api_common.constants import (
+    Archiefnominatie,
+    BrondatumArchiefprocedureAfleidingswijze,
+)
+from vng_api_common.tests import CacheMixin, JWTAuthMixin, get_operation_url, reverse
 from vng_api_common.tests.schema import get_spec
+from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.tests.factories import (
     ResultaatFactory,
@@ -17,6 +24,19 @@ from zrc.datamodel.tests.factories import (
 from zrc.tests.utils import ZAAK_READ_KWARGS
 
 from .mixins import ZaakInformatieObjectSyncMixin
+
+ZTC_ROOT = "https://example.com/ztc/api/v1"
+CATALOGUS = f"{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04"
+ZAAKTYPE = f"{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f"
+STATUSTYPE = f"{ZAAKTYPE}/statustypen/5b348dbf-9301-410b-be9e-83723e288785"
+RESULTAATTYPE = f"{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785"
+
+EIND_STATUSTYPE_RESPONSE = {
+    "url": STATUSTYPE,
+    "zaaktype": ZAAKTYPE,
+    "volgnummer": 2,
+    "isEindstatus": True,
+}
 
 
 class ZaakCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
@@ -73,18 +93,51 @@ class ZaakCacheTransactionTests(JWTAuthMixin, APITransactionTestCase):
             self.max_vertrouwelijkheidaanduiding,
         )
 
-    def test_invalidate_new_status(self):
+    @override_settings(
+        LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+        ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
+    )
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_invalidate_new_status(self, *mocks):
         """
         Status URL is part of the resource, so new status invalidates the ETag.
         """
-        zaak = ZaakFactory.create(with_etag=True)
-        etag = zaak._etag
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE, with_etag=True)
+        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
 
-        # create new status
-        StatusFactory.create(zaak=zaak)
+        ResultaatFactory(zaak=zaak, resultaattype=RESULTAATTYPE)
+
+        responses = {
+            RESULTAATTYPE: {
+                "url": RESULTAATTYPE,
+                "zaaktype": ZAAKTYPE,
+                "archiefactietermijn": "P10Y",
+                "archiefnominatie": Archiefnominatie.blijvend_bewaren,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": BrondatumArchiefprocedureAfleidingswijze.afgehandeld,
+                    "datumkenmerk": None,
+                    "objecttype": None,
+                    "procestermijn": None,
+                },
+            },
+            STATUSTYPE: EIND_STATUSTYPE_RESPONSE,
+        }
+
+        status_create_url = get_operation_url("status_create")
+        data = {
+            "zaak": zaak_url,
+            "statustype": STATUSTYPE,
+            "datumStatusGezet": "2018-10-18T20:00:00Z",
+        }
+
+        with mock_client(responses):
+            resp = self.client.post(status_create_url, data)
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, resp.data)
 
         response = self.client.get(
-            reverse(zaak), HTTP_IF_NONE_MATCH=f'"{etag}"', **ZAAK_READ_KWARGS
+            reverse(zaak), HTTP_IF_NONE_MATCH=f'"{zaak._etag}"', **ZAAK_READ_KWARGS
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
