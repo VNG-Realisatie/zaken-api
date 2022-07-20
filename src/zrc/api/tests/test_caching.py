@@ -5,10 +5,12 @@ from unittest.mock import patch
 
 from rest_framework import status
 from rest_framework.test import APITestCase, APITransactionTestCase, override_settings
-from vng_api_common.constants import Archiefnominatie, BrondatumArchiefprocedureAfleidingswijze
+from vng_api_common.constants import (
+    Archiefnominatie,
+    BrondatumArchiefprocedureAfleidingswijze,
+)
 from vng_api_common.tests import CacheMixin, JWTAuthMixin, get_operation_url, reverse
 from vng_api_common.tests.schema import get_spec
-
 from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.tests.factories import (
@@ -101,7 +103,7 @@ class ZaakCacheTransactionTests(JWTAuthMixin, APITransactionTestCase):
         """
         Status URL is part of the resource, so new status invalidates the ETag.
         """
-        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE , with_etag=True)
+        zaak = ZaakFactory.create(zaaktype=ZAAKTYPE, with_etag=True)
         zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
 
         ResultaatFactory(zaak=zaak, resultaattype=RESULTAATTYPE)
