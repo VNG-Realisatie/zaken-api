@@ -2,6 +2,36 @@
 Wijzigingen
 ===========
 
+1.3.0-rc2 (2022-07-19)
+===========
+
+API spec changes
+----------------
+
+* Removed gerelateerdeExterneZaken from the Zaken resource.
+* Query Statussen on a specific Zaak,  Statustype and indicatieActueleStatus to retrieve the current status.
+
+1.3.0-rc1 (2022-07-06)
+===========
+
+API spec changes
+----------------
+
+* Reverted expanded relations
+* Check added so related resources cannot be added or updated once a Zaak is `gearchiveerd`.
+* Add missing RGBZ attributes for existing resources. Among other things to supprt TMLO
+* Zaakobject can be configured in Catalogi API and refered to via zaakobjecttype.
+* Zaaktypeidentificatie added to Zaken resource.
+* Ordering of a list of Zaken can be done on the following attributes:
+
+  - startdatum
+  - startdatum
+  - einddatum
+  - -einddatum
+  - publicatiedatum
+  - -publicatiedatum
+  - archiefactiedatum
+
 1.2.0 (2021-08-27)
 ==================
 
