@@ -48,7 +48,6 @@ COPY ./setup.cfg /app/setup.cfg
 COPY ./bin/runtests.sh /runtests.sh
 
 # Stage 3.3 - Copy source code
-#COPY --from=frontend-build /app/src/zrc/static/css /app/src/zrc/static/css
 COPY --from=frontend-build /app/src/zrc/static/bundles /app/src/zrc/static/bundles
 COPY ./src /app/src
 ARG COMMIT_HASH
