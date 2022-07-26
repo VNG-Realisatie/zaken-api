@@ -177,10 +177,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    os.path.join(DJANGO_PROJECT_DIR, "static"),
-    os.path.join(BASE_DIR, "node_modules", "font-awesome"),
-)
+STATICFILES_DIRS = (os.path.join(DJANGO_PROJECT_DIR, "static"),)
 
 # List of finder classes that know how to find static files in
 # various locations.
