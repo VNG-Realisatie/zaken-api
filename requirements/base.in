@@ -13,9 +13,11 @@ Django~=3.2.0
 django-axes
 django-choices
 django-cors-middleware
-django-markup
+django-markup[all_filter_dependencies]>=1.5.0
 django-redis
 django-solo>=1.2.0
+
+docutils<0.18
 
 # API libraries
 djangorestframework
