@@ -106,7 +106,7 @@ info:
   license:
     name: EUPL 1.2
     url: https://opensource.org/licenses/EUPL-1.2
-  version: 1.3.0-rc2
+  version: 1.3.0-rc3
 security:
 - JWT-Claims: []
 paths:
@@ -2829,7 +2829,11 @@ paths:
         description: Multiple values may be separated by commas.
         required: false
         schema:
-          type: string
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
       - name: archiefactiedatum
         in: query
         description: De datum waarop het gearchiveerde zaakdossier vernietigd moet
@@ -2874,7 +2878,11 @@ paths:
         description: Multiple values may be separated by commas.
         required: false
         schema:
-          type: string
+          type: array
+          items:
+            type: string
+        style: form
+        explode: false
       - name: startdatum
         in: query
         description: De datum waarop met de uitvoering van de zaak is gestart
@@ -3103,16 +3111,20 @@ paths:
         description: Het veld waarop de resultaten geordend worden.
         required: false
         schema:
-          type: string
-          enum:
-          - startdatum
-          - -startdatum
-          - einddatum
-          - -einddatum
-          - publicatiedatum
-          - -publicatiedatum
-          - archiefactiedatum
-          - -archiefactiedatum
+          type: array
+          items:
+            type: string
+            enum:
+            - startdatum
+            - -startdatum
+            - einddatum
+            - -einddatum
+            - publicatiedatum
+            - -publicatiedatum
+            - archiefactiedatum
+            - -archiefactiedatum
+        style: form
+        explode: false
       - name: page
         in: query
         description: Een pagina binnen de gepagineerde set resultaten.
@@ -7537,10 +7549,11 @@ components:
           - blijvend_bewaren
           - vernietigen
         archiefnominatie__in:
-          title: Archiefnominatie  in
           description: Multiple values may be separated by commas.
-          type: string
-          minLength: 1
+          type: array
+          items:
+            type: string
+            nullable: true
         archiefactiedatum:
           title: Archiefactiedatum
           description: De datum waarop het gearchiveerde zaakdossier vernietigd moet
@@ -7593,10 +7606,11 @@ components:
           - gearchiveerd_procestermijn_onbekend
           - overgedragen
         archiefstatus__in:
-          title: Archiefstatus  in
           description: Multiple values may be separated by commas.
-          type: string
-          minLength: 1
+          type: array
+          items:
+            type: string
+            nullable: true
         startdatum:
           title: Startdatum
           description: De datum waarop met de uitvoering van de zaak is gestart
