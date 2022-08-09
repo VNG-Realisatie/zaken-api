@@ -135,6 +135,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "vng_api_common.middleware.APIVersionHeaderMiddleware",
     "zrc.middleware.DeprecationMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = "zrc.urls"
@@ -289,6 +290,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Allow logging in with both username+password and email+password
 AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesBackend",
     "zrc.accounts.backends.UserModelEmailBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
@@ -308,7 +310,7 @@ X_FRAME_OPTIONS = "DENY"
 #
 # Silenced checks
 #
-SILENCED_SYSTEM_CHECKS = ["rest_framework.W001", "axes.W002", "axes.W003"]
+SILENCED_SYSTEM_CHECKS = ["rest_framework.W001"]
 
 #
 # Custom settings
