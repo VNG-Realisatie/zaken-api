@@ -39,11 +39,3 @@ AXES_BEHIND_REVERSE_PROXY = False
 # ZRC specific settings
 #
 NOTIFICATIONS_DISABLED = True
-
-#
-# Jenkins settings
-#
-INSTALLED_APPS += ["zrc.tests", "django_jenkins"]
-PROJECT_APPS = [app for app in INSTALLED_APPS if app.startswith("zrc.")]
-
-JENKINS_TASKS = ("django_jenkins.tasks.run_pylint", "django_jenkins.tasks.run_pep8")

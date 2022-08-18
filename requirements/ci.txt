@@ -58,7 +58,6 @@ django==3.2.14
     #   django-capture-on-commit-callbacks
     #   django-choices
     #   django-filter
-    #   django-jenkins
     #   django-markup
     #   django-redis
     #   django-rest-framework-condition
@@ -85,8 +84,6 @@ django-ipware==4.0.2
     # via
     #   -r requirements/base.txt
     #   django-axes
-django-jenkins==0.110.0
-    # via -r requirements/testing.in
 django-markup[all_filter_dependencies]==1.5
     # via -r requirements/base.txt
 django-redis==5.2.0

@@ -3,8 +3,8 @@ version: '3.4'
 services:
   tests:
     build:
-      context: ./
-      target: jenkins
+      context: .
+      target: ci
     volumes:
       - ${WORKSPACE}/reports:/app/reports
     environment:

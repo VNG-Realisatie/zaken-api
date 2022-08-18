@@ -27,8 +27,8 @@ COPY src/zrc/sass/ /app/src/zrc/sass/
 RUN npm run build
 
 
-# Stage 3 - Prepare jenkins tests image
-FROM build AS jenkins
+# Stage 3 - Prepare CI tests image
+FROM build AS ci
 
 # Stage 3.1 - Set up the needed testing/development dependencies
 # install all the dependencies for GeoDjango
