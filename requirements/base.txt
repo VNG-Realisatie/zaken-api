@@ -188,8 +188,6 @@ uritemplate==4.1.1
     #   drf-yasg
 urllib3==1.26.11
     # via requests
-uwsgi==2.0.20
-    # via -r requirements/base.in
 vng-api-common==1.8.0
     # via -r requirements/base.in
 webencodings==0.5.1

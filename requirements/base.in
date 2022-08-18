@@ -29,6 +29,5 @@ drf-writable-nested
 vng-api-common
 gemma-zds-client<1.0
 
-# wsgi-server/monitoring
-uwsgi
+# monitoring
 raven

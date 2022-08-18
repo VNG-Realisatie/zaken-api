@@ -9,16 +9,25 @@ pip-compile^
     --no-emit-index-url^
     requirements/base.in
 
-REM Dependencies for testing
+REM Production deps
+pip-compile^
+    --no-emit-index-url^
+    --output-file requirements/production.txt^
+    requirements/base.txt^
+    requirements/production.in
+
+REM Dependencies for CI
 pip-compile^
     --no-emit-index-url^
     --output-file requirements/ci.txt^
     requirements/base.txt^
-    requirements/test-tools.in
+    requirements/testing.in^
+    requirements/ci.in
 
 REM Dev depedencies - exact same set as CI + some extra tooling
 pip-compile^
     --no-emit-index-url^
     --output-file requirements/dev.txt^
-    requirements/ci.txt^
+    requirements/base.txt^
+    requirements/testing.in^
     requirements/dev.in

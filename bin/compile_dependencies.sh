@@ -20,12 +20,20 @@ cd $toplevel
 
 export CUSTOM_COMPILE_COMMAND="./bin/compile_dependencies.sh"
 
-# Base (& prod) deps
+# Base deps
 pip-compile \
     --no-emit-index-url \
     --allow-unsafe \
     "$@" \
     requirements/base.in
+
+# Production deps
+pip-compile \
+    --no-emit-index-url \
+    --allow-unsafe \
+    --output-file requirements/production.txt \
+    requirements/base.txt \
+    requirements/production.in
 
 # Dependencies for CI
 pip-compile \
@@ -33,7 +41,8 @@ pip-compile \
     --allow-unsafe \
     --output-file requirements/ci.txt \
     requirements/base.txt \
-    requirements/test-tools.in
+    requirements/testing.in \
+    requirements/ci.in
 
 # Dev depedencies - exact same set as CI + some extra tooling
 pip-compile \
@@ -41,4 +50,5 @@ pip-compile \
     --allow-unsafe \
     --output-file requirements/dev.txt \
     requirements/ci.txt \
+    requirements/testing.in \
     requirements/dev.in
