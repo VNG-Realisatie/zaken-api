@@ -1,6 +1,5 @@
 # Dependencies only relevant for (unit) testing
 black
-coverage
 django-capture-on-commit-callbacks
 django-webtest
 factory-boy
