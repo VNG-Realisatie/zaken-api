@@ -27,8 +27,8 @@ COPY src/zrc/sass/ /app/src/zrc/sass/
 RUN npm run build
 
 
-# Stage 3 - Prepare jenkins tests image
-FROM build AS jenkins
+# Stage 3 - Prepare CI tests image
+FROM build AS ci
 
 # Stage 3.1 - Set up the needed testing/development dependencies
 # install all the dependencies for GeoDjango
@@ -45,7 +45,6 @@ RUN pip install -r requirements/ci.txt --exists-action=s
 
 # Stage 3.2 - Set up testing config
 COPY ./setup.cfg /app/setup.cfg
-COPY ./bin/runtests.sh /runtests.sh
 
 # Stage 3.3 - Copy source code
 COPY --from=frontend-build /app/src/zrc/static/bundles /app/src/zrc/static/bundles
@@ -54,7 +53,6 @@ ARG COMMIT_HASH
 ENV GIT_SHA=${COMMIT_HASH}
 
 RUN mkdir /app/log
-CMD ["/runtests.sh"]
 
 
 # Stage 4 - Build docker image suitable for execution and deployment

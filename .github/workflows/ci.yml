@@ -54,7 +54,7 @@ jobs:
           sudo apt-get install libgdal-dev gdal-bin
 
       - name: Install dependencies
-        run: pip install -r requirements/ci.txt codecov
+        run: pip install -r requirements/ci.txt
 
       - name: Build frontend
         run: |
@@ -63,7 +63,9 @@ jobs:
       - name: Run tests
         run: |
           python src/manage.py collectstatic --noinput --link
-          coverage run src/manage.py test src
+          coverage run src/manage.py test zrc
+          coverage xml
+
       - name: Publish coverage report
         uses: codecov/codecov-action@v1
 
