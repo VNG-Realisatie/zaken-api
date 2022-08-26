@@ -1,6 +1,0 @@
-apiVersion: v2
-name: zrc
-description: A Helm chart for postgis for zaken-api
-type: application
-version: 0.1.0
-appVersion: "14.2.0"
