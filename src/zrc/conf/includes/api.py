@@ -44,6 +44,7 @@ SPECTACULAR_SETTINGS = {
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
     "DEFAULT_GENERATOR_CLASS": "vng_api_common.generators.OpenAPISchemaGenerator",
     "PREPROCESSING_HOOKS": ["vng_api_common.utils.preprocessing_filter_spec"],
+    "GET_MOCK_REQUEST": "vng_api_common.generators.build_mock_request",
     "APPEND_COMPONENTS": {
         "securitySchemes": {
             "JWT-Claims": {
