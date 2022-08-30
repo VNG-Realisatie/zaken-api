@@ -1,9 +1,8 @@
-from django.conf import settings
 from django.conf.urls import url
 from django.urls import include, path
 
 from vng_api_common import routers
-from vng_api_common.schema import SchemaView
+from vng_api_common.schema import SchemaViewAPI, SchemaViewRedoc
 
 from .viewsets import (
     KlantContactViewSet,
@@ -49,16 +48,14 @@ urlpatterns = [
             [
                 # API documentation
                 url(
-                    r"^schema/openapi(?P<format>\.json|\.yaml)$",
-                    SchemaView.without_ui(cache_timeout=settings.SPEC_CACHE_TIMEOUT),
+                    r"^schema/openapi.yaml",
+                    SchemaViewAPI.as_view(),
                     name="schema-json",
                 ),
                 url(
                     r"^schema/$",
-                    SchemaView.with_ui(
-                        "redoc", cache_timeout=settings.SPEC_CACHE_TIMEOUT
-                    ),
-                    name="schema-redoc",
+                    SchemaViewRedoc.as_view(url_name="schema"),
+                    name="schema",
                 ),
                 # actual API
                 url(r"^", include(router.urls)),

@@ -8,36 +8,59 @@ REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
 
 SECURITY_DEFINITION_NAME = "JWT-Claims"
+REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "vng_api_common.inspectors.view.AutoSchema"
 
-SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
-SWAGGER_SETTINGS.update(
-    {
-        "DEFAULT_INFO": "zrc.api.schema.info",
-        "DEFAULT_AUTO_SCHEMA_CLASS": "zrc.api.inspectors.AutoSchema",
-        "SECURITY_DEFINITIONS": {
-            SECURITY_DEFINITION_NAME: {
-                # OAS 3.0
+# SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
+# SWAGGER_SETTINGS.update(
+#     {
+#         "DEFAULT_INFO": "zrc.api.schema.info",
+#         "DEFAULT_AUTO_SCHEMA_CLASS": "zrc.api.inspectors.AutoSchema",
+#         "SECURITY_DEFINITIONS": {
+#             SECURITY_DEFINITION_NAME: {
+#                 # OAS 3.0
+#                 "type": "http",
+#                 "scheme": "bearer",
+#                 "bearerFormat": "JWT",
+#                 # not official...
+#                 # 'scopes': {},  # TODO: set up registry that's filled in later...
+#                 # Swagger 2.0
+#                 # 'name': 'Authorization',
+#                 # 'in': 'header'
+#                 # 'type': 'apiKey',
+#             }
+#         },
+#         "DEFAULT_FIELD_INSPECTORS": (
+#             "vng_api_common.inspectors.geojson.GeometryFieldInspector",
+#         )
+#         + BASE_SWAGGER_SETTINGS["DEFAULT_FIELD_INSPECTORS"],
+#         "DEFAULT_FILTER_INSPECTORS": (
+#             "vng_api_common.inspectors.query.FilterInspector",
+#         )
+#         + BASE_SWAGGER_SETTINGS["DEFAULT_FILTER_INSPECTORS"],
+#     }
+# )
+SPECTACULAR_SETTINGS = {
+    "DESCRIPTION": "zrc.api.schema",
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
+    "DEFAULT_GENERATOR_CLASS": "vng_api_common.generators.OpenAPISchemaGenerator",
+    "PREPROCESSING_HOOKS": ["vng_api_common.utils.preprocessing_filter_spec"],
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {
+            "JWT-Claims": {
                 "type": "http",
-                "scheme": "bearer",
+                "in": "header",
+                "name": "Authorization",
                 "bearerFormat": "JWT",
-                # not official...
-                # 'scopes': {},  # TODO: set up registry that's filled in later...
-                # Swagger 2.0
-                # 'name': 'Authorization',
-                # 'in': 'header'
-                # 'type': 'apiKey',
+                "scheme": "bearer",
             }
         },
-        "DEFAULT_FIELD_INSPECTORS": (
-            "vng_api_common.inspectors.geojson.GeometryFieldInspector",
-        )
-        + BASE_SWAGGER_SETTINGS["DEFAULT_FIELD_INSPECTORS"],
-        "DEFAULT_FILTER_INSPECTORS": (
-            "vng_api_common.inspectors.query.FilterInspector",
-        )
-        + BASE_SWAGGER_SETTINGS["DEFAULT_FILTER_INSPECTORS"],
-    }
-)
+    },
+    "SECURITY": [
+        {
+            "JWT-Claims": [],
+        }
+    ],
+}
 
 GEMMA_URL_INFORMATIEMODEL_VERSIE = "1.0"
 

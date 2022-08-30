@@ -3,6 +3,7 @@ import logging
 from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -93,6 +94,74 @@ logger = logging.getLogger(__name__)
 
 
 @conditional_retrieve()
+# @extend_schema_view(
+#     list=extend_schema(
+#         summary="Alle ZAAKen opvragen.",
+#         description="Deze lijst kan gefilterd wordt met query-string parameters."
+#                     " **Opmerking**"
+#                     "- er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd"
+#                     "  bent.",
+#     ),
+#     retrieve=extend_schema(
+#         summary="Een specifieke ZAAK opvragen.",
+#         description="Een specifieke ZAAK opvragen.",
+#     ),
+#     create=extend_schema(
+#         summary="Maak een ZAAK aan.",
+#         description="Indien geen identificatie gegeven is, dan wordt deze automatisch"
+#                     "gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie."
+#                     "**Er wordt gevalideerd op**:"
+#                     "- geldigheid `zaaktype` URL - de resource moet opgevraagd kunnen"
+#                     "worden uit de Catalogi API en de vorm van een ZAAKTYPE hebben."
+#                     "- `zaaktype` is geen concept (`zaaktype.concept` = False)"
+#                     "- `laatsteBetaaldatum` mag niet in de toekomst liggen."
+#                     " - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie"
+#                     "'nvt' is."
+#                     " - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de"
+#                     " waarde 'nog_te_archiveren' heeft."
+#                     " - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de"
+#                     "  waarde 'nog_te_archiveren' heeft."
+#                     " - `archiefstatus` kan alleen een waarde anders dan 'nog_te_archiveren'"
+#                     "  hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut"
+#                     "  `status` de waarde 'gearchiveerd' heeft.",
+#     ),
+#     update=extend_schema(
+#         summary="Werk een ZAAK in zijn geheel bij.",
+#         description="**Er wordt gevalideerd op**"
+#                     " - `zaaktype` mag niet gewijzigd worden."
+#                     " - `identificatie` mag niet gewijzigd worden."
+#                     "- `laatsteBetaaldatum` mag niet in de toekomst liggen."
+#                     " - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie"
+#                     "'nvt' is."
+#                     " - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de"
+#                     "  waarde 'nog_te_archiveren' heeft."
+#                     " - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de"
+#                     "   waarde 'nog_te_archiveren' heeft."
+#                     "  - `archiefstatus` kan alleen een waarde anders dan 'nog_te_archiveren'"
+#                     "   hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut"
+#                     "  `status` de waarde 'gearchiveerd' heeft."
+#
+#                     "**Opmerkingen**"
+#                     " - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd"
+#                     "  bent."
+#                     "- indien een zaak heropend moet worden, doe dit dan door een nieuwe status"
+#                     " toe te voegen die NIET de eindstatus is."
+#                     " Zie de `Status` resource.",
+#     ),
+#     partial_update=extend_schema(
+#         summary="Werk een ZAAK deels bij.",
+#         description="Werk een BESLUITTYPE deels bij. Dit kan alleen als het een concept betreft.",
+#     ),
+#     destroy=extend_schema(
+#         summary="Verwijder een BESLUITTYPE.",
+#         description="Verwijder een BESLUITTYPE. Dit kan alleen als het een concept betreft.",
+#     ),
+#     publish=extend_schema(
+#         summary="Publiceer het concept BESLUITTYPE.",
+#         description="Publiceren van het besluittype zorgt ervoor dat dit in een Besluiten API kan gebruikt worden. "
+#                     "Na het publiceren van een besluittype zijn geen inhoudelijke wijzigingen meer mogelijk."
+#                     "Indien er na het publiceren nog wat gewijzigd moet worden, dan moet je een nieuwe versie aanmaken.",
+#     ))
 class ZaakViewSet(
     NotificationViewSetMixin,
     AuditTrailViewsetMixin,
@@ -109,67 +178,10 @@ class ZaakViewSet(
     `archiefstatus` een andere status heeft dan "nog_te_archiveren". Voor
     praktische redenen is er geen harde validatie regel aan de provider kant.
 
-    create:
-    Maak een ZAAK aan.
-
-    Indien geen identificatie gegeven is, dan wordt deze automatisch
-    gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
-
-    **Er wordt gevalideerd op**:
-    - geldigheid `zaaktype` URL - de resource moet opgevraagd kunnen
-      worden uit de Catalogi API en de vorm van een ZAAKTYPE hebben.
-    - `zaaktype` is geen concept (`zaaktype.concept` = False)
-    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
-    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
-      "nvt" is.
-    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"
-      hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut
-      `status` de waarde "gearchiveerd" heeft.
-
-    list:
-    Alle ZAAKen opvragen.
-
-    Deze lijst kan gefilterd wordt met query-string parameters.
-
-    **Opmerking**
-    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
-      bent.
-
-    retrieve:
-    Een specifieke ZAAK opvragen.
-
-    Een specifieke ZAAK opvragen.
 
     update:
-    Werk een ZAAK in zijn geheel bij.
-
-    **Er wordt gevalideerd op**
-    - `zaaktype` mag niet gewijzigd worden.
-    - `identificatie` mag niet gewijzigd worden.
-    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
-    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
-      "nvt" is.
-    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"
-      hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut
-      `status` de waarde "gearchiveerd" heeft.
-
-    **Opmerkingen**
-    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
-      bent.
-    - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
-      toe te voegen die NIET de eindstatus is.
-      Zie de `Status` resource.
 
     partial_update:
-    Werk een ZAAK deels bij.
 
     **Er wordt gevalideerd op**
     - `zaaktype` mag niet gewijzigd worden.
@@ -472,7 +484,6 @@ class ZaakInformatieObjectViewSet(
     ClosedZaakMixin,
     viewsets.ModelViewSet,
 ):
-
     """
     Opvragen en bewerken van ZAAK-INFORMATIEOBJECT relaties.
 
@@ -877,7 +888,6 @@ class ZaakBesluitViewSet(
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
-
     """
     Read and edit Zaak-Besluit relations.
 
