@@ -3,13 +3,14 @@ import logging
 from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.serializers import ValidationError
 from rest_framework.settings import api_settings
+from rest_framework_nested.viewsets import _force_mutable
 from vng_api_common.audittrails.viewsets import (
     AuditTrailCreateMixin,
     AuditTrailDestroyMixin,
@@ -91,6 +92,9 @@ from .serializers import (
 from .validators import ZaakBesluitValidator
 
 logger = logging.getLogger(__name__)
+
+PATH_PARAMETER_NAME = "zaak_uuid <uuid>"
+PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
 
 
 @conditional_retrieve()
@@ -591,6 +595,16 @@ class ZaakInformatieObjectViewSet(
 
 
 @conditional_retrieve()
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name=PATH_PARAMETER_NAME,
+            type=str,
+            location=OpenApiParameter.PATH,
+            description=PATH_PARAMETER_DESCRIPTION,
+        ),
+    ]
+)
 class ZaakEigenschapViewSet(
     NotificationViewSetMixin,
     AuditTrailCreateMixin,
@@ -876,6 +890,12 @@ class ZaakAuditTrailViewSet(AuditTrailViewSet):
 
     main_resource_lookup_field = "zaak_uuid"
 
+    def initialize_request(self, request, *args, **kwargs):
+        # workaround for drf-nested-viewset injecting the URL kwarg into request.data
+        return super(viewsets.ReadOnlyModelViewSet, self).initialize_request(
+            request, *args, **kwargs
+        )
+
 
 class ZaakBesluitViewSet(
     NotificationCreateMixin,
@@ -974,6 +994,12 @@ class ZaakBesluitViewSet(
     def get_audittrail_main_object_url(self, data: dict, main_resource: str) -> str:
         zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
+
+    def initialize_request(self, request, *args, **kwargs):
+        # workaround for drf-nested-viewset injecting the URL kwarg into request.data
+        return super(viewsets.ReadOnlyModelViewSet, self).initialize_request(
+            request, *args, **kwargs
+        )
 
 
 class ZaakContactMomentViewSet(
