@@ -7,6 +7,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 import requests
+from drf_spectacular.contrib.rest_polymorphic import PolymorphicSerializerExtension
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework.settings import api_settings
@@ -919,6 +920,71 @@ class ZaakObjectSerializer(PolymorphicSerializer):
             serializer.create(group_data)
 
         return zaakobject
+
+
+from drf_spectacular.contrib.rest_polymorphic import PolymorphicSerializerExtension
+from drf_spectacular.extensions import OpenApiSerializerExtension
+from drf_spectacular.plumbing import ResolvedComponent, warn
+from drf_spectacular.serializers import PolymorphicProxySerializerExtension
+from drf_spectacular.settings import spectacular_settings
+
+
+class PolymorphicSerializerExtension(OpenApiSerializerExtension):
+    # target_class = 'rest_polymorphic.serializers.PolymorphicSerializer'
+    target_class = "vng_api_common.polymorphism.PolymorphicSerializer"
+
+    match_subclasses = True
+
+    def map_serializer(self, auto_schema, direction):
+        sub_components = []
+        serializer = self.target
+        for attr, model_serializer in serializer.discriminator.mapping.items():
+            breakpoint()
+            if model_serializer == None:
+                continue
+                component = ResolvedComponent(
+                    name=attr,
+                    type=ResolvedComponent.SCHEMA,
+                    object=str,
+                )
+                resource_type = attr
+
+            else:
+                model_serializer.partial = serializer.partial
+                resource_type = model_serializer.Meta.model._meta.object_name
+                component = auto_schema.resolve_serializer(model_serializer, direction)
+                if not component:
+                    continue
+
+            sub_components.append((resource_type, component.ref))
+            if not resource_type:
+                warn(
+                    f"discriminator mapping key is empty for {model_serializer.__class__}. "
+                    f"this might lead to code generation issues."
+                )
+        vva1 = {
+            "oneOf": [ref for _, ref in sub_components],
+            "discriminator": {
+                "propertyName": serializer.discriminator.discriminator_field,
+                "mapping": {
+                    resource_type: ref["$ref"] for resource_type, ref in sub_components
+                },
+            },
+        }
+
+        return {
+            "oneOf": [ref for _, ref in sub_components],
+            "discriminator": {
+                "propertyName": serializer.discriminator.discriminator_field,
+                "mapping": {
+                    resource_type: ref["$ref"] for resource_type, ref in sub_components
+                },
+            },
+        }
+
+
+# class PolymorphicZaakObjectSerializerExtension(PolymorphicSerializerExtension):
+#     target_class = "zrc.api.serializers.core.ZaakObjectSerializer"
 
 
 class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):

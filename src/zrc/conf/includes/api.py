@@ -10,47 +10,68 @@ REST_FRAMEWORK["PAGE_SIZE"] = 100
 SECURITY_DEFINITION_NAME = "JWT-Claims"
 REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "vng_api_common.inspectors.view.AutoSchema"
 
-# SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
-# SWAGGER_SETTINGS.update(
-#     {
-#         "DEFAULT_INFO": "zrc.api.schema.info",
-#         "DEFAULT_AUTO_SCHEMA_CLASS": "zrc.api.inspectors.AutoSchema",
-#         "SECURITY_DEFINITIONS": {
-#             SECURITY_DEFINITION_NAME: {
-#                 # OAS 3.0
-#                 "type": "http",
-#                 "scheme": "bearer",
-#                 "bearerFormat": "JWT",
-#                 # not official...
-#                 # 'scopes': {},  # TODO: set up registry that's filled in later...
-#                 # Swagger 2.0
-#                 # 'name': 'Authorization',
-#                 # 'in': 'header'
-#                 # 'type': 'apiKey',
-#             }
-#         },
-#         "DEFAULT_FIELD_INSPECTORS": (
-#             "vng_api_common.inspectors.geojson.GeometryFieldInspector",
-#         )
-#         + BASE_SWAGGER_SETTINGS["DEFAULT_FIELD_INSPECTORS"],
-#         "DEFAULT_FILTER_INSPECTORS": (
-#             "vng_api_common.inspectors.query.FilterInspector",
-#         )
-#         + BASE_SWAGGER_SETTINGS["DEFAULT_FILTER_INSPECTORS"],
-#     }
-# )
 SPECTACULAR_SETTINGS = {
+    "TAGS": [
+        {
+            "name": "zaken",
+            "path": "zrc.api.viewsets",
+            "view": "ZaakViewSet",
+        },
+        {
+            "name": "statussen",
+            "path": "zrc.api.viewsets",
+            "view": "StatusViewSet",
+        },
+        {
+            "name": "zaakobjecten",
+            "path": "zrc.api.viewsets",
+            "view": "ZaakObjectViewSet",
+        },
+        {
+            "name": "klantcontacten",
+            "path": "zrc.api.viewsets",
+            "view": "KlantContactViewSet",
+        },
+        {
+            "name": "rollen",
+            "path": "zrc.api.viewsets",
+            "view": "RolViewSet",
+        },
+        {
+            "name": "resultaten",
+            "path": "zrc.api.viewsets",
+            "view": "ResultaatViewSet",
+        },
+        {
+            "name": "zaakinformatieobjecten",
+            "path": "zrc.api.viewsets",
+            "view": "ZaakInformatieObjectViewSet",
+        },
+        {
+            "name": "zaakcontactmomenten",
+            "path": "zrc.api.viewsets",
+            "view": "ZaakContactMomentViewSet",
+        },
+        {
+            "name": "zaakverzoeken",
+            "path": "zrc.api.viewsets",
+            "view": "ZaakVerzoekViewSet",
+        },
+    ],
     "DESCRIPTION": "zrc.api.schema",
-    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
+    "POSTPROCESSING_HOOKS": [
+        "drf_spectacular.hooks.postprocess_schema_enums",
+        "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+    ],
+    "SCHEMA_PATH_PREFIX": "/api/v1",
+    "SERVERS": [{"url": "/api/v1"}],
+    "EXTENSIONS_INFO": {},
     "DEFAULT_GENERATOR_CLASS": "vng_api_common.generators.OpenAPISchemaGenerator",
     "PREPROCESSING_HOOKS": ["vng_api_common.utils.preprocessing_filter_spec"],
-    "GET_MOCK_REQUEST": "vng_api_common.generators.build_mock_request",
     "APPEND_COMPONENTS": {
         "securitySchemes": {
             "JWT-Claims": {
                 "type": "http",
-                "in": "header",
-                "name": "Authorization",
                 "bearerFormat": "JWT",
                 "scheme": "bearer",
             }
@@ -62,7 +83,6 @@ SPECTACULAR_SETTINGS = {
         }
     ],
 }
-
 GEMMA_URL_INFORMATIEMODEL_VERSIE = "1.0"
 
 repo = "vng-Realisatie/vng-referentielijsten"

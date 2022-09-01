@@ -96,8 +96,8 @@ logger = logging.getLogger(__name__)
 PATH_PARAMETER_NAME = "zaak_uuid <uuid>"
 PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
 
+from drf_spectacular.contrib.rest_polymorphic import PolymorphicSerializerExtension
 
-@conditional_retrieve()
 # @extend_schema_view(
 #     list=extend_schema(
 #         summary="Alle ZAAKen opvragen.",
@@ -166,6 +166,9 @@ PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
 #                     "Na het publiceren van een besluittype zijn geen inhoudelijke wijzigingen meer mogelijk."
 #                     "Indien er na het publiceren nog wat gewijzigd moet worden, dan moet je een nieuwe versie aanmaken.",
 #     ))
+
+
+@conditional_retrieve()
 class ZaakViewSet(
     NotificationViewSetMixin,
     AuditTrailViewsetMixin,
