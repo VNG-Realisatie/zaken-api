@@ -48,7 +48,7 @@ urlpatterns = [
             [
                 # API documentation
                 url(
-                    r"^schema-redoc/openapi(.json|.yaml)",
+                    r"^schema-redoc/openapi.json",
                     SchemaViewAPI.as_view(),
                     name="schema-json",
                 ),

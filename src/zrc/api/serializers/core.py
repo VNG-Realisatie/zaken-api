@@ -8,9 +8,6 @@ from django.utils.translation import ugettext_lazy as _
 
 import requests
 from drf_spectacular.contrib.rest_polymorphic import PolymorphicSerializerExtension
-from drf_spectacular.drainage import get_override
-from drf_spectacular.settings import spectacular_settings
-from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework.settings import api_settings
@@ -926,7 +923,7 @@ class ZaakObjectSerializer(PolymorphicSerializer):
 
 
 from drf_spectacular.extensions import OpenApiSerializerExtension
-from drf_spectacular.plumbing import ResolvedComponent, warn
+from drf_spectacular.plumbing import ResolvedComponent
 from vng_api_common.utils import underscore_to_camel
 
 
@@ -935,49 +932,33 @@ class PolymorphicSerializerExtension(OpenApiSerializerExtension):
     match_subclasses = True
 
     def map_serializer(self, auto_schema, direction):
-        schema = auto_schema._map_basic_serializer(self.target, direction)
-
-        sub_components = []
         serializer = self.target
-        for attr, model_serializer in serializer.discriminator.mapping.items():
-            if model_serializer == None:
-                # If the sub-serializer from the discriminator is None, the group field is irrelevant and will be skipped.
-                continue
+        schema = auto_schema._map_basic_serializer(serializer, direction)
+        root_component = auto_schema.resolve_serializer(serializer, direction)
 
-            else:
-                model_serializer.partial = serializer.partial
-                resource_type = serializer.discriminator.sub_models[attr]
+        for attr, model_serializer in serializer.discriminator.mapping.items():
+            linked_schema = {"allOf": [root_component.ref]}
+
+            if model_serializer:
                 component = auto_schema.resolve_serializer(model_serializer, direction)
-                if not component:
-                    continue
-            sub_components.append((resource_type, component.ref))
-            if not resource_type:
-                warn(
-                    f"discriminator mapping key is empty for {model_serializer.__class__}. "
-                    f"this might lead to code generation issues."
-                )
+
+                if component:
+                    linked_schema["allOf"].append(component.ref)
+
+            linked_component = ResolvedComponent(
+                name=attr, type=ResolvedComponent.SCHEMA, schema=linked_schema
+            )
+            auto_schema.registry.register_on_missing(linked_component)
 
         polymorphic_schema = {
-            "oneOf": [ref for _, ref in sub_components],
             "discriminator": {
                 "propertyName": underscore_to_camel(
-                    serializer.discriminator.group_field
-                ),
-                "mapping": {
-                    resource_type: ref["$ref"] for resource_type, ref in sub_components
-                },
-            },
+                    serializer.discriminator.discriminator_field
+                )
+            }
         }
 
-        schema["properties"].update(
-            {
-                underscore_to_camel(
-                    serializer.discriminator.group_field
-                ): polymorphic_schema
-            }
-        )
-
-        return schema
+        return {**schema, **polymorphic_schema}
 
 
 class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
