@@ -7,7 +7,6 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 import requests
-from drf_spectacular.contrib.rest_polymorphic import PolymorphicSerializerExtension
 from drf_writable_nested import NestedCreateMixin, NestedUpdateMixin
 from rest_framework import serializers
 from rest_framework.settings import api_settings
@@ -922,45 +921,6 @@ class ZaakObjectSerializer(PolymorphicSerializer):
         return zaakobject
 
 
-from drf_spectacular.extensions import OpenApiSerializerExtension
-from drf_spectacular.plumbing import ResolvedComponent
-from vng_api_common.utils import underscore_to_camel
-
-
-class PolymorphicSerializerExtension(OpenApiSerializerExtension):
-    target_class = "vng_api_common.polymorphism.PolymorphicSerializer"
-    match_subclasses = True
-
-    def map_serializer(self, auto_schema, direction):
-        serializer = self.target
-        schema = auto_schema._map_basic_serializer(serializer, direction)
-        root_component = auto_schema.resolve_serializer(serializer, direction)
-
-        for attr, model_serializer in serializer.discriminator.mapping.items():
-            linked_schema = {"allOf": [root_component.ref]}
-
-            if model_serializer:
-                component = auto_schema.resolve_serializer(model_serializer, direction)
-
-                if component:
-                    linked_schema["allOf"].append(component.ref)
-
-            linked_component = ResolvedComponent(
-                name=attr, type=ResolvedComponent.SCHEMA, schema=linked_schema
-            )
-            auto_schema.registry.register_on_missing(linked_component)
-
-        polymorphic_schema = {
-            "discriminator": {
-                "propertyName": underscore_to_camel(
-                    serializer.discriminator.discriminator_field
-                )
-            }
-        }
-
-        return {**schema, **polymorphic_schema}
-
-
 class ZaakInformatieObjectSerializer(serializers.HyperlinkedModelSerializer):
     aard_relatie_weergave = serializers.ChoiceField(
         source="get_aard_relatie_display",
@@ -1102,22 +1062,6 @@ class ContactPersoonRolSerializer(GegevensGroepSerializer):
         gegevensgroep = "contactpersoon_rol"
 
 
-# @extend_schema_serializer(
-#     # exclude_fields=('single',), # schema ignore these fields
-#     examples = [
-#          OpenApiExample(
-#             'Valid example 1',
-#             summary='short summary',
-#             description='longer description',
-#             value={
-#                 'songs': {'top10': True},
-#                 'single': {'top10': True}
-#             },
-#             request_only=True, # signal that example only applies to requests
-#             response_only=False, # signal that example only applies to responses
-#         ),
-#     ]
-# )
 class RolSerializer(PolymorphicSerializer):
     discriminator = Discriminator(
         discriminator_field="betrokkene_type",
