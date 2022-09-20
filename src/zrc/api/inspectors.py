@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from drf_yasg import openapi
-from vng_api_common.inspectors.view import AutoSchema as _AutoSchema, response_header
+from vng_api_common.schema import AutoSchema as _AutoSchema
 
 from ..middleware import WARNING_HEADER
 
@@ -11,9 +11,11 @@ warning_header = response_header(
 )
 
 
+# TODO: this should be used
 class AutoSchema(_AutoSchema):
     def get_response_schemas(self, response_serializers):
         responses = super().get_response_schemas(response_serializers)
+
         if not hasattr(self.view, "deprecation_message"):
             return responses
 

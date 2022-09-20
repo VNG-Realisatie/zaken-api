@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import include, path
 
 from vng_api_common import routers
-from vng_api_common.schema import SchemaViewAPI, SchemaViewRedoc
+from vng_api_common.views import SchemaViewAPI, SchemaViewRedoc
 
 from .viewsets import (
     KlantContactViewSet,
@@ -48,12 +48,12 @@ urlpatterns = [
             [
                 # API documentation
                 url(
-                    r"^schema-redoc/openapi.json",
+                    r"^schema/openapi.yaml",
                     SchemaViewAPI.as_view(),
                     name="schema-json",
                 ),
                 url(
-                    r"^schema-redoc/",
+                    r"^schema/",
                     SchemaViewRedoc.as_view(url_name="schema-redoc"),
                     name="schema-redoc",
                 ),

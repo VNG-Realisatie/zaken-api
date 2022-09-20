@@ -8,81 +8,83 @@ REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
 
 SECURITY_DEFINITION_NAME = "JWT-Claims"
-REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "vng_api_common.inspectors.view.AutoSchema"
 
-SPECTACULAR_SETTINGS = {
-    "TAGS": [
-        {
-            "name": "zaken",
-            "path": "zrc.api.viewsets",
-            "view": "ZaakViewSet",
+SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
+SPECTACULAR_SETTINGS.update(
+    {
+        "TAGS": [
+            {
+                "name": "zaken",
+                "path": "zrc.api.viewsets",
+                "view": "ZaakViewSet",
+            },
+            {
+                "name": "statussen",
+                "path": "zrc.api.viewsets",
+                "view": "StatusViewSet",
+            },
+            {
+                "name": "zaakobjecten",
+                "path": "zrc.api.viewsets",
+                "view": "ZaakObjectViewSet",
+            },
+            {
+                "name": "klantcontacten",
+                "path": "zrc.api.viewsets",
+                "view": "KlantContactViewSet",
+            },
+            {
+                "name": "rollen",
+                "path": "zrc.api.viewsets",
+                "view": "RolViewSet",
+            },
+            {
+                "name": "resultaten",
+                "path": "zrc.api.viewsets",
+                "view": "ResultaatViewSet",
+            },
+            {
+                "name": "zaakinformatieobjecten",
+                "path": "zrc.api.viewsets",
+                "view": "ZaakInformatieObjectViewSet",
+            },
+            {
+                "name": "zaakcontactmomenten",
+                "path": "zrc.api.viewsets",
+                "view": "ZaakContactMomentViewSet",
+            },
+            {
+                "name": "zaakverzoeken",
+                "path": "zrc.api.viewsets",
+                "view": "ZaakVerzoekViewSet",
+            },
+        ],
+        "DESCRIPTION": "zrc.api.schema",
+        "POSTPROCESSING_HOOKS": [
+            "drf_spectacular.hooks.postprocess_schema_enums",
+            "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+        ],
+        "SCHEMA_PATH_PREFIX": "/api/v1",
+        "SERVERS": [{"url": "/api/v1"}],
+        "EXTENSIONS_INFO": {},
+        "PREPROCESSING_HOOKS": ["vng_api_common.utils.preprocessing_filter_spec"],
+        "APPEND_COMPONENTS": {
+            "securitySchemes": {
+                "JWT-Claims": {
+                    "type": "http",
+                    "bearerFormat": "JWT",
+                    "scheme": "bearer",
+                }
+            },
         },
-        {
-            "name": "statussen",
-            "path": "zrc.api.viewsets",
-            "view": "StatusViewSet",
-        },
-        {
-            "name": "zaakobjecten",
-            "path": "zrc.api.viewsets",
-            "view": "ZaakObjectViewSet",
-        },
-        {
-            "name": "klantcontacten",
-            "path": "zrc.api.viewsets",
-            "view": "KlantContactViewSet",
-        },
-        {
-            "name": "rollen",
-            "path": "zrc.api.viewsets",
-            "view": "RolViewSet",
-        },
-        {
-            "name": "resultaten",
-            "path": "zrc.api.viewsets",
-            "view": "ResultaatViewSet",
-        },
-        {
-            "name": "zaakinformatieobjecten",
-            "path": "zrc.api.viewsets",
-            "view": "ZaakInformatieObjectViewSet",
-        },
-        {
-            "name": "zaakcontactmomenten",
-            "path": "zrc.api.viewsets",
-            "view": "ZaakContactMomentViewSet",
-        },
-        {
-            "name": "zaakverzoeken",
-            "path": "zrc.api.viewsets",
-            "view": "ZaakVerzoekViewSet",
-        },
-    ],
-    "DESCRIPTION": "zrc.api.schema",
-    "POSTPROCESSING_HOOKS": [
-        "drf_spectacular.hooks.postprocess_schema_enums",
-        "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
-    ],
-    "SCHEMA_PATH_PREFIX": "/api/v1",
-    "SERVERS": [{"url": "/api/v1"}],
-    "EXTENSIONS_INFO": {},
-    "DEFAULT_GENERATOR_CLASS": "vng_api_common.generators.OpenAPISchemaGenerator",
-    "PREPROCESSING_HOOKS": ["vng_api_common.utils.preprocessing_filter_spec"],
-    "APPEND_COMPONENTS": {
-        "securitySchemes": {
-            "JWT-Claims": {
-                "type": "http",
-                "bearerFormat": "JWT",
-                "scheme": "bearer",
+        "SECURITY": [
+            {
+                "JWT-Claims": [],
             }
-        },
-    },
-    "SECURITY": [
-        {
-            "JWT-Claims": [],
-        }
-    ],
-}
+        ],
+    }
+)
+
 GEMMA_URL_INFORMATIEMODEL_VERSIE = "1.0"
 
 repo = "vng-Realisatie/vng-referentielijsten"
