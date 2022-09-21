@@ -14883,7 +14883,7 @@ components:
       bearerFormat: JWT
       scheme: bearer
 servers:
-  - url: /api/v1
+  - url: https://zaken-api.test.vng.cloud/api/v1
 tags:
   - name: zaken
     description:

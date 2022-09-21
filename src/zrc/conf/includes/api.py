@@ -7,8 +7,6 @@ API_VERSION = "1.3.0-rc3"
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
 
-SECURITY_DEFINITION_NAME = "JWT-Claims"
-
 SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
 SPECTACULAR_SETTINGS.update(
     {
@@ -60,27 +58,7 @@ SPECTACULAR_SETTINGS.update(
             },
         ],
         "DESCRIPTION": "zrc.api.schema",
-        "POSTPROCESSING_HOOKS": [
-            "drf_spectacular.hooks.postprocess_schema_enums",
-            "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
-        ],
-        "SCHEMA_PATH_PREFIX": "/api/v1",
-        "SERVERS": [{"url": "/api/v1"}],
-        "PREPROCESSING_HOOKS": ["vng_api_common.utils.preprocessing_filter_spec"],
-        "APPEND_COMPONENTS": {
-            "securitySchemes": {
-                "JWT-Claims": {
-                    "type": "http",
-                    "bearerFormat": "JWT",
-                    "scheme": "bearer",
-                }
-            },
-        },
-        "SECURITY": [
-            {
-                "JWT-Claims": [],
-            }
-        ],
+        "SERVERS": [{"url": "https://zaken-api.test.vng.cloud/api/v1"}],
     }
 )
 
