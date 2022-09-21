@@ -12895,8 +12895,6 @@ components:
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
           description: URL-referenties naar deel ZAAKen.
         relevanteAndereZaken:
@@ -12909,16 +12907,12 @@ components:
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
         rollen:
           type: array
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
         status:
           type: string
@@ -12926,23 +12920,17 @@ components:
           readOnly: true
           nullable: true
           description: Indien geen status bekend is, dan is de waarde 'null'
-          minLength: 1
-          maxLength: 1000
         zaakinformatieobjecten:
           type: array
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
         zaakobjecten:
           type: array
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
         kenmerken:
           type: array
@@ -12993,8 +12981,6 @@ components:
           description:
             URL-referentie naar het RESULTAAT. Indien geen resultaat bekend
             is, dan is de waarde 'null'
-          minLength: 1
-          maxLength: 1000
         opdrachtgevendeOrganisatie:
           type: string
           description:
@@ -13045,11 +13031,6 @@ components:
           type: string
           format: uri
           readOnly: true
-          description:
-            URL-referentie naar dit object. Dit is de unieke identificatie
-            en locatie van dit object.
-          minLength: 1
-          maxLength: 1000
         uuid:
           type: string
           format: uuid
@@ -13058,11 +13039,6 @@ components:
         zaak:
           type: string
           format: uri
-          description:
-            URL-referentie naar dit object. Dit is de unieke identificatie
-            en locatie van dit object.
-          minLength: 1
-          maxLength: 1000
         eigenschap:
           type: string
           format: uri
@@ -14137,8 +14113,6 @@ components:
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
           description: URL-referenties naar deel ZAAKen.
         relevanteAndereZaken:
@@ -14151,16 +14125,12 @@ components:
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
         rollen:
           type: array
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
         status:
           type: string
@@ -14168,23 +14138,17 @@ components:
           readOnly: true
           nullable: true
           description: Indien geen status bekend is, dan is de waarde 'null'
-          minLength: 1
-          maxLength: 1000
         zaakinformatieobjecten:
           type: array
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
         zaakobjecten:
           type: array
           items:
             type: string
             format: uri
-            minLength: 1
-            maxLength: 1000
           readOnly: true
         kenmerken:
           type: array
@@ -14235,8 +14199,6 @@ components:
           description:
             URL-referentie naar het RESULTAAT. Indien geen resultaat bekend
             is, dan is de waarde 'null'
-          minLength: 1
-          maxLength: 1000
         opdrachtgevendeOrganisatie:
           type: string
           description:
@@ -14303,11 +14265,6 @@ components:
           type: string
           format: uri
           readOnly: true
-          description:
-            URL-referentie naar dit object. Dit is de unieke identificatie
-            en locatie van dit object.
-          minLength: 1
-          maxLength: 1000
         uuid:
           type: string
           format: uuid
@@ -14374,11 +14331,6 @@ components:
           type: string
           format: uri
           readOnly: true
-          description:
-            URL-referentie naar dit object. Dit is de unieke identificatie
-            en locatie van dit object.
-          minLength: 1
-          maxLength: 1000
         uuid:
           type: string
           format: uuid
@@ -14387,11 +14339,6 @@ components:
         zaak:
           type: string
           format: uri
-          description:
-            URL-referentie naar dit object. Dit is de unieke identificatie
-            en locatie van dit object.
-          minLength: 1
-          maxLength: 1000
         eigenschap:
           type: string
           format: uri
