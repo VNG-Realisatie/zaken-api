@@ -66,7 +66,6 @@ SPECTACULAR_SETTINGS.update(
         ],
         "SCHEMA_PATH_PREFIX": "/api/v1",
         "SERVERS": [{"url": "/api/v1"}],
-        "EXTENSIONS_INFO": {},
         "PREPROCESSING_HOOKS": ["vng_api_common.utils.preprocessing_filter_spec"],
         "APPEND_COMPONENTS": {
             "securitySchemes": {
