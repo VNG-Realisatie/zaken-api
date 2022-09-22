@@ -1,5 +1,6 @@
 default_app_config = "zrc.api.apps.ZRCApiConfig"
 
+from vng_api_common.extensions.fields.duration import DurationFieldExtension
 from vng_api_common.extensions.fields.geojson import GeometryFieldExtension
 from vng_api_common.extensions.fields.hyperlink_identity import (
     HyperlinkedIdentityFieldExtension,

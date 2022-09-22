@@ -4,6 +4,16 @@ from vng_api_common.notifications.utils import notification_documentation
 
 from .kanalen import KANAAL_ZAKEN
 
+__all__ = [
+    "TITLE",
+    "DESCRIPTION",
+    "CONTACT",
+    "LICENSE",
+    "VERSION",
+]
+
+TITLE = f"{settings.PROJECT_NAME} API"
+
 DESCRIPTION = f"""Een API om een zaakregistratiecomponent (ZRC) te benaderen.
 
 De ZAAK is het kernobject in deze API, waaraan verschillende andere
@@ -36,11 +46,11 @@ genereren.
 * [Zaakgericht werken]({settings.DOCUMENTATION_URL})
 """
 
-TITLE = f"{settings.PROJECT_NAME} API"
 
-VERSION = (settings.API_VERSION,)
 CONTACT = {
     "email": "standaarden.ondersteuning@vng.nl",
     "url": settings.DOCUMENTATION_URL,
 }
 LICENSE = {"name": "EUPL 1.2", "url": "https://opensource.org/licenses/EUPL-1.2"}
+
+VERSION = settings.API_VERSION

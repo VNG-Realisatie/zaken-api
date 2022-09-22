@@ -7,57 +7,11 @@ API_VERSION = "1.3.0-rc3"
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
 
+DOCUMENTATION_INFO_MODULE = "zrc.api.schema"
+
 SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
 SPECTACULAR_SETTINGS.update(
     {
-        "TAGS": [
-            {
-                "name": "zaken",
-                "path": "zrc.api.viewsets",
-                "view": "ZaakViewSet",
-            },
-            {
-                "name": "statussen",
-                "path": "zrc.api.viewsets",
-                "view": "StatusViewSet",
-            },
-            {
-                "name": "zaakobjecten",
-                "path": "zrc.api.viewsets",
-                "view": "ZaakObjectViewSet",
-            },
-            {
-                "name": "klantcontacten",
-                "path": "zrc.api.viewsets",
-                "view": "KlantContactViewSet",
-            },
-            {
-                "name": "rollen",
-                "path": "zrc.api.viewsets",
-                "view": "RolViewSet",
-            },
-            {
-                "name": "resultaten",
-                "path": "zrc.api.viewsets",
-                "view": "ResultaatViewSet",
-            },
-            {
-                "name": "zaakinformatieobjecten",
-                "path": "zrc.api.viewsets",
-                "view": "ZaakInformatieObjectViewSet",
-            },
-            {
-                "name": "zaakcontactmomenten",
-                "path": "zrc.api.viewsets",
-                "view": "ZaakContactMomentViewSet",
-            },
-            {
-                "name": "zaakverzoeken",
-                "path": "zrc.api.viewsets",
-                "view": "ZaakVerzoekViewSet",
-            },
-        ],
-        "DESCRIPTION": "zrc.api.schema",
         "SERVERS": [{"url": "https://zaken-api.test.vng.cloud/api/v1"}],
     }
 )
