@@ -531,6 +531,29 @@ class ZaakEigenschapViewSet(
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle KLANTCONTACTen opvragen. "),
+        description=_(
+            "Alle KLANTCONTACTen opvragen.\n\n"
+            "**DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint."
+        ),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke KLANTCONTACT opvragen."),
+        description=_(
+            "Een specifieke KLANTCONTACT opvragen.\n\n"
+            "**DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint."
+        ),
+    ),
+    create=extend_schema(
+        summary=_("Maak een KLANTCONTACT bij een ZAAK aan."),
+        description=_(
+            "Indien geen identificatie gegeven is, dan wordt deze automatisch gegenereerd.\n\n"
+            "**DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint."
+        ),
+    ),
+)
 class KlantContactViewSet(
     NotificationCreateMixin,
     ListFilterByAuthorizationsMixin,
