@@ -582,6 +582,24 @@ class KlantContactViewSet(
     )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ROLlen bij ZAAKen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ROL bij een ZAAK opvragen."),
+        description=_("Een specifieke ROL bij een ZAAK opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ROL aan bij een ZAAK."),
+        description=_("Maak een ROL aan bij een ZAAK."),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ROL van een ZAAK."),
+        description=_("Verwijder een ROL van een ZAAK."),
+    ),
+)
 @conditional_retrieve()
 class RolViewSet(
     NotificationCreateMixin,

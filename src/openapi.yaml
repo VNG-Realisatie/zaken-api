@@ -1688,21 +1688,8 @@ paths:
   /api/v1/rollen:
     get:
       operationId: rol_list
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle ROLlen bij ZAAKen opvragen.
       parameters:
         - name: betrokkene
           required: false
@@ -1960,21 +1947,8 @@ paths:
           description: Internal server error
     post:
       operationId: rol_create
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Maak een ROL aan bij een ZAAK.
+      summary: Maak een ROL aan bij een ZAAK.
       parameters:
         - in: header
           name: Content-Type
@@ -2144,21 +2118,8 @@ paths:
   /api/v1/rollen/{uuid}:
     get:
       operationId: rol_retrieve
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Een specifieke ROL bij een ZAAK opvragen.
+      summary: Een specifieke ROL bij een ZAAK opvragen.
       parameters:
         - in: header
           name: If-None-Match
@@ -2330,21 +2291,8 @@ paths:
           description: Internal server error
     delete:
       operationId: rol_destroy
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Verwijder een ROL van een ZAAK.
+      summary: Verwijder een ROL van een ZAAK.
       parameters:
         - in: header
           name: X-Audit-Toelichting
