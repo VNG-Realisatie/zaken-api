@@ -126,7 +126,7 @@ PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
         summary=_("Werk een ZAAK deels bij."),
         description=_(
             "**Er wordt gevalideerd op** \n"
-            "- `foobar` mag niet gewijzigd worden.\n"
+            "- `zaaktype` mag niet gewijzigd worden.\n"
             "- `identificatie` mag niet gewijzigd worden.\n"
             "- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n"
             "- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n"
@@ -149,7 +149,7 @@ PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
         summary=_("Werk een ZAAK in zijn geheel bij."),
         description=_(
             "**Er wordt gevalideerd op** \n"
-            "- `foobar` mag niet gewijzigd worden.\n"
+            "- `zaaktype` mag niet gewijzigd worden.\n"
             "- `identificatie` mag niet gewijzigd worden.\n"
             "- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n"
             "- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n"
