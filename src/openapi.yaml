@@ -605,21 +605,8 @@ paths:
   /api/v1/resultaten:
     get:
       operationId: resultaat_list
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle RESULTAATen van ZAAKen opvragen.
       parameters:
         - name: page
           required: false
@@ -779,21 +766,12 @@ paths:
           description: Internal server error
     post:
       operationId: resultaat_create
-      description: 'Filter list-action data by the authorizations configured.
+      description: '**Er wordt gevalideerd op:**
 
+        - geldigheid URL naar de ZAAK
 
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+        - geldigheid URL naar het RESULTAATTYPE'
+      summary: Maak een RESULTAAT bij een ZAAK aan.
       parameters:
         - in: header
           name: Content-Type
@@ -963,21 +941,8 @@ paths:
   /api/v1/resultaten/{uuid}:
     get:
       operationId: resultaat_retrieve
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Een specifieke RESULTAAT opvragen.
+      summary: Een specifieke RESULTAAT opvragen.
       parameters:
         - in: header
           name: If-None-Match
@@ -1149,21 +1114,10 @@ paths:
           description: Internal server error
     put:
       operationId: resultaat_update
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description:
+        "**Er wordt gevalideerd op** \n- geldigheid URL naar de ZAAK\n\
+        - het RESULTAATTYPE mag niet gewijzigd worden"
+      summary: Werk een RESULTAAT in zijn geheel bij.
       parameters:
         - in: header
           name: Content-Type
@@ -1347,21 +1301,10 @@ paths:
           description: Internal server error
     patch:
       operationId: resultaat_partial_update
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description:
+        "**Er wordt gevalideerd op** \n- geldigheid URL naar de ZAAK\n\
+        - het RESULTAATTYPE mag niet gewijzigd worden"
+      summary: Werk een RESULTAAT deels bij.
       parameters:
         - in: header
           name: Content-Type
@@ -1544,21 +1487,8 @@ paths:
           description: Internal server error
     delete:
       operationId: resultaat_destroy
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Verwijder een RESULTAAT van een ZAAK.
+      summary: Verwijder een RESULTAAT van een ZAAK.
       parameters:
         - in: header
           name: X-Audit-Toelichting

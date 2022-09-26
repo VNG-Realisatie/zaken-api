@@ -612,6 +612,44 @@ class RolViewSet(
     audit = AUDIT_ZRC
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle RESULTAATen van ZAAKen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke RESULTAAT opvragen."),
+        description=_("Een specifieke RESULTAAT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een RESULTAAT bij een ZAAK aan."),
+        description=_(
+            "**Er wordt gevalideerd op:**\n"
+            "- geldigheid URL naar de ZAAK\n"
+            "- geldigheid URL naar het RESULTAATTYPE"
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een RESULTAAT deels bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- geldigheid URL naar de ZAAK\n"
+            "- het RESULTAATTYPE mag niet gewijzigd worden"
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een RESULTAAT in zijn geheel bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- geldigheid URL naar de ZAAK\n"
+            "- het RESULTAATTYPE mag niet gewijzigd worden"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een RESULTAAT van een ZAAK."),
+        description=_("Verwijder een RESULTAAT van een ZAAK."),
+    ),
+)
 @conditional_retrieve()
 class ResultaatViewSet(
     NotificationViewSetMixin,
