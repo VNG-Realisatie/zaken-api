@@ -601,6 +601,34 @@ class ZaakAuditTrailViewSet(AuditTrailViewSet):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKBESLUITen opvragen."),
+        description=_("Alle ZAAKBESLUITen opvragen."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifiek ZAAKBESLUIT opvragen "),
+        description=_("Een specifiek ZAAKBESLUIT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAKBESLUIT aan."),
+        description=_(
+            "**LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**\n\n"
+            "De Besluiten API gebruikt dit endpoint om relaties te synchroniseren, daarom"
+            " is dit endpoint in de Zaken API geimplementeerd.\n\n"
+            "**Er wordt gevalideerd op:**\n"
+            "- geldigheid URL naar de ZAAK"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAKBESLUIT."),
+        description=_(
+            "***LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.***\n\n"
+            "De Besluiten API gebruikt dit endpoint om relaties te synchroniseren, daarom"
+            " is dit endpoint in de Zaken API geimplementeerd.\n"
+        ),
+    ),
+)
 class ZaakBesluitViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
