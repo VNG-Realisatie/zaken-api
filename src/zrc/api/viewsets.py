@@ -286,6 +286,30 @@ class ZaakViewSet(
             super().perform_destroy(instance)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle STATUSsen bij ZAAKen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke STATUS van een ZAAK opvragen."),
+        description=_("Een specifieke STATUS van een ZAAK opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een STATUS aan voor een ZAAK."),
+        description=_(
+            "**Er wordt gevalideerd op**\n"
+            "- geldigheid URL naar de ZAAK\n"
+            "- geldigheid URL naar het STATUSTYPE\n"
+            "- indien het de eindstatus betreft, dan moet het attribuut"
+            " `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die"
+            "aan de zaak gerelateerd zijn\n\n"
+            "**Opmerkingen**\n"
+            "- Indien het statustype de eindstatus is (volgens het ZTC), dan wordt"
+            " de zaak afgesloten door de einddatum te zetten."
+        ),
+    ),
+)
 @conditional_retrieve()
 class StatusViewSet(
     NotificationCreateMixin,

@@ -2492,21 +2492,8 @@ paths:
   /api/v1/statussen:
     get:
       operationId: status_list
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle STATUSsen bij ZAAKen opvragen.
       parameters:
         - name: indicatieLaatstGezetteStatus
           required: false
@@ -2674,21 +2661,21 @@ paths:
           description: Internal server error
     post:
       operationId: status_create
-      description: 'Filter list-action data by the authorizations configured.
+      description: '**Er wordt gevalideerd op**
+
+        - geldigheid URL naar de ZAAK
+
+        - geldigheid URL naar het STATUSTYPE
+
+        - indien het de eindstatus betreft, dan moet het attribuut `indicatieGebruiksrecht`
+        gezet zijn op alle informatieobjecten dieaan de zaak gerelateerd zijn
 
 
-        Authorizations configured for a client/consumer have a run-time effect
+        **Opmerkingen**
 
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+        - Indien het statustype de eindstatus is (volgens het ZTC), dan wordt de zaak
+        afgesloten door de einddatum te zetten.'
+      summary: Maak een STATUS aan voor een ZAAK.
       parameters:
         - in: header
           name: Content-Type
@@ -2858,21 +2845,8 @@ paths:
   /api/v1/statussen/{uuid}:
     get:
       operationId: status_retrieve
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Een specifieke STATUS van een ZAAK opvragen.
+      summary: Een specifieke STATUS van een ZAAK opvragen.
       parameters:
         - in: header
           name: If-None-Match
