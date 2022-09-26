@@ -581,6 +581,16 @@ class ResultaatViewSet(
     audit = AUDIT_ZRC
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle audit trail regels behorend bij de ZAAK."),
+        description=_("Alle audit trail regels behorend bij de ZAAK."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke audit trail regel opvragen "),
+        description=_("Een specifieke audit trail regel opvragen."),
+    ),
+)
 class ZaakAuditTrailViewSet(AuditTrailViewSet):
     main_resource_lookup_field = "zaak_uuid"
 
