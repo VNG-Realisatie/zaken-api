@@ -444,6 +444,42 @@ class ZaakInformatieObjectViewSet(
         ),
     ]
 )
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKEIGENSCHAPpen opvragen. "),
+        description=_("Alle ZAAKEIGENSCHAPpen opvragen."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAKEIGENSCHAP opvragen."),
+        description=_("Een specifieke ZAAKEIGENSCHAP opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAKEIGENSCHAP aan."),
+        description=_(
+            "Maak een ZAAKEIGENSCHAP aan.\n\n"
+            "**Er wordt gevalideerd op:**\n"
+            "- geldigheid `eigenschap` URL - de resource moet opgevraagd kunnen"
+            " worden uit de Catalogi API en de vorm van een EIGENSCHAP hebben.\n"
+            "- de `eigenschap` moet bij het `ZAAK.zaaktype` horen"
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een ZAAKEIGENSCHAP deels bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n" "- Alleen de `waarde` mag gewijzigd worden"
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een ZAAKEIGENSCHAP in zijn geheel bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n" "- Alleen de `waarde` mag gewijzigd worden"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAKEIGENSCHAP."),
+        description=_("Verwijder een ZAAKEIGENSCHAP"),
+    ),
+)
 class ZaakEigenschapViewSet(
     NotificationViewSetMixin,
     AuditTrailCreateMixin,
