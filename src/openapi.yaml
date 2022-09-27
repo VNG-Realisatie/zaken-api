@@ -4809,21 +4809,8 @@ paths:
   /api/v1/zaakobjecten:
     get:
       operationId: zaakobject_list
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle ZAAKOBJECTen opvragen.
       parameters:
         - name: object
           required: false
@@ -5023,21 +5010,17 @@ paths:
           description: Internal server error
     post:
       operationId: zaakobject_create
-      description: 'Filter list-action data by the authorizations configured.
+      description: 'Maak een ZAAKOBJECT aan.
 
 
-        Authorizations configured for a client/consumer have a run-time effect
+        **Er wordt gevalideerd op**
 
-        in _which_ data is effectively exposed. This ``get_queryset``
+        - Indien de `object` URL opgegeveven is, dan moet deze een geldige  response
+        (HTTP 200) geven.
 
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+        - Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen de `objectType`
+        discriminator.'
+      summary: Maak een ZAAKOBJECT aan.
       parameters:
         - in: header
           name: Content-Type
@@ -5207,22 +5190,27 @@ paths:
   /api/v1/zaakobjecten/{uuid}:
     get:
       operationId: zaakobject_retrieve
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Een specifieke ZAAKOBJECT opvragen.
+      summary: Een specifieke ZAAKOBJECT opvragen.
       parameters:
+        - in: header
+          name: If-None-Match
+          schema:
+            type: string
+          description:
+            "Voer een voorwaardelijk verzoek uit. Deze header moet \xE9\xE9\
+            n of meerdere ETag-waardes bevatten van resources die de consumer gecached\
+            \ heeft. Indien de waarde van de ETag van de huidige resource voorkomt in\
+            \ deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie\
+            \ [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match)\
+            \ voor meer informatie."
+          examples:
+            OneValue:
+              value: '"79054025255fb1a26e4bc422aef54eb4"'
+              summary: "E\xE9n ETag-waarde"
+            MultipleValues:
+              value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+              summary: Meerdere ETag-waardes
         - in: path
           name: uuid
           schema:
@@ -5238,6 +5226,13 @@ paths:
       responses:
         '200':
           headers:
+            ETag:
+              schema:
+                type: string
+              description:
+                De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
             API-version:
               schema:
                 type: string
@@ -5368,21 +5363,11 @@ paths:
           description: Internal server error
     put:
       operationId: zaakobject_update
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description:
+        "**Er wordt gevalideerd op** \n- De attributen `zaak`, `object`\
+        \ en `objectType` mogen niet gewijzigd worden.\n- Indien opgegeven, dan wordt\
+        \ `objectIdentificatie` gevalideerd tegen de objectType discriminator."
+      summary: Werk een ZAAKOBJECT zijn geheel bij.
       parameters:
         - in: header
           name: Content-Type
@@ -5556,21 +5541,11 @@ paths:
           description: Internal server error
     patch:
       operationId: zaakobject_partial_update
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description:
+        "**Er wordt gevalideerd op** \n- De attributen `zaak`, `object`\
+        \ en `objectType` mogen niet gewijzigd worden.\n- Indien opgegeven, dan wordt\
+        \ `objectIdentificatie` gevalideerd tegen de objectType discriminator."
+      summary: Werk een ZAAKOBJECT deels bij.
       parameters:
         - in: header
           name: Content-Type
@@ -5743,21 +5718,10 @@ paths:
           description: Internal server error
     delete:
       operationId: zaakobject_destroy
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description:
+        Verbreek de relatie tussen een ZAAK en een OBJECT door de ZAAKOBJECT
+        resource te verwijderen.
+      summary: Verwijder een ZAAKOBJECT.
       parameters:
         - in: path
           name: uuid
@@ -5891,6 +5855,59 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fout'
           description: Internal server error
+    head:
+      operationId: zaakobject_headers
+      description: Vraag de headers op die je bij een GET request zou krijgen.
+      summary: 'De headers voor een specifiek(e) ZAAKOBJECT opvragen '
+      parameters:
+        - in: header
+          name: If-None-Match
+          schema:
+            type: string
+          description:
+            "Voer een voorwaardelijk verzoek uit. Deze header moet \xE9\xE9\
+            n of meerdere ETag-waardes bevatten van resources die de consumer gecached\
+            \ heeft. Indien de waarde van de ETag van de huidige resource voorkomt in\
+            \ deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie\
+            \ [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match)\
+            \ voor meer informatie."
+          examples:
+            OneValue:
+              value: '"79054025255fb1a26e4bc422aef54eb4"'
+              summary: "E\xE9n ETag-waarde"
+            MultipleValues:
+              value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+              summary: Meerdere ETag-waardes
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+          required: true
+      tags:
+        - zaakobjecten
+      responses:
+        '200':
+          headers:
+            ETag:
+              schema:
+                type: string
+              description:
+                De ETag berekend op de response body JSON. Indien twee
+                resources exact dezelfde ETag hebben, dan zijn deze resources identiek
+                aan elkaar. Je kan de ETag gebruiken om caching te implementeren.
+            API-version:
+              schema:
+                type: string
+              description:
+                'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakObject'
+          description: OK
   /api/v1/zaakverzoeken:
     get:
       operationId: zaakverzoek_list

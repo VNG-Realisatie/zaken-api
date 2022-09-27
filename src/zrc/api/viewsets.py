@@ -372,6 +372,54 @@ class StatusViewSet(
         super().perform_create(serializer)
 
 
+@conditional_retrieve()
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKOBJECTen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAKOBJECT opvragen."),
+        description=_("Een specifieke ZAAKOBJECT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAKOBJECT aan."),
+        description=_(
+            "Maak een ZAAKOBJECT aan.\n\n"
+            "**Er wordt gevalideerd op**\n"
+            "- Indien de `object` URL opgegeveven is, dan moet deze een geldige "
+            " response (HTTP 200) geven.\n"
+            "- Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen de `objectType` discriminator."
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een ZAAKOBJECT deels bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- De attributen `zaak`, `object` en `objectType` mogen niet"
+            " gewijzigd worden.\n"
+            "- Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen"
+            " de objectType discriminator."
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een ZAAKOBJECT zijn geheel bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- De attributen `zaak`, `object` en `objectType` mogen niet"
+            " gewijzigd worden.\n"
+            "- Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen"
+            " de objectType discriminator."
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAKOBJECT."),
+        description=_(
+            "Verbreek de relatie tussen een ZAAK en een OBJECT door de ZAAKOBJECT"
+            " resource te verwijderen."
+        ),
+    ),
+)
 class ZaakObjectViewSet(
     NotificationViewSetMixin,
     CheckQueryParamsMixin,
