@@ -4,7 +4,7 @@ from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -566,16 +566,6 @@ class ZaakInformatieObjectViewSet(
 
 
 @conditional_retrieve()
-@extend_schema(
-    parameters=[
-        OpenApiParameter(
-            name=PATH_PARAMETER_NAME,
-            type=str,
-            location=OpenApiParameter.PATH,
-            description=PATH_PARAMETER_DESCRIPTION,
-        ),
-    ]
-)
 @extend_schema_view(
     list=extend_schema(
         summary=_("Alle ZAAKEIGENSCHAPpen opvragen. "),
