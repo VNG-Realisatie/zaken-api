@@ -3072,21 +3072,8 @@ paths:
   /api/v1/zaakcontactmomenten:
     get:
       operationId: zaakcontactmoment_list
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Alle ZAAKCONTACTMOMENTen opvragen.
+      summary: Alle ZAAKCONTACTMOMENTen opvragen.
       parameters:
         - name: contactmoment
           required: false
@@ -3244,21 +3231,10 @@ paths:
           description: Internal server error
     post:
       operationId: zaakcontactmoment_create
-      description: 'Filter list-action data by the authorizations configured.
+      description: '**Er wordt gevalideerd op:**
 
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+        - geldigheid URL naar het CONTACTMOMENT'
+      summary: Maak een ZAAKCONTACTMOMENT aan.
       parameters:
         - in: header
           name: Content-Type
@@ -3428,21 +3404,8 @@ paths:
   /api/v1/zaakcontactmomenten/{uuid}:
     get:
       operationId: zaakcontactmoment_retrieve
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Een specifiek ZAAKCONTACTMOMENT opvragen.
+      summary: 'Een specifiek ZAAKCONTACTMOMENT opvragen '
       parameters:
         - in: path
           name: uuid
@@ -3589,21 +3552,8 @@ paths:
           description: Internal server error
     delete:
       operationId: zaakcontactmoment_destroy
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Verwijder een ZAAKCONTACTMOMENT.
+      summary: Verwijder een ZAAKCONTACTMOMENT.
       parameters:
         - in: header
           name: X-Audit-Toelichting

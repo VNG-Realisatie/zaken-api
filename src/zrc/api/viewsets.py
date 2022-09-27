@@ -839,6 +839,26 @@ class ZaakBesluitViewSet(
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKCONTACTMOMENTen opvragen."),
+        description=_("Alle ZAAKCONTACTMOMENTen opvragen."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifiek ZAAKCONTACTMOMENT opvragen "),
+        description=_("Een specifiek ZAAKCONTACTMOMENT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAKCONTACTMOMENT aan."),
+        description=_(
+            "**Er wordt gevalideerd op:**\n" "- geldigheid URL naar het CONTACTMOMENT"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAKCONTACTMOMENT."),
+        description=_("Verwijder een ZAAKCONTACTMOMENT."),
+    ),
+)
 class ZaakContactMomentViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
