@@ -4,7 +4,7 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.crypto import get_random_string
@@ -33,12 +33,7 @@ from vng_api_common.utils import (
 )
 from vng_api_common.validators import alphanumeric_excluding_diacritic
 
-from ..constants import (
-    AardExterneRelatie,
-    AardZaakRelatie,
-    BetalingsIndicatie,
-    IndicatieMachtiging,
-)
+from ..constants import AardZaakRelatie, BetalingsIndicatie, IndicatieMachtiging
 from ..query import ZaakQuerySet, ZaakRelatedQuerySet
 
 logger = logging.getLogger(__name__)
@@ -749,7 +744,7 @@ class ZaakObject(ETagMixin, models.Model):
         '"overige" heeft.',
     )
 
-    object_type_overige_definitie = JSONField(
+    object_type_overige_definitie = models.JSONField(
         _("definitie object type overige"),
         blank=True,
         null=True,
