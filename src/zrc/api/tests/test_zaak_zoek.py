@@ -17,7 +17,7 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
     def test_zoek_uuid_in(self):
         zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
-        url = get_operation_url("zaak__zoek")
+        url = get_operation_url("zaak_zoek")
         data = {"uuid__in": [zaak1.uuid, zaak2.uuid]}
 
         response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
@@ -32,7 +32,7 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(data[1]["url"], f"http://testserver{reverse(zaak2)}")
 
     def test_zoek_without_params(self):
-        url = get_operation_url("zaak__zoek")
+        url = get_operation_url("zaak_zoek")
 
         response = self.client.post(url, {}, **ZAAK_WRITE_KWARGS)
 

@@ -37,7 +37,7 @@ class ZakenScopeForbiddenTests(AuthCheckMixin, APITestCase):
         url = reverse("zaak-list")
         self.assertForbidden(url, method="post")
 
-    def test_cannot_read_without_correct_scope(self):
+    def test_cannot_retrieve_without_correct_scope(self):
         zaak = ZaakFactory.create()
         status = StatusFactory.create()
         zaak_object = ZaakObjectFactory.create()
@@ -121,7 +121,7 @@ class ZaakReadCorrectScopeTests(JWTAuthMixin, APITestCase):
         self.assertEqual(response1.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_read_superuser(self):
+    def test_retrieve_superuser(self):
         """
         superuser read everything
         """

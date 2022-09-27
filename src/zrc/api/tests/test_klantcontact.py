@@ -11,11 +11,11 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
 
     def test_filter_zaak(self):
         klantcontact1 = KlantContactFactory.create()
-        klantcontact2 = KlantContactFactory.create()
+        KlantContactFactory.create()
         zaak = klantcontact1.zaak
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         klantcontact1_url = get_operation_url(
-            "klantcontact_read", uuid=klantcontact1.uuid
+            "klantcontact_retrieve", uuid=klantcontact1.uuid
         )
         url = get_operation_url("klantcontact_list")
 

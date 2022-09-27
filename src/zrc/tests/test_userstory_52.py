@@ -39,7 +39,7 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     def test_zet_eigenschappen(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         url = get_operation_url("zaakeigenschap_create", zaak_uuid=zaak.uuid)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": zaak_url,
             "eigenschap": EIGENSCHAP_OBJECTTYPE,
@@ -63,7 +63,7 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         zaakeigenschap = ZaakEigenschap.objects.get()
         self.assertEqual(zaakeigenschap.zaak, zaak)
         detail_url = get_operation_url(
-            "zaakeigenschap_read", zaak_uuid=zaak.uuid, uuid=zaakeigenschap.uuid
+            "zaakeigenschap_retrieve", zaak_uuid=zaak.uuid, uuid=zaakeigenschap.uuid
         )
         self.assertEqual(
             response_data,
@@ -116,7 +116,7 @@ class US52TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         }
 
         url = get_operation_url("zaakeigenschap_create", zaak_uuid=zaak.uuid)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": zaak_url,
             "eigenschap": EIGENSCHAP_OBJECTTYPE,

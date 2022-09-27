@@ -95,7 +95,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
 
         client = mock_client.return_value
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         resultaat = ResultaatFactory.create(zaak=zaak)
         resultaat_url = get_operation_url("resultaat_update", uuid=resultaat.uuid)
 
@@ -130,7 +130,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
         """
         client = mock_client.return_value
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         zaakeigenschap = ZaakEigenschapFactory.create(zaak=zaak, waarde="old")
         zaakeigenschap_url = get_operation_url(
             "zaakeigenschap_update", uuid=zaakeigenschap.uuid, zaak_uuid=zaak.uuid
@@ -165,7 +165,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
 
         client = mock_client.return_value
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         zaakobject = ZaakObjectFactory.create(zaak=zaak, relatieomschrijving="old")
         zaakobject_url = get_operation_url("zaakobject_update", uuid=zaakobject.uuid)
 

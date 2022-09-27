@@ -224,7 +224,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         Add RESULTAAT that causes `archiefnominatie` to be copied from RESULTAATTYPE.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         # add a result for the case
         resultaat_create_url = get_operation_url("resultaat_create")
@@ -276,7 +276,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         Add RESULTAAT that causes `archiefactiedatum` to remain `None`.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         resultaat_create_url = get_operation_url("resultaat_create")
         data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
@@ -329,7 +329,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         resultaat_create_url = get_operation_url("resultaat_create")
         data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
@@ -385,7 +385,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         ZaakEigenschapFactory.create(
             zaak=zaak, _naam="brondatum", waarde=isodatetime(2019, 1, 1)
@@ -440,7 +440,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         Attempt to add RESULTAAT with incorrect ZTC-configuration.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         # add resultaat
         resultaat_create_url = get_operation_url("resultaat_create")
@@ -492,7 +492,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         hoofd_zaak = ZaakFactory.create(einddatum=date(2019, 1, 1), zaaktype=ZAAKTYPE)
 
         zaak = ZaakFactory.create(hoofdzaak=hoofd_zaak, zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         # add resultaat
         resultaat_create_url = get_operation_url("resultaat_create")
@@ -545,7 +545,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         information in the RESULTAATTYPE.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         # add resultaat
         resultaat_create_url = get_operation_url("resultaat_create")
@@ -598,7 +598,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         zaak_object1 = ZaakObjectFactory.create(zaak=zaak)
         zaak_object2 = ZaakObjectFactory.create(
             zaak=zaak, object_type=zaak_object1.object_type
@@ -655,7 +655,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         zaak_object1 = ZaakObjectFactory.create(
             zaak=zaak, object="", object_type="woz_waarde"
         )
@@ -718,7 +718,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         Add RESULTAAT that causes `archiefactiedatum` to be set.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         resultaat_create_url = get_operation_url("resultaat_create")
         data = {"zaak": zaak_url, "resultaattype": RESULTAATTYPE, "toelichting": ""}
@@ -770,7 +770,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         besluit1_url = "https://www.brc.com/1"
         besluit2_url = "https://www.brc.com/2"
@@ -838,7 +838,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         responses = {
             RESULTAATTYPE: {
                 "url": RESULTAATTYPE,
@@ -894,7 +894,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         besluit1_url = "https://www.brc.com/1"
         besluit2_url = "https://www.brc.com/2"
@@ -961,7 +961,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         besluit_url = "https://www.brc.com/1"
 
@@ -1019,7 +1019,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         responses = {
             RESULTAATTYPE: {
                 "url": RESULTAATTYPE,
@@ -1077,9 +1077,9 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak2 = ZaakFactory.create(zaaktype=ZAAKTYPE, einddatum="2022-01-01")
         zaak3 = ZaakFactory.create(zaaktype=ZAAKTYPE, einddatum="2025-01-01")
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        zaak2_uri = get_operation_url("zaak_read", uuid=zaak2.uuid)
-        zaak3_uri = get_operation_url("zaak_read", uuid=zaak3.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
+        zaak2_uri = get_operation_url("zaak_retrieve", uuid=zaak2.uuid)
+        zaak3_uri = get_operation_url("zaak_retrieve", uuid=zaak3.uuid)
         zaak2_url = f"https://www.testserver.com{zaak2_uri}"
         zaak3_url = f"https://www.testserver.com{zaak3_uri}"
 
@@ -1141,7 +1141,7 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         responses = {
             RESULTAATTYPE: {
@@ -1200,8 +1200,8 @@ class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak2 = ZaakFactory.create(zaaktype=ZAAKTYPE, einddatum="2022-01-01")
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        zaak2_uri = get_operation_url("zaak_read", uuid=zaak2.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
+        zaak2_uri = get_operation_url("zaak_retrieve", uuid=zaak2.uuid)
         zaak2_url = f"https://www.testserver.com{zaak2_uri}"
 
         RelevanteZaakRelatieFactory.create(zaak=zaak, url=zaak2_url)

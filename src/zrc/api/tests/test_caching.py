@@ -104,7 +104,7 @@ class ZaakCacheTransactionTests(JWTAuthMixin, APITransactionTestCase):
         Status URL is part of the resource, so new status invalidates the ETag.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE, with_etag=True)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         ResultaatFactory(zaak=zaak, resultaattype=RESULTAATTYPE)
 

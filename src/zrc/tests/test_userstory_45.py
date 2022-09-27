@@ -56,7 +56,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     @freeze_time("2018-01-01")
     def test_zet_behandelaar(self, *mocks):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         url = get_operation_url("rol_create")
 
         with requests_mock.Mocker() as m:
@@ -122,7 +122,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             omschrijving=RolOmschrijving.initiator,
             omschrijving_generiek=RolOmschrijving.initiator,
         )
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         url = get_operation_url("rol_create")
 
         with requests_mock.Mocker() as m:
@@ -158,7 +158,7 @@ class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             omschrijving=RolOmschrijving.zaakcoordinator,
             omschrijving_generiek=RolOmschrijving.zaakcoordinator,
         )
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         url = get_operation_url("rol_create")
 
         with requests_mock.Mocker() as m:
