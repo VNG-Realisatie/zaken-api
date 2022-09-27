@@ -10329,7 +10329,7 @@ paths:
         - in: query
           name: page
           schema:
-            type: string
+            type: integer
           description: Een pagina binnen de gepagineerde set resultaten.
       tags:
         - zaken
