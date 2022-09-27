@@ -37,7 +37,7 @@ class US42TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         # no geo set
         ZaakFactory.create(zaaktype=ZAAKTYPE)
 
-        url = get_operation_url("zaak_zoek")
+        url = get_operation_url("zaak__zoek")
 
         response = self.client.post(
             url,
@@ -71,7 +71,7 @@ class US42TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             zaaktype="https://example.com/api/v1/zaaktype/2",
         )
 
-        url = get_operation_url("zaak_zoek")
+        url = get_operation_url("zaak__zoek")
 
         response = self.client.post(
             url,

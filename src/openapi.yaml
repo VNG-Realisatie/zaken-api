@@ -10290,7 +10290,7 @@ paths:
           description: OK
   /api/v1/zaken/_zoek:
     post:
-      operationId: zaken__zoek
+      operationId: zaak__zoek
       description:
         Zoeken/filteren gaat normaal via de `list` operatie, deze is echter
         niet geschikt voor geo-zoekopdrachten.
