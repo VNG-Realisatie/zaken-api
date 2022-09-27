@@ -39,6 +39,7 @@ RUN apt-get upgrade && apt-get update && apt-get install -y --no-install-recomme
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local/lib/python3.9 /usr/local/lib/python3.9
+COPY --from=build /usr/local/src /usr/local/src
 COPY --from=build /app/requirements /app/requirements
 
 RUN pip install -r requirements/ci.txt --exists-action=s
@@ -70,6 +71,7 @@ RUN apt-get upgrade && apt-get update && apt-get install -y --no-install-recomme
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local/lib/python3.9 /usr/local/lib/python3.9
+COPY --from=build /usr/local/src /usr/local/src
 COPY --from=build /usr/local/bin/uwsgi /usr/local/bin/uwsgi
 # required for swagger2openapi conversion
 COPY --from=frontend-build /app/node_modules /app/node_modules
