@@ -404,6 +404,60 @@ class ZaakObjectViewSet(
 
 
 @conditional_retrieve()
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAK-INFORMATIEOBJECT relaties opvragen "),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen."),
+        description=_("Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAK-INFORMATIEOBJECT relatie aan."),
+        description=_(
+            "Er worden twee types van relaties met andere objecten gerealiseerd:.\n\n"
+            "**Er wordt gevalideerd op**\n"
+            "- geldigheid zaak URL\n"
+            "- geldigheid informatieobject URL\n"
+            "- de combinatie informatieobject en zaak moet uniek zijn\n\n"
+            "**Opmerkingen**\n"
+            "- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`"
+            " wordt ook door het systeem gezet.\n"
+            "- Bij het aanmaken wordt ook in de Documenten API de gespiegelde relatie"
+            " aangemaakt, echter zonder de relatie-informatie.\n"
+            "Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\n"
+            "**Er wordt gevalideerd op**\n"
+            "- geldigheid informatieobject URL\n"
+            "- uniek zijn van relatie ZAAK-INFORMATIEOBJECT"
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een ZAAK-INFORMATIEOBJECT relatie deels bij."),
+        description=_(
+            "Je mag enkel de gegevens van de relatie bewerken, en niet de relatie"
+            " zelf aanpassen.\n\n"
+            "**Er wordt gevalideerd op** \n"
+            "- informatieobject URL en zaak URL mogen niet veranderen"
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij."),
+        description=_(
+            "Je mag enkel de gegevens van de relatie bewerken, en niet de relatie"
+            " zelf aanpassen.\n\n"
+            "**Er wordt gevalideerd op** \n"
+            "- informatieobject URL en zaak URL mogen niet veranderen"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAK-INFORMATIEOBJECT relatie."),
+        description=_(
+            "De gespiegelde relatie in de Documenten API wordt door de Zaken API"
+            " verwijderd. Consumers kunnen dit niet handmatig doen."
+        ),
+    ),
+)
 class ZaakInformatieObjectViewSet(
     NotificationCreateMixin,
     AuditTrailViewsetMixin,

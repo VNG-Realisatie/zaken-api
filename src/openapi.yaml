@@ -3700,21 +3700,8 @@ paths:
   /api/v1/zaakinformatieobjecten:
     get:
       operationId: zaakinformatieobject_list
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: 'Alle ZAAK-INFORMATIEOBJECT relaties opvragen '
       parameters:
         - name: informatieobject
           required: false
@@ -3872,21 +3859,36 @@ paths:
           description: Internal server error
     post:
       operationId: zaakinformatieobject_create
-      description: 'Filter list-action data by the authorizations configured.
+      description:
+        "Er worden twee types van relaties met andere objecten gerealiseerd:.
 
 
-        Authorizations configured for a client/consumer have a run-time effect
+        **Er wordt gevalideerd op**
 
-        in _which_ data is effectively exposed. This ``get_queryset``
+        - geldigheid zaak URL
 
-        implementation facilitates it in a conventional way.
+        - geldigheid informatieobject URL
+
+        - de combinatie informatieobject en zaak moet uniek zijn
 
 
-        For this to be effective, the underlying model must have a queryset
+        **Opmerkingen**
 
-        method ``filter_for_authorizations``, which is provided by
+        - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
+        wordt ook door het systeem gezet.
 
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+        - Bij het aanmaken wordt ook in de Documenten API de gespiegelde relatie aangemaakt,
+        echter zonder de relatie-informatie.
+
+        Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
+
+
+        **Er wordt gevalideerd op**
+
+        - geldigheid informatieobject URL
+
+        - uniek zijn van relatie ZAAK-INFORMATIEOBJECT"
+      summary: Maak een ZAAK-INFORMATIEOBJECT relatie aan.
       parameters:
         - in: header
           name: Content-Type
@@ -4056,21 +4058,8 @@ paths:
   /api/v1/zaakinformatieobjecten/{uuid}:
     get:
       operationId: zaakinformatieobject_retrieve
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
+      summary: Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
       parameters:
         - in: header
           name: If-None-Match
@@ -4242,21 +4231,11 @@ paths:
           description: Internal server error
     put:
       operationId: zaakinformatieobject_update
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description:
+        "Je mag enkel de gegevens van de relatie bewerken, en niet de relatie\
+        \ zelf aanpassen.\n\n**Er wordt gevalideerd op** \n- informatieobject URL\
+        \ en zaak URL mogen niet veranderen"
+      summary: Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij.
       parameters:
         - in: header
           name: Content-Type
@@ -4440,21 +4419,11 @@ paths:
           description: Internal server error
     patch:
       operationId: zaakinformatieobject_partial_update
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description:
+        "Je mag enkel de gegevens van de relatie bewerken, en niet de relatie\
+        \ zelf aanpassen.\n\n**Er wordt gevalideerd op** \n- informatieobject URL\
+        \ en zaak URL mogen niet veranderen"
+      summary: Werk een ZAAK-INFORMATIEOBJECT relatie deels bij.
       parameters:
         - in: header
           name: Content-Type
@@ -4637,21 +4606,10 @@ paths:
           description: Internal server error
     delete:
       operationId: zaakinformatieobject_destroy
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description:
+        De gespiegelde relatie in de Documenten API wordt door de Zaken
+        API verwijderd. Consumers kunnen dit niet handmatig doen.
+      summary: Verwijder een ZAAK-INFORMATIEOBJECT relatie.
       parameters:
         - in: header
           name: X-Audit-Toelichting
