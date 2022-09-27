@@ -5911,21 +5911,8 @@ paths:
   /api/v1/zaakverzoeken:
     get:
       operationId: zaakverzoek_list
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Alle ZAAK-VERZOEKen opvragen.
+      summary: Alle ZAAK-VERZOEKen opvragen.
       parameters:
         - name: verzoek
           required: false
@@ -6081,21 +6068,10 @@ paths:
           description: Internal server error
     post:
       operationId: zaakverzoek_create
-      description: 'Filter list-action data by the authorizations configured.
+      description: '**Er wordt gevalideerd op**
 
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+        - geldigheid URL naar de VERZOEK'
+      summary: Maak een ZAAK-VERZOEK aan.
       parameters:
         - in: header
           name: Content-Type
@@ -6265,21 +6241,8 @@ paths:
   /api/v1/zaakverzoeken/{uuid}:
     get:
       operationId: zaakverzoek_retrieve
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Een specifieke ZAAK-VERZOEK opvragen.
+      summary: Een specifieke ZAAK-VERZOEK opvragen.
       parameters:
         - in: path
           name: uuid
@@ -6426,21 +6389,8 @@ paths:
           description: Internal server error
     delete:
       operationId: zaakverzoek_destroy
-      description: 'Filter list-action data by the authorizations configured.
-
-
-        Authorizations configured for a client/consumer have a run-time effect
-
-        in _which_ data is effectively exposed. This ``get_queryset``
-
-        implementation facilitates it in a conventional way.
-
-
-        For this to be effective, the underlying model must have a queryset
-
-        method ``filter_for_authorizations``, which is provided by
-
-        :class:`zrc.datamodel.query.AuthorizationsFilterMixin`'
+      description: Verwijder een ZAAK-VERZOEK.
+      summary: Verwijder een ZAAK-VERZOEK.
       parameters:
         - in: header
           name: X-Audit-Toelichting

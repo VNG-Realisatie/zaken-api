@@ -1004,6 +1004,26 @@ class ZaakContactMomentViewSet(
             ) from sync_error
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAK-VERZOEKen opvragen."),
+        description=_("Alle ZAAK-VERZOEKen opvragen."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAK-VERZOEK opvragen."),
+        description=_("Een specifieke ZAAK-VERZOEK opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAK-VERZOEK aan."),
+        description=_(
+            "**Er wordt gevalideerd op**\n" "- geldigheid URL naar de VERZOEK"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAK-VERZOEK."),
+        description=_("Verwijder een ZAAK-VERZOEK."),
+    ),
+)
 class ZaakVerzoekViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
