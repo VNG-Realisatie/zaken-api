@@ -6771,7 +6771,7 @@ paths:
           description: Een korte unieke aanduiding van de MEDEWERKER.
           schema:
             type: string
-          max_length: 24
+            maxLength: 24
         - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
           required: false
           in: query
@@ -6780,14 +6780,14 @@ paths:
             NATUURLIJK PERSOON
           schema:
             type: string
-          max_length: 17
+            maxLength: 17
         - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer
           required: false
           in: query
           description: Het administratienummer van de persoon, bedoeld in de Wet BRP
           schema:
             type: string
-          max_length: 10
+            maxLength: 10
         - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
           required: false
           in: query
@@ -6796,7 +6796,7 @@ paths:
             bepalingen burgerservicenummer.
           schema:
             type: string
-          max_length: 9
+            maxLength: 9
         - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
           required: false
           in: query
@@ -6805,7 +6805,7 @@ paths:
             NIET-NATUURLIJK PERSOON
           schema:
             type: string
-          max_length: 17
+            maxLength: 17
         - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
           required: false
           in: query
@@ -6826,7 +6826,7 @@ paths:
           description: Een korte unieke aanduiding van de Vestiging.
           schema:
             type: string
-          max_length: 24
+            maxLength: 24
         - name: rol__betrokkeneType
           required: false
           in: query
