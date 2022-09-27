@@ -14277,3 +14277,25 @@ components:
       scheme: bearer
 servers:
   - url: https://zaken-api.test.vng.cloud/api/v1
+tags:
+  - name: klantcontacten
+    description: null
+  - name: resultaten
+    description: null
+  - name: rollen
+    description: null
+  - name: statussen
+    description: null
+  - name: zaakcontactmomenten
+    description: null
+  - name: zaakinformatieobjecten
+    description: null
+  - name: zaakobjecten
+    description: null
+  - name: zaakverzoeken
+    description: null
+  - name: zaken
+    description:
+      Een zaak mag (in principe) niet meer gewijzigd worden als de `archiefstatus`
+      een andere status heeft dan "nog_te_archiveren". Voor praktische redenen is er
+      geen harde validatie regel aan de provider kant.

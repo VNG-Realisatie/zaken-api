@@ -228,6 +228,12 @@ class ZaakViewSet(
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
 
+    global_description = _(
+        "Een zaak mag (in principe) niet meer gewijzigd worden als de `archiefstatus`"
+        ' een andere status heeft dan "nog_te_archiveren". Voor praktische redenen'
+        " is er geen harde validatie regel aan de provider kant."
+    )
+
     @action(methods=("post",), detail=False)
     def _zoek(self, request, *args, **kwargs):
         """
