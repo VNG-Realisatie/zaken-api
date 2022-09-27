@@ -10538,7 +10538,7 @@ paths:
           description: Internal server error
 components:
   responses:
-    400:
+    '400':
       headers:
         API-version:
           schema:
@@ -10551,7 +10551,7 @@ components:
           schema:
             $ref: '#/components/schemas/ValidatieFout'
       description: Bad request
-    401:
+    '401':
       headers:
         API-version:
           schema:
@@ -10564,7 +10564,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Unauthorized
-    403:
+    '403':
       headers:
         API-version:
           schema:
@@ -10577,7 +10577,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Forbidden
-    404:
+    '404':
       headers:
         API-version:
           schema:
@@ -10590,7 +10590,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Not found
-    406:
+    '406':
       headers:
         API-version:
           schema:
@@ -10603,7 +10603,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Not acceptable
-    409:
+    '409':
       headers:
         API-version:
           schema:
@@ -10616,7 +10616,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Conflict
-    410:
+    '410':
       headers:
         API-version:
           schema:
@@ -10629,7 +10629,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Gone
-    412:
+    '412':
       headers:
         API-version:
           schema:
@@ -10642,7 +10642,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Precondition failed
-    415:
+    '415':
       headers:
         API-version:
           schema:
@@ -10655,7 +10655,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Unsupported media type
-    429:
+    '429':
       headers:
         API-version:
           schema:
@@ -10668,7 +10668,7 @@ components:
           schema:
             $ref: '#/components/schemas/Fout'
       description: Too many requests
-    500:
+    '500':
       headers:
         API-version:
           schema:
@@ -14270,21 +14270,21 @@ servers:
   - url: https://zaken-api.test.vng.cloud/api/v1
 tags:
   - name: klantcontacten
-    description: null
+    description: ''
   - name: resultaten
-    description: null
+    description: ''
   - name: rollen
-    description: null
+    description: ''
   - name: statussen
-    description: null
+    description: ''
   - name: zaakcontactmomenten
-    description: null
+    description: ''
   - name: zaakinformatieobjecten
-    description: null
+    description: ''
   - name: zaakobjecten
-    description: null
+    description: ''
   - name: zaakverzoeken
-    description: null
+    description: ''
   - name: zaken
     description:
       Een zaak mag (in principe) niet meer gewijzigd worden als de `archiefstatus`
