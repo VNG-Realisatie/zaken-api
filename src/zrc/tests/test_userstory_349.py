@@ -55,9 +55,9 @@ class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         ZaakInformatieObjectFactory.create(zaak=zaak)
         KlantContactFactory.create(zaak=zaak)
 
-        zaak_delete_url = get_operation_url("zaak_delete", uuid=zaak.uuid)
+        zaak_destroy_url = get_operation_url("zaak_destroy", uuid=zaak.uuid)
 
-        response = self.client.delete(zaak_delete_url, **ZAAK_WRITE_KWARGS)
+        response = self.client.delete(zaak_destroy_url, **ZAAK_WRITE_KWARGS)
         self.assertEqual(
             response.status_code, status.HTTP_204_NO_CONTENT, response.data
         )
@@ -79,9 +79,9 @@ class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         deel_zaak = ZaakFactory.create(hoofdzaak=zaak, zaaktype=ZAAKTYPE)
 
-        zaak_delete_url = get_operation_url("zaak_delete", uuid=deel_zaak.uuid)
+        zaak_destroy_url = get_operation_url("zaak_destroy", uuid=deel_zaak.uuid)
 
-        response = self.client.delete(zaak_delete_url, **ZAAK_WRITE_KWARGS)
+        response = self.client.delete(zaak_destroy_url, **ZAAK_WRITE_KWARGS)
         self.assertEqual(
             response.status_code, status.HTTP_204_NO_CONTENT, response.data
         )
