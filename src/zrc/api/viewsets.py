@@ -4,7 +4,8 @@ from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -565,6 +566,17 @@ class ZaakInformatieObjectViewSet(
         return qs
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="zaak_uuid",
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+            description=_("Unieke resource identifier (UUID4)"),
+            required=True,
+        )
+    ]
+)
 @conditional_retrieve()
 @extend_schema_view(
     list=extend_schema(
@@ -818,6 +830,17 @@ class ResultaatViewSet(
     audit = AUDIT_ZRC
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="zaak_uuid",
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+            description=_("Unieke resource identifier (UUID4)"),
+            required=True,
+        )
+    ]
+)
 @extend_schema_view(
     list=extend_schema(
         summary=_("Alle audit trail regels behorend bij de ZAAK."),
@@ -838,6 +861,17 @@ class ZaakAuditTrailViewSet(AuditTrailViewSet):
         )
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="zaak_uuid",
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+            description=_("Unieke resource identifier (UUID4)"),
+            required=True,
+        )
+    ]
+)
 @extend_schema_view(
     list=extend_schema(
         summary=_("Alle ZAAKBESLUITen opvragen."),

@@ -8312,6 +8312,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -8455,6 +8457,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -8602,6 +8606,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -8765,6 +8771,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -8930,6 +8938,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -9101,6 +9111,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -9237,6 +9249,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -9398,6 +9412,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -9581,6 +9597,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -9751,6 +9769,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -9933,6 +9953,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -10104,6 +10126,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
@@ -10264,6 +10288,8 @@ paths:
           name: zaak_uuid
           schema:
             type: string
+            format: uuid
+          description: Unieke resource identifier (UUID4)
           required: true
       tags:
         - zaken
