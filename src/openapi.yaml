@@ -10696,6 +10696,7 @@ components:
           type: string
           format: uuid
           description: Unieke identificatie van de audit regel.
+          title: uuid
         bron:
           allOf:
             - $ref: '#/components/schemas/BronEnum'
@@ -10723,23 +10724,28 @@ components:
             * `kc` - Klanten API
 
             * `vrc` - Verzoeken API'
+          title: bron
         applicatieId:
           type: string
           description: Unieke identificatie van de applicatie, binnen de organisatie.
+          title: applicatie id
           maxLength: 100
         applicatieWeergave:
           type: string
           description: Vriendelijke naam van de applicatie.
+          title: applicatie weergave
           maxLength: 200
         gebruikersId:
           type: string
           description:
             Unieke identificatie van de gebruiker die binnen de organisatie
             herleid kan worden naar een persoon.
+          title: gebruikers id
           maxLength: 255
         gebruikersWeergave:
           type: string
           description: Vriendelijke naam van de gebruiker.
+          title: gebruikers weergave
           maxLength: 255
         actie:
           type: string
@@ -10764,42 +10770,51 @@ components:
             * `update` - Object bijgewerkt
 
             * `partial_update` - Object deels bijgewerkt'
+          title: actie
           maxLength: 50
         actieWeergave:
           type: string
           description: Vriendelijke naam van de actie.
+          title: actie weergave
           maxLength: 200
         resultaat:
           type: integer
           maximum: 599
           minimum: 100
           description: HTTP status code van de API response van de uitgevoerde handeling.
+          title: resultaat
         hoofdObject:
           type: string
           format: uri
           description: De URL naar het hoofdobject van een component.
+          title: hoofd object
           maxLength: 1000
         resource:
           type: string
           description: Het type resource waarop de actie gebeurde.
+          title: resource
           maxLength: 50
         resourceUrl:
           type: string
           format: uri
           description: De URL naar het object.
+          title: resource url
           maxLength: 1000
         toelichting:
           type: string
           description: Toelichting waarom de handeling is uitgevoerd.
+          title: toelichting
         resourceWeergave:
           type: string
           description: Vriendelijke identificatie van het object.
+          title: resource weergave
           maxLength: 200
         aanmaakdatum:
           type: string
           format: date-time
           readOnly: true
           description: De datum waarop de handeling is gedaan.
+          title: aanmaakdatum
         wijzigingen:
           $ref: '#/components/schemas/Wijzigingen'
       required:
@@ -10863,16 +10878,19 @@ components:
           description:
             'De aanduiding van de taken, rechten en plichten die de contactpersoon
             heeft binnen de organisatie van BETROKKENE. '
+          title: functie
           maxLength: 50
         telefoonnummer:
           type: string
           description:
             Telefoonnummer waaronder de contactpersoon in de regel bereikbaar
             is.
+          title: telefoonnummer
           maxLength: 20
         naam:
           type: string
           description: De opgemaakte naam van de contactpersoon namens de BETROKKENE.
+          title: naam
           maxLength: 40
       required:
         - naam
@@ -11033,31 +11051,38 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         identificatie:
           type: string
           description: De unieke aanduiding van een KLANTCONTACT
+          title: identificatie
           maxLength: 14
         datumtijd:
           type: string
           format: date-time
           description: De datum en het tijdstip waarop het KLANTCONTACT begint
+          title: datumtijd
         kanaal:
           type: string
           description: Het communicatiekanaal waarlangs het KLANTCONTACT gevoerd wordt
+          title: kanaal
           maxLength: 20
         onderwerp:
           type: string
           description: Het onderwerp waarover contact is geweest met de klant.
+          title: onderwerp
           maxLength: 200
         toelichting:
           type: string
           description: Een toelichting die inhoudelijk het contact met de klant beschrijft.
+          title: toelichting
           maxLength: 1000
       required:
         - datumtijd
@@ -11144,28 +11169,35 @@ components:
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         wplWoonplaatsNaam:
           type: string
+          title: wpl woonplaats naam
           maxLength: 80
         gorOpenbareRuimteNaam:
           type: string
           description:
             Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
             RUIMTE toegekende benaming
+          title: gor openbare ruimte naam
           maxLength: 80
         huisnummer:
           type: integer
           maximum: 99999
           minimum: 0
+          title: huisnummer
         huisletter:
           type: string
+          title: huisletter
           maxLength: 1
         huisnummertoevoeging:
           type: string
+          title: huisnummertoevoeging
           maxLength: 4
         postcode:
           type: string
+          title: postcode
           maxLength: 7
       required:
         - gorOpenbareRuimteNaam
@@ -11178,20 +11210,24 @@ components:
         buurtCode:
           type: string
           description: De code behorende bij de naam van de buurt
+          title: buurt code
           maxLength: 2
         buurtNaam:
           type: string
           description: De naam van de buurt, zoals die door het CBS wordt gebruikt.
+          title: buurt naam
           maxLength: 40
         gemGemeenteCode:
           type: string
           description:
             Een numerieke aanduiding waarmee een Nederlandse gemeente uniek
             wordt aangeduid
+          title: gem gemeente code
           maxLength: 4
         wykWijkCode:
           type: string
           description: De code behorende bij de naam van de wijk
+          title: wyk wijk code
           maxLength: 2
       required:
         - buurtCode
@@ -11204,12 +11240,14 @@ components:
         gemeenteNaam:
           type: string
           description: "De offici\xEBle door de gemeente vastgestelde gemeentenaam."
+          title: gemeente naam
           maxLength: 80
         gemeenteCode:
           type: string
           description:
             Een numerieke aanduiding waarmee een Nederlandse gemeente uniek
             wordt aangeduid
+          title: gemeente code
           maxLength: 4
       required:
         - gemeenteCode
@@ -11220,12 +11258,14 @@ components:
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         openbareRuimteNaam:
           type: string
           description:
             Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
             RUIMTE toegekende benaming
+          title: openbare ruimte naam
           maxLength: 80
       required:
         - identificatie
@@ -11238,6 +11278,7 @@ components:
           description:
             Uniek identificerend administratienummer van een huishouden
             zoals toegekend door de gemeente waarin het huishouden woonachtig is.
+          title: nummer
           maxLength: 12
         isGehuisvestIn:
           allOf:
@@ -11276,13 +11317,16 @@ components:
             * `waterinrichtingselement` - Waterinrichtingselement
 
             * `weginrichtingselement` - Weginrichtingselement'
+          title: type
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         naam:
           type: string
           description: De benaming van het OBJECT
+          title: naam
           maxLength: 500
       required:
         - identificatie
@@ -11306,12 +11350,14 @@ components:
         kadastraleIdentificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: kadastrale identificatie
           maxLength: 100
         kadastraleAanduiding:
           type: string
           description:
             De typering van de kadastrale aanduiding van een onroerende
             zaak conform Kadaster
+          title: kadastrale aanduiding
           maxLength: 1000
       required:
         - kadastraleAanduiding
@@ -11361,12 +11407,15 @@ components:
             * `steiger` - Steiger
 
             * `stuw` - Stuw'
+          title: type
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         naam:
           type: string
+          title: naam
           maxLength: 80
       required:
         - identificatie
@@ -11400,10 +11449,12 @@ components:
             Landelijk uniek identificerend administratienummer van een
             MAATSCHAPPELIJKE ACTIVITEIT zoals toegewezen door de Kamer van Koophandel
             (KvK).
+          title: kvk nummer
           maxLength: 8
         handelsnaam:
           type: string
           description: De naam waaronder de onderneming handelt.
+          title: handelsnaam
           maxLength: 200
       required:
         - handelsnaam
@@ -11414,15 +11465,18 @@ components:
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         wplWoonplaatsNaam:
           type: string
+          title: wpl woonplaats naam
           maxLength: 80
         gorOpenbareRuimteNaam:
           type: string
           description:
             Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
             RUIMTE toegekende benaming
+          title: gor openbare ruimte naam
           maxLength: 80
       required:
         - gorOpenbareRuimteNaam
@@ -11434,6 +11488,7 @@ components:
         overigeData:
           type: object
           additionalProperties: {}
+          title: overige data
       required:
         - overigeData
     ObjectPand:
@@ -11442,6 +11497,7 @@ components:
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
       required:
         - identificatie
@@ -11464,13 +11520,16 @@ components:
             * `smalspoor` - smalspoor
 
             * `spoorbaan` - spoorbaan'
+          title: type
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         naam:
           type: string
           description: De benaming van het OBJECT
+          title: naam
           maxLength: 500
       required:
         - identificatie
@@ -11488,6 +11547,7 @@ components:
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         adresAanduidingGrp:
           allOf:
@@ -11500,14 +11560,17 @@ components:
       properties:
         type:
           type: string
+          title: type
           maxLength: 40
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         naam:
           type: string
           description: De benaming van het OBJECT
+          title: naam
           maxLength: 500
       required:
         - identificatie
@@ -11598,13 +11661,16 @@ components:
             * `watervlakte` - Watervlakte
 
             * `greppel_droge_sloot` - Greppel, droge sloot'
+          title: type waterdeel
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         naam:
           type: string
           description: De benaming van het OBJECT
+          title: naam
           maxLength: 500
       required:
         - identificatie
@@ -11614,14 +11680,17 @@ components:
       properties:
         type:
           type: string
+          title: type
           maxLength: 100
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         naam:
           type: string
           description: De benaming van het OBJECT
+          title: naam
           maxLength: 500
       required:
         - identificatie
@@ -11632,16 +11701,19 @@ components:
         wijkCode:
           type: string
           description: De code behorende bij de naam van de wijk.
+          title: wijk code
           maxLength: 2
         wijkNaam:
           type: string
           description: De naam van de wijk, zoals die door het CBS wordt gebruikt.
+          title: wijk naam
           maxLength: 40
         gemGemeenteCode:
           type: string
           description:
             Een numerieke aanduiding waarmee een Nederlandse gemeente uniek
             wordt aangeduid
+          title: gem gemeente code
           maxLength: 4
       required:
         - gemGemeenteCode
@@ -11653,12 +11725,14 @@ components:
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         woonplaatsNaam:
           type: string
           description:
             De door het bevoegde gemeentelijke orgaan aan een WOONPLAATS
             toegekende benaming.
+          title: woonplaats naam
           maxLength: 80
       required:
         - identificatie
@@ -11669,6 +11743,7 @@ components:
         nummerWozDeelObject:
           type: string
           description: Uniek identificatienummer voor het deelobject binnen een WOZ-object.
+          title: nummer woz deel object
           maxLength: 6
         isOnderdeelVan:
           $ref: '#/components/schemas/ObjectWozObject'
@@ -11680,6 +11755,7 @@ components:
         wozObjectNummer:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: woz object nummer
           maxLength: 100
         aanduidingWozObject:
           allOf:
@@ -11693,6 +11769,7 @@ components:
         waardepeildatum:
           type: string
           description: De datum waarnaar de waarde van het WOZ-object wordt bepaald.
+          title: waardepeildatum
           maxLength: 9
         isVoor:
           $ref: '#/components/schemas/ObjectWozObject'
@@ -11704,10 +11781,12 @@ components:
         identificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         avgAard:
           type: string
           description: aanduiding voor de aard van het recht
+          title: avg aard
           maxLength: 1000
         heeftBetrekkingOp:
           $ref: '#/components/schemas/ObjectKadastraleOnroerendeZaak'
@@ -11725,11 +11804,13 @@ components:
         indicatie:
           type: boolean
           description: Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.
+          title: indicatie opschorting
         reden:
           type: string
           description:
             Omschrijving van de reden voor het opschorten van de behandeling
             van de zaak.
+          title: reden opschorting
           maxLength: 200
       required:
         - indicatie
@@ -11872,20 +11953,24 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         resultaattype:
           type: string
           format: uri
           description: URL-referentie naar het RESULTAATTYPE (in de Catalogi API).
+          title: resultaattype
           maxLength: 1000
         toelichting:
           type: string
           description: Een toelichting op wat het resultaat van de zaak inhoudt.
+          title: toelichting
           maxLength: 1000
     PatchedZaak:
       type: object
@@ -11908,11 +11993,13 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         identificatie:
           type: string
           description:
             De unieke identificatie van de ZAAK binnen de organisatie die
             verantwoordelijk is voor de behandeling van de ZAAK.
+          title: identificatie
           maxLength: 40
         bronorganisatie:
           type: string
@@ -11920,14 +12007,17 @@ components:
             Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
             die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers
             en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
+          title: bronorganisatie
           maxLength: 9
         omschrijving:
           type: string
           description: Een korte omschrijving van de zaak.
+          title: omschrijving
           maxLength: 80
         toelichting:
           type: string
           description: Een toelichting op de zaak.
+          title: toelichting
           maxLength: 1000
         zaaktype:
           type: string
@@ -11935,6 +12025,7 @@ components:
           description:
             URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de
             CATALOGUS waar deze voorkomt
+          title: zaaktype
           maxLength: 1000
         registratiedatum:
           type: string
@@ -11943,23 +12034,27 @@ components:
             De datum waarop de zaakbehandelende organisatie de ZAAK heeft
             geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
             gebruikt.
+          title: registratiedatum
         verantwoordelijkeOrganisatie:
           type: string
           description:
             Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
             die eindverantwoordelijk is voor de behandeling van de zaak. Dit moet
             een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
+          title: verantwoordelijke organisatie
           maxLength: 9
         startdatum:
           type: string
           format: date
           description: De datum waarop met de uitvoering van de zaak is gestart
+          title: startdatum
         einddatum:
           type: string
           format: date
           readOnly: true
           nullable: true
           description: De datum waarop de uitvoering van de zaak afgerond is.
+          title: einddatum
         einddatumGepland:
           type: string
           format: date
@@ -11967,6 +12062,7 @@ components:
           description:
             De datum waarop volgens de planning verwacht wordt dat de zaak
             afgerond wordt.
+          title: einddatum gepland
         uiterlijkeEinddatumAfdoening:
           type: string
           format: date
@@ -11974,11 +12070,13 @@ components:
           description:
             De laatste datum waarop volgens wet- en regelgeving de zaak
             afgerond dient te zijn.
+          title: uiterlijke einddatum afdoening
         publicatiedatum:
           type: string
           format: date
           nullable: true
           description: Datum waarop (het starten van) de zaak gepubliceerd is of wordt.
+          title: publicatiedatum
         communicatiekanaal:
           type: string
           format: uri
@@ -11986,6 +12084,7 @@ components:
             Het medium waarlangs de aanleiding om een zaak te starten is
             ontvangen. URL naar een communicatiekanaal in de VNG-Referentielijst van
             communicatiekanalen.
+          title: communicatiekanaal
           maxLength: 1000
         productenOfDiensten:
           type: array
@@ -11999,6 +12098,7 @@ components:
             Dit zijn URLs naar de resources zoals die door de producten- en dienstencatalogus-API
             wordt ontsloten. De producten/diensten moeten bij het zaaktype vermeld
             zijn.
+          title: producten of diensten
         vertrouwelijkheidaanduiding:
           allOf:
             - $ref: '#/components/schemas/VertrouwelijkheidaanduidingEnum'
@@ -12024,6 +12124,7 @@ components:
             * `gedeeltelijk` - De met de zaak gemoeide kosten zijn gedeeltelijk betaald.
 
             * `geheel` - De met de zaak gemoeide kosten zijn geheel betaald.'
+          title: betalingsindicatie
           oneOf:
             - $ref: '#/components/schemas/BetalingsindicatieEnum'
             - $ref: '#/components/schemas/BlankEnum'
@@ -12038,11 +12139,13 @@ components:
           description:
             De datum waarop de meest recente betaling is verwerkt van kosten
             die gemoeid zijn met behandeling van de zaak.
+          title: laatste betaaldatum
         zaakgeometrie:
           allOf:
             - $ref: '#/components/schemas/GeoJSONGeometry'
           nullable: true
           description: Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.
+          title: zaakgeometrie
         verlenging:
           allOf:
             - $ref: '#/components/schemas/Verlenging'
@@ -12064,6 +12167,7 @@ components:
             URL-referentie naar de categorie in de gehanteerde 'Selectielijst
             Archiefbescheiden' die, gezien het zaaktype en het resultaattype van de
             zaak, bepalend is voor het archiefregime van de zaak.
+          title: selectielijstklasse
           maxLength: 1000
         hoofdzaak:
           type: string
@@ -12083,23 +12187,30 @@ components:
             format: uri
           readOnly: true
           description: URL-referenties naar deel ZAAKen.
+          title: is deelzaak van
+          uniqueItems: true
         relevanteAndereZaken:
           type: array
           items:
             $ref: '#/components/schemas/RelevanteZaak'
           description: Een lijst van relevante andere zaken.
+          title: zaak
         eigenschappen:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          title: zaak
+          uniqueItems: true
         rollen:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          title: zaak
+          uniqueItems: true
         status:
           type: string
           format: uri
@@ -12112,12 +12223,16 @@ components:
             type: string
             format: uri
           readOnly: true
+          title: zaak
+          uniqueItems: true
         zaakobjecten:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          title: zaak
+          uniqueItems: true
         kenmerken:
           type: array
           items:
@@ -12125,6 +12240,7 @@ components:
           description:
             Lijst van kenmerken. Merk op dat refereren naar gerelateerde
             objecten beter kan via `ZaakObject`.
+          title: zaak
         archiefnominatie:
           nullable: true
           description:
@@ -12140,6 +12256,7 @@ components:
 
             * `vernietigen` - Het zaakdossier moet op of na de Archiefactiedatum vernietigd
             worden.'
+          title: archiefnominatie
           oneOf:
             - $ref: '#/components/schemas/ArchiefnominatieEnum'
             - $ref: '#/components/schemas/BlankEnum'
@@ -12167,6 +12284,7 @@ components:
 
             * `overgedragen` - De zaak cq. het zaakdossier is overgebracht naar een
             archiefbewaarplaats.'
+          title: archiefstatus
         archiefactiedatum:
           type: string
           format: date
@@ -12176,6 +12294,7 @@ components:
             worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
             Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
             aan deze ZAAK indien nog leeg.
+          title: archiefactiedatum
         resultaat:
           type: string
           format: uri
@@ -12191,6 +12310,7 @@ components:
             ander niet-natuurlijk persoon waarbinnen het (bestuurs)orgaan zetelt dat
             opdracht heeft gegeven om taken uit te voeren waaraan de zaak invulling
             geeft.
+          title: opdrachtgevende organisatie
           maxLength: 9
         processobjectaard:
           type: string
@@ -12203,6 +12323,7 @@ components:
         resultaattoelichting:
           type: string
           description: Een toelichting op wat het resultaat van de zaak inhoudt.
+          title: resultaattoelichting
           maxLength: 1000
         startdatumBewaartermijn:
           type: string
@@ -12211,6 +12332,7 @@ components:
           description:
             De datum die de start markeert van de termijn waarop het zaakdossier
             vernietigd moet worden.
+          title: startdatum bewaartermijn
         processobject:
           allOf:
             - $ref: '#/components/schemas/Processobject'
@@ -12244,20 +12366,25 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
+          title: zaak
         eigenschap:
           type: string
           format: uri
           description: URL-referentie naar de EIGENSCHAP (in de Catalogi API).
+          title: eigenschap
           maxLength: 1000
         naam:
           type: string
           readOnly: true
           description: De naam van de EIGENSCHAP (overgenomen uit de Catalogi API).
+          title: ' naam'
         waarde:
           type: string
+          title: waarde
     PatchedZaakInformatieObject:
       type: object
       properties:
@@ -12275,17 +12402,20 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         informatieobject:
           type: string
           format: uri
           description:
             URL-referentie naar het INFORMATIEOBJECT (in de Documenten
             API), waar ook de relatieinformatie opgevraagd kan worden.
+          title: informatieobject
           maxLength: 1000
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         aardRelatieWeergave:
@@ -12297,12 +12427,14 @@ components:
           description:
             De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend
             is.
+          title: titel
           maxLength: 200
         beschrijving:
           type: string
           description:
             Een op het object gerichte beschrijving van de inhoud vanhet
             INFORMATIEOBJECT.
+          title: beschrijving
         registratiedatum:
           type: string
           format: date-time
@@ -12311,6 +12443,7 @@ components:
             De datum waarop de behandelende organisatie het INFORMATIEOBJECT
             heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen
             op of voor de huidige datum en tijd.
+          title: registratiedatum
         vernietigingsdatum:
           type: string
           format: date-time
@@ -12318,6 +12451,7 @@ components:
           description:
             De datum waarop het informatieobject uit het zaakdossier verwijderd
             moet worden.
+          title: vernietigingsdatum
         status:
           type: string
           format: uri
@@ -12326,6 +12460,7 @@ components:
             De bij de desbetreffende ZAAK behorende STATUS waarvoor het
             ZAAK-INFORMATIEOBJECT relevant is (geweest) met het oog op het bereiken
             van die STATUS en/of de communicatie daarover.
+          title: status
           minLength: 1
           maxLength: 1000
     PatchedZaakObject:
@@ -12345,21 +12480,25 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         object:
           type: string
           format: uri
           description: URL-referentie naar de resource die het OBJECT beschrijft.
+          title: object
           maxLength: 1000
         zaakobjecttype:
           type: string
           format: uri
           description: URL-referentie naar het ZAAKOBJECTTYPE (in de Catalogi API).
+          title: zaakobjecttype
           maxLength: 1000
         objectType:
           allOf:
@@ -12433,11 +12572,13 @@ components:
             * `zakelijk_recht` - Zakelijk recht
 
             * `overige` - Overige'
+          title: object type
         objectTypeOverige:
           type: string
           description:
             Beschrijft het type OBJECT als `objectType` de waarde "overige"
             heeft.
+          title: object type overige
           pattern: '[a-z\_]+'
           maxLength: 100
         objectTypeOverigeDefinitie:
@@ -12468,6 +12609,7 @@ components:
         relatieomschrijving:
           type: string
           description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
+          title: relatieomschrijving
           maxLength: 80
       discriminator:
         propertyName: objectType
@@ -12522,20 +12664,24 @@ components:
           description:
             De naam van de attribuutsoort van het procesobject dat bepalend
             is voor het einde van de procestermijn.
+          title: datumkenmerk
           maxLength: 250
         identificatie:
           type: string
           description: De unieke aanduiding van het procesobject.
+          title: identificatie
           maxLength: 250
         objecttype:
           type: string
           description: Het soort object dat het procesobject representeert.
+          title: objecttype
           maxLength: 250
         registratie:
           type: string
           description:
             De naam van de registratie waarvan het procesobject deel uit
             maakt.
+          title: registratie
           maxLength: 250
       required:
         - datumkenmerk
@@ -12570,6 +12716,7 @@ components:
 
             * `bijdrage` - Aan het bereiken van de uitkomst van de andere zaak levert
             de onderhanden zaak een bijdrage.'
+          title: aard relatie
       required:
         - aardRelatie
         - url
@@ -12590,20 +12737,24 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         resultaattype:
           type: string
           format: uri
           description: URL-referentie naar het RESULTAATTYPE (in de Catalogi API).
+          title: resultaattype
           maxLength: 1000
         toelichting:
           type: string
           description: Een toelichting op wat het resultaat van de zaak inhoudt.
+          title: toelichting
           maxLength: 1000
       required:
         - resultaattype
@@ -12627,16 +12778,19 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         betrokkene:
           type: string
           format: uri
           description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
+          title: betrokkene
           maxLength: 1000
         betrokkeneType:
           allOf:
@@ -12656,11 +12810,13 @@ components:
             * `organisatorische_eenheid` - Organisatorische eenheid
 
             * `medewerker` - Medewerker'
+          title: betrokkene type
         afwijkendeNaamBetrokkene:
           type: string
           description:
             De naam van de betrokkene waaronder deze in relatie tot de
             zaak aangesproken wil worden.
+          title: afwijkende naam betrokkene
           maxLength: 625
         roltype:
           type: string
@@ -12668,11 +12824,13 @@ components:
           description:
             URL-referentie naar een roltype binnen het ZAAKTYPE van de
             ZAAK.
+          title: roltype
           maxLength: 1000
         omschrijving:
           type: string
           readOnly: true
           description: Omschrijving van de aard van de ROL, afgeleid uit het ROLTYPE.
+          title: omschrijving
         omschrijvingGeneriek:
           type: string
           readOnly: true
@@ -12691,14 +12849,17 @@ components:
             rdinator) Er voor zorg dragen dat de behandeling van de zaak in samenhang\
             \ uitgevoerd wordt conform de daarover gemaakte afspraken.\n* `mede_initiator`\
             \ - Mede-initiator"
+          title: omschrijving generiek
         roltoelichting:
           type: string
+          title: roltoelichting
           maxLength: 1000
         registratiedatum:
           type: string
           format: date-time
           readOnly: true
           description: De datum waarop dit object is geregistreerd.
+          title: registratiedatum
         indicatieMachtiging:
           description: 'Indicatie machtiging
 
@@ -12711,6 +12872,7 @@ components:
 
             * `machtiginggever` - De betrokkene in de rol bij de zaak heeft een andere
             betrokkene bij dezelfde zaak gemachtigd om namens hem of haar te handelen'
+          title: indicatie machtiging
           oneOf:
             - $ref: '#/components/schemas/IndicatieMachtigingEnum'
             - $ref: '#/components/schemas/BlankEnum'
@@ -12734,6 +12896,8 @@ components:
           description:
             De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd
             dat STATUSsen in die ZAAK bereikt zijn.
+          title: statussen
+          uniqueItems: true
       required:
         - betrokkeneType
         - omschrijving
@@ -12753,24 +12917,28 @@ components:
         identificatie:
           type: string
           description: Een korte unieke aanduiding van de MEDEWERKER.
+          title: identificatie
           maxLength: 24
         achternaam:
           type: string
           description:
             De achternaam zoals de MEDEWERKER die in het dagelijkse verkeer
             gebruikt.
+          title: achternaam
           maxLength: 200
         voorletters:
           type: string
           description:
             De verzameling letters die gevormd wordt door de eerste letter
             van alle in volgorde voorkomende voornamen.
+          title: voorletters
           maxLength: 20
         voorvoegselAchternaam:
           type: string
           description:
             Dat deel van de geslachtsnaam dat voorkomt in Tabel 36 (GBA),
             voorvoegseltabel, en door een spatie van de geslachtsnaam is
+          title: voorvoegsel achternaam
           maxLength: 10
     RolNatuurlijkPersoon:
       type: object
@@ -12780,34 +12948,41 @@ components:
           description:
             Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet
             algemene bepalingen burgerservicenummer.
+          title: inp bsn
           maxLength: 9
         anpIdentificatie:
           type: string
           description:
             Het door de gemeente uitgegeven unieke nummer voor een ANDER
             NATUURLIJK PERSOON
+          title: anp identificatie
           maxLength: 17
         inpA_nummer:
           type: string
           description: Het administratienummer van de persoon, bedoeld in de Wet BRP
+          title: inp a nummer
           pattern: ^[1-9][0-9]{9}$
           maxLength: 10
         geslachtsnaam:
           type: string
           description: De stam van de geslachtsnaam.
+          title: geslachtsnaam
           maxLength: 200
         voorvoegselGeslachtsnaam:
           type: string
+          title: voorvoegsel geslachtsnaam
           maxLength: 80
         voorletters:
           type: string
           description:
             De verzameling letters die gevormd wordt door de eerste letter
             van alle in volgorde voorkomende voornamen.
+          title: voorletters
           maxLength: 20
         voornamen:
           type: string
           description: Voornamen bij de naam die de persoon wenst te voeren.
+          title: voornamen
           maxLength: 200
         geslachtsaanduiding:
           description:
@@ -12823,11 +12998,13 @@ components:
             * `v` - Vrouw
 
             * `o` - Onbekend'
+          title: geslachtsaanduiding
           oneOf:
             - $ref: '#/components/schemas/GeslachtsaanduidingEnum'
             - $ref: '#/components/schemas/BlankEnum'
         geboortedatum:
           type: string
+          title: geboortedatum
           maxLength: 18
         verblijfsadres:
           allOf:
@@ -12845,12 +13022,14 @@ components:
           description:
             Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
             NIET-NATUURLIJK PERSOON
+          title: inn nnp id
           maxLength: 9
         annIdentificatie:
           type: string
           description:
             Het door de gemeente uitgegeven unieke nummer voor een ANDER
             NIET-NATUURLIJK PERSOON
+          title: ann identificatie
           maxLength: 17
         statutaireNaam:
           type: string
@@ -12858,15 +13037,18 @@ components:
             Naam van de niet-natuurlijke persoon zoals deze is vastgelegd
             in de statuten (rechtspersoon) of in de vennootschapsovereenkomst is overeengekomen
             (Vennootschap onder firma of Commanditaire vennootschap).
+          title: statutaire naam
           maxLength: 500
         innRechtsvorm:
           description: De juridische vorm van de NIET-NATUURLIJK PERSOON.
+          title: inn rechtsvorm
           oneOf:
             - $ref: '#/components/schemas/InnRechtsvormEnum'
             - $ref: '#/components/schemas/BlankEnum'
         bezoekadres:
           type: string
           description: De gegevens over het adres van de NIET-NATUURLIJK PERSOON
+          title: bezoekadres
           maxLength: 1000
         subVerblijfBuitenland:
           allOf:
@@ -12878,13 +13060,16 @@ components:
         identificatie:
           type: string
           description: Een korte identificatie van de organisatorische eenheid.
+          title: identificatie
           maxLength: 24
         naam:
           type: string
           description: De feitelijke naam van de organisatorische eenheid.
+          title: naam
           maxLength: 50
         isGehuisvestIn:
           type: string
+          title: is gehuisvest in
           maxLength: 24
     RolVestiging:
       type: object
@@ -12892,6 +13077,7 @@ components:
         vestigingsNummer:
           type: string
           description: Een korte unieke aanduiding van de Vestiging.
+          title: vestigings nummer
           maxLength: 24
         handelsnaam:
           type: array
@@ -12899,6 +13085,7 @@ components:
             type: string
             maxLength: 625
           description: De naam van de vestiging waaronder gehandeld wordt.
+          title: handelsnaam
         verblijfsadres:
           allOf:
             - $ref: '#/components/schemas/VerblijfsAdres'
@@ -12924,32 +13111,38 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         statustype:
           type: string
           format: uri
           description: URL-referentie naar het STATUSTYPE (in de Catalogi API).
+          title: statustype
           maxLength: 1000
         datumStatusGezet:
           type: string
           format: date-time
           description: De datum waarop de ZAAK de status heeft verkregen.
+          title: datum status gezet
         statustoelichting:
           type: string
           description:
             Een, voor de initiator van de zaak relevante, toelichting op
             de status van een zaak.
+          title: statustoelichting
           maxLength: 1000
         indicatieLaatstGezetteStatus:
           type: boolean
           description:
             Het gegeven is afleidbaar uit de historie van de attribuutsoort
             Datum status gezet van van alle statussen bij de desbetreffende zaak.
+          title: indicatie laatst gezette status
         gezetdoor:
           type: string
           format: uri
@@ -12966,6 +13159,8 @@ components:
             minLength: 1
             maxLength: 1000
           readOnly: true
+          title: status
+          uniqueItems: true
       required:
         - datumStatusGezet
         - statustype
@@ -12981,21 +13176,26 @@ components:
           description:
             De code, behorende bij de landnaam, zoals opgenomen in de Land/Gebied-tabel
             van de BRP.
+          title: lnd landcode
           maxLength: 4
         lndLandnaam:
           type: string
           description:
             De naam van het land, zoals opgenomen in de Land/Gebied-tabel
             van de BRP.
+          title: lnd landnaam
           maxLength: 40
         subAdresBuitenland_1:
           type: string
+          title: sub adres buitenland 1
           maxLength: 35
         subAdresBuitenland_2:
           type: string
+          title: sub adres buitenland 2
           maxLength: 35
         subAdresBuitenland_3:
           type: string
+          title: sub adres buitenland 3
           maxLength: 35
       required:
         - lndLandcode
@@ -13005,35 +13205,44 @@ components:
       properties:
         numIdentificatie:
           type: string
+          title: num identificatie
           maxLength: 100
         oaoIdentificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         wplWoonplaatsNaam:
           type: string
+          title: wpl woonplaats naam
           maxLength: 80
         gorOpenbareRuimteNaam:
           type: string
           description:
             Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
             RUIMTE toegekende benaming
+          title: gor openbare ruimte naam
           maxLength: 80
         aoaPostcode:
           type: string
+          title: postcode
           maxLength: 7
         aoaHuisnummer:
           type: integer
           maximum: 99999
           minimum: 0
+          title: huisnummer
         aoaHuisletter:
           type: string
+          title: huisletter
           maxLength: 1
         aoaHuisnummertoevoeging:
           type: string
+          title: huisnummertoevoeging
           maxLength: 4
         ogoLocatieAanduiding:
           type: string
+          title: locatie aanduiding
           maxLength: 100
       required:
         - aoaHuisnummer
@@ -13088,31 +13297,39 @@ components:
         aoaIdentificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         wplWoonplaatsNaam:
           type: string
+          title: wpl woonplaats naam
           maxLength: 80
         gorOpenbareRuimteNaam:
           type: string
           description:
             Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
             RUIMTE toegekende benaming
+          title: gor openbare ruimte naam
           maxLength: 80
         aoaPostcode:
           type: string
+          title: postcode
           maxLength: 7
         aoaHuisnummer:
           type: integer
           maximum: 99999
           minimum: 0
+          title: huisnummer
         aoaHuisletter:
           type: string
+          title: huisletter
           maxLength: 1
         aoaHuisnummertoevoeging:
           type: string
+          title: huisnummertoevoeging
           maxLength: 4
         inpLocatiebeschrijving:
           type: string
+          title: locatie omschrijving
           maxLength: 1000
       required:
         - aoaHuisnummer
@@ -13130,6 +13347,7 @@ components:
           description:
             Omschrijving van de reden voor het verlengen van de behandeling
             van de zaak.
+          title: reden verlenging
           maxLength: 200
         duur:
           type: string
@@ -13137,8 +13355,8 @@ components:
             Het aantal werkbare dagen waarmee de doorlooptijd van de behandeling
             van de ZAAK is verlengd (of verkort) ten opzichte van de eerder gecommuniceerde
             doorlooptijd.
+          title: duur verlenging
           format: duration
-          title: Duur
       required:
         - duur
         - reden
@@ -13163,41 +13381,51 @@ components:
           description:
             Volledige JSON body van het object zoals dat bestond voordat
             de actie heeft plaatsgevonden.
+          title: oud
         nieuw:
           type: object
           additionalProperties: {}
           description: Volledige JSON body van het object na de actie.
+          title: nieuw
     WozObjectAdres:
       type: object
       properties:
         aoaIdentificatie:
           type: string
           description: De unieke identificatie van het OBJECT
+          title: identificatie
           maxLength: 100
         wplWoonplaatsNaam:
           type: string
+          title: wpl woonplaats naam
           maxLength: 80
         gorOpenbareRuimteNaam:
           type: string
           description:
             Een door het bevoegde gemeentelijke orgaan aan een OPENBARE
             RUIMTE toegekende benaming
+          title: gor openbare ruimte naam
           maxLength: 80
         aoaPostcode:
           type: string
+          title: postcode
           maxLength: 7
         aoaHuisnummer:
           type: integer
           maximum: 99999
           minimum: 0
+          title: huisnummer
         aoaHuisletter:
           type: string
+          title: huisletter
           maxLength: 1
         aoaHuisnummertoevoeging:
           type: string
+          title: huisnummertoevoeging
           maxLength: 4
         locatieOmschrijving:
           type: string
+          title: locatie omschrijving
           maxLength: 1000
       required:
         - aoaHuisnummer
@@ -13225,11 +13453,13 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         identificatie:
           type: string
           description:
             De unieke identificatie van de ZAAK binnen de organisatie die
             verantwoordelijk is voor de behandeling van de ZAAK.
+          title: identificatie
           maxLength: 40
         bronorganisatie:
           type: string
@@ -13237,14 +13467,17 @@ components:
             Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
             die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers
             en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
+          title: bronorganisatie
           maxLength: 9
         omschrijving:
           type: string
           description: Een korte omschrijving van de zaak.
+          title: omschrijving
           maxLength: 80
         toelichting:
           type: string
           description: Een toelichting op de zaak.
+          title: toelichting
           maxLength: 1000
         zaaktype:
           type: string
@@ -13252,6 +13485,7 @@ components:
           description:
             URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de
             CATALOGUS waar deze voorkomt
+          title: zaaktype
           maxLength: 1000
         registratiedatum:
           type: string
@@ -13260,23 +13494,27 @@ components:
             De datum waarop de zaakbehandelende organisatie de ZAAK heeft
             geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
             gebruikt.
+          title: registratiedatum
         verantwoordelijkeOrganisatie:
           type: string
           description:
             Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
             die eindverantwoordelijk is voor de behandeling van de zaak. Dit moet
             een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
+          title: verantwoordelijke organisatie
           maxLength: 9
         startdatum:
           type: string
           format: date
           description: De datum waarop met de uitvoering van de zaak is gestart
+          title: startdatum
         einddatum:
           type: string
           format: date
           readOnly: true
           nullable: true
           description: De datum waarop de uitvoering van de zaak afgerond is.
+          title: einddatum
         einddatumGepland:
           type: string
           format: date
@@ -13284,6 +13522,7 @@ components:
           description:
             De datum waarop volgens de planning verwacht wordt dat de zaak
             afgerond wordt.
+          title: einddatum gepland
         uiterlijkeEinddatumAfdoening:
           type: string
           format: date
@@ -13291,11 +13530,13 @@ components:
           description:
             De laatste datum waarop volgens wet- en regelgeving de zaak
             afgerond dient te zijn.
+          title: uiterlijke einddatum afdoening
         publicatiedatum:
           type: string
           format: date
           nullable: true
           description: Datum waarop (het starten van) de zaak gepubliceerd is of wordt.
+          title: publicatiedatum
         communicatiekanaal:
           type: string
           format: uri
@@ -13303,6 +13544,7 @@ components:
             Het medium waarlangs de aanleiding om een zaak te starten is
             ontvangen. URL naar een communicatiekanaal in de VNG-Referentielijst van
             communicatiekanalen.
+          title: communicatiekanaal
           maxLength: 1000
         productenOfDiensten:
           type: array
@@ -13316,6 +13558,7 @@ components:
             Dit zijn URLs naar de resources zoals die door de producten- en dienstencatalogus-API
             wordt ontsloten. De producten/diensten moeten bij het zaaktype vermeld
             zijn.
+          title: producten of diensten
         vertrouwelijkheidaanduiding:
           allOf:
             - $ref: '#/components/schemas/VertrouwelijkheidaanduidingEnum'
@@ -13341,6 +13584,7 @@ components:
             * `gedeeltelijk` - De met de zaak gemoeide kosten zijn gedeeltelijk betaald.
 
             * `geheel` - De met de zaak gemoeide kosten zijn geheel betaald.'
+          title: betalingsindicatie
           oneOf:
             - $ref: '#/components/schemas/BetalingsindicatieEnum'
             - $ref: '#/components/schemas/BlankEnum'
@@ -13355,11 +13599,13 @@ components:
           description:
             De datum waarop de meest recente betaling is verwerkt van kosten
             die gemoeid zijn met behandeling van de zaak.
+          title: laatste betaaldatum
         zaakgeometrie:
           allOf:
             - $ref: '#/components/schemas/GeoJSONGeometry'
           nullable: true
           description: Punt, lijn of (multi-)vlak geometrie-informatie, in GeoJSON.
+          title: zaakgeometrie
         verlenging:
           allOf:
             - $ref: '#/components/schemas/Verlenging'
@@ -13381,6 +13627,7 @@ components:
             URL-referentie naar de categorie in de gehanteerde 'Selectielijst
             Archiefbescheiden' die, gezien het zaaktype en het resultaattype van de
             zaak, bepalend is voor het archiefregime van de zaak.
+          title: selectielijstklasse
           maxLength: 1000
         hoofdzaak:
           type: string
@@ -13400,23 +13647,30 @@ components:
             format: uri
           readOnly: true
           description: URL-referenties naar deel ZAAKen.
+          title: is deelzaak van
+          uniqueItems: true
         relevanteAndereZaken:
           type: array
           items:
             $ref: '#/components/schemas/RelevanteZaak'
           description: Een lijst van relevante andere zaken.
+          title: zaak
         eigenschappen:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          title: zaak
+          uniqueItems: true
         rollen:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          title: zaak
+          uniqueItems: true
         status:
           type: string
           format: uri
@@ -13429,12 +13683,16 @@ components:
             type: string
             format: uri
           readOnly: true
+          title: zaak
+          uniqueItems: true
         zaakobjecten:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          title: zaak
+          uniqueItems: true
         kenmerken:
           type: array
           items:
@@ -13442,6 +13700,7 @@ components:
           description:
             Lijst van kenmerken. Merk op dat refereren naar gerelateerde
             objecten beter kan via `ZaakObject`.
+          title: zaak
         archiefnominatie:
           nullable: true
           description:
@@ -13457,6 +13716,7 @@ components:
 
             * `vernietigen` - Het zaakdossier moet op of na de Archiefactiedatum vernietigd
             worden.'
+          title: archiefnominatie
           oneOf:
             - $ref: '#/components/schemas/ArchiefnominatieEnum'
             - $ref: '#/components/schemas/BlankEnum'
@@ -13484,6 +13744,7 @@ components:
 
             * `overgedragen` - De zaak cq. het zaakdossier is overgebracht naar een
             archiefbewaarplaats.'
+          title: archiefstatus
         archiefactiedatum:
           type: string
           format: date
@@ -13493,6 +13754,7 @@ components:
             worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
             Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
             aan deze ZAAK indien nog leeg.
+          title: archiefactiedatum
         resultaat:
           type: string
           format: uri
@@ -13508,6 +13770,7 @@ components:
             ander niet-natuurlijk persoon waarbinnen het (bestuurs)orgaan zetelt dat
             opdracht heeft gegeven om taken uit te voeren waaraan de zaak invulling
             geeft.
+          title: opdrachtgevende organisatie
           maxLength: 9
         processobjectaard:
           type: string
@@ -13520,6 +13783,7 @@ components:
         resultaattoelichting:
           type: string
           description: Een toelichting op wat het resultaat van de zaak inhoudt.
+          title: resultaattoelichting
           maxLength: 1000
         startdatumBewaartermijn:
           type: string
@@ -13528,6 +13792,7 @@ components:
           description:
             De datum die de start markeert van de termijn waarop het zaakdossier
             vernietigd moet worden.
+          title: startdatum bewaartermijn
         processobject:
           allOf:
             - $ref: '#/components/schemas/Processobject'
@@ -13577,12 +13842,14 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         besluit:
           type: string
           format: uri
           description:
             URL-referentie naar het BESLUIT (in de Besluiten API), waar
             ook de relatieinformatie opgevraagd kan worden.
+          title: besluit
           maxLength: 1000
       required:
         - besluit
@@ -13605,10 +13872,12 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         contactmoment:
@@ -13617,6 +13886,7 @@ components:
           description:
             URL-referentie naar het CONTACTMOMENT (in de Klantinteractie
             API)
+          title: contactmoment
           maxLength: 1000
       required:
         - contactmoment
@@ -13648,20 +13918,25 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
+          title: zaak
         eigenschap:
           type: string
           format: uri
           description: URL-referentie naar de EIGENSCHAP (in de Catalogi API).
+          title: eigenschap
           maxLength: 1000
         naam:
           type: string
           readOnly: true
           description: De naam van de EIGENSCHAP (overgenomen uit de Catalogi API).
+          title: ' naam'
         waarde:
           type: string
+          title: waarde
       required:
         - eigenschap
         - naam
@@ -13686,17 +13961,20 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         informatieobject:
           type: string
           format: uri
           description:
             URL-referentie naar het INFORMATIEOBJECT (in de Documenten
             API), waar ook de relatieinformatie opgevraagd kan worden.
+          title: informatieobject
           maxLength: 1000
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         aardRelatieWeergave:
@@ -13708,12 +13986,14 @@ components:
           description:
             De naam waaronder het INFORMATIEOBJECT binnen het OBJECT bekend
             is.
+          title: titel
           maxLength: 200
         beschrijving:
           type: string
           description:
             Een op het object gerichte beschrijving van de inhoud vanhet
             INFORMATIEOBJECT.
+          title: beschrijving
         registratiedatum:
           type: string
           format: date-time
@@ -13722,6 +14002,7 @@ components:
             De datum waarop de behandelende organisatie het INFORMATIEOBJECT
             heeft geregistreerd bij het OBJECT. Geldige waardes zijn datumtijden gelegen
             op of voor de huidige datum en tijd.
+          title: registratiedatum
         vernietigingsdatum:
           type: string
           format: date-time
@@ -13729,6 +14010,7 @@ components:
           description:
             De datum waarop het informatieobject uit het zaakdossier verwijderd
             moet worden.
+          title: vernietigingsdatum
         status:
           type: string
           format: uri
@@ -13737,6 +14019,7 @@ components:
             De bij de desbetreffende ZAAK behorende STATUS waarvoor het
             ZAAK-INFORMATIEOBJECT relevant is (geweest) met het oog op het bereiken
             van die STATUS en/of de communicatie daarover.
+          title: status
           minLength: 1
           maxLength: 1000
       required:
@@ -13752,10 +14035,12 @@ components:
         kenmerk:
           type: string
           description: Identificeert uniek de zaak in een andere administratie.
+          title: kenmerk
           maxLength: 40
         bron:
           type: string
           description: De aanduiding van de administratie waar het kenmerk op slaat.
+          title: bron
           maxLength: 40
       required:
         - bron
@@ -13777,21 +14062,25 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         object:
           type: string
           format: uri
           description: URL-referentie naar de resource die het OBJECT beschrijft.
+          title: object
           maxLength: 1000
         zaakobjecttype:
           type: string
           format: uri
           description: URL-referentie naar het ZAAKOBJECTTYPE (in de Catalogi API).
+          title: zaakobjecttype
           maxLength: 1000
         objectType:
           allOf:
@@ -13865,11 +14154,13 @@ components:
             * `zakelijk_recht` - Zakelijk recht
 
             * `overige` - Overige'
+          title: object type
         objectTypeOverige:
           type: string
           description:
             Beschrijft het type OBJECT als `objectType` de waarde "overige"
             heeft.
+          title: object type overige
           pattern: '[a-z\_]+'
           maxLength: 100
         objectTypeOverigeDefinitie:
@@ -13900,6 +14191,7 @@ components:
         relatieomschrijving:
           type: string
           description: Omschrijving van de betrekking tussen de ZAAK en het OBJECT.
+          title: relatieomschrijving
           maxLength: 80
       required:
         - objectType
@@ -13925,16 +14217,19 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4)
+          title: uuid
         zaak:
           type: string
           format: uri
           description: URL-referentie naar de ZAAK.
+          title: zaak
           minLength: 1
           maxLength: 1000
         verzoek:
           type: string
           format: uri
           description: URL-referentie naar het VERZOEK (in de Klantinteractie API)
+          title: verzoek
           maxLength: 1000
       required:
         - url
