@@ -94,9 +94,6 @@ from .validators import ZaakBesluitValidator
 
 logger = logging.getLogger(__name__)
 
-PATH_PARAMETER_NAME = "zaak_uuid <uuid>"
-PATH_PARAMETER_DESCRIPTION = "Unieke resource identifier (UUID4)"
-
 
 @extend_schema_view(
     list=extend_schema(
