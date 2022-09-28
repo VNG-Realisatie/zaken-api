@@ -2,7 +2,7 @@
 Zaken API
 =========
 
-:Version: 1.3.0-rc3
+:Version: 1.3.0-rc4
 :Source: https://github.com/VNG-Realisatie/zaken-api
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, ZRC
 
