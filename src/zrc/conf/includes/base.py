@@ -106,13 +106,13 @@ INSTALLED_APPS = [
     "axes",
     "django_filters",
     "corsheaders",
-    "vng_api_common",  # before drf_yasg to override the management command
+    "vng_api_common",  # before drf_spectacular to override the management command
     "vng_api_common.authorizations",
     "vng_api_common.audittrails",
     "vng_api_common.notifications",
-    "drf_yasg",
     "rest_framework",
     "rest_framework_gis",
+    "drf_spectacular",
     "django_markup",
     "solo",
     # Project applications.

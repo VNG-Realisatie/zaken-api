@@ -3,6 +3,8 @@ Test that the caching mechanisms are in place.
 """
 from unittest.mock import patch
 
+from django.conf import settings
+
 from rest_framework import status
 from rest_framework.test import APITestCase, APITransactionTestCase, override_settings
 from vng_api_common.constants import (
@@ -57,7 +59,8 @@ class ZaakCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/zaken/{uuid}"]
+        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
+        endpoint = spec["paths"][f"{schema_prefix}/zaken/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -104,7 +107,7 @@ class ZaakCacheTransactionTests(JWTAuthMixin, APITransactionTestCase):
         Status URL is part of the resource, so new status invalidates the ETag.
         """
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE, with_etag=True)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
         ResultaatFactory(zaak=zaak, resultaattype=RESULTAATTYPE)
 
@@ -161,7 +164,8 @@ class StatusCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/statussen/{uuid}"]
+        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
+        endpoint = spec["paths"][f"{schema_prefix}/statussen/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -205,7 +209,8 @@ class ZaakInformatieObjectCacheTests(
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/zaakinformatieobjecten/{uuid}"]
+        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
+        endpoint = spec["paths"][f"{schema_prefix}/zaakinformatieobjecten/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -246,7 +251,10 @@ class ZaakEigenschapCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/zaken/{zaak_uuid}/zaakeigenschappen/{uuid}"]
+        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
+        endpoint = spec["paths"][
+            f"{schema_prefix}/zaken/{{zaak_uuid}}/zaakeigenschappen/{{uuid}}"
+        ]
 
         self.assertIn("head", endpoint)
 
@@ -289,7 +297,8 @@ class RolCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/rollen/{uuid}"]
+        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
+        endpoint = spec["paths"][f"{schema_prefix}/rollen/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -326,7 +335,8 @@ class ResultaatCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        endpoint = spec["paths"]["/resultaten/{uuid}"]
+        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
+        endpoint = spec["paths"][f"{schema_prefix}/resultaten/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 

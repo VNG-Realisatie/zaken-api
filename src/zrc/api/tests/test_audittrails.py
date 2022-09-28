@@ -266,7 +266,7 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         # the X-Audit-Toelichting header in the HTTP request
         self.assertEqual(audittrail.toelichting, toelichting)
 
-    def test_read_audittrail(self):
+    def test_retrieve_audittrail(self):
         self._create_zaak()
 
         zaak = Zaak.objects.get()

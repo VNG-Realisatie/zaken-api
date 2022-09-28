@@ -164,7 +164,7 @@ class US169TestCase(JWTAuthMixin, APITestCase):
         zaak1 = ZaakFactory.create(zaaktype=ZAAKTYPE)
         rollen1 = RolFactory.create_batch(3, zaak=zaak1)
         rol2 = RolFactory.create()
-        zaak_url = get_operation_url("zaak_read", uuid=zaak1.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak1.uuid)
         rollen_list_url = get_operation_url("rol_list")
 
         response = self.client.get(
@@ -177,12 +177,14 @@ class US169TestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(len(response_data), 3)
 
         expected_urls = {
-            f"http://testserver{get_operation_url('rol_read', uuid=rol.uuid)}"
+            f"http://testserver{get_operation_url('rol_retrieve', uuid=rol.uuid)}"
             for rol in rollen1
         }
 
         received_urls = {rol["url"] for rol in response_data}
         self.assertEqual(received_urls, expected_urls)
 
-        rol2_url = f"http://testserver{get_operation_url('rol_read', uuid=rol2.uuid)}"
+        rol2_url = (
+            f"http://testserver{get_operation_url('rol_retrieve', uuid=rol2.uuid)}"
+        )
         self.assertNotIn(rol2_url, received_urls)

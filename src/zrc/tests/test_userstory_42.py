@@ -56,7 +56,7 @@ class US42TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
         response_data = response.json()["results"]
         self.assertEqual(len(response_data), 1)
-        detail_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        detail_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         self.assertEqual(response_data[0]["url"], f"http://testserver{detail_url}")
 
     def test_filter_ook_zaaktype(self):

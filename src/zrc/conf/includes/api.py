@@ -7,35 +7,12 @@ API_VERSION = "1.3.0-rc3"
 REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
 
-SECURITY_DEFINITION_NAME = "JWT-Claims"
+DOCUMENTATION_INFO_MODULE = "zrc.api.schema"
 
-SWAGGER_SETTINGS = BASE_SWAGGER_SETTINGS.copy()
-SWAGGER_SETTINGS.update(
+SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
+SPECTACULAR_SETTINGS.update(
     {
-        "DEFAULT_INFO": "zrc.api.schema.info",
-        "DEFAULT_AUTO_SCHEMA_CLASS": "zrc.api.inspectors.AutoSchema",
-        "SECURITY_DEFINITIONS": {
-            SECURITY_DEFINITION_NAME: {
-                # OAS 3.0
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT",
-                # not official...
-                # 'scopes': {},  # TODO: set up registry that's filled in later...
-                # Swagger 2.0
-                # 'name': 'Authorization',
-                # 'in': 'header'
-                # 'type': 'apiKey',
-            }
-        },
-        "DEFAULT_FIELD_INSPECTORS": (
-            "vng_api_common.inspectors.geojson.GeometryFieldInspector",
-        )
-        + BASE_SWAGGER_SETTINGS["DEFAULT_FIELD_INSPECTORS"],
-        "DEFAULT_FILTER_INSPECTORS": (
-            "vng_api_common.inspectors.query.FilterInspector",
-        )
-        + BASE_SWAGGER_SETTINGS["DEFAULT_FILTER_INSPECTORS"],
+        "SERVERS": [{"url": "https://zaken-api.test.vng.cloud/api/v1"}],
     }
 )
 

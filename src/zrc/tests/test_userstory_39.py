@@ -139,7 +139,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         """
         url = get_operation_url("status_create")
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": zaak_url,
             "statustype": STATUS_TYPE,
@@ -156,7 +156,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
 
         self.assertEqual(status_.zaak, zaak)
 
-        detail_url = get_operation_url("status_read", uuid=status_.uuid)
+        detail_url = get_operation_url("status_retrieve", uuid=status_.uuid)
 
         self.assertEqual(
             response_data,
@@ -179,7 +179,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         """
         url = get_operation_url("zaakobject_create")
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": zaak_url,
             "object": OBJECT_MET_ADRES,
@@ -193,7 +193,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         response_data = response.json()
         zaakobject = ZaakObject.objects.get()
         self.assertEqual(zaakobject.zaak, zaak)
-        detail_url = get_operation_url("zaakobject_read", uuid=zaakobject.uuid)
+        detail_url = get_operation_url("zaakobject_retrieve", uuid=zaakobject.uuid)
         self.assertEqual(
             response_data,
             {
@@ -213,7 +213,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
     def test_create_klantcontact(self, *mocks):
         url = get_operation_url("klantcontact_create")
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": zaak_url,
             "datumtijd": isodatetime(2018, 6, 11, 13, 47, 55),
@@ -230,7 +230,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         self.assertIsInstance(klantcontact.identificatie, str)
         self.assertNotEqual(klantcontact.identificatie, "")
         self.assertEqual(klantcontact.zaak, zaak)
-        detail_url = get_operation_url("klantcontact_read", uuid=klantcontact.uuid)
+        detail_url = get_operation_url("klantcontact_retrieve", uuid=klantcontact.uuid)
         self.assertEqual(
             response_data,
             {
@@ -248,7 +248,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
     def test_zet_stadsdeel(self, *mocks):
         url = get_operation_url("zaakobject_create")
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": zaak_url,
             "object": STADSDEEL,
@@ -262,7 +262,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         response_data = response.json()
         zaakobject = ZaakObject.objects.get()
         self.assertEqual(zaakobject.zaak, zaak)
-        detail_url = get_operation_url("zaakobject_read", uuid=zaakobject.uuid)
+        detail_url = get_operation_url("zaakobject_retrieve", uuid=zaakobject.uuid)
         self.assertEqual(
             response_data,
             {
@@ -286,7 +286,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
             f"https://example.com/orc/api/v1/vestigingen/waternet/{uuid.uuid4().hex}"
         )
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": zaak_url,
             "betrokkene": betrokkene,
@@ -309,7 +309,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
         self.assertEqual(rol.zaak, zaak)
         self.assertEqual(rol.betrokkene, betrokkene)
 
-        detail_url = get_operation_url("rol_read", uuid=rol.uuid)
+        detail_url = get_operation_url("rol_retrieve", uuid=rol.uuid)
 
         self.assertEqual(
             response_data,

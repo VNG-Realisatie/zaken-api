@@ -1184,7 +1184,7 @@ class RolValidationTests(JWTAuthMixin, APITestCase):
         zaak = ZaakFactory.create(
             zaaktype=ZAAKTYPE, archiefstatus=Archiefstatus.gearchiveerd
         )
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": f"http://testserver{zaak_url}",
             "betrokkene": BETROKKENE,
@@ -1210,7 +1210,7 @@ class RolValidationTests(JWTAuthMixin, APITestCase):
         zaak = ZaakFactory.create(
             zaaktype=ZAAKTYPE, archiefstatus=Archiefstatus.nog_te_archiveren
         )
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": f"http://testserver{zaak_url}",
             "betrokkene": BETROKKENE,
@@ -1595,12 +1595,12 @@ class ZaakObjectValidationTests(JWTAuthMixin, APITestCase):
 
     @patch("zds_client.Client.from_url")
     def test_send_notif_update_zaakobject(self, mock_client):
-        client = mock_client.return_value
+        mock_client.return_value
         zaak = ZaakFactory.create(
             zaaktype=ZAAKTYPE,
             archiefstatus=Archiefstatus.gearchiveerd_procestermijn_onbekend,
         )
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         zaakobject = ZaakObjectFactory.create(zaak=zaak, relatieomschrijving="old")
         zaakobject_url = get_operation_url("zaakobject_update", uuid=zaakobject.uuid)
 

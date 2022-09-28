@@ -2,7 +2,10 @@ import logging
 
 from django.core.cache import caches
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext as _
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -92,6 +95,101 @@ from .validators import ZaakBesluitValidator
 logger = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAK opvragen."),
+        description=_("Een specifieke ZAAK opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAK aan."),
+        description=_(
+            "Indien geen identificatie gegeven is, dan wordt deze automatisch "
+            "gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.\n\n"
+            "**Er wordt gevalideerd op:**\n"
+            "- geldigheid `zaaktype` URL - de resource moet opgevraagd kunnen worden"
+            " uit de Catalogi API en de vorm van een ZAAKTYPE hebben.\n"
+            "- `zaaktype` is geen concept (`zaaktype.concept = False`)\n"
+            "- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n"
+            '- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie "nvt" is.\n'
+            '- `barchiefnominatie` moet een waarde hebben indien archiefstatus niet de waarde "nog_te_archiveren" heeft.\n'
+            '- `archiefactiedatum` moet een waarde hebben indien archiefstatus niet de waarde "nog_te_archiveren" heeft.\n'
+            '- `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren" hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut `status` de waarde "gearchiveerd" heeft.'
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een ZAAK deels bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- `zaaktype` mag niet gewijzigd worden.\n"
+            "- `identificatie` mag niet gewijzigd worden.\n"
+            "- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n"
+            "- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n"
+            '"nvt" is.\n'
+            "- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n"
+            'waarde "nog_te_archiveren" heeft.\n'
+            "- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n"
+            ' waarde "nog_te_archiveren" heeft.\n'
+            '- `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"\n'
+            " hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n"
+            '  `status` de waarde "gearchiveerd" heeft.\n'
+            "**Opmerkingen**\n"
+            "- er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd\n"
+            " bent.\n"
+            "- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n"
+            " toe te voegen die NIET de eindstatus is. Zie de `Status` resource."
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een ZAAK in zijn geheel bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- `zaaktype` mag niet gewijzigd worden.\n"
+            "- `identificatie` mag niet gewijzigd worden.\n"
+            "- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n"
+            "- `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie\n"
+            '"nvt" is.\n'
+            "- `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de\n"
+            'waarde "nog_te_archiveren" heeft.\n'
+            "- `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n"
+            ' waarde "nog_te_archiveren" heeft.\n'
+            '- `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"\n'
+            " hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut\n"
+            '  `status` de waarde "gearchiveerd" heeft.\n'
+            "**Opmerkingen**\n"
+            "- er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd\n"
+            " bent.\n"
+            "- indien een zaak heropend moet worden, doe dit dan door een nieuwe status\n"
+            " toe te voegen die NIET de eindstatus is. Zie de `Status` resource."
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAK."),
+        description=_(
+            "***De gerelateerde resources zijn hierbij***\n"
+            "- `zaak` - de deelzaken van de verwijderde hoofzaak\n"
+            "- `status` - alle statussen van de verwijderde zaak\n"
+            "- `resultaat` - het resultaat van de verwijderde zaak\n"
+            "- `rol` - alle rollen bij de zaak\n"
+            "- `zaakobject` - alle zaakobjecten bij de zaak\n"
+            "- `zaakeigenschap` - alle eigenschappen van de zaak\n"
+            "- `zaakkenmerk` - alle kenmerken van de zaak\n"
+            "- `zaakinformatieobject` - dit moet door-cascaden naar de Documenten"
+            " API, zie ook: https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)\n"
+            "- `klantcontact` - alle klantcontacten bij een zaak"
+        ),
+    ),
+    _zoek=extend_schema(
+        summary=_("Voer een (geo)-zoekopdracht uit op ZAAKen."),
+        description=_(
+            "Zoeken/filteren gaat normaal via de `list` operatie, deze is echter"
+            " niet geschikt voor geo-zoekopdrachten."
+        ),
+    ),
+)
 @conditional_retrieve()
 class ZaakViewSet(
     NotificationViewSetMixin,
@@ -102,111 +200,6 @@ class ZaakViewSet(
     ListFilterByAuthorizationsMixin,
     viewsets.ModelViewSet,
 ):
-    """
-    Opvragen en bewerken van ZAAKen.
-
-    Een zaak mag (in principe) niet meer gewijzigd worden als de
-    `archiefstatus` een andere status heeft dan "nog_te_archiveren". Voor
-    praktische redenen is er geen harde validatie regel aan de provider kant.
-
-    create:
-    Maak een ZAAK aan.
-
-    Indien geen identificatie gegeven is, dan wordt deze automatisch
-    gegenereerd. De identificatie moet uniek zijn binnen de bronorganisatie.
-
-    **Er wordt gevalideerd op**:
-    - geldigheid `zaaktype` URL - de resource moet opgevraagd kunnen
-      worden uit de Catalogi API en de vorm van een ZAAKTYPE hebben.
-    - `zaaktype` is geen concept (`zaaktype.concept` = False)
-    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
-    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
-      "nvt" is.
-    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"
-      hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut
-      `status` de waarde "gearchiveerd" heeft.
-
-    list:
-    Alle ZAAKen opvragen.
-
-    Deze lijst kan gefilterd wordt met query-string parameters.
-
-    **Opmerking**
-    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
-      bent.
-
-    retrieve:
-    Een specifieke ZAAK opvragen.
-
-    Een specifieke ZAAK opvragen.
-
-    update:
-    Werk een ZAAK in zijn geheel bij.
-
-    **Er wordt gevalideerd op**
-    - `zaaktype` mag niet gewijzigd worden.
-    - `identificatie` mag niet gewijzigd worden.
-    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
-    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
-      "nvt" is.
-    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"
-      hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut
-      `status` de waarde "gearchiveerd" heeft.
-
-    **Opmerkingen**
-    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
-      bent.
-    - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
-      toe te voegen die NIET de eindstatus is.
-      Zie de `Status` resource.
-
-    partial_update:
-    Werk een ZAAK deels bij.
-
-    **Er wordt gevalideerd op**
-    - `zaaktype` mag niet gewijzigd worden.
-    - `identificatie` mag niet gewijzigd worden.
-    - `laatsteBetaaldatum` mag niet in de toekomst liggen.
-    - `laatsteBetaaldatum` mag niet gezet worden als de betalingsindicatie
-      "nvt" is.
-    - `archiefnominatie` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de
-      waarde "nog_te_archiveren" heeft.
-    - `archiefstatus` kan alleen een waarde anders dan "nog_te_archiveren"
-      hebben indien van alle gerelateeerde INFORMATIEOBJECTen het attribuut
-      `status` de waarde "gearchiveerd" heeft.
-
-    **Opmerkingen**
-    - er worden enkel zaken getoond van de zaaktypes waar u toe geautoriseerd
-      bent.
-    - indien een zaak heropend moet worden, doe dit dan door een nieuwe status
-      toe te voegen die NIET de eindstatus is. Zie de `Status` resource.
-
-    destroy:
-    Verwijder een ZAAK.
-
-    **De gerelateerde resources zijn hierbij**
-    - `zaak` - de deelzaken van de verwijderde hoofzaak
-    - `status` - alle statussen van de verwijderde zaak
-    - `resultaat` - het resultaat van de verwijderde zaak
-    - `rol` - alle rollen bij de zaak
-    - `zaakobject` - alle zaakobjecten bij de zaak
-    - `zaakeigenschap` - alle eigenschappen van de zaak
-    - `zaakkenmerk` - alle kenmerken van de zaak
-    - `zaakinformatieobject` - dit moet door-cascaden naar de Documenten API,
-      zie ook: https://github.com/VNG-Realisatie/gemma-zaken/issues/791 (TODO)
-    - `klantcontact` - alle klantcontacten bij een zaak
-    """
-
     queryset = Zaak.objects.prefetch_related(
         "deelzaken",
         "rol_set",
@@ -232,6 +225,12 @@ class ZaakViewSet(
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
+    global_description = _(
+        "Een zaak mag (in principe) niet meer gewijzigd worden als de `archiefstatus`"
+        ' een andere status heeft dan "nog_te_archiveren". Voor praktische redenen'
+        " is er geen harde validatie regel aan de provider kant."
+    )
 
     @action(methods=("post",), detail=False)
     def _zoek(self, request, *args, **kwargs):
@@ -291,6 +290,30 @@ class ZaakViewSet(
             super().perform_destroy(instance)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle STATUSsen bij ZAAKen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke STATUS van een ZAAK opvragen."),
+        description=_("Een specifieke STATUS van een ZAAK opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een STATUS aan voor een ZAAK."),
+        description=_(
+            "**Er wordt gevalideerd op**\n"
+            "- geldigheid URL naar de ZAAK\n"
+            "- geldigheid URL naar het STATUSTYPE\n"
+            "- indien het de eindstatus betreft, dan moet het attribuut"
+            " `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die"
+            "aan de zaak gerelateerd zijn\n\n"
+            "**Opmerkingen**\n"
+            "- Indien het statustype de eindstatus is (volgens het ZTC), dan wordt"
+            " de zaak afgesloten door de einddatum te zetten."
+        ),
+    ),
+)
 @conditional_retrieve()
 class StatusViewSet(
     NotificationCreateMixin,
@@ -300,35 +323,6 @@ class StatusViewSet(
     mixins.CreateModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
-    """
-    Opvragen en beheren van zaakstatussen.
-
-    list:
-    Alle STATUSsen van ZAAKen opvragen.
-
-    Deze lijst kan gefilterd wordt met query-string parameters.
-
-    retrieve:
-    Een specifieke STATUS van een ZAAK opvragen.
-
-    Een specifieke STATUS van een ZAAK opvragen.
-
-    create:
-    Maak een STATUS aan voor een ZAAK.
-
-    **Er wordt gevalideerd op**
-    - geldigheid URL naar de ZAAK
-    - geldigheid URL naar het STATUSTYPE
-    - indien het de eindstatus betreft, dan moet het attribuut
-      `indicatieGebruiksrecht` gezet zijn op alle informatieobjecten die aan
-      de zaak gerelateerd zijn
-
-    **Opmerkingen**
-    - Indien het statustype de eindstatus is (volgens het ZTC), dan wordt de
-      zaak afgesloten door de einddatum te zetten.
-
-    """
-
     queryset = Status.objects.order_by("-pk")
     serializer_class = StatusSerializer
     filterset_class = StatusFilter
@@ -382,6 +376,54 @@ class StatusViewSet(
         super().perform_create(serializer)
 
 
+@conditional_retrieve()
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKOBJECTen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAKOBJECT opvragen."),
+        description=_("Een specifieke ZAAKOBJECT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAKOBJECT aan."),
+        description=_(
+            "Maak een ZAAKOBJECT aan.\n\n"
+            "**Er wordt gevalideerd op**\n"
+            "- Indien de `object` URL opgegeveven is, dan moet deze een geldige "
+            " response (HTTP 200) geven.\n"
+            "- Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen de `objectType` discriminator."
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een ZAAKOBJECT deels bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- De attributen `zaak`, `object` en `objectType` mogen niet"
+            " gewijzigd worden.\n"
+            "- Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen"
+            " de objectType discriminator."
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een ZAAKOBJECT zijn geheel bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- De attributen `zaak`, `object` en `objectType` mogen niet"
+            " gewijzigd worden.\n"
+            "- Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen"
+            " de objectType discriminator."
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAKOBJECT."),
+        description=_(
+            "Verbreek de relatie tussen een ZAAK en een OBJECT door de ZAAKOBJECT"
+            " resource te verwijderen."
+        ),
+    ),
+)
 class ZaakObjectViewSet(
     NotificationViewSetMixin,
     CheckQueryParamsMixin,
@@ -390,56 +432,6 @@ class ZaakObjectViewSet(
     ClosedZaakMixin,
     viewsets.ModelViewSet,
 ):
-    """
-    Opvragen en bewerken van ZAAKOBJECTen.
-
-    create:
-    Maak een ZAAKOBJECT aan.
-
-    Maak een ZAAKOBJECT aan.
-
-    **Er wordt gevalideerd op**
-
-    - Indien de `object` URL opgegeveven is, dan moet deze een geldige response
-      (HTTP 200) geven.
-    - Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen de
-      `objectType` discriminator.
-
-    list:
-    Alle ZAAKOBJECTen opvragen.
-
-    Deze lijst kan gefilterd wordt met query-string parameters.
-
-    retrieve:
-    Een specifiek ZAAKOBJECT opvragen.
-
-    Een specifiek ZAAKOBJECT opvragen.
-
-    update:
-    Werk een ZAAKOBJECT in zijn geheel bij.
-
-    **Er wordt gevalideerd op**
-
-    - De attributen `zaak`, `object` en `objectType` mogen niet gewijzigd worden.
-    - Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen de
-      `objectType` discriminator.
-
-    partial_update:
-    Werk een ZAAKOBJECT deels bij.
-
-    **Er wordt gevalideerd op**
-
-    - De attributen `zaak`, `object` en `objectType` mogen niet gewijzigd worden.
-    - Indien opgegeven, dan wordt `objectIdentificatie` gevalideerd tegen de
-      `objectType` discriminator.
-
-    destroy:
-    Verwijder een ZAAKOBJECT.
-
-    Verbreek de relatie tussen een ZAAK en een OBJECT door de ZAAKOBJECT resource te
-    verwijderen.
-    """
-
     queryset = ZaakObject.objects.order_by("-pk")
     serializer_class = ZaakObjectSerializer
     filterset_class = ZaakObjectFilter
@@ -464,6 +456,60 @@ class ZaakObjectViewSet(
 
 
 @conditional_retrieve()
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAK-INFORMATIEOBJECT relaties opvragen "),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen."),
+        description=_("Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAK-INFORMATIEOBJECT relatie aan."),
+        description=_(
+            "Er worden twee types van relaties met andere objecten gerealiseerd:.\n\n"
+            "**Er wordt gevalideerd op**\n"
+            "- geldigheid zaak URL\n"
+            "- geldigheid informatieobject URL\n"
+            "- de combinatie informatieobject en zaak moet uniek zijn\n\n"
+            "**Opmerkingen**\n"
+            "- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`"
+            " wordt ook door het systeem gezet.\n"
+            "- Bij het aanmaken wordt ook in de Documenten API de gespiegelde relatie"
+            " aangemaakt, echter zonder de relatie-informatie.\n"
+            "Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\n"
+            "**Er wordt gevalideerd op**\n"
+            "- geldigheid informatieobject URL\n"
+            "- uniek zijn van relatie ZAAK-INFORMATIEOBJECT"
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een ZAAK-INFORMATIEOBJECT relatie deels bij."),
+        description=_(
+            "Je mag enkel de gegevens van de relatie bewerken, en niet de relatie"
+            " zelf aanpassen.\n\n"
+            "**Er wordt gevalideerd op** \n"
+            "- informatieobject URL en zaak URL mogen niet veranderen"
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij."),
+        description=_(
+            "Je mag enkel de gegevens van de relatie bewerken, en niet de relatie"
+            " zelf aanpassen.\n\n"
+            "**Er wordt gevalideerd op** \n"
+            "- informatieobject URL en zaak URL mogen niet veranderen"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAK-INFORMATIEOBJECT relatie."),
+        description=_(
+            "De gespiegelde relatie in de Documenten API wordt door de Zaken API"
+            " verwijderd. Consumers kunnen dit niet handmatig doen."
+        ),
+    ),
+)
 class ZaakInformatieObjectViewSet(
     NotificationCreateMixin,
     AuditTrailViewsetMixin,
@@ -472,68 +518,6 @@ class ZaakInformatieObjectViewSet(
     ClosedZaakMixin,
     viewsets.ModelViewSet,
 ):
-
-    """
-    Opvragen en bewerken van ZAAK-INFORMATIEOBJECT relaties.
-
-    create:
-    Maak een ZAAK-INFORMATIEOBJECT relatie aan.
-
-    Er worden twee types van
-    relaties met andere objecten gerealiseerd:
-
-    **Er wordt gevalideerd op**
-    - geldigheid zaak URL
-    - geldigheid informatieobject URL
-    - de combinatie informatieobject en zaak moet uniek zijn
-
-    **Opmerkingen**
-    - De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`
-      wordt ook door het systeem gezet.
-    - Bij het aanmaken wordt ook in de Documenten API de gespiegelde relatie aangemaakt,
-      echter zonder de relatie-informatie.
-
-    Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.
-
-    **Er wordt gevalideerd op**
-    - geldigheid informatieobject URL
-    - uniek zijn van relatie ZAAK-INFORMATIEOBJECT
-
-    list:
-    Alle ZAAK-INFORMATIEOBJECT relaties opvragen.
-
-    Deze lijst kan gefilterd wordt met querystringparameters.
-
-    retrieve:
-    Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
-
-    Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
-
-    update:
-    Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij.
-
-    Je mag enkel de gegevens
-    van de relatie bewerken, en niet de relatie zelf aanpassen.
-
-    **Er wordt gevalideerd op**
-    - informatieobject URL en zaak URL mogen niet veranderen
-
-    partial_update:
-    Werk een ZAAK-INFORMATIEOBJECT relatie in deels bij.
-
-    Je mag enkel de gegevens
-    van de relatie bewerken, en niet de relatie zelf aanpassen.
-
-    **Er wordt gevalideerd op**
-    - informatieobject URL en zaak URL mogen niet veranderen
-
-    destroy:
-    Verwijder een ZAAK-INFORMATIEOBJECT relatie.
-
-    De gespiegelde relatie in de Documenten API wordt door de Zaken API
-    verwijderd. Consumers kunnen dit niet handmatig doen..
-    """
-
     queryset = ZaakInformatieObject.objects.all()
     filterset_class = ZaakInformatieObjectFilter
     serializer_class = ZaakInformatieObjectSerializer
@@ -579,7 +563,54 @@ class ZaakInformatieObjectViewSet(
         return qs
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="zaak_uuid",
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+            description=_("Unieke resource identifier (UUID4)"),
+            required=True,
+        )
+    ]
+)
 @conditional_retrieve()
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKEIGENSCHAPpen opvragen. "),
+        description=_("Alle ZAAKEIGENSCHAPpen opvragen."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAKEIGENSCHAP opvragen."),
+        description=_("Een specifieke ZAAKEIGENSCHAP opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAKEIGENSCHAP aan."),
+        description=_(
+            "Maak een ZAAKEIGENSCHAP aan.\n\n"
+            "**Er wordt gevalideerd op:**\n"
+            "- geldigheid `eigenschap` URL - de resource moet opgevraagd kunnen"
+            " worden uit de Catalogi API en de vorm van een EIGENSCHAP hebben.\n"
+            "- de `eigenschap` moet bij het `ZAAK.zaaktype` horen"
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een ZAAKEIGENSCHAP deels bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n" "- Alleen de `waarde` mag gewijzigd worden"
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een ZAAKEIGENSCHAP in zijn geheel bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n" "- Alleen de `waarde` mag gewijzigd worden"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAKEIGENSCHAP."),
+        description=_("Verwijder een ZAAKEIGENSCHAP"),
+    ),
+)
 class ZaakEigenschapViewSet(
     NotificationViewSetMixin,
     AuditTrailCreateMixin,
@@ -588,45 +619,6 @@ class ZaakEigenschapViewSet(
     ClosedZaakMixin,
     viewsets.ModelViewSet,
 ):
-    """
-    Opvragen en bewerken van ZAAKEIGENSCHAPpen
-
-    create:
-    Maak een ZAAKEIGENSCHAP aan.
-
-    Maak een ZAAKEIGENSCHAP aan.
-
-    **Er wordt gevalideerd op:**
-    - geldigheid `eigenschap` URL - de resource moet opgevraagd kunnen
-      worden uit de Catalogi API en de vorm van een EIGENSCHAP hebben.
-    - de `eigenschap` moet bij het `ZAAK.zaaktype` horen
-
-    list:
-    Alle ZAAKEIGENSCHAPpen opvragen.
-
-    Alle ZAAKEIGENSCHAPpen opvragen.
-
-    retrieve:
-    Een specifieke ZAAKEIGENSCHAP opvragen.
-
-    Een specifieke ZAAKEIGENSCHAP opvragen.
-
-    update:
-    Werk een ZAAKEIGENSCHAP in zijn geheel bij.
-
-    **Er wordt gevalideerd op**
-    - Alleen de WAARDE mag gewijzigd worden
-
-    partial_update:
-    Werk een ZAAKEIGENSCHAP deels bij.
-
-    **Er wordt gevalideerd op**
-    - Alleen de WAARDE mag gewijzigd worden
-
-    destroy:
-    Verwijder een ZAAKEIGENSCHAP.
-    """
-
     queryset = ZaakEigenschap.objects.all()
     serializer_class = ZaakEigenschapSerializer
     permission_classes = (
@@ -670,6 +662,29 @@ class ZaakEigenschapViewSet(
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle KLANTCONTACTen opvragen. "),
+        description=_(
+            "Alle KLANTCONTACTen opvragen.\n\n"
+            "**DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint."
+        ),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke KLANTCONTACT opvragen."),
+        description=_(
+            "Een specifieke KLANTCONTACT opvragen.\n\n"
+            "**DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint."
+        ),
+    ),
+    create=extend_schema(
+        summary=_("Maak een KLANTCONTACT bij een ZAAK aan."),
+        description=_(
+            "Indien geen identificatie gegeven is, dan wordt deze automatisch gegenereerd.\n\n"
+            "**DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint."
+        ),
+    ),
+)
 class KlantContactViewSet(
     NotificationCreateMixin,
     ListFilterByAuthorizationsMixin,
@@ -678,32 +693,6 @@ class KlantContactViewSet(
     mixins.CreateModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
-    """
-    Opvragen en bewerken van KLANTCONTACTen.
-
-    create:
-    Maak een KLANTCONTACT bij een ZAAK aan.
-
-    Indien geen identificatie gegeven is, dan wordt deze automatisch
-    gegenereerd.
-
-    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
-
-    list:
-    Alle KLANTCONTACTen opvragen.
-
-    Alle KLANTCONTACTen opvragen.
-
-    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
-
-    retrieve:
-    Een specifiek KLANTCONTACT bij een ZAAK opvragen.
-
-    Een specifiek KLANTCONTACT bij een ZAAK opvragen.
-
-    **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.
-    """
-
     queryset = KlantContact.objects.order_by("-pk")
     serializer_class = KlantContactSerializer
     filterset_class = KlantContactFilter
@@ -724,6 +713,24 @@ class KlantContactViewSet(
     )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ROLlen bij ZAAKen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ROL bij een ZAAK opvragen."),
+        description=_("Een specifieke ROL bij een ZAAK opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ROL aan bij een ZAAK."),
+        description=_("Maak een ROL aan bij een ZAAK."),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ROL van een ZAAK."),
+        description=_("Verwijder een ROL van een ZAAK."),
+    ),
+)
 @conditional_retrieve()
 class RolViewSet(
     NotificationCreateMixin,
@@ -737,31 +744,6 @@ class RolViewSet(
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
-    """
-    Opvragen en bewerken van ROL relatie tussen een ZAAK en een BETROKKENE.
-
-    list:
-    Alle ROLlen bij ZAAKen opvragen.
-
-    Deze lijst kan gefilterd wordt met query-string parameters.
-
-    retrieve:
-    Een specifieke ROL bij een ZAAK opvragen.
-
-    Een specifieke ROL bij een ZAAK opvragen.
-
-    destroy:
-    Verwijder een ROL van een ZAAK.
-
-    Verwijder een ROL van een ZAAK.
-
-    create:
-    Maak een ROL aan bij een ZAAK.
-
-    Maak een ROL aan bij een ZAAK.
-
-    """
-
     queryset = Rol.objects.order_by("-pk")
     serializer_class = RolSerializer
     filterset_class = RolFilter
@@ -779,6 +761,44 @@ class RolViewSet(
     audit = AUDIT_ZRC
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle RESULTAATen van ZAAKen opvragen."),
+        description=_("Deze lijst kan gefilterd wordt met query-string parameters."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke RESULTAAT opvragen."),
+        description=_("Een specifieke RESULTAAT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een RESULTAAT bij een ZAAK aan."),
+        description=_(
+            "**Er wordt gevalideerd op:**\n"
+            "- geldigheid URL naar de ZAAK\n"
+            "- geldigheid URL naar het RESULTAATTYPE"
+        ),
+    ),
+    partial_update=extend_schema(
+        summary=_("Werk een RESULTAAT deels bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- geldigheid URL naar de ZAAK\n"
+            "- het RESULTAATTYPE mag niet gewijzigd worden"
+        ),
+    ),
+    update=extend_schema(
+        summary=_("Werk een RESULTAAT in zijn geheel bij."),
+        description=_(
+            "**Er wordt gevalideerd op** \n"
+            "- geldigheid URL naar de ZAAK\n"
+            "- het RESULTAATTYPE mag niet gewijzigd worden"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een RESULTAAT van een ZAAK."),
+        description=_("Verwijder een RESULTAAT van een ZAAK."),
+    ),
+)
 @conditional_retrieve()
 class ResultaatViewSet(
     NotificationViewSetMixin,
@@ -788,47 +808,6 @@ class ResultaatViewSet(
     ClosedZaakMixin,
     viewsets.ModelViewSet,
 ):
-    """
-    Opvragen en beheren van resultaten.
-
-    list:
-    Alle RESULTAATen van ZAAKen opvragen.
-
-    Deze lijst kan gefilterd wordt met query-string parameters.
-
-    retrieve:
-    Een specifiek RESULTAAT opvragen.
-
-    Een specifiek RESULTAAT opvragen.
-
-    create:
-    Maak een RESULTAAT bij een ZAAK aan.
-
-    **Er wordt gevalideerd op**
-    - geldigheid URL naar de ZAAK
-    - geldigheid URL naar het RESULTAATTYPE
-
-    update:
-    Werk een RESULTAAT in zijn geheel bij.
-
-    **Er wordt gevalideerd op**
-    - geldigheid URL naar de ZAAK
-    - het RESULTAATTYPE mag niet gewijzigd worden
-
-    partial_update:
-    Werk een RESULTAAT deels bij.
-
-    **Er wordt gevalideerd op**
-    - geldigheid URL naar de ZAAK
-    - het RESULTAATTYPE mag niet gewijzigd worden
-
-    destroy:
-    Verwijder een RESULTAAT van een ZAAK.
-
-    Verwijder een RESULTAAT van een ZAAK.
-
-    """
-
     queryset = Resultaat.objects.order_by("-pk")
     serializer_class = ResultaatSerializer
     filterset_class = ResultaatFilter
@@ -848,24 +827,76 @@ class ResultaatViewSet(
     audit = AUDIT_ZRC
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="zaak_uuid",
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+            description=_("Unieke resource identifier (UUID4)"),
+            required=True,
+        )
+    ]
+)
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle audit trail regels behorend bij de ZAAK."),
+        description=_("Alle audit trail regels behorend bij de ZAAK."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke audit trail regel opvragen "),
+        description=_("Een specifieke audit trail regel opvragen."),
+    ),
+)
 class ZaakAuditTrailViewSet(AuditTrailViewSet):
-    """
-    Opvragen van Audit trails horend bij een ZAAK.
-
-    list:
-    Alle audit trail regels behorend bij de ZAAK.
-
-    Alle audit trail regels behorend bij de ZAAK.
-
-    retrieve:
-    Een specifieke audit trail regel opvragen.
-
-    Een specifieke audit trail regel opvragen.
-    """
-
     main_resource_lookup_field = "zaak_uuid"
 
+    def initialize_request(self, request, *args, **kwargs):
+        # workaround for drf-nested-viewset injecting the URL kwarg into request.data
+        return super(viewsets.ReadOnlyModelViewSet, self).initialize_request(
+            request, *args, **kwargs
+        )
 
+
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="zaak_uuid",
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+            description=_("Unieke resource identifier (UUID4)"),
+            required=True,
+        )
+    ]
+)
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKBESLUITen opvragen."),
+        description=_("Alle ZAAKBESLUITen opvragen."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifiek ZAAKBESLUIT opvragen "),
+        description=_("Een specifiek ZAAKBESLUIT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAKBESLUIT aan."),
+        description=_(
+            "**LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**\n\n"
+            "De Besluiten API gebruikt dit endpoint om relaties te synchroniseren, daarom"
+            " is dit endpoint in de Zaken API geimplementeerd.\n\n"
+            "**Er wordt gevalideerd op:**\n"
+            "- geldigheid URL naar de ZAAK"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAKBESLUIT."),
+        description=_(
+            "***LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.***\n\n"
+            "De Besluiten API gebruikt dit endpoint om relaties te synchroniseren, daarom"
+            " is dit endpoint in de Zaken API geimplementeerd.\n"
+        ),
+    ),
+)
 class ZaakBesluitViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
@@ -877,41 +908,6 @@ class ZaakBesluitViewSet(
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
-
-    """
-    Read and edit Zaak-Besluit relations.
-
-    list:
-    Alle ZAAKBESLUITen opvragen.
-
-    Alle ZAAKBESLUITen opvragen.
-
-    retrieve:
-    Een specifiek ZAAKBESLUIT opvragen.
-
-    Een specifiek ZAAKBESLUIT opvragen.
-
-    create:
-    Maak een ZAAKBESLUIT aan.
-
-    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
-
-    De Besluiten API gebruikt dit endpoint om relaties te synchroniseren,
-    daarom is dit endpoint in de Zaken API geimplementeerd.
-
-    **Er wordt gevalideerd op**
-    - geldigheid URL naar de ZAAK
-
-    destroy:
-    Verwijder een ZAAKBESLUIT.
-
-    **LET OP: Dit endpoint hoor je als consumer niet zelf aan te spreken.**
-
-    De Besluiten API gebruikt dit endpoint om relaties te synchroniseren,
-    daarom is dit endpoint in de Zaken API geimplementeerd.
-
-    """
-
     queryset = ZaakBesluit.objects.all()
     serializer_class = ZaakBesluitSerializer
     permission_classes = (
@@ -965,7 +961,33 @@ class ZaakBesluitViewSet(
         zaak = self._get_zaak()
         return zaak.get_absolute_api_url(request=self.request)
 
+    def initialize_request(self, request, *args, **kwargs):
+        # workaround for drf-nested-viewset injecting the URL kwarg into request.data
+        return super(viewsets.ReadOnlyModelViewSet, self).initialize_request(
+            request, *args, **kwargs
+        )
 
+
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAKCONTACTMOMENTen opvragen."),
+        description=_("Alle ZAAKCONTACTMOMENTen opvragen."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifiek ZAAKCONTACTMOMENT opvragen "),
+        description=_("Een specifiek ZAAKCONTACTMOMENT opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAKCONTACTMOMENT aan."),
+        description=_(
+            "**Er wordt gevalideerd op:**\n" "- geldigheid URL naar het CONTACTMOMENT"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAKCONTACTMOMENT."),
+        description=_("Verwijder een ZAAKCONTACTMOMENT."),
+    ),
+)
 class ZaakContactMomentViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
@@ -976,30 +998,6 @@ class ZaakContactMomentViewSet(
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
-    """
-    Opvragen en bewerken van ZAAK-CONTACTMOMENT relaties.
-
-    list:
-    Alle ZAAKCONTACTMOMENTen opvragen.
-
-    Alle ZAAKCONTACTMOMENTen opvragen.
-
-    retrieve:
-    Een specifiek ZAAKCONTACTMOMENT opvragen.
-
-    Een specifiek ZAAKCONTACTMOMENT opvragen.
-
-    create:
-    Maak een ZAAKCONTACTMOMENT aan.
-
-    **Er wordt gevalideerd op**
-    - geldigheid URL naar de CONTACTMOMENT
-
-    destroy:
-    Verwijder een ZAAKCONTACTMOMENT.
-
-    """
-
     queryset = ZaakContactMoment.objects.order_by("-pk")
     serializer_class = ZaakContactMomentSerializer
     filterset_class = ZaakContactMomentFilter
@@ -1033,6 +1031,26 @@ class ZaakContactMomentViewSet(
             ) from sync_error
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary=_("Alle ZAAK-VERZOEKen opvragen."),
+        description=_("Alle ZAAK-VERZOEKen opvragen."),
+    ),
+    retrieve=extend_schema(
+        summary=_("Een specifieke ZAAK-VERZOEK opvragen."),
+        description=_("Een specifieke ZAAK-VERZOEK opvragen."),
+    ),
+    create=extend_schema(
+        summary=_("Maak een ZAAK-VERZOEK aan."),
+        description=_(
+            "**Er wordt gevalideerd op**\n" "- geldigheid URL naar de VERZOEK"
+        ),
+    ),
+    destroy=extend_schema(
+        summary=_("Verwijder een ZAAK-VERZOEK."),
+        description=_("Verwijder een ZAAK-VERZOEK."),
+    ),
+)
 class ZaakVerzoekViewSet(
     NotificationCreateMixin,
     AuditTrailCreateMixin,
@@ -1043,30 +1061,6 @@ class ZaakVerzoekViewSet(
     mixins.DestroyModelMixin,
     viewsets.ReadOnlyModelViewSet,
 ):
-    """
-    Opvragen en bewerken van ZAAK-VERZOEK relaties.
-
-    list:
-    Alle ZAAK-VERZOEK opvragen.
-
-    Alle ZAAK-VERZOEK opvragen.
-
-    retrieve:
-    Een specifiek ZAAK-VERZOEK opvragen.
-
-    Een specifiek ZAAK-VERZOEK opvragen.
-
-    create:
-    Maak een ZAAK-VERZOEK aan.
-
-    **Er wordt gevalideerd op**
-    - geldigheid URL naar de VERZOEK
-
-    destroy:
-    Verwijder een ZAAK-VERZOEK.
-
-    """
-
     queryset = ZaakVerzoek.objects.order_by("-pk")
     serializer_class = ZaakVerzoekSerializer
     filterset_class = ZaakVerzoekFilter

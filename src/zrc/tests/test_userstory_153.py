@@ -96,14 +96,14 @@ class US153TestCase(JWTAuthMixin, APITestCase):
         zaak = Zaak.objects.get(identificatie=data["identificatie"])
         self.assertEqual(zaak.zaakkenmerk_set.count(), 2)
 
-    def test_read_zaak_with_kenmerken(self):
+    def test_retrieve_zaak_with_kenmerken(self):
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
         zaak.zaakkenmerk_set.create(kenmerk="kenmerk 1", bron="bron 1")
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
 
-        zaak_read_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_retrieve_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
 
-        response = self.client.get(zaak_read_url, **ZAAK_WRITE_KWARGS)
+        response = self.client.get(zaak_retrieve_url, **ZAAK_WRITE_KWARGS)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
         data = response.json()
@@ -121,8 +121,8 @@ class US153TestCase(JWTAuthMixin, APITestCase):
         kenmerk_1 = zaak.zaakkenmerk_set.create(kenmerk="kenmerk 1", bron="bron 1")
         self.assertEqual(zaak.zaakkenmerk_set.count(), 1)
 
-        zaak_read_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        response = self.client.get(zaak_read_url, **ZAAK_WRITE_KWARGS)
+        zaak_retrieve_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
+        response = self.client.get(zaak_retrieve_url, **ZAAK_WRITE_KWARGS)
 
         data = response.json()
 

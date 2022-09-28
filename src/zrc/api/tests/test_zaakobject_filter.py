@@ -13,7 +13,9 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
     def test_filter_type(self):
         zaakobject1 = ZaakObjectFactory.create(object_type=ZaakobjectTypes.besluit)
         zaakobject2 = ZaakObjectFactory.create(object_type=ZaakobjectTypes.adres)
-        zaakobject1_url = get_operation_url("zaakobject_read", uuid=zaakobject1.uuid)
+        zaakobject1_url = get_operation_url(
+            "zaakobject_retrieve", uuid=zaakobject1.uuid
+        )
         url = get_operation_url("zaakobject_list")
 
         response = self.client.get(url, {"objectType": ZaakobjectTypes.besluit})
@@ -27,10 +29,12 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
 
     def test_filter_zaak(self):
         zaakobject1 = ZaakObjectFactory.create()
-        zaakobject2 = ZaakObjectFactory.create()
+        ZaakObjectFactory.create()
         zaak = zaakobject1.zaak
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        zaakobject1_url = get_operation_url("zaakobject_read", uuid=zaakobject1.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
+        zaakobject1_url = get_operation_url(
+            "zaakobject_retrieve", uuid=zaakobject1.uuid
+        )
         url = get_operation_url("zaakobject_list")
 
         response = self.client.get(
@@ -49,7 +53,9 @@ class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
     def test_filter_object(self):
         zaakobject1 = ZaakObjectFactory.create(object="http://example.com/objects/1")
         zaakobject2 = ZaakObjectFactory.create(object="http://example.com/objects/2")
-        zaakobject1_url = get_operation_url("zaakobject_read", uuid=zaakobject1.uuid)
+        zaakobject1_url = get_operation_url(
+            "zaakobject_retrieve", uuid=zaakobject1.uuid
+        )
         url = get_operation_url("zaakobject_list")
 
         response = self.client.get(url, {"object": "http://example.com/objects/1"})

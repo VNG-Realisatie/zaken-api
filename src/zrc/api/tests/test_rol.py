@@ -45,7 +45,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     heeft_alle_autorisaties = True
 
     @freeze_time("2018-01-01")
-    def test_read_rol_np(self):
+    def test_retrieve_rol_np(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
             zaak=zaak,
@@ -76,9 +76,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         status_uuid = uuid4()
         rol.statussen.add(StatusFactory(zaak=zaak, uuid=status_uuid))
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        status_url = get_operation_url("status_read", uuid=status_uuid)
-        url = get_operation_url("rol_read", uuid=rol.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
+        status_url = get_operation_url("status_retrieve", uuid=status_uuid)
+        url = get_operation_url("rol_retrieve", uuid=rol.uuid)
 
         response = self.client.get(url)
 
@@ -142,7 +142,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         )
 
     @freeze_time("2018-01-01")
-    def test_read_rol_nnp(self):
+    def test_retrieve_rol_nnp(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
             zaak=zaak,
@@ -165,9 +165,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         status_uuid = uuid4()
         rol.statussen.add(StatusFactory(zaak=zaak, uuid=status_uuid))
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        status_url = get_operation_url("status_read", uuid=status_uuid)
-        url = get_operation_url("rol_read", uuid=rol.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
+        status_url = get_operation_url("status_retrieve", uuid=status_uuid)
+        url = get_operation_url("rol_retrieve", uuid=rol.uuid)
 
         response = self.client.get(url)
 
@@ -217,7 +217,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         )
 
     @freeze_time("2018-01-01")
-    def test_read_rol_vestiging(self):
+    def test_retrieve_rol_vestiging(self):
         zaak = ZaakFactory.create()
         rol = RolFactory.create(
             zaak=zaak,
@@ -246,9 +246,9 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         status_uuid = uuid4()
         rol.statussen.add(StatusFactory(zaak=zaak, uuid=status_uuid))
 
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
-        status_url = get_operation_url("status_read", uuid=status_uuid)
-        url = get_operation_url("rol_read", uuid=rol.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
+        status_url = get_operation_url("status_retrieve", uuid=status_uuid)
+        url = get_operation_url("rol_retrieve", uuid=rol.uuid)
 
         response = self.client.get(url)
 
@@ -309,7 +309,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     def test_create_rol_with_identificatie(self, *mocks):
         url = get_operation_url("rol_create")
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": f"http://testserver{zaak_url}",
             "betrokkene_type": RolTypes.natuurlijk_persoon,
@@ -361,7 +361,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     def test_create_rol_without_identificatie(self, *mocks):
         url = get_operation_url("rol_create")
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": f"http://testserver{zaak_url}",
             "betrokkene": BETROKKENE,
@@ -388,7 +388,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     def test_create_with_contactpersoon_rol(self, *mocks):
         url = get_operation_url("rol_create")
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": f"http://testserver{zaak_url}",
             "betrokkene_type": RolTypes.natuurlijk_persoon,
@@ -432,7 +432,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
     def test_create_rol_fail_validation(self, *mocks):
         url = get_operation_url("rol_create")
         zaak = ZaakFactory.create(zaaktype=ZAAKTYPE)
-        zaak_url = get_operation_url("zaak_read", uuid=zaak.uuid)
+        zaak_url = get_operation_url("zaak_retrieve", uuid=zaak.uuid)
         data = {
             "zaak": f"http://testserver{zaak_url}",
             "betrokkene_type": RolTypes.natuurlijk_persoon,

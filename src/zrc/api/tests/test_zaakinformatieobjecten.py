@@ -171,7 +171,7 @@ class ZaakInformatieObjectAPITests(
         self.assertEqual(error["code"], "unique")
 
     @freeze_time("2018-09-20 12:00:00")
-    def test_read_zaak(self):
+    def test_retrieve_zaak(self):
         zio = ZaakInformatieObjectFactory.create(informatieobject=INFORMATIEOBJECT)
         # Retrieve from the API
 
