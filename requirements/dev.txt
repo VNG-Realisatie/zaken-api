@@ -4,8 +4,6 @@
 #
 #    ./bin/compile_dependencies.sh
 #
--e git+https://github.com/MatthijsBekendam/vng-api-common@drf_compatibilty_newer_django_fix#egg=vng_api_common
-    # via -r requirements/ci.txt
 alabaster==0.7.12
     # via sphinx
 asgiref==3.5.2
@@ -426,6 +424,8 @@ urllib3==1.26.11
     # via
     #   -r requirements/ci.txt
     #   requests
+vng_api_common @ git+https://github.com/MatthijsBekendam/vng-api-common@drf_compatibilty_newer_django_fix
+    # via -r requirements/ci.txt
 waitress==2.1.2
     # via
     #   -r requirements/ci.txt

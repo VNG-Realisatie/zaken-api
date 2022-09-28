@@ -26,8 +26,7 @@ django-filter~=21.1
 djangorestframework-camel-case
 drf-yasg
 drf-writable-nested
-vng-api-common
--e git+https://github.com/MatthijsBekendam/vng-api-common@drf_compatibilty_newer_django_fix#egg=vng_api_common
+git+https://github.com/MatthijsBekendam/vng-api-common@drf_compatibilty_newer_django_fix#egg=vng_api_common
 gemma-zds-client<1.0
 
 # monitoring
