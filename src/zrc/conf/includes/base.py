@@ -115,6 +115,9 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "django_markup",
     "solo",
+    "simple_certmanager",
+    "zgw_consumers",
+    "notifications_api_common",
     # Project applications.
     "zrc.accounts",
     "zrc.api",

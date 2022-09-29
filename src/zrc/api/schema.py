@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from vng_api_common.notifications.utils import notification_documentation
+from notifications_api_common.utils import notification_documentation
 
 from .kanalen import KANAAL_ZAKEN
 
