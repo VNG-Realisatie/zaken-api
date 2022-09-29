@@ -458,6 +458,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - klantcontacten
@@ -962,6 +963,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - resultaten
@@ -1137,6 +1139,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - resultaten
@@ -1324,6 +1327,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - resultaten
@@ -1500,6 +1504,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - resultaten
@@ -1655,6 +1660,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - resultaten
@@ -2139,6 +2145,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - rollen
@@ -2304,6 +2311,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - rollen
@@ -2459,6 +2467,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - rollen
@@ -2866,6 +2875,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - statussen
@@ -3039,6 +3049,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - statussen
@@ -3407,6 +3418,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakcontactmomenten
@@ -3565,6 +3577,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakcontactmomenten
@@ -4079,6 +4092,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakinformatieobjecten
@@ -4255,6 +4269,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakinformatieobjecten
@@ -4443,6 +4458,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakinformatieobjecten
@@ -4621,6 +4637,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakinformatieobjecten
@@ -4776,6 +4793,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakinformatieobjecten
@@ -5211,6 +5229,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakobjecten
@@ -5377,6 +5396,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakobjecten
@@ -5555,6 +5575,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakobjecten
@@ -5723,6 +5744,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakobjecten
@@ -5878,6 +5900,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakobjecten
@@ -6244,6 +6267,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakverzoeken
@@ -6402,6 +6426,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaakverzoeken
@@ -7368,6 +7393,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaken
@@ -7598,6 +7624,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaken
@@ -7840,6 +7867,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaken
@@ -8079,6 +8107,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaken
@@ -8269,6 +8298,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
       tags:
         - zaken
@@ -8452,6 +8482,7 @@ paths:
             type: string
             format: uuid
             description: Unieke identificatie van de audit regel.
+            title: uuid
           required: true
         - in: path
           name: zaak_uuid
@@ -8933,6 +8964,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
         - in: path
           name: zaak_uuid
@@ -9106,6 +9138,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
         - in: path
           name: zaak_uuid
@@ -9592,6 +9625,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
         - in: path
           name: zaak_uuid
@@ -9764,6 +9798,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
         - in: path
           name: zaak_uuid
@@ -9948,6 +9983,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
         - in: path
           name: zaak_uuid
@@ -10121,6 +10157,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
         - in: path
           name: zaak_uuid
@@ -10283,6 +10320,7 @@ paths:
             type: string
             format: uuid
             description: Unieke resource identifier (UUID4)
+            title: uuid
           required: true
         - in: path
           name: zaak_uuid
@@ -10816,7 +10854,9 @@ components:
           description: De datum waarop de handeling is gedaan.
           title: aanmaakdatum
         wijzigingen:
-          $ref: '#/components/schemas/Wijzigingen'
+          allOf:
+            - $ref: '#/components/schemas/Wijzigingen'
+          title: wijzigingen
       required:
         - aanmaakdatum
         - actie
@@ -10902,12 +10942,15 @@ components:
         name:
           type: string
           description: Naam van het veld met ongeldige gegevens
+          title: name
         code:
           type: string
           description: Systeemcode die het type fout aangeeft
+          title: code
         reason:
           type: string
           description: Uitleg wat er precies fout is met de gegevens
+          title: reason
       required:
         - code
         - name
@@ -10919,23 +10962,29 @@ components:
         type:
           type: string
           description: URI referentie naar het type fout, bedoeld voor developers
+          title: type
         code:
           type: string
           description: Systeemcode die het type fout aangeeft
+          title: code
         title:
           type: string
           description: Generieke titel voor het type fout
+          title: title
         status:
           type: integer
           description: De HTTP status code
+          title: status
         detail:
           type: string
           description: Extra informatie bij de fout, indien beschikbaar
+          title: detail
         instance:
           type: string
           description:
             URI met referentie naar dit specifiek voorkomen van de fout.
             Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
+          title: instance
       required:
         - code
         - detail
@@ -10959,7 +11008,9 @@ components:
       type: object
       properties:
         within:
-          $ref: '#/components/schemas/GeoJSONGeometry'
+          allOf:
+            - $ref: '#/components/schemas/GeoJSONGeometry'
+          title: within
     Geometry:
       title: Geometry
       description: GeoJSON geometry
@@ -11041,6 +11092,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -11284,6 +11336,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/ObjectTerreinGebouwdObject'
           nullable: true
+          title: isGehuisvestIn
       required:
         - nummer
     ObjectInrichtingselement:
@@ -11553,6 +11606,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/TerreinGebouwdObjectAdres'
           nullable: true
+          title: adresAanduidingGrp
       required:
         - identificatie
     ObjectTerreindeel:
@@ -11746,7 +11800,9 @@ components:
           title: nummer woz deel object
           maxLength: 6
         isOnderdeelVan:
-          $ref: '#/components/schemas/ObjectWozObject'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWozObject'
+          title: isOnderdeelVan
       required:
         - nummerWozDeelObject
     ObjectWozObject:
@@ -11761,6 +11817,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/WozObjectAdres'
           nullable: true
+          title: aanduidingWozObject
       required:
         - wozObjectNummer
     ObjectWozWaarde:
@@ -11772,7 +11829,9 @@ components:
           title: waardepeildatum
           maxLength: 9
         isVoor:
-          $ref: '#/components/schemas/ObjectWozObject'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWozObject'
+          title: isVoor
       required:
         - waardepeildatum
     ObjectZakelijkRecht:
@@ -11789,9 +11848,13 @@ components:
           title: avg aard
           maxLength: 1000
         heeftBetrekkingOp:
-          $ref: '#/components/schemas/ObjectKadastraleOnroerendeZaak'
+          allOf:
+            - $ref: '#/components/schemas/ObjectKadastraleOnroerendeZaak'
+          title: heeftBetrekkingOp
         heeftAlsGerechtigde:
-          $ref: '#/components/schemas/ZakelijkRechtHeeftAlsGerechtigde'
+          allOf:
+            - $ref: '#/components/schemas/ZakelijkRechtHeeftAlsGerechtigde'
+          title: heeftAlsGerechtigde
       required:
         - avgAard
         - identificatie
@@ -11943,6 +12006,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -11983,6 +12047,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -12132,6 +12197,7 @@ components:
           type: string
           readOnly: true
           description: Uitleg bij `betalingsindicatie`.
+          title: betalingsindicatieWeergave
         laatsteBetaaldatum:
           type: string
           format: date-time
@@ -12153,6 +12219,7 @@ components:
           description:
             Gegevens omtrent het verlengen van de doorlooptijd van de behandeling
             van de ZAAK
+          title: verlenging
         opschorting:
           allOf:
             - $ref: '#/components/schemas/Opschorting'
@@ -12160,6 +12227,7 @@ components:
           description:
             Gegevens omtrent het tijdelijk opschorten van de behandeling
             van de ZAAK
+          title: opschorting
         selectielijstklasse:
           type: string
           format: uri
@@ -12185,6 +12253,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           description: URL-referenties naar deel ZAAKen.
           title: is deelzaak van
@@ -12200,6 +12269,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           title: zaak
           uniqueItems: true
@@ -12208,6 +12278,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           title: zaak
           uniqueItems: true
@@ -12217,11 +12288,13 @@ components:
           readOnly: true
           nullable: true
           description: Indien geen status bekend is, dan is de waarde 'null'
+          title: status
         zaakinformatieobjecten:
           type: array
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           title: zaak
           uniqueItems: true
@@ -12230,6 +12303,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           title: zaak
           uniqueItems: true
@@ -12303,6 +12377,7 @@ components:
           description:
             URL-referentie naar het RESULTAAT. Indien geen resultaat bekend
             is, dan is de waarde 'null'
+          title: resultaat
         opdrachtgevendeOrganisatie:
           type: string
           description:
@@ -12341,6 +12416,7 @@ components:
             Specificatie van de attribuutsoort van het object, subject
             of gebeurtenis  waarop, vanuit archiveringsoptiek, de zaak betrekking
             heeft en dat bepalend is voor de start van de archiefactietermijn.
+          title: processobject
     PatchedZaakEigenschap:
       type: object
       description:
@@ -12361,6 +12437,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
         uuid:
           type: string
           format: uuid
@@ -12392,6 +12469,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -12422,6 +12500,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/AardRelatieWeergaveEnum'
           readOnly: true
+          title: aardRelatieWeergave
         titel:
           type: string
           description:
@@ -12470,6 +12549,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -12727,6 +12807,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -12768,6 +12849,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -12885,11 +12967,13 @@ components:
             brengt met medewerkers van de BETROKKENE, een NIET-NATUURLIJK PERSOON
             of VESTIGING zijnde, of met BETROKKENE zelf, een NATUURLIJK PERSOON zijnde
             , vanuit het belang van BETROKKENE in haar ROL bij een ZAAK.
+          title: contactpersoonRol
         statussen:
           type: array
           items:
             type: string
             format: uri
+            title: ''
             minLength: 1
             maxLength: 1000
           readOnly: true
@@ -13010,10 +13094,12 @@ components:
           allOf:
             - $ref: '#/components/schemas/VerblijfsAdres'
           nullable: true
+          title: verblijfsadres
         subVerblijfBuitenland:
           allOf:
             - $ref: '#/components/schemas/SubVerblijfBuitenland'
           nullable: true
+          title: subVerblijfBuitenland
     RolNietNatuurlijkPersoon:
       type: object
       properties:
@@ -13054,6 +13140,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/SubVerblijfBuitenland'
           nullable: true
+          title: subVerblijfBuitenland
     RolOrganisatorischeEenheid:
       type: object
       properties:
@@ -13090,10 +13177,12 @@ components:
           allOf:
             - $ref: '#/components/schemas/VerblijfsAdres'
           nullable: true
+          title: verblijfsadres
         subVerblijfBuitenland:
           allOf:
             - $ref: '#/components/schemas/SubVerblijfBuitenland'
           nullable: true
+          title: subVerblijfBuitenland
     Status:
       type: object
       properties:
@@ -13101,6 +13190,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -13156,6 +13246,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
             minLength: 1
             maxLength: 1000
           readOnly: true
@@ -13263,27 +13354,34 @@ components:
         type:
           type: string
           description: URI referentie naar het type fout, bedoeld voor developers
+          title: type
         code:
           type: string
           description: Systeemcode die het type fout aangeeft
+          title: code
         title:
           type: string
           description: Generieke titel voor het type fout
+          title: title
         status:
           type: integer
           description: De HTTP status code
+          title: status
         detail:
           type: string
           description: Extra informatie bij de fout, indien beschikbaar
+          title: detail
         instance:
           type: string
           description:
             URI met referentie naar dit specifiek voorkomen van de fout.
             Deze kan gebruikt worden in combinatie met server logs, bijvoorbeeld.
+          title: instance
         invalidParams:
           type: array
           items:
             $ref: '#/components/schemas/FieldValidationError'
+          title: invalidParams
       required:
         - code
         - detail
@@ -13443,6 +13541,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -13592,6 +13691,7 @@ components:
           type: string
           readOnly: true
           description: Uitleg bij `betalingsindicatie`.
+          title: betalingsindicatieWeergave
         laatsteBetaaldatum:
           type: string
           format: date-time
@@ -13613,6 +13713,7 @@ components:
           description:
             Gegevens omtrent het verlengen van de doorlooptijd van de behandeling
             van de ZAAK
+          title: verlenging
         opschorting:
           allOf:
             - $ref: '#/components/schemas/Opschorting'
@@ -13620,6 +13721,7 @@ components:
           description:
             Gegevens omtrent het tijdelijk opschorten van de behandeling
             van de ZAAK
+          title: opschorting
         selectielijstklasse:
           type: string
           format: uri
@@ -13645,6 +13747,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           description: URL-referenties naar deel ZAAKen.
           title: is deelzaak van
@@ -13660,6 +13763,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           title: zaak
           uniqueItems: true
@@ -13668,6 +13772,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           title: zaak
           uniqueItems: true
@@ -13677,11 +13782,13 @@ components:
           readOnly: true
           nullable: true
           description: Indien geen status bekend is, dan is de waarde 'null'
+          title: status
         zaakinformatieobjecten:
           type: array
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           title: zaak
           uniqueItems: true
@@ -13690,6 +13797,7 @@ components:
           items:
             type: string
             format: uri
+            title: ''
           readOnly: true
           title: zaak
           uniqueItems: true
@@ -13763,6 +13871,7 @@ components:
           description:
             URL-referentie naar het RESULTAAT. Indien geen resultaat bekend
             is, dan is de waarde 'null'
+          title: resultaat
         opdrachtgevendeOrganisatie:
           type: string
           description:
@@ -13801,6 +13910,7 @@ components:
             Specificatie van de attribuutsoort van het object, subject
             of gebeurtenis  waarop, vanuit archiveringsoptiek, de zaak betrekking
             heeft en dat bepalend is voor de start van de archiefactietermijn.
+          title: processobject
       required:
         - betalingsindicatieWeergave
         - bronorganisatie
@@ -13837,6 +13947,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
         uuid:
           type: string
           format: uuid
@@ -13862,6 +13973,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -13913,6 +14025,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
         uuid:
           type: string
           format: uuid
@@ -13951,6 +14064,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -13981,6 +14095,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/AardRelatieWeergaveEnum'
           readOnly: true
+          title: aardRelatieWeergave
         titel:
           type: string
           description:
@@ -14052,6 +14167,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -14207,6 +14323,7 @@ components:
           type: string
           format: uri
           readOnly: true
+          title: url
           description:
             URL-referentie naar dit object. Dit is de unieke identificatie
             en locatie van dit object.
@@ -14240,20 +14357,28 @@ components:
       type: object
       properties:
         zaakgeometrie:
-          $ref: '#/components/schemas/GeoWithin'
+          allOf:
+            - $ref: '#/components/schemas/GeoWithin'
+          title: zaakgeometrie
         uuid__in:
           type: array
           items:
             type: string
             format: uuid
+            title: ''
           description: Array of unieke resource identifiers (UUID4)
+          title: uuid__in
     ZakelijkRechtHeeftAlsGerechtigde:
       type: object
       properties:
         natuurlijkPersoon:
-          $ref: '#/components/schemas/RolNatuurlijkPersoon'
+          allOf:
+            - $ref: '#/components/schemas/RolNatuurlijkPersoon'
+          title: natuurlijkPersoon
         nietNatuurlijkPersoon:
-          $ref: '#/components/schemas/RolNietNatuurlijkPersoon'
+          allOf:
+            - $ref: '#/components/schemas/RolNietNatuurlijkPersoon'
+          title: nietNatuurlijkPersoon
     adres:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
@@ -14265,27 +14390,37 @@ components:
       type: object
       properties:
         betrokkeneIdentificatie:
-          $ref: '#/components/schemas/RolMedewerker'
+          allOf:
+            - $ref: '#/components/schemas/RolMedewerker'
+          title: betrokkeneIdentificatie
     betrokkene_identificatie_RolNatuurlijkPersoon:
       type: object
       properties:
         betrokkeneIdentificatie:
-          $ref: '#/components/schemas/RolNatuurlijkPersoon'
+          allOf:
+            - $ref: '#/components/schemas/RolNatuurlijkPersoon'
+          title: betrokkeneIdentificatie
     betrokkene_identificatie_RolNietNatuurlijkPersoon:
       type: object
       properties:
         betrokkeneIdentificatie:
-          $ref: '#/components/schemas/RolNietNatuurlijkPersoon'
+          allOf:
+            - $ref: '#/components/schemas/RolNietNatuurlijkPersoon'
+          title: betrokkeneIdentificatie
     betrokkene_identificatie_RolOrganisatorischeEenheid:
       type: object
       properties:
         betrokkeneIdentificatie:
-          $ref: '#/components/schemas/RolOrganisatorischeEenheid'
+          allOf:
+            - $ref: '#/components/schemas/RolOrganisatorischeEenheid'
+          title: betrokkeneIdentificatie
     betrokkene_identificatie_RolVestiging:
       type: object
       properties:
         betrokkeneIdentificatie:
-          $ref: '#/components/schemas/RolVestiging'
+          allOf:
+            - $ref: '#/components/schemas/RolVestiging'
+          title: betrokkeneIdentificatie
     buurt:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
@@ -14337,142 +14472,198 @@ components:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectAdres'
+          allOf:
+            - $ref: '#/components/schemas/ObjectAdres'
+          title: objectIdentificatie
     object_identificatie_ObjectBuurt:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectBuurt'
+          allOf:
+            - $ref: '#/components/schemas/ObjectBuurt'
+          title: objectIdentificatie
     object_identificatie_ObjectGemeente:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectGemeente'
+          allOf:
+            - $ref: '#/components/schemas/ObjectGemeente'
+          title: objectIdentificatie
     object_identificatie_ObjectGemeentelijkeOpenbareRuimte:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectGemeentelijkeOpenbareRuimte'
+          allOf:
+            - $ref: '#/components/schemas/ObjectGemeentelijkeOpenbareRuimte'
+          title: objectIdentificatie
     object_identificatie_ObjectHuishouden:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectHuishouden'
+          allOf:
+            - $ref: '#/components/schemas/ObjectHuishouden'
+          title: objectIdentificatie
     object_identificatie_ObjectInrichtingselement:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectInrichtingselement'
+          allOf:
+            - $ref: '#/components/schemas/ObjectInrichtingselement'
+          title: objectIdentificatie
     object_identificatie_ObjectKadastraleOnroerendeZaak:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectKadastraleOnroerendeZaak'
+          allOf:
+            - $ref: '#/components/schemas/ObjectKadastraleOnroerendeZaak'
+          title: objectIdentificatie
     object_identificatie_ObjectKunstwerkdeel:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectKunstwerkdeel'
+          allOf:
+            - $ref: '#/components/schemas/ObjectKunstwerkdeel'
+          title: objectIdentificatie
     object_identificatie_ObjectMaatschappelijkeActiviteit:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectMaatschappelijkeActiviteit'
+          allOf:
+            - $ref: '#/components/schemas/ObjectMaatschappelijkeActiviteit'
+          title: objectIdentificatie
     object_identificatie_ObjectOpenbareRuimte:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectOpenbareRuimte'
+          allOf:
+            - $ref: '#/components/schemas/ObjectOpenbareRuimte'
+          title: objectIdentificatie
     object_identificatie_ObjectOverige:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectOverige'
+          allOf:
+            - $ref: '#/components/schemas/ObjectOverige'
+          title: objectIdentificatie
     object_identificatie_ObjectPand:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectPand'
+          allOf:
+            - $ref: '#/components/schemas/ObjectPand'
+          title: objectIdentificatie
     object_identificatie_ObjectSpoorbaandeel:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectSpoorbaandeel'
+          allOf:
+            - $ref: '#/components/schemas/ObjectSpoorbaandeel'
+          title: objectIdentificatie
     object_identificatie_ObjectTerreinGebouwdObject:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectTerreinGebouwdObject'
+          allOf:
+            - $ref: '#/components/schemas/ObjectTerreinGebouwdObject'
+          title: objectIdentificatie
     object_identificatie_ObjectTerreindeel:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectTerreindeel'
+          allOf:
+            - $ref: '#/components/schemas/ObjectTerreindeel'
+          title: objectIdentificatie
     object_identificatie_ObjectWaterdeel:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectWaterdeel'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWaterdeel'
+          title: objectIdentificatie
     object_identificatie_ObjectWegdeel:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectWegdeel'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWegdeel'
+          title: objectIdentificatie
     object_identificatie_ObjectWijk:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectWijk'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWijk'
+          title: objectIdentificatie
     object_identificatie_ObjectWoonplaats:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectWoonplaats'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWoonplaats'
+          title: objectIdentificatie
     object_identificatie_ObjectWozDeelobject:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectWozDeelobject'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWozDeelobject'
+          title: objectIdentificatie
     object_identificatie_ObjectWozObject:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectWozObject'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWozObject'
+          title: objectIdentificatie
     object_identificatie_ObjectWozWaarde:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectWozWaarde'
+          allOf:
+            - $ref: '#/components/schemas/ObjectWozWaarde'
+          title: objectIdentificatie
     object_identificatie_ObjectZakelijkRecht:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/ObjectZakelijkRecht'
+          allOf:
+            - $ref: '#/components/schemas/ObjectZakelijkRecht'
+          title: objectIdentificatie
     object_identificatie_RolMedewerker:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/RolMedewerker'
+          allOf:
+            - $ref: '#/components/schemas/RolMedewerker'
+          title: objectIdentificatie
     object_identificatie_RolNatuurlijkPersoon:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/RolNatuurlijkPersoon'
+          allOf:
+            - $ref: '#/components/schemas/RolNatuurlijkPersoon'
+          title: objectIdentificatie
     object_identificatie_RolNietNatuurlijkPersoon:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/RolNietNatuurlijkPersoon'
+          allOf:
+            - $ref: '#/components/schemas/RolNietNatuurlijkPersoon'
+          title: objectIdentificatie
     object_identificatie_RolOrganisatorischeEenheid:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/RolOrganisatorischeEenheid'
+          allOf:
+            - $ref: '#/components/schemas/RolOrganisatorischeEenheid'
+          title: objectIdentificatie
     object_identificatie_RolVestiging:
       type: object
       properties:
         objectIdentificatie:
-          $ref: '#/components/schemas/RolVestiging'
+          allOf:
+            - $ref: '#/components/schemas/RolVestiging'
+          title: objectIdentificatie
     openbare_ruimte:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
