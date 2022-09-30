@@ -43,6 +43,10 @@ certifi==2022.6.15
     # via
     #   -r requirements/ci.txt
     #   requests
+cffi==1.15.1
+    # via
+    #   -r requirements/ci.txt
+    #   cryptography
 charset-normalizer==2.1.0
     # via
     #   -r requirements/ci.txt
@@ -67,6 +71,10 @@ coverage==6.4.2
     # via
     #   -r requirements/ci.txt
     #   codecov
+cryptography==38.0.1
+    # via
+    #   -r requirements/ci.txt
+    #   pyopenssl
 deprecated==1.2.13
     # via
     #   -r requirements/ci.txt
@@ -81,14 +89,20 @@ django==3.2.14
     #   django-extensions
     #   django-filter
     #   django-markup
+    #   django-privates
     #   django-redis
+    #   django-relativedelta
     #   django-rest-framework-condition
+    #   django-sendfile2
+    #   django-simple-certmanager
     #   django-solo
     #   djangorestframework
     #   drf-nested-routers
     #   drf-spectacular
     #   drf-yasg
+    #   notifications-api-common
     #   vng-api-common
+    #   zgw-consumers
 django-axes==5.36.0
     # via -r requirements/ci.txt
 django-capture-on-commit-callbacks==1.11.0
@@ -98,7 +112,9 @@ django-capture-on-commit-callbacks==1.11.0
 django-choices==1.7.2
     # via
     #   -r requirements/ci.txt
+    #   django-simple-certmanager
     #   vng-api-common
+    #   zgw-consumers
 django-cors-middleware==1.5.0
     # via -r requirements/ci.txt
 django-debug-toolbar==3.5.0
@@ -115,16 +131,34 @@ django-ipware==4.0.2
     #   django-axes
 django-markup[all_filter_dependencies]==1.5
     # via -r requirements/ci.txt
+django-privates==1.4.0
+    # via
+    #   -r requirements/ci.txt
+    #   django-simple-certmanager
 django-redis==5.2.0
     # via -r requirements/ci.txt
+django-relativedelta==1.1.2
+    # via
+    #   -r requirements/ci.txt
+    #   zgw-consumers
 django-rest-framework-condition==0.1.1
     # via
     #   -r requirements/ci.txt
     #   vng-api-common
+django-sendfile2==0.7.0
+    # via
+    #   -r requirements/ci.txt
+    #   django-privates
+django-simple-certmanager==1.0.0
+    # via
+    #   -r requirements/ci.txt
+    #   zgw-consumers
 django-solo==2.0.0
     # via
     #   -r requirements/ci.txt
+    #   notifications-api-common
     #   vng-api-common
+    #   zgw-consumers
 django-webtest==1.9.10
     # via
     #   -r requirements/ci.txt
@@ -136,10 +170,12 @@ djangorestframework==3.12.4
     #   drf-nested-routers
     #   drf-spectacular
     #   drf-yasg
+    #   notifications-api-common
     #   vng-api-common
 djangorestframework-camel-case==1.3.0
     # via
     #   -r requirements/ci.txt
+    #   notifications-api-common
     #   vng-api-common
 djangorestframework-gis==1.0
     # via -r requirements/ci.txt
@@ -166,18 +202,21 @@ factory-boy==3.2.1
     # via
     #   -r requirements/ci.txt
     #   -r requirements/testing.in
-faker==13.15.1
+faker==15.0.0
     # via
     #   -r requirements/ci.txt
     #   factory-boy
+    #   zgw-consumers
 freezegun==1.2.1
     # via
     #   -r requirements/ci.txt
     #   -r requirements/testing.in
-gemma-zds-client==0.15.0
+gemma-zds-client==1.0.1
     # via
     #   -r requirements/ci.txt
+    #   notifications-api-common
     #   vng-api-common
+    #   zgw-consumers
 html5lib==1.1
     # via
     #   -r requirements/ci.txt
@@ -246,6 +285,10 @@ mypy-extensions==0.4.3
     # via
     #   -r requirements/ci.txt
     #   black
+notifications-api-common==0.1.0
+    # via
+    #   -r requirements/ci.txt
+    #   vng-api-common
 oyaml==1.0
     # via
     #   -r requirements/ci.txt
@@ -274,6 +317,10 @@ platformdirs==2.5.2
     #   black
 psycopg2==2.9.3
     # via -r requirements/ci.txt
+pycparser==2.21
+    # via
+    #   -r requirements/ci.txt
+    #   cffi
 pygments==2.12.0
     # via
     #   -r requirements/ci.txt
@@ -288,6 +335,11 @@ pylint==1.9.4
     # via
     #   -r requirements/ci.txt
     #   -r requirements/testing.in
+pyopenssl==22.1.0
+    # via
+    #   -r requirements/ci.txt
+    #   django-simple-certmanager
+    #   zgw-consumers
 pyparsing==3.0.9
     # via
     #   -r requirements/ci.txt
@@ -303,6 +355,7 @@ python-creole==1.4.10
 python-dateutil==2.8.2
     # via
     #   -r requirements/ci.txt
+    #   django-relativedelta
     #   faker
     #   freezegun
 python-decouple==3.6
@@ -341,10 +394,12 @@ requests==2.28.1
     #   requests-mock
     #   sphinx
     #   vng-api-common
-requests-mock==1.9.3
+    #   zgw-consumers
+requests-mock==1.10.0
     # via
     #   -r requirements/ci.txt
     #   -r requirements/testing.in
+    #   zgw-consumers
 ruamel-yaml==0.17.21
     # via
     #   -r requirements/ci.txt
@@ -424,7 +479,7 @@ urllib3==1.26.11
     # via
     #   -r requirements/ci.txt
     #   requests
-vng_api_common @ git+https://github.com/MatthijsBekendam/vng-api-common@drf_compatibilty_newer_django_fix
+vng_api_common @ git+https://github.com/VNG-Realisatie/vng-api-common@drf-spectacular-upgrade
     # via -r requirements/ci.txt
 waitress==2.1.2
     # via
@@ -448,6 +503,10 @@ wrapt==1.14.1
     #   -r requirements/ci.txt
     #   astroid
     #   deprecated
+zgw-consumers==0.21.2
+    # via
+    #   -r requirements/ci.txt
+    #   notifications-api-common
 zipp==3.8.1
     # via
     #   -r requirements/ci.txt
