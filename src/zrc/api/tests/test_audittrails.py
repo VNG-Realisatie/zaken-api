@@ -4,16 +4,16 @@ from unittest.mock import patch
 
 from django.test import override_settings
 
+import requests_mock
 from rest_framework import status
 from rest_framework.test import APITestCase
 from vng_api_common.audittrails.models import AuditTrail
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.tests import JWTAuthMixin, reverse
 from vng_api_common.utils import get_uuid_from_path
-from zds_client.tests.mocks import mock_client
 
 from zrc.datamodel.models import Resultaat, Zaak, ZaakInformatieObject
-from zrc.tests.utils import ZAAK_WRITE_KWARGS
+from zrc.tests.utils import ZAAK_WRITE_KWARGS, get_oas_spec
 
 from ...datamodel.tests.factories import RolFactory
 from .mixins import ZaakInformatieObjectSyncMixin
@@ -33,12 +33,8 @@ INFORMATIEOBJECT_TYPE = (
 )
 
 
-@override_settings(
-    LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
-    ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
-)
+@override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
-
     heeft_alle_autorisaties = True
 
     responses = {
@@ -70,7 +66,15 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             "startdatum": "2018-12-24",
             "productenOfDiensten": ["https://example.com/product/123"],
         }
-        with mock_client(self.responses):
+
+        with requests_mock.Mocker() as requests_mocker:
+            requests_mocker.get(
+                f"{ZTC_ROOT}/schema/openapi.yaml?v=3", content=get_oas_spec("ztc")
+            )
+
+            for mocked_url, mocked_response in self.responses.items():
+                requests_mocker.get(mocked_url, json=mocked_response)
+
             response = self.client.post(url, zaak_data, **ZAAK_WRITE_KWARGS, **headers)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -99,10 +103,12 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         url = reverse(Resultaat)
         resultaat_data = {"zaak": zaak_response["url"], "resultaattype": RESULTAATTYPE}
-        resultaattype_response = {
-            RESULTAATTYPE: {"url": RESULTAATTYPE, "zaaktype": ZAAKTYPE}
-        }
-        with mock_client(resultaattype_response):
+
+        with requests_mock.Mocker() as requests_mocker:
+            requests_mocker.get(
+                RESULTAATTYPE, json={"url": RESULTAATTYPE, "zaaktype": ZAAKTYPE}
+            )
+
             response = self.client.post(url, resultaat_data, **ZAAK_WRITE_KWARGS)
 
         resultaat_response = response.data
@@ -190,6 +196,7 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
         self.assertEqual(zaak_update_audittrail.oud, zaak_data)
         self.assertEqual(zaak_update_audittrail.nieuw, zaak_response)
 
+    # TODO: see fixed tests above
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_create_zaakinformatieobject_audittrail(self, *mocks):

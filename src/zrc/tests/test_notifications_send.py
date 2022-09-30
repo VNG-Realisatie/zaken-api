@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from django.test import override_settings
 
+import requests_mock
 from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from freezegun import freeze_time
 from rest_framework import status
@@ -14,6 +15,7 @@ from zrc.api.scopes import (
     SCOPE_ZAKEN_BIJWERKEN,
     SCOPE_ZAKEN_CREATE,
 )
+from zrc.api.tests.mixins import NotificationsConfigMixin
 from zrc.datamodel.tests.factories import (
     ResultaatFactory,
     ZaakEigenschapFactory,
@@ -21,7 +23,7 @@ from zrc.datamodel.tests.factories import (
     ZaakObjectFactory,
 )
 
-from .utils import ZAAK_WRITE_KWARGS
+from .utils import ZAAK_WRITE_KWARGS, get_oas_spec
 
 VERANTWOORDELIJKE_ORGANISATIE = "517439943"
 
@@ -36,13 +38,13 @@ RESULTAATTYPE = f"{ZAAKTYPE}/resultaattypen/5b348dbf-9301-410b-be9e-83723e288785
 @override_settings(
     LINK_FETCHER="vng_api_common.mocks.link_fetcher_200", NOTIFICATIONS_DISABLED=False
 )
-class SendNotifTestCase(JWTAuthMixin, APITestCase):
+class SendNotifTestCase(NotificationsConfigMixin, JWTAuthMixin, APITestCase):
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
 
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
-    @patch("zds_client.Client.from_url")
+    @patch("notifications_api_common.models.NotificationsConfig.get_client")
     def test_send_notif_create_zaak(self, mock_client, *mocks):
         """
         Check if notifications will be send when zaak is created
@@ -87,7 +89,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             },
         )
 
-    @patch("zds_client.Client.from_url")
+    @patch("notifications_api_common.models.NotificationsConfig.get_client")
     def test_send_notif_delete_resultaat(self, mock_client):
         """
         Check if notifications will be send when resultaat is deleted
@@ -99,7 +101,21 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
         resultaat = ResultaatFactory.create(zaak=zaak)
         resultaat_url = get_operation_url("resultaat_update", uuid=resultaat.uuid)
 
-        with capture_on_commit_callbacks(execute=True):
+        with (
+            capture_on_commit_callbacks(execute=True),
+            requests_mock.Mocker() as requests_mocker,
+        ):
+            requests_mocker.get(
+                f"{zaak.resultaat.resultaattype}schema/openapi.yaml?v=3",
+                content=get_oas_spec("ztc"),
+            )
+            requests_mocker.get(
+                zaak.resultaat.resultaattype,
+                json={
+                    "omschrijving": "Test omschrijving",
+                },
+            )
+
             response = self.client.delete(resultaat_url)
 
         self.assertEqual(
@@ -123,7 +139,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             },
         )
 
-    @patch("zds_client.Client.from_url")
+    @patch("notifications_api_common.models.NotificationsConfig.get_client")
     def test_send_notif_update_zaak_eigenschap(self, mock_client):
         """
         Check if notifications will be send when zaak-eigenschap is updated
@@ -157,7 +173,7 @@ class SendNotifTestCase(JWTAuthMixin, APITestCase):
             },
         )
 
-    @patch("zds_client.Client.from_url")
+    @patch("notifications_api_common.models.NotificationsConfig.get_client")
     def test_send_notif_update_zaakobject(self, mock_client):
         """
         Check if notifications will be send when zaakobject is updated

@@ -324,6 +324,8 @@ SITE_TITLE = "Zaak Registratie Component (ZRC)"
 ENVIRONMENT = None
 SHOW_ALERT = True
 
+TEST_SPEC_DIRS = (os.path.join(DJANGO_PROJECT_DIR, "tests", "schemas"),)
+
 #
 # Library settings
 #
