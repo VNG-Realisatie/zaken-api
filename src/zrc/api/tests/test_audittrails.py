@@ -71,7 +71,6 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
             requests_mocker.get(
                 f"{ZTC_ROOT}/schema/openapi.yaml?v=3", content=get_oas_spec("ztc")
             )
-
             for mocked_url, mocked_response in self.responses.items():
                 requests_mocker.get(mocked_url, json=mocked_response)
 
@@ -157,7 +156,13 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         modified_data["toelichting"] = "aangepast"
 
-        with mock_client(self.responses):
+        with requests_mock.Mocker() as requests_mocker:
+            requests_mocker.get(
+                f"{ZTC_ROOT}/schema/openapi.yaml?v=3", content=get_oas_spec("ztc")
+            )
+            for mocked_url, mocked_response in self.responses.items():
+                requests_mocker.get(mocked_url, json=mocked_response)
+
             response = self.client.put(url, modified_data, **ZAAK_WRITE_KWARGS)
             zaak_response = response.data
 
@@ -178,7 +183,13 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     def test_partial_update_zaak_audittrails(self):
         zaak_data = self._create_zaak()
 
-        with mock_client(self.responses):
+        with requests_mock.Mocker() as requests_mocker:
+            requests_mocker.get(
+                f"{ZTC_ROOT}/schema/openapi.yaml?v=3", content=get_oas_spec("ztc")
+            )
+            for mocked_url, mocked_response in self.responses.items():
+                requests_mocker.get(mocked_url, json=mocked_response)
+
             response = self.client.patch(
                 zaak_data["url"], {"toelichting": "aangepast"}, **ZAAK_WRITE_KWARGS
             )
@@ -204,7 +215,17 @@ class AuditTrailTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
 
         url = reverse(ZaakInformatieObject)
 
-        with mock_client(self.responses):
+        with requests_mock.Mocker() as requests_mocker:
+            requests_mocker.get(
+                f"{ZTC_ROOT}/schema/openapi.yaml?v=3", content=get_oas_spec("ztc")
+            )
+            requests_mocker.get(
+                f"{INFORMATIEOBJECT[:INFORMATIEOBJECT.rfind('/')]}/schema/openapi.yaml?v=3",
+                content=get_oas_spec("ztc"),
+            )
+            for mocked_url, mocked_response in self.responses.items():
+                requests_mocker.get(mocked_url, json=mocked_response)
+
             response = self.client.post(
                 url, {"zaak": zaak_data["url"], "informatieobject": INFORMATIEOBJECT}
             )
