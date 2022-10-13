@@ -27,8 +27,7 @@ djangorestframework-camel-case
 drf-yasg
 drf-writable-nested
 
-# TODO: this should eventually be reverted to vng-api-common
-git+https://github.com/VNG-Realisatie/vng-api-common@drf-spectacular-upgrade#egg=vng_api_common
+vng_api_common
 gemma-zds-client
 
 # monitoring

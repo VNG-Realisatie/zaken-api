@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Zaken API
-  version: 1.3.0-rc5
+  version: 1.3.0-rc6
   description: "Een API om een zaakregistratiecomponent (ZRC) te benaderen.
 
 
@@ -117,12 +117,6 @@ paths:
         **DEPRECATED**: gebruik de contactmomenten API in plaats van deze endpoint.'
       summary: 'Alle KLANTCONTACTen opvragen. '
       parameters:
-        - name: page
-          required: false
-          in: query
-          description: Een pagina binnen de gepagineerde set resultaten.
-          schema:
-            type: integer
         - name: zaak
           required: false
           in: query
@@ -130,6 +124,12 @@ paths:
           schema:
             type: string
             format: uri
+        - name: page
+          required: false
+          in: query
+          description: Een pagina binnen de gepagineerde set resultaten.
+          schema:
+            type: integer
       tags:
         - klantcontacten
       security:
@@ -286,15 +286,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - klantcontacten
       requestBody:
@@ -603,19 +603,6 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle RESULTAATen van ZAAKen opvragen.
       parameters:
-        - name: page
-          required: false
-          in: query
-          description: Een pagina binnen de gepagineerde set resultaten.
-          schema:
-            type: integer
-        - name: resultaattype
-          required: false
-          in: query
-          description: URL-referentie naar het RESULTAATTYPE (in de Catalogi API).
-          schema:
-            type: string
-            format: uri
         - name: zaak
           required: false
           in: query
@@ -623,6 +610,19 @@ paths:
           schema:
             type: string
             format: uri
+        - name: resultaattype
+          required: false
+          in: query
+          description: URL-referentie naar het RESULTAATTYPE (in de Catalogi API).
+          schema:
+            type: string
+            format: uri
+        - name: page
+          required: false
+          in: query
+          description: Een pagina binnen de gepagineerde set resultaten.
+          schema:
+            type: integer
       tags:
         - resultaten
       security:
@@ -777,15 +777,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - resultaten
       requestBody:
@@ -939,6 +939,14 @@ paths:
       description: Een specifieke RESULTAAT opvragen.
       summary: Een specifieke RESULTAAT opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -957,14 +965,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - resultaten
       security:
@@ -1115,6 +1115,14 @@ paths:
         - het RESULTAATTYPE mag niet gewijzigd worden"
       summary: Werk een RESULTAAT in zijn geheel bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -1124,23 +1132,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
+        - in: header
+          name: X-Audit-Toelichting
           schema:
             type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - resultaten
       requestBody:
@@ -1303,6 +1303,14 @@ paths:
         - het RESULTAATTYPE mag niet gewijzigd worden"
       summary: Werk een RESULTAAT deels bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -1312,23 +1320,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
+        - in: header
+          name: X-Audit-Toelichting
           schema:
             type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - resultaten
       requestBody:
@@ -1488,16 +1488,6 @@ paths:
       description: Verwijder een RESULTAAT van een ZAAK.
       summary: Verwijder een RESULTAAT van een ZAAK.
       parameters:
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
         - in: path
           name: uuid
           schema:
@@ -1506,6 +1496,16 @@ paths:
             description: Unieke resource identifier (UUID4)
             title: uuid
           required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - resultaten
       security:
@@ -1636,6 +1636,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) RESULTAAT opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -1654,14 +1662,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - resultaten
       responses:
@@ -1691,6 +1691,13 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle ROLlen bij ZAAKen opvragen.
       parameters:
+        - name: zaak
+          required: false
+          in: query
+          description: URL-referentie naar de ZAAK.
+          schema:
+            type: string
+            format: uri
         - name: betrokkene
           required: false
           in: query
@@ -1698,10 +1705,24 @@ paths:
           schema:
             type: string
             format: uri
-        - name: betrokkeneIdentificatie__medewerker__identificatie
+        - name: betrokkeneType
           required: false
           in: query
-          description: Een korte unieke aanduiding van de MEDEWERKER.
+          description: Type van de `betrokkene`.
+          schema:
+            type: string
+            enum:
+              - natuurlijk_persoon
+              - niet_natuurlijk_persoon
+              - vestiging
+              - organisatorische_eenheid
+              - medewerker
+        - name: betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
+          required: false
+          in: query
+          description:
+            Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene
+            bepalingen burgerservicenummer.
           schema:
             type: string
         - name: betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
@@ -1718,12 +1739,12 @@ paths:
           description: Het administratienummer van de persoon, bedoeld in de Wet BRP
           schema:
             type: string
-        - name: betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
+        - name: betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
           required: false
           in: query
           description:
-            Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene
-            bepalingen burgerservicenummer.
+            Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
+            NIET-NATUURLIJK PERSOON
           schema:
             type: string
         - name: betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
@@ -1734,12 +1755,10 @@ paths:
             NIET-NATUURLIJK PERSOON
           schema:
             type: string
-        - name: betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
+        - name: betrokkeneIdentificatie__vestiging__vestigingsNummer
           required: false
           in: query
-          description:
-            Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
-            NIET-NATUURLIJK PERSOON
+          description: Een korte unieke aanduiding van de Vestiging.
           schema:
             type: string
         - name: betrokkeneIdentificatie__organisatorischeEenheid__identificatie
@@ -1748,24 +1767,19 @@ paths:
           description: Een korte identificatie van de organisatorische eenheid.
           schema:
             type: string
-        - name: betrokkeneIdentificatie__vestiging__vestigingsNummer
+        - name: betrokkeneIdentificatie__medewerker__identificatie
           required: false
           in: query
-          description: Een korte unieke aanduiding van de Vestiging.
+          description: Een korte unieke aanduiding van de MEDEWERKER.
           schema:
             type: string
-        - name: betrokkeneType
+        - name: roltype
           required: false
           in: query
-          description: Type van de `betrokkene`.
+          description: URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK.
           schema:
             type: string
-            enum:
-              - natuurlijk_persoon
-              - niet_natuurlijk_persoon
-              - vestiging
-              - organisatorische_eenheid
-              - medewerker
+            format: uri
         - name: omschrijving
           required: false
           in: query
@@ -1795,20 +1809,6 @@ paths:
           description: Een pagina binnen de gepagineerde set resultaten.
           schema:
             type: integer
-        - name: roltype
-          required: false
-          in: query
-          description: URL-referentie naar een roltype binnen het ZAAKTYPE van de ZAAK.
-          schema:
-            type: string
-            format: uri
-        - name: zaak
-          required: false
-          in: query
-          description: URL-referentie naar de ZAAK.
-          schema:
-            type: string
-            format: uri
       tags:
         - rollen
       security:
@@ -1959,15 +1959,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - rollen
       requestBody:
@@ -2121,6 +2121,14 @@ paths:
       description: Een specifieke ROL bij een ZAAK opvragen.
       summary: Een specifieke ROL bij een ZAAK opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -2139,14 +2147,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - rollen
       security:
@@ -2295,16 +2295,6 @@ paths:
       description: Verwijder een ROL van een ZAAK.
       summary: Verwijder een ROL van een ZAAK.
       parameters:
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
         - in: path
           name: uuid
           schema:
@@ -2313,6 +2303,16 @@ paths:
             description: Unieke resource identifier (UUID4)
             title: uuid
           required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - rollen
       security:
@@ -2443,6 +2443,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) ROL opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -2461,14 +2469,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - rollen
       responses:
@@ -2498,6 +2498,20 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle STATUSsen bij ZAAKen opvragen.
       parameters:
+        - name: zaak
+          required: false
+          in: query
+          description: URL-referentie naar de ZAAK.
+          schema:
+            type: string
+            format: uri
+        - name: statustype
+          required: false
+          in: query
+          description: URL-referentie naar het STATUSTYPE (in de Catalogi API).
+          schema:
+            type: string
+            format: uri
         - name: indicatieLaatstGezetteStatus
           required: false
           in: query
@@ -2512,20 +2526,6 @@ paths:
           description: Een pagina binnen de gepagineerde set resultaten.
           schema:
             type: integer
-        - name: statustype
-          required: false
-          in: query
-          description: URL-referentie naar het STATUSTYPE (in de Catalogi API).
-          schema:
-            type: string
-            format: uri
-        - name: zaak
-          required: false
-          in: query
-          description: URL-referentie naar de ZAAK.
-          schema:
-            type: string
-            format: uri
       tags:
         - statussen
       security:
@@ -2689,15 +2689,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - statussen
       requestBody:
@@ -2851,6 +2851,14 @@ paths:
       description: Een specifieke STATUS van een ZAAK opvragen.
       summary: Een specifieke STATUS van een ZAAK opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -2869,14 +2877,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - statussen
       security:
@@ -3025,6 +3025,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) STATUS opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -3043,14 +3051,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - statussen
       responses:
@@ -3080,19 +3080,19 @@ paths:
       description: Alle ZAAKCONTACTMOMENTen opvragen.
       summary: Alle ZAAKCONTACTMOMENTen opvragen.
       parameters:
+        - name: zaak
+          required: false
+          in: query
+          description: URL-referentie naar de ZAAK.
+          schema:
+            type: string
+            format: uri
         - name: contactmoment
           required: false
           in: query
           description:
             URL-referentie naar het CONTACTMOMENT (in de Klantinteractie
             API)
-          schema:
-            type: string
-            format: uri
-        - name: zaak
-          required: false
-          in: query
-          description: URL-referentie naar de ZAAK.
           schema:
             type: string
             format: uri
@@ -3250,15 +3250,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakcontactmomenten
       requestBody:
@@ -3561,16 +3561,6 @@ paths:
       description: Verwijder een ZAAKCONTACTMOMENT.
       summary: Verwijder een ZAAKCONTACTMOMENT.
       parameters:
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
         - in: path
           name: uuid
           schema:
@@ -3579,6 +3569,16 @@ paths:
             description: Unieke resource identifier (UUID4)
             title: uuid
           required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakcontactmomenten
       security:
@@ -3710,19 +3710,19 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: 'Alle ZAAK-INFORMATIEOBJECT relaties opvragen '
       parameters:
+        - name: zaak
+          required: false
+          in: query
+          description: URL-referentie naar de ZAAK.
+          schema:
+            type: string
+            format: uri
         - name: informatieobject
           required: false
           in: query
           description:
             URL-referentie naar het INFORMATIEOBJECT (in de Documenten API),
             waar ook de relatieinformatie opgevraagd kan worden.
-          schema:
-            type: string
-            format: uri
-        - name: zaak
-          required: false
-          in: query
-          description: URL-referentie naar de ZAAK.
           schema:
             type: string
             format: uri
@@ -3906,15 +3906,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakinformatieobjecten
       requestBody:
@@ -4068,6 +4068,14 @@ paths:
       description: Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
       summary: Een specifieke ZAAK-INFORMATIEOBJECT relatie opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -4086,14 +4094,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - zaakinformatieobjecten
       security:
@@ -4245,6 +4245,14 @@ paths:
         \ en zaak URL mogen niet veranderen"
       summary: Werk een ZAAK-INFORMATIEOBJECT relatie in zijn geheel bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -4254,23 +4262,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
+        - in: header
+          name: X-Audit-Toelichting
           schema:
             type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakinformatieobjecten
       requestBody:
@@ -4434,6 +4434,14 @@ paths:
         \ en zaak URL mogen niet veranderen"
       summary: Werk een ZAAK-INFORMATIEOBJECT relatie deels bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: Content-Type
           schema:
@@ -4443,23 +4451,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
+        - in: header
+          name: X-Audit-Toelichting
           schema:
             type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakinformatieobjecten
       requestBody:
@@ -4621,16 +4621,6 @@ paths:
         API verwijderd. Consumers kunnen dit niet handmatig doen.
       summary: Verwijder een ZAAK-INFORMATIEOBJECT relatie.
       parameters:
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
         - in: path
           name: uuid
           schema:
@@ -4639,6 +4629,16 @@ paths:
             description: Unieke resource identifier (UUID4)
             title: uuid
           required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakinformatieobjecten
       security:
@@ -4769,6 +4769,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) ZAAKINFORMATIEOBJECT opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -4787,14 +4795,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - zaakinformatieobjecten
       responses:
@@ -4824,6 +4824,13 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle ZAAKOBJECTen opvragen.
       parameters:
+        - name: zaak
+          required: false
+          in: query
+          description: URL-referentie naar de ZAAK.
+          schema:
+            type: string
+            format: uri
         - name: object
           required: false
           in: query
@@ -4877,13 +4884,6 @@ paths:
           description: Een pagina binnen de gepagineerde set resultaten.
           schema:
             type: integer
-        - name: zaak
-          required: false
-          in: query
-          description: URL-referentie naar de ZAAK.
-          schema:
-            type: string
-            format: uri
       tags:
         - zaakobjecten
       security:
@@ -5043,15 +5043,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakobjecten
       requestBody:
@@ -5205,6 +5205,14 @@ paths:
       description: Een specifieke ZAAKOBJECT opvragen.
       summary: Een specifieke ZAAKOBJECT opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -5223,14 +5231,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - zaakobjecten
       security:
@@ -5382,14 +5382,6 @@ paths:
         \ `objectIdentificatie` gevalideerd tegen de objectType discriminator."
       summary: Werk een ZAAKOBJECT zijn geheel bij.
       parameters:
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
         - in: path
           name: uuid
           schema:
@@ -5397,6 +5389,14 @@ paths:
             format: uuid
             description: Unieke resource identifier (UUID4)
             title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
           required: true
       tags:
         - zaakobjecten
@@ -5561,14 +5561,6 @@ paths:
         \ `objectIdentificatie` gevalideerd tegen de objectType discriminator."
       summary: Werk een ZAAKOBJECT deels bij.
       parameters:
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
         - in: path
           name: uuid
           schema:
@@ -5576,6 +5568,14 @@ paths:
             format: uuid
             description: Unieke resource identifier (UUID4)
             title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
           required: true
       tags:
         - zaakobjecten
@@ -5876,6 +5876,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) ZAAKOBJECT opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -5894,14 +5902,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
       tags:
         - zaakobjecten
       responses:
@@ -5931,17 +5931,17 @@ paths:
       description: Alle ZAAK-VERZOEKen opvragen.
       summary: Alle ZAAK-VERZOEKen opvragen.
       parameters:
-        - name: verzoek
-          required: false
-          in: query
-          description: URL-referentie naar het VERZOEK (in de Klantinteractie API)
-          schema:
-            type: string
-            format: uri
         - name: zaak
           required: false
           in: query
           description: URL-referentie naar de ZAAK.
+          schema:
+            type: string
+            format: uri
+        - name: verzoek
+          required: false
+          in: query
+          description: URL-referentie naar het VERZOEK (in de Klantinteractie API)
           schema:
             type: string
             format: uri
@@ -6099,15 +6099,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakverzoeken
       requestBody:
@@ -6410,16 +6410,6 @@ paths:
       description: Verwijder een ZAAK-VERZOEK.
       summary: Verwijder een ZAAK-VERZOEK.
       parameters:
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
         - in: path
           name: uuid
           schema:
@@ -6428,6 +6418,16 @@ paths:
             description: Unieke resource identifier (UUID4)
             title: uuid
           required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
       tags:
         - zaakverzoeken
       security:
@@ -6559,58 +6559,32 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle ZAAKen opvragen.
       parameters:
-        - in: header
-          name: Accept-Crs
-          schema:
-            type: string
-            enum:
-              - EPSG:4326
-          description:
-            Het gewenste 'Coordinate Reference System' (CRS) van de geometrie
-            in het antwoord (response body). Volgens de GeoJSON spec is WGS84 de default
-            (EPSG:4326 is hetzelfde als WGS84).
-          required: true
-        - in: header
-          name: Content-Crs
-          schema:
-            type: string
-            enum:
-              - EPSG:4326
-          description:
-            Het 'Coordinate Reference System' (CRS) van de geometrie in de
-            vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
-            is hetzelfde als WGS84).
-          required: true
-        - name: archiefactiedatum
+        - name: identificatie
           required: false
           in: query
           description:
-            De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
-            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
-            deze ZAAK indien nog leeg.
+            De unieke identificatie van de ZAAK binnen de organisatie die
+            verantwoordelijk is voor de behandeling van de ZAAK.
           schema:
             type: string
-        - name: archiefactiedatum__gt
+        - name: bronorganisatie
           required: false
           in: query
           description:
-            De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
-            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
-            deze ZAAK indien nog leeg.
+            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
+            die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers
+            en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
           schema:
             type: string
-        - name: archiefactiedatum__lt
+        - name: zaaktype
           required: false
           in: query
           description:
-            De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
-            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
-            deze ZAAK indien nog leeg.
+            URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS
+            waar deze voorkomt
           schema:
             type: string
+            format: uri
         - name: archiefnominatie
           required: false
           in: query
@@ -6632,6 +6606,36 @@ paths:
               type: string
           style: form
           explode: false
+        - name: archiefactiedatum
+          required: false
+          in: query
+          description:
+            De datum waarop het gearchiveerde zaakdossier vernietigd moet
+            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
+            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
+            deze ZAAK indien nog leeg.
+          schema:
+            type: string
+        - name: archiefactiedatum__lt
+          required: false
+          in: query
+          description:
+            De datum waarop het gearchiveerde zaakdossier vernietigd moet
+            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
+            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
+            deze ZAAK indien nog leeg.
+          schema:
+            type: string
+        - name: archiefactiedatum__gt
+          required: false
+          in: query
+          description:
+            De datum waarop het gearchiveerde zaakdossier vernietigd moet
+            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
+            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
+            deze ZAAK indien nog leeg.
+          schema:
+            type: string
         - name: archiefstatus
           required: false
           in: query
@@ -6655,232 +6659,6 @@ paths:
               type: string
           style: form
           explode: false
-        - name: bronorganisatie
-          required: false
-          in: query
-          description:
-            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
-            die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers
-            en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
-          schema:
-            type: string
-        - name: einddatum
-          required: false
-          in: query
-          description: De datum waarop de uitvoering van de zaak afgerond is.
-          schema:
-            type: string
-        - name: einddatumGepland
-          required: false
-          in: query
-          description:
-            De datum waarop volgens de planning verwacht wordt dat de zaak
-            afgerond wordt.
-          schema:
-            type: string
-        - name: einddatumGepland__gt
-          required: false
-          in: query
-          description:
-            De datum waarop volgens de planning verwacht wordt dat de zaak
-            afgerond wordt.
-          schema:
-            type: string
-        - name: einddatumGepland__lt
-          required: false
-          in: query
-          description:
-            De datum waarop volgens de planning verwacht wordt dat de zaak
-            afgerond wordt.
-          schema:
-            type: string
-        - name: einddatum__gt
-          required: false
-          in: query
-          description: De datum waarop de uitvoering van de zaak afgerond is.
-          schema:
-            type: string
-        - name: einddatum__lt
-          required: false
-          in: query
-          description: De datum waarop de uitvoering van de zaak afgerond is.
-          schema:
-            type: string
-        - name: identificatie
-          required: false
-          in: query
-          description:
-            De unieke identificatie van de ZAAK binnen de organisatie die
-            verantwoordelijk is voor de behandeling van de ZAAK.
-          schema:
-            type: string
-        - name: maximaleVertrouwelijkheidaanduiding
-          required: false
-          in: query
-          description:
-            Zaken met een vertrouwelijkheidaanduiding die beperkter is dan
-            de aangegeven aanduiding worden uit de resultaten gefiltered.
-          schema:
-            type: string
-            enum:
-              - openbaar
-              - beperkt_openbaar
-              - intern
-              - zaakvertrouwelijk
-              - vertrouwelijk
-              - confidentieel
-              - geheim
-              - zeer_geheim
-        - name: ordering
-          required: false
-          in: query
-          description: Het veld waarop de resultaten geordend worden.
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - - startdatum
-                  - -startdatum
-                  - einddatum
-                  - -einddatum
-                  - publicatiedatum
-                  - -publicatiedatum
-                  - archiefactiedatum
-                  - -archiefactiedatum
-          style: form
-          explode: false
-        - name: page
-          required: false
-          in: query
-          description: Een pagina binnen de gepagineerde set resultaten.
-          schema:
-            type: integer
-        - name: registratiedatum
-          required: false
-          in: query
-          description:
-            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
-            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
-            gebruikt.
-          schema:
-            type: string
-        - name: registratiedatum__gt
-          required: false
-          in: query
-          description:
-            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
-            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
-            gebruikt.
-          schema:
-            type: string
-        - name: registratiedatum__lt
-          required: false
-          in: query
-          description:
-            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
-            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
-            gebruikt.
-          schema:
-            type: string
-        - name: rol__betrokkene
-          required: false
-          in: query
-          description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
-          schema:
-            type: string
-            format: uri
-        - name: rol__betrokkeneIdentificatie__medewerker__identificatie
-          required: false
-          in: query
-          description: Een korte unieke aanduiding van de MEDEWERKER.
-          schema:
-            type: string
-            maxLength: 24
-        - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
-          required: false
-          in: query
-          description:
-            Het door de gemeente uitgegeven unieke nummer voor een ANDER
-            NATUURLIJK PERSOON
-          schema:
-            type: string
-            maxLength: 17
-        - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer
-          required: false
-          in: query
-          description: Het administratienummer van de persoon, bedoeld in de Wet BRP
-          schema:
-            type: string
-            maxLength: 10
-        - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
-          required: false
-          in: query
-          description:
-            Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene
-            bepalingen burgerservicenummer.
-          schema:
-            type: string
-            maxLength: 9
-        - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
-          required: false
-          in: query
-          description:
-            Het door de gemeente uitgegeven unieke nummer voor een ANDER
-            NIET-NATUURLIJK PERSOON
-          schema:
-            type: string
-            maxLength: 17
-        - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
-          required: false
-          in: query
-          description:
-            Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
-            NIET-NATUURLIJK PERSOON
-          schema:
-            type: string
-        - name: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
-          required: false
-          in: query
-          description: Een korte identificatie van de organisatorische eenheid.
-          schema:
-            type: string
-        - name: rol__betrokkeneIdentificatie__vestiging__vestigingsNummer
-          required: false
-          in: query
-          description: Een korte unieke aanduiding van de Vestiging.
-          schema:
-            type: string
-            maxLength: 24
-        - name: rol__betrokkeneType
-          required: false
-          in: query
-          description: Type van de `betrokkene`.
-          schema:
-            type: string
-            enum:
-              - natuurlijk_persoon
-              - niet_natuurlijk_persoon
-              - vestiging
-              - organisatorische_eenheid
-              - medewerker
-        - name: rol__omschrijvingGeneriek
-          required: false
-          in: query
-          description:
-            Algemeen gehanteerde benaming van de aard van de ROL, afgeleid
-            uit het ROLTYPE.
-          schema:
-            type: string
-            enum:
-              - adviseur
-              - behandelaar
-              - belanghebbende
-              - beslisser
-              - initiator
-              - klantcontacter
-              - zaakcoordinator
-              - mede_initiator
         - name: startdatum
           required: false
           in: query
@@ -6911,6 +6689,75 @@ paths:
           description: De datum waarop met de uitvoering van de zaak is gestart
           schema:
             type: string
+        - name: registratiedatum
+          required: false
+          in: query
+          description:
+            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
+            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
+            gebruikt.
+          schema:
+            type: string
+        - name: registratiedatum__gt
+          required: false
+          in: query
+          description:
+            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
+            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
+            gebruikt.
+          schema:
+            type: string
+        - name: registratiedatum__lt
+          required: false
+          in: query
+          description:
+            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
+            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
+            gebruikt.
+          schema:
+            type: string
+        - name: einddatum
+          required: false
+          in: query
+          description: De datum waarop de uitvoering van de zaak afgerond is.
+          schema:
+            type: string
+        - name: einddatum__gt
+          required: false
+          in: query
+          description: De datum waarop de uitvoering van de zaak afgerond is.
+          schema:
+            type: string
+        - name: einddatum__lt
+          required: false
+          in: query
+          description: De datum waarop de uitvoering van de zaak afgerond is.
+          schema:
+            type: string
+        - name: einddatumGepland
+          required: false
+          in: query
+          description:
+            De datum waarop volgens de planning verwacht wordt dat de zaak
+            afgerond wordt.
+          schema:
+            type: string
+        - name: einddatumGepland__gt
+          required: false
+          in: query
+          description:
+            De datum waarop volgens de planning verwacht wordt dat de zaak
+            afgerond wordt.
+          schema:
+            type: string
+        - name: einddatumGepland__lt
+          required: false
+          in: query
+          description:
+            De datum waarop volgens de planning verwacht wordt dat de zaak
+            afgerond wordt.
+          schema:
+            type: string
         - name: uiterlijkeEinddatumAfdoening
           required: false
           in: query
@@ -6935,15 +6782,168 @@ paths:
             dient te zijn.
           schema:
             type: string
-        - name: zaaktype
+        - name: rol__betrokkeneType
           required: false
           in: query
-          description:
-            URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS
-            waar deze voorkomt
+          description: Type van de `betrokkene`.
+          schema:
+            type: string
+            enum:
+              - natuurlijk_persoon
+              - niet_natuurlijk_persoon
+              - vestiging
+              - organisatorische_eenheid
+              - medewerker
+        - name: rol__betrokkene
+          required: false
+          in: query
+          description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
           schema:
             type: string
             format: uri
+        - name: rol__omschrijvingGeneriek
+          required: false
+          in: query
+          description:
+            Algemeen gehanteerde benaming van de aard van de ROL, afgeleid
+            uit het ROLTYPE.
+          schema:
+            type: string
+            enum:
+              - adviseur
+              - behandelaar
+              - belanghebbende
+              - beslisser
+              - initiator
+              - klantcontacter
+              - zaakcoordinator
+              - mede_initiator
+        - name: maximaleVertrouwelijkheidaanduiding
+          required: false
+          in: query
+          description:
+            Zaken met een vertrouwelijkheidaanduiding die beperkter is dan
+            de aangegeven aanduiding worden uit de resultaten gefiltered.
+          schema:
+            type: string
+            enum:
+              - openbaar
+              - beperkt_openbaar
+              - intern
+              - zaakvertrouwelijk
+              - vertrouwelijk
+              - confidentieel
+              - geheim
+              - zeer_geheim
+        - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
+          required: false
+          in: query
+          description:
+            Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene
+            bepalingen burgerservicenummer.
+          schema:
+            type: string
+            maxLength: 9
+        - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
+          required: false
+          in: query
+          description:
+            Het door de gemeente uitgegeven unieke nummer voor een ANDER
+            NATUURLIJK PERSOON
+          schema:
+            type: string
+            maxLength: 17
+        - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer
+          required: false
+          in: query
+          description: Het administratienummer van de persoon, bedoeld in de Wet BRP
+          schema:
+            type: string
+            maxLength: 10
+        - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
+          required: false
+          in: query
+          description:
+            Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
+            NIET-NATUURLIJK PERSOON
+          schema:
+            type: string
+        - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
+          required: false
+          in: query
+          description:
+            Het door de gemeente uitgegeven unieke nummer voor een ANDER
+            NIET-NATUURLIJK PERSOON
+          schema:
+            type: string
+            maxLength: 17
+        - name: rol__betrokkeneIdentificatie__vestiging__vestigingsNummer
+          required: false
+          in: query
+          description: Een korte unieke aanduiding van de Vestiging.
+          schema:
+            type: string
+            maxLength: 24
+        - name: rol__betrokkeneIdentificatie__medewerker__identificatie
+          required: false
+          in: query
+          description: Een korte unieke aanduiding van de MEDEWERKER.
+          schema:
+            type: string
+            maxLength: 24
+        - name: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
+          required: false
+          in: query
+          description: Een korte identificatie van de organisatorische eenheid.
+          schema:
+            type: string
+        - name: ordering
+          required: false
+          in: query
+          description: Het veld waarop de resultaten geordend worden.
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - - startdatum
+                  - -startdatum
+                  - einddatum
+                  - -einddatum
+                  - publicatiedatum
+                  - -publicatiedatum
+                  - archiefactiedatum
+                  - -archiefactiedatum
+          style: form
+          explode: false
+        - name: page
+          required: false
+          in: query
+          description: Een pagina binnen de gepagineerde set resultaten.
+          schema:
+            type: integer
+        - in: header
+          name: Accept-Crs
+          schema:
+            type: string
+            enum:
+              - EPSG:4326
+          description:
+            Het gewenste 'Coordinate Reference System' (CRS) van de geometrie
+            in het antwoord (response body). Volgens de GeoJSON spec is WGS84 de default
+            (EPSG:4326 is hetzelfde als WGS84).
+          required: true
+        - in: header
+          name: Content-Crs
+          schema:
+            type: string
+            enum:
+              - EPSG:4326
+          description:
+            Het 'Coordinate Reference System' (CRS) van de geometrie in de
+            vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
+            is hetzelfde als WGS84).
+          required: true
       tags:
         - zaken
       security:
@@ -7133,6 +7133,24 @@ paths:
       summary: Maak een ZAAK aan.
       parameters:
         - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
+          required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
+        - in: header
           name: Accept-Crs
           schema:
             type: string
@@ -7154,24 +7172,6 @@ paths:
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
           required: true
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
       tags:
         - zaken
       requestBody:
@@ -7347,6 +7347,32 @@ paths:
       description: Een specifieke ZAAK opvragen.
       summary: Een specifieke ZAAK opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
+        - in: header
+          name: If-None-Match
+          schema:
+            type: string
+          description:
+            "Voer een voorwaardelijk verzoek uit. Deze header moet \xE9\xE9\
+            n of meerdere ETag-waardes bevatten van resources die de consumer gecached\
+            \ heeft. Indien de waarde van de ETag van de huidige resource voorkomt in\
+            \ deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie\
+            \ [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match)\
+            \ voor meer informatie."
+          examples:
+            OneValue:
+              value: '"79054025255fb1a26e4bc422aef54eb4"'
+              summary: "E\xE9n ETag-waarde"
+            MultipleValues:
+              value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+              summary: Meerdere ETag-waardes
         - in: header
           name: Accept-Crs
           schema:
@@ -7368,32 +7394,6 @@ paths:
             Het 'Coordinate Reference System' (CRS) van de geometrie in de
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
-          required: true
-        - in: header
-          name: If-None-Match
-          schema:
-            type: string
-          description:
-            "Voer een voorwaardelijk verzoek uit. Deze header moet \xE9\xE9\
-            n of meerdere ETag-waardes bevatten van resources die de consumer gecached\
-            \ heeft. Indien de waarde van de ETag van de huidige resource voorkomt in\
-            \ deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie\
-            \ [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match)\
-            \ voor meer informatie."
-          examples:
-            OneValue:
-              value: '"79054025255fb1a26e4bc422aef54eb4"'
-              summary: "E\xE9n ETag-waarde"
-            MultipleValues:
-              value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
-              summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
           required: true
       tags:
         - zaken
@@ -7578,6 +7578,32 @@ paths:
         \ is. Zie de `Status` resource."
       summary: Werk een ZAAK in zijn geheel bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
+          required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
         - in: header
           name: Accept-Crs
           schema:
@@ -7599,32 +7625,6 @@ paths:
             Het 'Coordinate Reference System' (CRS) van de geometrie in de
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
-          required: true
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
           required: true
       tags:
         - zaken
@@ -7821,6 +7821,32 @@ paths:
         \ is. Zie de `Status` resource."
       summary: Werk een ZAAK deels bij.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
+          required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
         - in: header
           name: Accept-Crs
           schema:
@@ -7842,32 +7868,6 @@ paths:
             Het 'Coordinate Reference System' (CRS) van de geometrie in de
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
-          required: true
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
           required: true
       tags:
         - zaken
@@ -8069,6 +8069,24 @@ paths:
         - `klantcontact` - alle klantcontacten bij een zaak'
       summary: Verwijder een ZAAK.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
         - in: header
           name: Accept-Crs
           schema:
@@ -8090,24 +8108,6 @@ paths:
             Het 'Coordinate Reference System' (CRS) van de geometrie in de
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
-          required: true
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
           required: true
       tags:
         - zaken
@@ -8252,6 +8252,32 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) ZAAK opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
+        - in: header
+          name: If-None-Match
+          schema:
+            type: string
+          description:
+            "Voer een voorwaardelijk verzoek uit. Deze header moet \xE9\xE9\
+            n of meerdere ETag-waardes bevatten van resources die de consumer gecached\
+            \ heeft. Indien de waarde van de ETag van de huidige resource voorkomt in\
+            \ deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie\
+            \ [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match)\
+            \ voor meer informatie."
+          examples:
+            OneValue:
+              value: '"79054025255fb1a26e4bc422aef54eb4"'
+              summary: "E\xE9n ETag-waarde"
+            MultipleValues:
+              value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
+              summary: Meerdere ETag-waardes
         - in: header
           name: Accept-Crs
           schema:
@@ -8273,32 +8299,6 @@ paths:
             Het 'Coordinate Reference System' (CRS) van de geometrie in de
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
-          required: true
-        - in: header
-          name: If-None-Match
-          schema:
-            type: string
-          description:
-            "Voer een voorwaardelijk verzoek uit. Deze header moet \xE9\xE9\
-            n of meerdere ETag-waardes bevatten van resources die de consumer gecached\
-            \ heeft. Indien de waarde van de ETag van de huidige resource voorkomt in\
-            \ deze set, dan antwoordt de provider met een lege HTTP 304 request. Zie\
-            \ [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match)\
-            \ voor meer informatie."
-          examples:
-            OneValue:
-              value: '"79054025255fb1a26e4bc422aef54eb4"'
-              summary: "E\xE9n ETag-waarde"
-            MultipleValues:
-              value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
-              summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
           required: true
       tags:
         - zaken
@@ -8789,15 +8789,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
         - in: path
           name: zaak_uuid
           schema:
@@ -9122,16 +9122,6 @@ paths:
         '
       summary: Verwijder een ZAAKBESLUIT.
       parameters:
-        - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
-          name: X-NLX-Logrecord-ID
-          schema:
-            type: string
-          description: Identifier of the request, traceable throughout the network
         - in: path
           name: uuid
           schema:
@@ -9140,6 +9130,16 @@ paths:
             description: Unieke resource identifier (UUID4)
             title: uuid
           required: true
+        - in: header
+          name: X-NLX-Logrecord-ID
+          schema:
+            type: string
+          description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
         - in: path
           name: zaak_uuid
           schema:
@@ -9432,15 +9432,15 @@ paths:
           description: Content type van de verzoekinhoud.
           required: true
         - in: header
-          name: X-Audit-Toelichting
-          schema:
-            type: string
-          description: Toelichting waarom een bepaald verzoek wordt gedaan
-        - in: header
           name: X-NLX-Logrecord-ID
           schema:
             type: string
           description: Identifier of the request, traceable throughout the network
+        - in: header
+          name: X-Audit-Toelichting
+          schema:
+            type: string
+          description: Toelichting waarom een bepaald verzoek wordt gedaan
         - in: path
           name: zaak_uuid
           schema:
@@ -9601,6 +9601,14 @@ paths:
       description: Een specifieke ZAAKEIGENSCHAP opvragen.
       summary: Een specifieke ZAAKEIGENSCHAP opvragen.
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -9619,14 +9627,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
         - in: path
           name: zaak_uuid
           schema:
@@ -9784,14 +9784,6 @@ paths:
         \ worden"
       summary: Werk een ZAAKEIGENSCHAP in zijn geheel bij.
       parameters:
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
         - in: path
           name: uuid
           schema:
@@ -9799,6 +9791,14 @@ paths:
             format: uuid
             description: Unieke resource identifier (UUID4)
             title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
           required: true
         - in: path
           name: zaak_uuid
@@ -9969,14 +9969,6 @@ paths:
         \ worden"
       summary: Werk een ZAAKEIGENSCHAP deels bij.
       parameters:
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
         - in: path
           name: uuid
           schema:
@@ -9984,6 +9976,14 @@ paths:
             format: uuid
             description: Unieke resource identifier (UUID4)
             title: uuid
+          required: true
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
           required: true
         - in: path
           name: zaak_uuid
@@ -10296,6 +10296,14 @@ paths:
       description: Vraag de headers op die je bij een GET request zou krijgen.
       summary: 'De headers voor een specifiek(e) ZAAKEIGENSCHAP opvragen '
       parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            description: Unieke resource identifier (UUID4)
+            title: uuid
+          required: true
         - in: header
           name: If-None-Match
           schema:
@@ -10314,14 +10322,6 @@ paths:
             MultipleValues:
               value: '"79054025255fb1a26e4bc422aef54eb4", "e4d909c290d0fb1ca068ffaddf22cbd0"'
               summary: Meerdere ETag-waardes
-        - in: path
-          name: uuid
-          schema:
-            type: string
-            format: uuid
-            description: Unieke resource identifier (UUID4)
-            title: uuid
-          required: true
         - in: path
           name: zaak_uuid
           schema:
@@ -10361,6 +10361,19 @@ paths:
       summary: Voer een (geo)-zoekopdracht uit op ZAAKen.
       parameters:
         - in: header
+          name: Content-Type
+          schema:
+            type: string
+            enum:
+              - application/json
+          description: Content type van de verzoekinhoud.
+          required: true
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Een pagina binnen de gepagineerde set resultaten.
+        - in: header
           name: Accept-Crs
           schema:
             type: string
@@ -10382,19 +10395,6 @@ paths:
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
           required: true
-        - in: header
-          name: Content-Type
-          schema:
-            type: string
-            enum:
-              - application/json
-          description: Content type van de verzoekinhoud.
-          required: true
-        - in: query
-          name: page
-          schema:
-            type: integer
-          description: Een pagina binnen de gepagineerde set resultaten.
       tags:
         - zaken
       requestBody:
