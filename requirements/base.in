@@ -24,10 +24,11 @@ djangorestframework
 djangorestframework-gis
 django-filter~=21.1
 djangorestframework-camel-case
-drf-yasg
+
+drf_spectacular
 drf-writable-nested
 
-vng_api_common
+vng_api_common==1.11.0
 gemma-zds-client
 
 # monitoring
