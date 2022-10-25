@@ -468,20 +468,17 @@ class ZaakObjectViewSet(
     create=extend_schema(
         summary=_("Maak een ZAAK-INFORMATIEOBJECT relatie aan."),
         description=_(
-            "Er worden twee types van relaties met andere objecten gerealiseerd:.\n\n"
-            "**Er wordt gevalideerd op**\n"
+            "Maak een ZAAK-INFORMATIEOBJECT relatie aan.\n"
+            "\n**Er wordt gevalideerd op**\n"
             "- geldigheid zaak URL\n"
             "- geldigheid informatieobject URL\n"
+            "- `zaak.archiefstatus` moet gelijk zijn aan 'nog_te_archiveren' \n"
             "- de combinatie informatieobject en zaak moet uniek zijn\n\n"
             "**Opmerkingen**\n"
             "- De registratiedatum wordt door het systeem op 'NU' gezet. De `aardRelatie`"
             " wordt ook door het systeem gezet.\n"
             "- Bij het aanmaken wordt ook in de Documenten API de gespiegelde relatie"
             " aangemaakt, echter zonder de relatie-informatie.\n"
-            "Registreer welk(e) INFORMATIEOBJECT(en) een ZAAK kent.\n\n"
-            "**Er wordt gevalideerd op**\n"
-            "- geldigheid informatieobject URL\n"
-            "- uniek zijn van relatie ZAAK-INFORMATIEOBJECT"
         ),
     ),
     partial_update=extend_schema(
