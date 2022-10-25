@@ -2,6 +2,16 @@
 Wijzigingen
 ===========
 
+1.3.0-rc6 (2022-10-13)
+===========
+
+* Added new notifications module
+
+1.3.0-rc5 (2022-10-01)
+===========
+
+* replaced drf-yasg by drf-spectacular because yasg does not support Django 3.2
+
 1.3.0-rc3 (2022-07-27)
 ===========
 
@@ -27,7 +37,7 @@ New features
 ------------
 
 * Add missing RGBZ attributes for existing resources. Among other things to supprt TMLO.
-* Added validation of the ``Zaak`` resource with a `gearchiveerd` status to 
+* Added validation of the ``Zaak`` resource with a `gearchiveerd` status to
   related resources.
 * Ordering of a list of ``Zaken`` can be done on the following attributes:
   - ``startdatum``

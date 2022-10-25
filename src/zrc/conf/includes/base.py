@@ -115,6 +115,9 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "django_markup",
     "solo",
+    "simple_certmanager",
+    "zgw_consumers",
+    "notifications_api_common",
     # Project applications.
     "zrc.accounts",
     "zrc.api",
@@ -320,6 +323,8 @@ SITE_TITLE = "Zaak Registratie Component (ZRC)"
 
 ENVIRONMENT = None
 SHOW_ALERT = True
+
+TEST_SPEC_DIRS = (os.path.join(DJANGO_PROJECT_DIR, "tests", "schemas"),)
 
 #
 # Library settings

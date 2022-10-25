@@ -6,6 +6,12 @@ from django.utils.translation import gettext as _
 
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from notifications_api_common.kanalen import Kanaal
+from notifications_api_common.viewsets import (
+    NotificationCreateMixin,
+    NotificationDestroyMixin,
+    NotificationViewSetMixin,
+)
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -21,12 +27,6 @@ from vng_api_common.audittrails.viewsets import (
 from vng_api_common.caching import conditional_retrieve
 from vng_api_common.filters import Backend
 from vng_api_common.geo import GeoMixin
-from vng_api_common.notifications.kanalen import Kanaal
-from vng_api_common.notifications.viewsets import (
-    NotificationCreateMixin,
-    NotificationDestroyMixin,
-    NotificationViewSetMixin,
-)
 from vng_api_common.permissions import permission_class_factory
 from vng_api_common.search import SearchMixin
 from vng_api_common.utils import lookup_kwargs_to_filters

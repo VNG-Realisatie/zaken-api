@@ -24,12 +24,12 @@ djangorestframework
 djangorestframework-gis
 django-filter~=21.1
 djangorestframework-camel-case
-drf-yasg
+
+drf_spectacular
 drf-writable-nested
 
-# TODO: this should eventually be reverted to vng-api-common
-git+https://github.com/MatthijsBekendam/vng-api-common@drf_compatibilty_newer_django_fix#egg=vng_api_common
-gemma-zds-client<1.0
+vng_api_common==1.11.0
+gemma-zds-client
 
 # monitoring
 raven
