@@ -2,12 +2,12 @@
 Wijzigingen
 ===========
 
-1.3.0-rc7 (2022-10-13)
+1.3.0-rc6 (2022-10-13)
 ===========
 
 * Added new notifications module
 
-1.3.0-rc6 (2022-10-01)
+1.3.0-rc5 (2022-10-01)
 ===========
 
 * replaced drf-yasg by drf-spectacular because yasg does not support Django 3.2
