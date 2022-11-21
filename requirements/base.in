@@ -28,7 +28,7 @@ djangorestframework-camel-case
 drf_spectacular
 drf-writable-nested
 
-vng_api_common==1.11.0
+vng_api_common==2.0.0
 gemma-zds-client
 
 # monitoring
