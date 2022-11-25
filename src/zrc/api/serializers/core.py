@@ -581,10 +581,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
         }
 
     def get_indicatie_laatst_gezette_status(self, obj) -> bool:
-        latest_status = Status.objects.order_by("-datum_status_gezet")[0]
-        if obj == latest_status:
-            return True
-        return False
+        return obj == Status.objects.order_by("-datum_status_gezet")[0]
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)

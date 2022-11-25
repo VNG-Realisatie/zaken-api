@@ -19,8 +19,7 @@ from zrc.datamodel.models import (
 
 
 def get_most_recent_status(queryset, name, value):
-    qs = queryset.order_by("-datum_status_gezet")[:1]
-    return qs
+    return queryset.order_by("-datum_status_gezet")[:1]
 
 
 class MaximaleVertrouwelijkheidaanduidingFilter(filters.ChoiceFilter):
