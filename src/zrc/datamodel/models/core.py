@@ -449,14 +449,6 @@ class Status(ETagMixin, models.Model):
         help_text="De datum waarop de ZAAK de status heeft verkregen."
     )
 
-    indicatie_laatst_gezette_status = models.BooleanField(
-        _("indicatie laatst gezette status"),
-        help_text=_(
-            "Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum "
-            "status gezet van van alle statussen bij de desbetreffende zaak."
-        ),
-        default=False,
-    )
     gezetdoor = models.URLField(
         _("gezet door"),
         help_text=_(

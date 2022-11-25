@@ -1,4 +1,7 @@
+import datetime
+
 from django.test import override_settings
+from django.utils import timezone
 
 from rest_framework import status as rest_framework_status
 from rest_framework.test import APITestCase
@@ -46,8 +49,12 @@ class StatusTests(JWTAuthMixin, APITestCase):
     def test_filter_statussen_op_indicatie_laatst_gezette_status(self):
         status1, status2 = StatusFactory.create_batch(2)
         assert status1.zaak != status2.zaak
-        status1.indicatie_laatst_gezette_status = False
-        status2.indicatie_laatst_gezette_status = True
+        status1.datum_status_gezet = dt_to_api(
+            datetime.datetime(1900, 11, 15, 20, 20, 58, tzinfo=timezone.utc)
+        )
+        status2.datum_status_gezet = dt_to_api(
+            datetime.datetime(2000, 11, 15, 20, 20, 58, tzinfo=timezone.utc)
+        )
 
         status1.save()
         status2.save()
@@ -94,10 +101,58 @@ class StatusTests(JWTAuthMixin, APITestCase):
                 "statustype": status.statustype,
                 "datumStatusGezet": dt_to_api(status.datum_status_gezet),
                 "statustoelichting": status.statustoelichting,
-                "indicatieLaatstGezetteStatus": (
-                    status.indicatie_laatst_gezette_status
-                ),
+                "indicatieLaatstGezetteStatus": (True),
                 "gezetdoor": status.gezetdoor,
+                "zaakinformatieobjecten": [],
+            },
+        )
+
+    def test_status_indicatie_laatst_gezette_status(self):
+        status_latest = StatusFactory()
+        status_old = StatusFactory(
+            datum_status_gezet=dt_to_api(
+                datetime.datetime(1900, 11, 15, 20, 20, 58, tzinfo=timezone.utc)
+            )
+        )
+        url_latest = reverse("status-detail", kwargs={"uuid": status_latest.uuid})
+        url_old = reverse("status-detail", kwargs={"uuid": status_old.uuid})
+
+        zaak_url_latest = reverse(
+            "zaak-detail", kwargs={"uuid": status_latest.zaak.uuid}
+        )
+        zaak_url_old = reverse("zaak-detail", kwargs={"uuid": status_old.zaak.uuid})
+
+        response_latest = self.client.get(url_latest, HTTP_HOST="testserver.com")
+        response_old = self.client.get(url_old, HTTP_HOST="testserver.com")
+
+        self.assertEqual(response_latest.status_code, rest_framework_status.HTTP_200_OK)
+        self.assertEqual(response_old.status_code, rest_framework_status.HTTP_200_OK)
+
+        self.assertEqual(
+            response_latest.json(),
+            {
+                "url": f"http://testserver.com{url_latest}",
+                "uuid": str(status_latest.uuid),
+                "zaak": f"http://testserver.com{zaak_url_latest}",
+                "statustype": status_latest.statustype,
+                "datumStatusGezet": dt_to_api(status_latest.datum_status_gezet),
+                "statustoelichting": status_latest.statustoelichting,
+                "indicatieLaatstGezetteStatus": (True),
+                "gezetdoor": status_latest.gezetdoor,
+                "zaakinformatieobjecten": [],
+            },
+        )
+        self.assertEqual(
+            response_old.json(),
+            {
+                "url": f"http://testserver.com{url_old}",
+                "uuid": str(status_old.uuid),
+                "zaak": f"http://testserver.com{zaak_url_old}",
+                "statustype": status_old.statustype,
+                "datumStatusGezet": status_old.datum_status_gezet,
+                "statustoelichting": status_old.statustoelichting,
+                "indicatieLaatstGezetteStatus": (False),
+                "gezetdoor": status_old.gezetdoor,
                 "zaakinformatieobjecten": [],
             },
         )

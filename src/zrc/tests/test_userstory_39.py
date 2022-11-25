@@ -167,7 +167,7 @@ class US39TestCase(JWTAuthMixin, APITestCase):
                 "statustype": STATUS_TYPE,
                 "datumStatusGezet": "2018-06-06T17:23:43Z",  # UTC
                 "gezetdoor": "",
-                "indicatieLaatstGezetteStatus": False,
+                "indicatieLaatstGezetteStatus": True,
                 "statustoelichting": "",
                 "zaakinformatieobjecten": [],
             },
