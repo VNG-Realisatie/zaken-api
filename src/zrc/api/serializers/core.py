@@ -537,6 +537,13 @@ class ZaakZoekSerializer(serializers.Serializer):
 
 
 class StatusSerializer(serializers.HyperlinkedModelSerializer):
+    indicatie_laatst_gezette_status = serializers.SerializerMethodField(
+        help_text=_(
+            "Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum "
+            "status gezet van van alle statussen bij de desbetreffende zaak."
+        ),
+    )
+
     class Meta:
         model = Status
         fields = (
@@ -569,9 +576,12 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
                 ]
             },
             "datum_status_gezet": {"validators": [DateNotInFutureValidator()]},
-            "indicatie_laatst_gezette_status": {"required": False},
+            "indicatie_laatst_gezette_status": {"read_only": True},
             "zaakinformatieobjecten": {"lookup_field": "uuid", "read_only": True},
         }
+
+    def get_indicatie_laatst_gezette_status(self, obj) -> bool:
+        return obj == Status.objects.order_by("-datum_status_gezet")[0]
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)

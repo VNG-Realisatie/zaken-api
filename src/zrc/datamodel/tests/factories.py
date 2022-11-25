@@ -2,7 +2,6 @@ from datetime import date
 
 from django.utils import timezone
 
-import factory
 import factory.fuzzy
 from vng_api_common.constants import (
     RolOmschrijving,

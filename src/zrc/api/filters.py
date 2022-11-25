@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext_lazy as _
+
 from django_filters import filters
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.filtersets import FilterSet
@@ -14,6 +16,10 @@ from zrc.datamodel.models import (
     ZaakObject,
     ZaakVerzoek,
 )
+
+
+def get_most_recent_status(queryset, name, value):
+    return queryset.order_by("-datum_status_gezet")[:1]
 
 
 class MaximaleVertrouwelijkheidaanduidingFilter(filters.ChoiceFilter):
@@ -206,6 +212,14 @@ class RolFilter(FilterSet):
 
 
 class StatusFilter(FilterSet):
+    indicatie_laatst_gezette_status = filters.Filter(
+        method=get_most_recent_status,
+        help_text=_(
+            "Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum "
+            "status gezet van van alle statussen bij de desbetreffende zaak."
+        ),
+    )
+
     class Meta:
         model = Status
         fields = ("zaak", "statustype", "indicatie_laatst_gezette_status")
