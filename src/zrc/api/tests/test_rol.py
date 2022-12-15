@@ -255,7 +255,6 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.json()
-
         self.assertEqual(
             data,
             {
@@ -274,6 +273,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
                 "betrokkeneIdentificatie": {
                     "vestigingsNummer": "123456",
                     "handelsnaam": [],
+                    "kvkNummer": "",
                     "verblijfsadres": {
                         "aoaIdentificatie": "123",
                         "wplWoonplaatsNaam": "test city",
