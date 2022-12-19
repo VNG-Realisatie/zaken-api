@@ -134,7 +134,7 @@ Objecttype op [GEMMA Online](https://www.gemmaonline.nl/index.php/Rgbz_1.0/doc/o
 | statustype | URL-referentie naar het STATUSTYPE (in de Catalogi API). | string | ja | C​R​U​D |
 | datumStatusGezet | De datum waarop de ZAAK de status heeft verkregen. | string | ja | C​R​U​D |
 | statustoelichting | Een, voor de initiator van de zaak relevante, toelichting op de status van een zaak. | string | nee | C​R​U​D |
-| indicatieLaatstGezetteStatus | Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum status gezet van van alle statussen bij de desbetreffende zaak. | boolean | nee | C​R​U​D |
+| indicatieLaatstGezetteStatus | Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum status gezet van van alle statussen bij de desbetreffende zaak. | boolean | ja | ~~C~~​R​~~U~~​~~D~~ |
 | gezetdoor | De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd dat STATUSsen in die ZAAK bereikt zijn. | string | nee | C​R​U​D |
 | zaakinformatieobjecten |  | array | ja | ~~C~~​R​~~U~~​~~D~~ |
 

@@ -1,6 +1,12 @@
 ===========
 Wijzigingen
 ===========
+1.3.0-rc7 (2022-12-19)
+===========
+
+* Added kvk-nummer
+* Corrected ZIO create documentation
+* Added indicatie_laatst_gezette_datum
 
 1.3.0-rc6 (2022-10-13)
 ===========
