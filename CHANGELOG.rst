@@ -1,12 +1,3 @@
-.. _Issue 2125: https://github.com/VNG-Realisatie/gemma-zaken/issues/2125
-.. _Issue 2088: https://github.com/VNG-Realisatie/gemma-zaken/issues/2088
-.. _Issue 1642: https://github.com/VNG-Realisatie/gemma-zaken/issues/1642
-.. _Issue 1659: https://github.com/VNG-Realisatie/gemma-zaken/issues/1659
-.. _Issue 1498: https://github.com/VNG-Realisatie/gemma-zaken/issues/1498
-.. _Issue 1848: https://github.com/VNG-Realisatie/gemma-zaken/issues/1848
-.. _Issue 1838: https://github.com/VNG-Realisatie/gemma-zaken/issues/1838
-.. _Issue 1847: https://github.com/VNG-Realisatie/gemma-zaken/issues/1847
-
 ===========
 Wijzigingen
 ===========
@@ -43,6 +34,15 @@ Implementation changes
 * Added new notifications module 
 * replaced ``drf-yasg`` by ``drf-spectacular`` due to yasg not supporting Django 3.2
 * Add missing ``bleach`` dependency
+
+.. _Issue 2125: https://github.com/VNG-Realisatie/gemma-zaken/issues/2125
+.. _Issue 2088: https://github.com/VNG-Realisatie/gemma-zaken/issues/2088
+.. _Issue 1642: https://github.com/VNG-Realisatie/gemma-zaken/issues/1642
+.. _Issue 1659: https://github.com/VNG-Realisatie/gemma-zaken/issues/1659
+.. _Issue 1498: https://github.com/VNG-Realisatie/gemma-zaken/issues/1498
+.. _Issue 1848: https://github.com/VNG-Realisatie/gemma-zaken/issues/1848
+.. _Issue 1838: https://github.com/VNG-Realisatie/gemma-zaken/issues/1838
+.. _Issue 1847: https://github.com/VNG-Realisatie/gemma-zaken/issues/1847
 
 
 1.2.0 (2021-08-27)
