@@ -1,51 +1,26 @@
+.. _Issue 2125: https://github.com/VNG-Realisatie/gemma-zaken/issues/2125
+.. _Issue 2088: https://github.com/VNG-Realisatie/gemma-zaken/issues/2088
+.. _Issue 1642: https://github.com/VNG-Realisatie/gemma-zaken/issues/1642
+.. _Issue 1659: https://github.com/VNG-Realisatie/gemma-zaken/issues/1659
+.. _Issue 1498: https://github.com/VNG-Realisatie/gemma-zaken/issues/1498
+.. _Issue 1848: https://github.com/VNG-Realisatie/gemma-zaken/issues/1848
+.. _Issue 1838: https://github.com/VNG-Realisatie/gemma-zaken/issues/1838
+.. _Issue 1847: https://github.com/VNG-Realisatie/gemma-zaken/issues/1847
+
 ===========
 Wijzigingen
 ===========
-1.3.0-rc7 (2022-12-19)
+1.3.0 (2022-12-19)
 ===========
-
-* Added kvk-nummer
-* Corrected ZIO create documentation
-* Added indicatie_laatst_gezette_datum
-
-1.3.0-rc6 (2022-10-13)
-===========
-
-* Added new notifications module
-
-1.3.0-rc5 (2022-10-01)
-===========
-
-* replaced drf-yasg by drf-spectacular because yasg does not support Django 3.2
-
-1.3.0-rc3 (2022-07-27)
-===========
-
-* Add missing ``bleach`` dependency
-
-1.3.0-rc2 (2022-07-19)
-===========
-
-New features
+API Spec New features
 ------------
 
-* Add ``indicatieLaatstGezetteStatus`` query parameter to ``Status``
-
-API spec changes
-----------------
-
-* Removed ``gerelateerdeExterneZaken`` from the ``Zaak`` resource.
-
-1.3.0-rc1 (2022-07-06)
-===========
-
-New features
-------------
-
-* Add missing RGBZ attributes for existing resources. Among other things to supprt TMLO.
-* Added validation of the ``Zaak`` resource with a `gearchiveerd` status to
-  related resources.
-* Ordering of a list of ``Zaken`` can be done on the following attributes:
+* Add ``indicatieLaatstGezetteStatus`` query parameter to ``Status`` (`Issue 1642`_):
+* Added ``kvk-nummer`` (`Issue 2125`_):
+* Added ``indicatie_laatst_gezette_datum`` (`Issue 2088`_):
+* Added missing RGBZ attributes for existing resources. (`Issue 1847`_):
+* Added validation of the ``Zaak`` resource with a `gearchiveerd` status to  related resources. (`Issue 1498`_):
+* Ordering of a list of ``Zaken`` can be done on the following attributes: (`Issue 1659`_):
   - ``startdatum``
   - ``startdatum``
   - ``einddatum``
@@ -57,8 +32,18 @@ New features
 API spec changes
 ----------------
 
-* ``ZaakObject`` can be configured in Catalogi API and refered to via ``zaakobjecttype``.
-* ``ZaakType.identificatie`` added to ``Zaak`` resource.
+* ``ZaakObject`` can be configured in Catalogi API and refered to via ``zaakobjecttype``. (`Issue 1848`_):
+* ``ZaakType.identificatie`` added to ``Zaak`` resource. (`Issue 1838`_):
+
+
+Implementation changes
+----------------------
+
+* Corrected ZIO create documentation
+* Added new notifications module 
+* replaced ``drf-yasg`` by ``drf-spectacular`` due to yasg not supporting Django 3.2
+* Add missing ``bleach`` dependency
+
 
 1.2.0 (2021-08-27)
 ==================
