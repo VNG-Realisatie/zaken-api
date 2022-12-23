@@ -12,13 +12,13 @@ API Spec New features
 * Added missing RGBZ attributes for existing resources. (`Issue 1847`_):
 * Added validation of the ``Zaak`` resource with a `gearchiveerd` status to  related resources. (`Issue 1498`_):
 * Ordering of a list of ``Zaken`` can be done on the following attributes: (`Issue 1659`_):
-  - ``startdatum``
-  - ``startdatum``
-  - ``einddatum``
-  - ``-einddatum``
-  - ``publicatiedatum``
-  - ``-publicatiedatum``
-  - ``archiefactiedatum``
+    - ``startdatum``
+    - ``-startdatum``
+    - ``einddatum``
+    - ``-einddatum``
+    - ``publicatiedatum``
+    - ``-publicatiedatum``
+    - ``archiefactiedatum``
 
 API spec changes
 ----------------
