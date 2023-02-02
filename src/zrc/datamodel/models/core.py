@@ -622,7 +622,7 @@ class Rol(ETagMixin, models.Model):
     contactpersoon_naam = models.CharField(
         _("naam"),
         help_text=_("De opgemaakte naam van de contactpersoon namens de BETROKKENE."),
-        max_length=40,
+        max_length=200,
         blank=True,
     )
 
