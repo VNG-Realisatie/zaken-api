@@ -12,8 +12,7 @@ DOCUMENTATION_INFO_MODULE = "zrc.api.schema"
 SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
 SPECTACULAR_SETTINGS.update(
     {
-        "SERVERS": [{"url": "https://zaken-api.test.vng.cloud/api/v1"}],
-        # todo remove this line below when deploying to production
+        "SERVERS": [{"url": "https://zaken-api.test.vng.cloud"}],
         "SORT_OPERATION_PARAMETERS": False,
     }
 )

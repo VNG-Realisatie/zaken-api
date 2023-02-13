@@ -14723,7 +14723,7 @@ components:
       bearerFormat: JWT
       scheme: bearer
 servers:
-  - url: https://zaken-api.test.vng.cloud/api/v1
+  - url: https://zaken-api.test.vng.cloud
 tags:
   - name: klantcontacten
     description: ''
