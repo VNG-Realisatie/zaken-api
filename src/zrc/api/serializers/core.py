@@ -22,6 +22,7 @@ from vng_api_common.constants import (
     RolTypes,
     ZaakobjectTypes,
 )
+from vng_api_common.fields import RSINField
 from vng_api_common.models import APICredential
 from vng_api_common.polymorphism import Discriminator, PolymorphicSerializer
 from vng_api_common.serializers import (
@@ -215,7 +216,7 @@ class ZaakSerializer(
         many=True,
         required=False,
         help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
-        "beter kan via `ZaakObject`.",
+                  "beter kan via `ZaakObject`.",
     )
 
     betalingsindicatie_weergave = serializers.CharField(
@@ -526,6 +527,75 @@ class ZaakZoekSerializer(serializers.Serializer):
         required=False,
         help_text=_("Array of unieke resource identifiers (UUID4)"),
     )
+
+    identificatie = serializers.CharField(
+        help_text=_("De unieke aanduiding van een KLANTCONTACT"),
+        required=False,
+    )
+
+    bronorganisatie = serializers.CharField(
+        help_text=_("Het RSIN van de Niet-natuurlijk persoon zijnde de "
+                    "organisatie die de zaak heeft gecreeerd. Dit moet een geldig "
+                    "RSIN zijn van 9 nummers en voldoen aan "
+                    "https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef"),
+        required=False,
+    )
+    zaaktype = serializers.URLField(
+        help_text=_("URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt"),
+        required=False,
+    )
+    archiefnominatie = serializers.CharField(
+        help_text=_(
+            "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden."
+        ),
+        required=False,
+    )
+
+    archiefnominatie__in = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        help_text=_("Array of archiefnominaties"),
+    )
+
+    archiefactiedatum = serializers.DateField(
+        help_text=_(
+            "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
+            "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
+            "een RESULTAAT aan deze ZAAK indien nog leeg."
+        ),
+    )
+
+    archiefactiedatum__lt = serializers.DateField(
+        help_text=_(
+            "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
+            "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
+            "een RESULTAAT aan deze ZAAK indien nog leeg."
+        ),
+    )
+    archiefactiedatum__gt = serializers.DateField(
+        help_text=_(
+            "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
+            "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
+            "een RESULTAAT aan deze ZAAK indien nog leeg."
+        ),
+    )
+
+
+    # archiefstatus: nog_te_archiveren,
+    # archiefstatus__in: string,
+    # startdatum: string,
+    # startdatum__gt: string,
+    # startdatum__gte: string,
+    # startdatum__lt: string,
+    # startdatum__lte: string,
+    # rol__betrokkeneType: natuurlijk_persoon,
+    # rol__betrokkene: string,
+    # rol__omschrijvingGeneriek: adviseur,
+    # maximaleVertrouwelijkheidaanduiding: openbaar,
+    # rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn: string,
+    # rol__betrokkeneIdentificatie__medewerker__identificatie: string,
+    # rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie: string,
+    # ordering: string
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
