@@ -59,8 +59,7 @@ class ZaakCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
-        endpoint = spec["paths"][f"{schema_prefix}/zaken/{{uuid}}"]
+        endpoint = spec["paths"][f"/zaken/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -164,8 +163,7 @@ class StatusCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
-        endpoint = spec["paths"][f"{schema_prefix}/statussen/{{uuid}}"]
+        endpoint = spec["paths"][f"/statussen/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -209,8 +207,7 @@ class ZaakInformatieObjectCacheTests(
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
-        endpoint = spec["paths"][f"{schema_prefix}/zaakinformatieobjecten/{{uuid}}"]
+        endpoint = spec["paths"][f"/zaakinformatieobjecten/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -251,10 +248,7 @@ class ZaakEigenschapCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
-        endpoint = spec["paths"][
-            f"{schema_prefix}/zaken/{{zaak_uuid}}/zaakeigenschappen/{{uuid}}"
-        ]
+        endpoint = spec["paths"][f"/zaken/{{zaak_uuid}}/zaakeigenschappen/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -297,8 +291,7 @@ class RolCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
-        endpoint = spec["paths"][f"{schema_prefix}/rollen/{{uuid}}"]
+        endpoint = spec["paths"][f"/rollen/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
@@ -335,8 +328,7 @@ class ResultaatCacheTests(CacheMixin, JWTAuthMixin, APITestCase):
     def test_head_in_apischema(self):
         spec = get_spec()
 
-        schema_prefix = settings.SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"]
-        endpoint = spec["paths"][f"{schema_prefix}/resultaten/{{uuid}}"]
+        endpoint = spec["paths"][f"/resultaten/{{uuid}}"]
 
         self.assertIn("head", endpoint)
 
