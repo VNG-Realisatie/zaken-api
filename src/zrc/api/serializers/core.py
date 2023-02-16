@@ -30,6 +30,7 @@ from vng_api_common.serializers import (
     NestedGegevensGroepMixin,
     add_choice_values_help_text,
 )
+from vng_api_common.utils import get_help_text
 from vng_api_common.validators import (
     IsImmutableValidator,
     PublishValidator,
@@ -216,7 +217,7 @@ class ZaakSerializer(
         many=True,
         required=False,
         help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
-                  "beter kan via `ZaakObject`.",
+        "beter kan via `ZaakObject`.",
     )
 
     betalingsindicatie_weergave = serializers.CharField(
@@ -534,14 +535,18 @@ class ZaakZoekSerializer(serializers.Serializer):
     )
 
     bronorganisatie = serializers.CharField(
-        help_text=_("Het RSIN van de Niet-natuurlijk persoon zijnde de "
-                    "organisatie die de zaak heeft gecreeerd. Dit moet een geldig "
-                    "RSIN zijn van 9 nummers en voldoen aan "
-                    "https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef"),
+        help_text=_(
+            "Het RSIN van de Niet-natuurlijk persoon zijnde de "
+            "organisatie die de zaak heeft gecreeerd. Dit moet een geldig "
+            "RSIN zijn van 9 nummers en voldoen aan "
+            "https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef"
+        ),
         required=False,
     )
     zaaktype = serializers.URLField(
-        help_text=_("URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt"),
+        help_text=_(
+            "URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de CATALOGUS waar deze voorkomt"
+        ),
         required=False,
     )
     archiefnominatie = serializers.CharField(
@@ -558,6 +563,7 @@ class ZaakZoekSerializer(serializers.Serializer):
     )
 
     archiefactiedatum = serializers.DateField(
+        required=False,
         help_text=_(
             "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
             "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
@@ -566,6 +572,7 @@ class ZaakZoekSerializer(serializers.Serializer):
     )
 
     archiefactiedatum__lt = serializers.DateField(
+        required=False,
         help_text=_(
             "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
             "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
@@ -573,6 +580,7 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
     )
     archiefactiedatum__gt = serializers.DateField(
+        required=False,
         help_text=_(
             "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
             "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
@@ -580,22 +588,80 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
     )
 
+    archiefstatus = serializers.CharField(
+        help_text=_(
+            "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden."
+        ),
+        required=False,
+    )
 
-    # archiefstatus: nog_te_archiveren,
-    # archiefstatus__in: string,
-    # startdatum: string,
-    # startdatum__gt: string,
-    # startdatum__gte: string,
-    # startdatum__lt: string,
-    # startdatum__lte: string,
-    # rol__betrokkeneType: natuurlijk_persoon,
-    # rol__betrokkene: string,
-    # rol__omschrijvingGeneriek: adviseur,
-    # maximaleVertrouwelijkheidaanduiding: openbaar,
-    # rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn: string,
-    # rol__betrokkeneIdentificatie__medewerker__identificatie: string,
-    # rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie: string,
-    # ordering: string
+    archiefstatus__in = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        help_text=_("Array of archiefstatus"),
+    )
+
+    startdatum = serializers.DateField(
+        required=False,
+        help_text="De datum waarop met de uitvoering van de zaak is gestart",
+    )
+    startdatum__gt = serializers.DateField(
+        required=False,
+        help_text="De datum waarop met de uitvoering van de zaak is gestart",
+    )
+    startdatum__gte = serializers.DateField(
+        required=False,
+        help_text="De datum waarop met de uitvoering van de zaak is gestart",
+    )
+    startdatum__lt = serializers.DateField(
+        required=False,
+        help_text="De datum waarop met de uitvoering van de zaak is gestart",
+    )
+    startdatum__lte = serializers.DateField(
+        required=False,
+        help_text="De datum waarop met de uitvoering van de zaak is gestart",
+    )
+
+    rol__betrokkene_type = serializers.CharField(
+        help_text=_("Type van de `betrokkene`."),
+        required=False,
+    )
+
+    rol__betrokkene = serializers.CharField(
+        help_text=_("URL-referentie naar een betrokkene gerelateerd aan de ZAAK."),
+        required=False,
+    )
+
+    rol__omschrijving_generiek = serializers.CharField(
+        help_text=_(
+            "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE."
+        ),
+        required=False,
+    )
+
+    maximale_vertrouwelijkheidaanduiding = serializers.CharField(
+        help_text=_(
+            "Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is."
+        ),
+        required=False,
+    )
+    rol__betrokkene_identificatie__natuurlijk_persoon__inp_bsn = serializers.CharField(
+        help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_bsn"),
+        required=False,
+    )
+
+    rol__betrokkene_identificatie__medewerker__identificatie = serializers.CharField(
+        help_text=get_help_text("datamodel.Medewerker", "identificatie"),
+        required=False,
+    )
+    rol__betrokkene_identificatie__organisatorische_eenheid__identificatie = (
+        serializers.CharField(
+            help_text=get_help_text(
+                "datamodel.OrganisatorischeEenheid", "identificatie"
+            ),
+            required=False,
+        )
+    )
 
     def validate(self, attrs):
         validated_attrs = super().validate(attrs)
