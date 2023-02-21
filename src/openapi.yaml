@@ -14424,6 +14424,136 @@ components:
             title: ''
           description: Array of unieke resource identifiers (UUID4)
           title: uuid__in
+        identificatie:
+          type: string
+          description: De unieke aanduiding van een KLANTCONTACT
+          title: identificatie
+        bronorganisatie:
+          type: string
+          description:
+            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
+            die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers
+            en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
+          title: bronorganisatie
+        zaaktype:
+          type: string
+          format: uri
+          description:
+            URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de
+            CATALOGUS waar deze voorkomt
+          title: zaaktype
+        archiefnominatie:
+          type: string
+          description:
+            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden.
+          title: archiefnominatie
+        archiefnominatie__in:
+          type: array
+          items:
+            type: string
+            title: ''
+          description: Array of archiefnominaties
+          title: archiefnominatie__in
+        archiefactiedatum:
+          type: string
+          format: date
+          description:
+            De datum waarop het gearchiveerde zaakdossier vernietigd moet
+            worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
+            Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
+            aan deze ZAAK indien nog leeg.
+          title: archiefactiedatum
+        archiefactiedatum__lt:
+          type: string
+          format: date
+          description:
+            De datum waarop het gearchiveerde zaakdossier vernietigd moet
+            worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
+            Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
+            aan deze ZAAK indien nog leeg.
+          title: archiefactiedatum__lt
+        archiefactiedatum__gt:
+          type: string
+          format: date
+          description:
+            De datum waarop het gearchiveerde zaakdossier vernietigd moet
+            worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
+            Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
+            aan deze ZAAK indien nog leeg.
+          title: archiefactiedatum__gt
+        archiefstatus:
+          type: string
+          description:
+            Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden.
+          title: archiefstatus
+        archiefstatus__in:
+          type: array
+          items:
+            type: string
+            title: ''
+          description: Array of archiefstatus
+          title: archiefstatus__in
+        startdatum:
+          type: string
+          format: date
+          description: De datum waarop met de uitvoering van de zaak is gestart
+          title: startdatum
+        startdatum__gt:
+          type: string
+          format: date
+          description: De datum waarop met de uitvoering van de zaak is gestart
+          title: startdatum__gt
+        startdatum__gte:
+          type: string
+          format: date
+          description: De datum waarop met de uitvoering van de zaak is gestart
+          title: startdatum__gte
+        startdatum__lt:
+          type: string
+          format: date
+          description: De datum waarop met de uitvoering van de zaak is gestart
+          title: startdatum__lt
+        startdatum__lte:
+          type: string
+          format: date
+          description: De datum waarop met de uitvoering van de zaak is gestart
+          title: startdatum__lte
+        rol__betrokkeneType:
+          type: string
+          description: Type van de `betrokkene`.
+          title: rol__betrokkeneType
+        rol__betrokkene:
+          type: string
+          description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
+          title: rol__betrokkene
+        rol__omschrijvingGeneriek:
+          type: string
+          description:
+            Algemeen gehanteerde benaming van de aard van de ROL, afgeleid
+            uit het ROLTYPE.
+          title: rol__omschrijvingGeneriek
+        maximaleVertrouwelijkheidaanduiding:
+          type: string
+          description:
+            Aanduiding van de mate waarin het zaakdossier van de ZAAK voor
+            de openbaarheid bestemd is.
+          title: maximaleVertrouwelijkheidaanduiding
+        rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn:
+          type: string
+          description:
+            Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet
+            algemene bepalingen burgerservicenummer.
+          title: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
+        rol__betrokkeneIdentificatie__medewerker__identificatie:
+          type: string
+          description: Een korte unieke aanduiding van de MEDEWERKER.
+          title: rol__betrokkeneIdentificatie__medewerker__identificatie
+        rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie:
+          type: string
+          description: Een korte identificatie van de organisatorische eenheid.
+          title: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
     ZakelijkRechtHeeftAlsGerechtigde:
       type: object
       properties:

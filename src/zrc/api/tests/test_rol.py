@@ -55,6 +55,7 @@ class RolTestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
             omschrijving_generiek="Beslisser",
             indicatie_machtiging=IndicatieMachtiging.gemachtigde,
         )
+
         naturlijkperson = NatuurlijkPersoon.objects.create(
             rol=rol, anp_identificatie="12345", inp_a_nummer="1234567890"
         )
