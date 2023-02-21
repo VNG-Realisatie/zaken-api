@@ -375,8 +375,15 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
     def test_zoek_maximale_vertrouwelijkheidaanduidingn(self):
         zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
         url = get_operation_url("zaak__zoek")
+
+        zaak1.vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.vertrouwelijk
+        zaak1.save()
+
         zaak2.vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.openbaar
         zaak2.save()
+
+        zaak3.vertrouwelijkheidaanduiding = VertrouwelijkheidsAanduiding.confidentieel
+        zaak3.save()
 
         data = {
             "maximale_vertrouwelijkheidaanduiding": zaak2.vertrouwelijkheidaanduiding
