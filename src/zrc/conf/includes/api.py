@@ -12,12 +12,19 @@ DOCUMENTATION_INFO_MODULE = "zrc.api.schema"
 SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
 SPECTACULAR_SETTINGS.update(
     {
-        "SERVERS": [{"url": "https://zaken-api.test.vng.cloud/api/v1"}],
+        # Optional list of servers.
+        # Each entry MUST contain "url", MAY contain "description", "variables"
+        # e.g. [{'url': 'https://example.com/v1', 'description': 'Text'}, ...]
+        "SERVERS": [
+            {
+                "url": "https://zaken-api.vng.cloud/api/v1",
+                "description": "Productie Omgeving",
+            }
+        ],
         # todo remove this line below when deploying to production
         "SORT_OPERATION_PARAMETERS": False,
     }
 )
-
 SPECTACULAR_EXTENSIONS = [
     "vng_api_common.extensions.fields.duration.DurationFieldExtension",
     "vng_api_common.extensions.fields.geojson.GeometryFieldExtension",

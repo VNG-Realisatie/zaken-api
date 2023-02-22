@@ -3,9 +3,25 @@ Wijzigingen
 ===========
 1.3.1 (2023-02-21)
 ===========
-* add search parameters to request body of `_zoek`.
-* set vng-api-common to 2.0.4.
-* remove standard /api/v1 prefix from OAS generation.
+
+API spec New Features
+----------------
+
+* Added search parameters to request body of ``_zoek``. (`Issue 2166`_):
+
+API spec bugfixes
+-----------------
+
+* Fixed generation of openapi.yaml to not include ``/api/v1``
+
+Implementation changes
+----------------------
+
+* Bumps ``vng-api-common`` to version ``2.0.4``
+* Sets baseUrl to production server
+
+.. _Issue 2166: https://github.com/VNG-Realisatie/gemma-zaken/issues/2166
+
 
 ===========
 1.3.0 (2022-12-19)
