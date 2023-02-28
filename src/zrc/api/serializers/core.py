@@ -217,7 +217,7 @@ class ZaakSerializer(
         many=True,
         required=False,
         help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
-                  "beter kan via `ZaakObject`.",
+        "beter kan via `ZaakObject`.",
     )
 
     betalingsindicatie_weergave = serializers.CharField(
@@ -552,9 +552,8 @@ class ZaakZoekSerializer(serializers.Serializer):
     zaaktype__in = serializers.ListField(
         child=serializers.URLField(),
         required=False,
-        help_text=_(
-            "Array van zaaktypen."
-        ), )
+        help_text=_("Array van zaaktypen."),
+    )
     archiefnominatie = serializers.CharField(
         help_text=_(
             "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden."
@@ -570,28 +569,20 @@ class ZaakZoekSerializer(serializers.Serializer):
 
     einddatum = serializers.DateField(
         required=False,
-        help_text=_(
-            "De datum waarop de uitvoering van de zaak afgerond is."
-        ),
+        help_text=_("De datum waarop de uitvoering van de zaak afgerond is."),
     )
     einddatum__gt = serializers.DateField(
         required=False,
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
     einddatum__lt = serializers.DateField(
         required=False,
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
 
     einddatum__isnull = serializers.BooleanField(
         required=False,
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
 
     einddatumGepland = serializers.DateField(
@@ -602,15 +593,11 @@ class ZaakZoekSerializer(serializers.Serializer):
     )
     einddatumGepland__gt = serializers.DateField(
         required=False,
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
     einddatumGepland__lt = serializers.DateField(
         required=False,
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
 
     uiterlijkeEinddatumAfdoening = serializers.DateField(
@@ -621,15 +608,11 @@ class ZaakZoekSerializer(serializers.Serializer):
     )
     uiterlijkeEinddatumAfdoening__gt = serializers.DateField(
         required=False,
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
     uiterlijkeEinddatumAfdoening__lt = serializers.DateField(
         required=False,
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
 
     archiefactiedatum = serializers.DateField(
@@ -660,9 +643,7 @@ class ZaakZoekSerializer(serializers.Serializer):
 
     archiefactiedatum__isnull = serializers.BooleanField(
         required=False,
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
 
     archiefstatus = serializers.CharField(
