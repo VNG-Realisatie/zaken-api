@@ -86,6 +86,23 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["zaaktype"], zaak3.zaaktype)
 
+    def test_zoek_zaaktype__in(self):
+        zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
+        url = get_operation_url("zaak__zoek")
+
+        data = {"zaaktype__in": [zaak1.zaaktype, zaak2.zaaktype]}
+
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+        data = sorted(data, key=lambda zaak: zaak["identificatie"])
+
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]["zaaktype"], zaak1.zaaktype)
+        self.assertEqual(data[1]["zaaktype"], zaak2.zaaktype)
+
     def test_zoek_archiefnominatie(self):
         zaak1, zaak2 = ZaakFactory.create_batch(2)
         url = get_operation_url("zaak__zoek")

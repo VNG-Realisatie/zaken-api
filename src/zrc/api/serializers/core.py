@@ -217,7 +217,7 @@ class ZaakSerializer(
         many=True,
         required=False,
         help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
-        "beter kan via `ZaakObject`.",
+                  "beter kan via `ZaakObject`.",
     )
 
     betalingsindicatie_weergave = serializers.CharField(
@@ -549,6 +549,12 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
         required=False,
     )
+    zaaktype__in = serializers.ListField(
+        child=serializers.URLField(),
+        required=False,
+        help_text=_(
+            "Array van zaaktypen."
+        ), )
     archiefnominatie = serializers.CharField(
         help_text=_(
             "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden."
@@ -560,6 +566,70 @@ class ZaakZoekSerializer(serializers.Serializer):
         child=serializers.CharField(),
         required=False,
         help_text=_("Array of archiefnominaties"),
+    )
+
+    einddatum = serializers.DateField(
+        required=False,
+        help_text=_(
+            "De datum waarop de uitvoering van de zaak afgerond is."
+        ),
+    )
+    einddatum__gt = serializers.DateField(
+        required=False,
+        help_text=_(
+            ""
+        ),
+    )
+    einddatum__lt = serializers.DateField(
+        required=False,
+        help_text=_(
+            ""
+        ),
+    )
+
+    einddatum__isnull = serializers.BooleanField(
+        required=False,
+        help_text=_(
+            ""
+        ),
+    )
+
+    einddatumGepland = serializers.DateField(
+        required=False,
+        help_text=_(
+            "De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt."
+        ),
+    )
+    einddatumGepland__gt = serializers.DateField(
+        required=False,
+        help_text=_(
+            ""
+        ),
+    )
+    einddatumGepland__lt = serializers.DateField(
+        required=False,
+        help_text=_(
+            ""
+        ),
+    )
+
+    uiterlijkeEinddatumAfdoening = serializers.DateField(
+        required=False,
+        help_text=_(
+            "De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt."
+        ),
+    )
+    uiterlijkeEinddatumAfdoening__gt = serializers.DateField(
+        required=False,
+        help_text=_(
+            ""
+        ),
+    )
+    uiterlijkeEinddatumAfdoening__lt = serializers.DateField(
+        required=False,
+        help_text=_(
+            ""
+        ),
     )
 
     archiefactiedatum = serializers.DateField(
@@ -585,6 +655,13 @@ class ZaakZoekSerializer(serializers.Serializer):
             "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
             "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
             "een RESULTAAT aan deze ZAAK indien nog leeg."
+        ),
+    )
+
+    archiefactiedatum__isnull = serializers.BooleanField(
+        required=False,
+        help_text=_(
+            ""
         ),
     )
 
@@ -661,6 +738,18 @@ class ZaakZoekSerializer(serializers.Serializer):
             ),
             required=False,
         )
+    )
+    registratiedatum = serializers.DateField(
+        required=False,
+        help_text="De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt.",
+    )
+    registratiedatum__gt = serializers.DateField(
+        required=False,
+        help_text="",
+    )
+    registratiedatum__lt = serializers.DateField(
+        required=False,
+        help_text="",
     )
 
     def validate(self, attrs):
