@@ -1,6 +1,16 @@
 ===========
 Wijzigingen
 ===========
+
+1.3.2 (2022-03-03)
+===========
+
+Implementation changes
+----------------------
+
+* Added ``ENV`` variable to turn off Notifications when running in a Container
+
+
 1.3.1 (2023-02-21)
 ===========
 
