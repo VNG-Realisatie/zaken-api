@@ -461,6 +461,51 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["uuid"], str(rol1.zaak.uuid))
 
+    def test_rol__betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer(self):
+        zaak1, zaak2 = ZaakFactory.create_batch(2)
+        url = get_operation_url("zaak__zoek")
+        rol1 = RolFactory.create(
+            zaak=zaak1,
+            betrokkene_type=RolTypes.natuurlijk_persoon,
+            betrokkene="http://www.zamora-silva.org/api/betrokkene/8768c581-2817-4fe5-933d-37af92d819dd",
+            omschrijving="Beslisser",
+            omschrijving_generiek=RolOmschrijving.adviseur,
+            indicatie_machtiging=IndicatieMachtiging.gemachtigde,
+        )
+        rol2 = RolFactory.create(
+            zaak=zaak2,
+            betrokkene_type=RolTypes.niet_natuurlijk_persoon,
+            betrokkene="http://www.zamora-silva.org/api/betrokkene/fdswe581-4325-kdfs-slkf-37af92d819ff",
+            omschrijving="Beslisser",
+            omschrijving_generiek=RolOmschrijving.behandelaar,
+            indicatie_machtiging=IndicatieMachtiging.gemachtigde,
+        )
+        natuurlijkpersoon = NatuurlijkPersoon.objects.create(
+            rol=rol1,
+            anp_identificatie="12345",
+            inp_a_nummer="1234567890",
+            inp_bsn="183068142",
+        )
+        natuurlijkpersoon2 = NatuurlijkPersoon.objects.create(
+            rol=rol2,
+            anp_identificatie="56789",
+            inp_a_nummer="2134554323",
+            inp_bsn="121344242",
+        )
+
+        data = {
+            "rol__betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer": natuurlijkpersoon.inp_a_nummer
+        }
+
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["uuid"], str(rol1.zaak.uuid))
+
     def test_zoek_rol_betrokkene_identificatie__organisatorische_eenheid__identificatie(
         self,
     ):
@@ -503,6 +548,50 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["uuid"], str(rol2.zaak.uuid))
 
+    def test_zoek_ordering(self):
+        zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
+        zaak1.startdatum = datetime.datetime(2019, 1, 1)
+        zaak2.startdatum = datetime.datetime(2019, 1, 2)
+        zaak3.startdatum = datetime.datetime(2019, 1, 3)
+        zaak1.save()
+        zaak2.save()
+        zaak3.save()
+
+        url = get_operation_url("zaak__zoek")
+
+        data = {"ordering": "-startdatum"}
+
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+
+        self.assertEqual(len(data), 3)
+        self.assertGreater(datetime.datetime.strptime(data[0]["startdatum"], '%Y-%m-%d'), datetime.datetime.strptime(data[1]["startdatum"], '%Y-%m-%d'))
+
+    def test_zoek_ordering_reverse(self):
+        zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
+        zaak1.startdatum = datetime.datetime(2019, 1, 2)
+        zaak2.startdatum = datetime.datetime(2019, 1, 3)
+        zaak3.startdatum = datetime.datetime(2019, 1, 1)
+        zaak1.save()
+        zaak2.save()
+        zaak3.save()
+
+        url = get_operation_url("zaak__zoek")
+
+        data = {"ordering": "startdatum"}
+
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+
+        self.assertEqual(len(data), 3)
+        self.assertGreater(datetime.datetime.strptime(data[1]["startdatum"], '%Y-%m-%d'),
+                           datetime.datetime.strptime(data[0]["startdatum"], '%Y-%m-%d'))
     def test_zoek_without_params(self):
         url = get_operation_url("zaak__zoek")
 

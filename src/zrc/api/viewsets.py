@@ -242,12 +242,13 @@ class ZaakViewSet(
         """
         search_input = self.get_search_input()
         queryset = self.filter_queryset(self.get_queryset())
-
         for name, value in search_input.items():
             if name == "zaakgeometrie":
                 queryset = queryset.filter(zaakgeometrie__within=value["within"])
             else:
-                if self.filterset_class.declared_filters.get(name, None):
+                if name == "ordering":
+                    queryset = queryset.order_by(value)
+                elif self.filterset_class.declared_filters.get(name, None):
                     queryset = self.filterset_class.declared_filters[name].filter(
                         queryset, value
                     )
@@ -340,8 +341,8 @@ class StatusViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_STATUSSEN_TOEVOEGEN
-        | SCOPEN_ZAKEN_HEROPENEN,
+                  | SCOPE_STATUSSEN_TOEVOEGEN
+                  | SCOPEN_ZAKEN_HEROPENEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -449,13 +450,13 @@ class ZaakObjectViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+                  | SCOPE_ZAKEN_BIJWERKEN
+                  | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
-        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+                   | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+                   | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -533,13 +534,13 @@ class ZaakInformatieObjectViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+                  | SCOPE_ZAKEN_BIJWERKEN
+                  | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
-        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+                   | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+                   | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     audit = AUDIT_ZRC
 

@@ -6150,15 +6150,6 @@ paths:
           deze ZAAK indien nog leeg.
         schema:
           type: string
-      - name: archiefactiedatum__isnull
-        required: false
-        in: query
-        description: De datum waarop het gearchiveerde zaakdossier vernietigd moet
-          worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
-          automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
-          deze ZAAK indien nog leeg.
-        schema:
-          type: string
       - name: archiefstatus
         required: false
         in: query
@@ -6248,12 +6239,6 @@ paths:
         schema:
           type: string
       - name: einddatum__lt
-        required: false
-        in: query
-        description: De datum waarop de uitvoering van de zaak afgerond is.
-        schema:
-          type: string
-      - name: einddatum__isnull
         required: false
         in: query
         description: De datum waarop de uitvoering van de zaak afgerond is.
@@ -6429,6 +6414,18 @@ paths:
               - -archiefactiedatum
         style: form
         explode: false
+      - name: archiefactiedatum__isnull
+        required: false
+        in: query
+        description: De archiefactiedatum is leeg
+        schema:
+          type: string
+      - name: einddatum__isnull
+        required: false
+        in: query
+        description: De einddatum is leeg
+        schema:
+          type: string
       - name: page
         required: false
         in: query
@@ -10084,14 +10081,6 @@ components:
       - gedeeltelijk
       - geheel
       type: string
-    BetrokkeneTypeEnum:
-      enum:
-      - natuurlijk_persoon
-      - niet_natuurlijk_persoon
-      - vestiging
-      - organisatorische_eenheid
-      - medewerker
-      type: string
     BlankEnum:
       enum:
       - ''
@@ -11032,6 +11021,21 @@ components:
       - indicatie
       - reden
       nullable: true
+    OrderingEnum:
+      enum:
+      - startdatum
+      - -startdatum
+      - einddatum
+      - -einddatum
+      - publicatiedatum
+      - -publicatiedatum
+      - archiefactiedatum
+      - -archiefactiedatum
+      - registratiedatum
+      - -registratiedatum
+      - identificatie
+      - -identificatie
+      type: string
     PaginatedKlantContactList:
       type: object
       properties:
@@ -11942,7 +11946,7 @@ components:
           maxLength: 1000
         betrokkeneType:
           allOf:
-          - $ref: '#/components/schemas/BetrokkeneTypeEnum'
+          - $ref: '#/components/schemas/Rol_omschrijvingGeneriekEnum'
           description: |-
             Type van de `betrokkene`.
 
@@ -12231,6 +12235,14 @@ components:
           description: Een uniek nummer gekoppeld aan de onderneming.
           title: kvk nummer
           maxLength: 8
+    Rol_omschrijvingGeneriekEnum:
+      enum:
+      - natuurlijk_persoon
+      - niet_natuurlijk_persoon
+      - vestiging
+      - organisatorische_eenheid
+      - medewerker
+      type: string
     Status:
       type: object
       properties:
@@ -13313,7 +13325,7 @@ components:
         zaakgeometrie:
           allOf:
           - $ref: '#/components/schemas/GeoWithin'
-          title: zaakgeometrie
+          title: GeoWithin
         uuid__in:
           type: array
           items:
@@ -13324,7 +13336,8 @@ components:
           title: uuid__in
         identificatie:
           type: string
-          description: De unieke aanduiding van een KLANTCONTACT
+          description: De unieke identificatie van de ZAAK binnen de organisatie die
+            verantwoordelijk is voor de behandeling van de ZAAK.
           title: identificatie
         bronorganisatie:
           type: string
@@ -13332,6 +13345,13 @@ components:
             die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers
             en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
           title: bronorganisatie
+        bronorganisatie__in:
+          type: array
+          items:
+            type: string
+            title: ''
+          description: Array van bronorganisaties.
+          title: bronorganisatie__in
         zaaktype:
           type: string
           format: uri
@@ -13347,64 +13367,58 @@ components:
           description: Array van zaaktypen.
           title: zaaktype__in
         archiefnominatie:
-          type: string
-          description: Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden.
+          allOf:
+          - $ref: '#/components/schemas/ArchiefnominatieEnum'
+          description: 'Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden. Uitleg bij mogelijke waarden: * blijvend_bewaren
+            - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen
+            worden naar een archiefbewaarplaats. * vernietigen - Het zaakdossier moet
+            op of na de Archiefactiedatum vernietigd worden.'
           title: archiefnominatie
         archiefnominatie__in:
           type: array
           items:
             type: string
             title: ''
-          description: Array of archiefnominaties
+          description: Multiple values may be separated by commas.
           title: archiefnominatie__in
         einddatum:
           type: string
-          format: date
           description: De datum waarop de uitvoering van de zaak afgerond is.
           title: einddatum
         einddatum__gt:
           type: string
-          format: date
           title: einddatum__gt
         einddatum__lt:
           type: string
-          format: date
           title: einddatum__lt
         einddatum__isnull:
           type: boolean
           title: einddatum__isnull
         einddatumGepland:
           type: string
-          format: date
           description: De datum waarop volgens de planning verwacht wordt dat de zaak
             afgerond wordt.
           title: einddatumGepland
         einddatumGepland__gt:
           type: string
-          format: date
           title: einddatumGepland__gt
         einddatumGepland__lt:
           type: string
-          format: date
           title: einddatumGepland__lt
         uiterlijkeEinddatumAfdoening:
           type: string
-          format: date
-          description: De datum waarop volgens de planning verwacht wordt dat de zaak
-            afgerond wordt.
+          description: De laatste datum waarop volgens wet- en regelgeving de zaak
+            afgerond dient te zijn.
           title: uiterlijkeEinddatumAfdoening
         uiterlijkeEinddatumAfdoening__gt:
           type: string
-          format: date
           title: uiterlijkeEinddatumAfdoening__gt
         uiterlijkeEinddatumAfdoening__lt:
           type: string
-          format: date
           title: uiterlijkeEinddatumAfdoening__lt
         archiefactiedatum:
           type: string
-          format: date
           description: De datum waarop het gearchiveerde zaakdossier vernietigd moet
             worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
             Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
@@ -13412,106 +13426,136 @@ components:
           title: archiefactiedatum
         archiefactiedatum__lt:
           type: string
-          format: date
-          description: De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
-            Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
-            aan deze ZAAK indien nog leeg.
-          title: archiefactiedatum__lt
+          title: Archiefactiedatum lt
         archiefactiedatum__gt:
           type: string
-          format: date
-          description: De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
-            Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
-            aan deze ZAAK indien nog leeg.
-          title: archiefactiedatum__gt
+          title: Archiefactiedatum gt
         archiefactiedatum__isnull:
           type: boolean
-          title: archiefactiedatum__isnull
+          title: Archiefactiedatum is leeg
+          description: De archiefactiedatum is leeg
         archiefstatus:
-          type: string
-          description: Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden.
+          allOf:
+          - $ref: '#/components/schemas/ArchiefstatusEnum'
+          description: 'Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+            termijn vernietigd moet worden. Uitleg bij mogelijke waarden: * nog_te_archiveren
+            - De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd. * gearchiveerd
+            - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar
+            gemaakt. * gearchiveerd_procestermijn_onbekend - De zaak cq. het zaakdossier
+            is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum
+            kan nog niet bepaald worden. * overgedragen - De zaak cq. het zaakdossier
+            is overgebracht naar een archiefbewaarplaats.'
           title: archiefstatus
         archiefstatus__in:
           type: array
           items:
             type: string
             title: ''
-          description: Array of archiefstatus
+          description: Multiple values may be separated by commas.
           title: archiefstatus__in
         startdatum:
           type: string
-          format: date
           description: De datum waarop met de uitvoering van de zaak is gestart
           title: startdatum
         startdatum__gt:
           type: string
-          format: date
           description: De datum waarop met de uitvoering van de zaak is gestart
           title: startdatum__gt
         startdatum__gte:
           type: string
-          format: date
           description: De datum waarop met de uitvoering van de zaak is gestart
           title: startdatum__gte
         startdatum__lt:
           type: string
-          format: date
           description: De datum waarop met de uitvoering van de zaak is gestart
           title: startdatum__lt
         startdatum__lte:
           type: string
-          format: date
           description: De datum waarop met de uitvoering van de zaak is gestart
           title: startdatum__lte
         rol__betrokkeneType:
-          type: string
-          description: Type van de `betrokkene`.
+          allOf:
+          - $ref: '#/components/schemas/Rol_omschrijvingGeneriekEnum'
+          description: 'Type van de betrokkene. Uitleg bij mogelijke waarden: * natuurlijk_persoon
+            - Natuurlijk persoon * niet_natuurlijk_persoon - Niet-natuurlijk persoon
+            * vestiging - Vestiging * organisatorische_eenheid - Organisatorische
+            eenheid * medewerker - Medewerker'
           title: rol__betrokkeneType
         rol__betrokkene:
           type: string
           description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
           title: rol__betrokkene
         rol__omschrijvingGeneriek:
-          type: string
-          description: Algemeen gehanteerde benaming van de aard van de ROL, afgeleid
-            uit het ROLTYPE.
+          allOf:
+          - $ref: '#/components/schemas/Rol_omschrijvingGeneriekEnum'
+          description: "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid\
+            \ uit het ROLTYPE. Uitleg bij mogelijke waarden:\n\n`adviseur` - Adviseur\n\
+            \n`behandelaar` - Behandelaar\n\n`belanghebbende` - Belanghebbende\n\n\
+            `beslisser` - Beslisser\n\n`initiator` - Initiator\n\n`klantcontacter`\
+            \ - Klantcontacter\n\n`zaakcoordinator` - Zaakcoördinator\n \n`mede_initiator`\
+            \ - Mede-initiator\n"
           title: rol__omschrijvingGeneriek
         maximaleVertrouwelijkheidaanduiding:
           type: string
           description: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor
             de openbaarheid bestemd is.
           title: maximaleVertrouwelijkheidaanduiding
+        rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie:
+          type: string
+          description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+            NATUURLIJK PERSOON
+          title: rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
+          maxLength: 17
         rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn:
           type: string
           description: Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet
             algemene bepalingen burgerservicenummer.
           title: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
+          maxLength: 9
+        rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer:
+          type: string
+          description: Het administratienummer van de persoon, bedoeld in de Wet BRP
+          title: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer
+          maxLength: 10
+        rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId:
+          type: string
+          description: Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
+            NIET-NATUURLIJK PERSOON
+          title: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
+        rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie:
+          type: string
+          description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+            NIET-NATUURLIJK PERSOON
+          title: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
+          maxLength: 17
+        rol__betrokkeneIdentificatie__vestiging__vestigingsNummer:
+          type: string
+          description: Een korte unieke aanduiding van de Vestiging.
+          title: rol__betrokkeneIdentificatie__vestiging__vestigingsNummer
+          maxLength: 24
         rol__betrokkeneIdentificatie__medewerker__identificatie:
           type: string
           description: Een korte unieke aanduiding van de MEDEWERKER.
           title: rol__betrokkeneIdentificatie__medewerker__identificatie
-        rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie:
-          type: string
-          description: Een korte identificatie van de organisatorische eenheid.
-          title: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
+          maxLength: 24
         registratiedatum:
           type: string
-          format: date
           description: De datum waarop de zaakbehandelende organisatie de ZAAK heeft
             geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
             gebruikt.
           title: registratiedatum
         registratiedatum__gt:
           type: string
-          format: date
           title: registratiedatum__gt
         registratiedatum__lt:
           type: string
-          format: date
           title: registratiedatum__lt
+        ordering:
+          allOf:
+          - $ref: '#/components/schemas/OrderingEnum'
+          description: Het veld waarop de resultaten geordend worden. Het minnetje
+            betekent omgekeerde volgorde.
+          title: ordering
     ZakelijkRechtHeeftAlsGerechtigde:
       type: object
       properties:
