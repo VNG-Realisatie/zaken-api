@@ -30,7 +30,7 @@ from vng_api_common.serializers import (
     NestedGegevensGroepMixin,
     add_choice_values_help_text,
 )
-from vng_api_common.utils import get_help_text, get_field_attribute
+from vng_api_common.utils import get_field_attribute, get_help_text
 from vng_api_common.validators import (
     IsImmutableValidator,
     PublishValidator,
@@ -217,7 +217,7 @@ class ZaakSerializer(
         many=True,
         required=False,
         help_text="Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten "
-                  "beter kan via `ZaakObject`.",
+        "beter kan via `ZaakObject`.",
     )
 
     betalingsindicatie_weergave = serializers.CharField(
@@ -531,7 +531,8 @@ class ZaakZoekSerializer(serializers.Serializer):
 
     identificatie = serializers.CharField(
         help_text=_(
-            "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK."),
+            "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK."
+        ),
         required=False,
     )
 
@@ -565,7 +566,6 @@ class ZaakZoekSerializer(serializers.Serializer):
         choices=(
             ("blijvend_bewaren", "blijvend_bewaren"),
             ("vernietigen", "vernietigen"),
-
         ),
         help_text="Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Uitleg bij mogelijke waarden: * blijvend_bewaren - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen worden naar een archiefbewaarplaats. * vernietigen - Het zaakdossier moet op of na de Archiefactiedatum vernietigd worden.",
         required=False,
@@ -637,15 +637,12 @@ class ZaakZoekSerializer(serializers.Serializer):
     archiefactiedatum__lt = serializers.CharField(
         required=False,
         label="Archiefactiedatum lt",
-        help_text=_(
-            ""
-        ),
+        help_text=_(""),
     )
     archiefactiedatum__gt = serializers.CharField(
         required=False,
         label="Archiefactiedatum gt",
-        help_text=_(""
-                    ),
+        help_text=_(""),
     )
 
     archiefactiedatum__isnull = serializers.BooleanField(
@@ -658,9 +655,11 @@ class ZaakZoekSerializer(serializers.Serializer):
         choices=(
             ("nog_te_archiveren", "nog_te_archiveren"),
             ("gearchiveerd", "gearchiveerd"),
-            ("gearchiveerd_procestermijn_onbekend", "gearchiveerd_procestermijn_onbekend"),
+            (
+                "gearchiveerd_procestermijn_onbekend",
+                "gearchiveerd_procestermijn_onbekend",
+            ),
             ("overgedragen", "overgedragen"),
-
         ),
         help_text="Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Uitleg bij mogelijke waarden: * nog_te_archiveren - De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd. * gearchiveerd - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt. * gearchiveerd_procestermijn_onbekend - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum kan nog niet bepaald worden. * overgedragen - De zaak cq. het zaakdossier is overgebracht naar een archiefbewaarplaats.",
         required=False,
@@ -720,7 +719,6 @@ class ZaakZoekSerializer(serializers.Serializer):
             ("klantcontacter", "klantcontacter"),
             ("zaakcoordinator", "zaakcoordinator"),
             ("mede_initiator", "mede_initiator"),
-
         ),
         help_text=_(
             "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE. Uitleg bij mogelijke waarden:\n"
@@ -731,7 +729,8 @@ class ZaakZoekSerializer(serializers.Serializer):
             "\n`initiator` - Initiator\n"
             "\n`klantcontacter` - Klantcontacter\n"
             "\n`zaakcoordinator` - Zaakcoördinator\n "
-            "\n`mede_initiator` - Mede-initiator\n"),
+            "\n`mede_initiator` - Mede-initiator\n"
+        ),
         required=False,
     )
 
@@ -745,18 +744,19 @@ class ZaakZoekSerializer(serializers.Serializer):
             ("confidentieel", "confidentieel"),
             ("geheim", "geheim"),
             ("zeer_geheim", "zeer_geheim"),
-
         ),
         help_text="Zaken met een vertrouwelijkheidaanduiding die beperkter is dan de aangegeven aanduiding worden uit de resultaten gefiltered. Uitleg bij mogelijke waarden: * `openbaar` - Openbaar * `beperkt_openbaar` - Beperkt openbaar * `intern` - Intern * `zaakvertrouwelijk` - Zaakvertrouwelijk * `vertrouwelijk` - Vertrouwelijk * `confidentieel` - Confidentieel * `geheim` - Geheim * `zeer_geheim` - Zeer geheim",
         required=False,
     )
 
-    rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie = serializers.CharField(
-        help_text=get_help_text("datamodel.NatuurlijkPersoon", "anp_identificatie"),
-        max_length=get_field_attribute(
-            "datamodel.NatuurlijkPersoon", "anp_identificatie", "max_length"
-        ),
-        required=False,
+    rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie = (
+        serializers.CharField(
+            help_text=get_help_text("datamodel.NatuurlijkPersoon", "anp_identificatie"),
+            max_length=get_field_attribute(
+                "datamodel.NatuurlijkPersoon", "anp_identificatie", "max_length"
+            ),
+            required=False,
+        )
     )
 
     rol__betrokkene_identificatie__natuurlijk_persoon__inp_bsn = serializers.CharField(
@@ -767,27 +767,31 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
     )
 
-    rol__betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer = serializers.CharField(
-        help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_a_nummer"),
-        max_length=get_field_attribute(
-            "datamodel.NatuurlijkPersoon", "inp_a_nummer", "max_length"
-        ),
-        required=False,
+    rol__betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer = (
+        serializers.CharField(
+            help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_a_nummer"),
+            max_length=get_field_attribute(
+                "datamodel.NatuurlijkPersoon", "inp_a_nummer", "max_length"
+            ),
+            required=False,
+        )
     )
-    rol__betrokkene_identificatie__niet_natuurlijk_persoon__inn_nnp_id = serializers.CharField(
-        help_text=get_help_text("datamodel.NietNatuurlijkPersoon", "inn_nnp_id"),
-        required=False,
-
+    rol__betrokkene_identificatie__niet_natuurlijk_persoon__inn_nnp_id = (
+        serializers.CharField(
+            help_text=get_help_text("datamodel.NietNatuurlijkPersoon", "inn_nnp_id"),
+            required=False,
+        )
     )
-    rol__betrokkene_identificatie__niet_natuurlijk_persoon__ann_identificatie = serializers.CharField(
-        help_text=get_help_text(
-            "datamodel.NietNatuurlijkPersoon", "ann_identificatie"
-        ),
-        max_length=get_field_attribute(
-            "datamodel.NietNatuurlijkPersoon", "ann_identificatie", "max_length"
-        ),
-        required=False,
-
+    rol__betrokkene_identificatie__niet_natuurlijk_persoon__ann_identificatie = (
+        serializers.CharField(
+            help_text=get_help_text(
+                "datamodel.NietNatuurlijkPersoon", "ann_identificatie"
+            ),
+            max_length=get_field_attribute(
+                "datamodel.NietNatuurlijkPersoon", "ann_identificatie", "max_length"
+            ),
+            required=False,
+        )
     )
     rol__betrokkene_identificatie__vestiging__vestigings_nummer = serializers.CharField(
         help_text=get_help_text("datamodel.Vestiging", "vestigings_nummer"),
@@ -795,7 +799,6 @@ class ZaakZoekSerializer(serializers.Serializer):
             "datamodel.Vestiging", "vestigings_nummer", "max_length"
         ),
         required=False,
-
     )
 
     rol__betrokkene_identificatie__medewerker__identificatie = serializers.CharField(
@@ -804,14 +807,14 @@ class ZaakZoekSerializer(serializers.Serializer):
             "datamodel.Medewerker", "identificatie", "max_length"
         ),
         required=False,
-
     )
-    rol__betrokkene_identificatie__organisatorische_eenheid__identificatie = serializers.CharField(
-        help_text=get_help_text(
-            "datamodel.OrganisatorischeEenheid", "identificatie"
-        ),
-        required=False,
-
+    rol__betrokkene_identificatie__organisatorische_eenheid__identificatie = (
+        serializers.CharField(
+            help_text=get_help_text(
+                "datamodel.OrganisatorischeEenheid", "identificatie"
+            ),
+            required=False,
+        )
     )
 
     registratiedatum = serializers.CharField(
@@ -830,19 +833,14 @@ class ZaakZoekSerializer(serializers.Serializer):
         choices=(
             ("startdatum", "startdatum"),
             ("-startdatum", "-startdatum"),
-
             ("einddatum", "einddatum"),
             ("-einddatum", "-einddatum"),
-
             ("publicatiedatum", "publicatiedatum"),
             ("-publicatiedatum", "-publicatiedatum"),
-
             ("archiefactiedatum", "archiefactiedatum"),
             ("-archiefactiedatum", "-archiefactiedatum"),
-
             ("registratiedatum", "registratiedatum"),
             ("-registratiedatum", "-registratiedatum"),
-
             ("identificatie", "identificatie"),
             ("-identificatie", "-identificatie"),
         ),
@@ -850,14 +848,13 @@ class ZaakZoekSerializer(serializers.Serializer):
         required=False,
     )
 
-
-def validate(self, attrs):
-    validated_attrs = super().validate(attrs)
-    if not validated_attrs:
-        raise serializers.ValidationError(
-            _("Search parameters must be specified"), code="empty_search_body"
-        )
-    return validated_attrs
+    def validate(self, attrs):
+        validated_attrs = super().validate(attrs)
+        if not validated_attrs:
+            raise serializers.ValidationError(
+                _("Search parameters must be specified"), code="empty_search_body"
+            )
+        return validated_attrs
 
 
 class StatusSerializer(serializers.HyperlinkedModelSerializer):

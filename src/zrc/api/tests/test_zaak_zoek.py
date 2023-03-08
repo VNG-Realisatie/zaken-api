@@ -568,7 +568,10 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
         data = response.json()["results"]
 
         self.assertEqual(len(data), 3)
-        self.assertGreater(datetime.datetime.strptime(data[0]["startdatum"], '%Y-%m-%d'), datetime.datetime.strptime(data[1]["startdatum"], '%Y-%m-%d'))
+        self.assertGreater(
+            datetime.datetime.strptime(data[0]["startdatum"], "%Y-%m-%d"),
+            datetime.datetime.strptime(data[1]["startdatum"], "%Y-%m-%d"),
+        )
 
     def test_zoek_ordering_reverse(self):
         zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
@@ -590,8 +593,11 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
         data = response.json()["results"]
 
         self.assertEqual(len(data), 3)
-        self.assertGreater(datetime.datetime.strptime(data[1]["startdatum"], '%Y-%m-%d'),
-                           datetime.datetime.strptime(data[0]["startdatum"], '%Y-%m-%d'))
+        self.assertGreater(
+            datetime.datetime.strptime(data[1]["startdatum"], "%Y-%m-%d"),
+            datetime.datetime.strptime(data[0]["startdatum"], "%Y-%m-%d"),
+        )
+
     def test_zoek_without_params(self):
         url = get_operation_url("zaak__zoek")
 

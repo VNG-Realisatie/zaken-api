@@ -126,8 +126,11 @@ class ZaakFilter(FilterSet):
         help_text="Het veld waarop de resultaten geordend worden.",
     )
 
-    archiefactiedatum__isnull = filters.BooleanFilter(help_text="De archiefactiedatum is leeg")
+    archiefactiedatum__isnull = filters.BooleanFilter(
+        help_text="De archiefactiedatum is leeg"
+    )
     einddatum__isnull = filters.BooleanFilter(help_text="De einddatum is leeg")
+
     class Meta:
         model = Zaak
         fields = {

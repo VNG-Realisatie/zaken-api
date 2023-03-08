@@ -25,8 +25,7 @@ SPECTACULAR_SETTINGS.update(
         "ENUM_NAME_OVERRIDES": {
             "Rol_betrokkeneTypeEnum": "vng_api_common.constants.RolTypes",
             "MaximaleVertrouwelijkheidaanduidingEnum": "vng_api_common.constants.VertrouwelijkheidsAanduiding",
-
-        }
+        },
     }
 )
 SPECTACULAR_EXTENSIONS = [
