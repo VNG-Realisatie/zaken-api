@@ -21,8 +21,12 @@ SPECTACULAR_SETTINGS.update(
                 "description": "Productie Omgeving",
             }
         ],
-        # todo remove this line below when deploying to production
         "SORT_OPERATION_PARAMETERS": False,
+        "ENUM_NAME_OVERRIDES": {
+            "Rol_betrokkeneTypeEnum": "vng_api_common.constants.RolTypes",
+            "MaximaleVertrouwelijkheidaanduidingEnum": "vng_api_common.constants.VertrouwelijkheidsAanduiding",
+
+        }
     }
 )
 SPECTACULAR_EXTENSIONS = [

@@ -700,7 +700,6 @@ class ZaakZoekSerializer(serializers.Serializer):
             ("vestiging", "vestiging"),
             ("organisatorische_eenheid", "organisatorische_eenheid"),
             ("medewerker", "medewerker"),
-
         ),
         help_text="Type van de betrokkene. Uitleg bij mogelijke waarden: * natuurlijk_persoon - Natuurlijk persoon * niet_natuurlijk_persoon - Niet-natuurlijk persoon * vestiging - Vestiging * organisatorische_eenheid - Organisatorische eenheid * medewerker - Medewerker",
         required=False,
@@ -713,11 +712,14 @@ class ZaakZoekSerializer(serializers.Serializer):
 
     rol__omschrijving_generiek = serializers.ChoiceField(
         choices=(
-            ("natuurlijk_persoon", "natuurlijk_persoon"),
-            ("niet_natuurlijk_persoon", "niet_natuurlijk_persoon"),
-            ("vestiging", "vestiging"),
-            ("organisatorische_eenheid", "organisatorische_eenheid"),
-            ("medewerker", "medewerker"),
+            ("adviseur", "adviseur"),
+            ("behandelaar", "behandelaar"),
+            ("belanghebbende", "belanghebbende"),
+            ("beslisser", "beslisser"),
+            ("initiator", "initiator"),
+            ("klantcontacter", "klantcontacter"),
+            ("zaakcoordinator", "zaakcoordinator"),
+            ("mede_initiator", "mede_initiator"),
 
         ),
         help_text=_(
@@ -733,10 +735,19 @@ class ZaakZoekSerializer(serializers.Serializer):
         required=False,
     )
 
-    maximale_vertrouwelijkheidaanduiding = serializers.CharField(
-        help_text=_(
-            "Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is."
+    maximale_vertrouwelijkheidaanduiding = serializers.ChoiceField(
+        choices=(
+            ("openbaar", "openbaar"),
+            ("beperkt_openbaar", "beperkt_openbaar"),
+            ("intern", "intern"),
+            ("zaakvertrouwelijk", "zaakvertrouwelijk"),
+            ("vertrouwelijk", "vertrouwelijk"),
+            ("confidentieel", "confidentieel"),
+            ("geheim", "geheim"),
+            ("zeer_geheim", "zeer_geheim"),
+
         ),
+        help_text="Zaken met een vertrouwelijkheidaanduiding die beperkter is dan de aangegeven aanduiding worden uit de resultaten gefiltered. Uitleg bij mogelijke waarden: * `openbaar` - Openbaar * `beperkt_openbaar` - Beperkt openbaar * `intern` - Intern * `zaakvertrouwelijk` - Zaakvertrouwelijk * `vertrouwelijk` - Vertrouwelijk * `confidentieel` - Confidentieel * `geheim` - Geheim * `zeer_geheim` - Zeer geheim",
         required=False,
     )
 
@@ -747,6 +758,7 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
         required=False,
     )
+
     rol__betrokkene_identificatie__natuurlijk_persoon__inp_bsn = serializers.CharField(
         help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_bsn"),
         required=False,
@@ -755,21 +767,6 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
     )
 
-    rol__betrokkene_identificatie__medewerker__identificatie = serializers.CharField(
-        help_text=get_help_text("datamodel.Medewerker", "identificatie"),
-        required=False,
-        max_length=get_field_attribute(
-            "datamodel.Medewerker", "identificatie", "max_length"
-        ),
-    )
-    rol__betrokkene_identificatie__organisatorische_eenheid__identificatie = (
-        serializers.CharField(
-            help_text=get_help_text(
-                "datamodel.OrganisatorischeEenheid", "identificatie"
-            ),
-            required=False,
-        )
-    )
     rol__betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer = serializers.CharField(
         help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_a_nummer"),
         max_length=get_field_attribute(
@@ -815,7 +812,7 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
         required=False,
 
-    ),
+    )
 
     registratiedatum = serializers.CharField(
         required=False,

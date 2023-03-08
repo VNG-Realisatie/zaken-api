@@ -10351,6 +10351,17 @@ components:
             items:
               $ref: '#/components/schemas/Point2D'
             minItems: 2
+    MaximaleVertrouwelijkheidaanduidingEnum:
+      enum:
+      - openbaar
+      - beperkt_openbaar
+      - intern
+      - zaakvertrouwelijk
+      - vertrouwelijk
+      - confidentieel
+      - geheim
+      - zeer_geheim
+      type: string
     MultiLineString:
       title: Multi-line string
       description: GeoJSON multi-line-string geometry
@@ -11312,7 +11323,7 @@ components:
           title: producten of diensten
         vertrouwelijkheidaanduiding:
           allOf:
-          - $ref: '#/components/schemas/VertrouwelijkheidaanduidingEnum'
+          - $ref: '#/components/schemas/MaximaleVertrouwelijkheidaanduidingEnum'
           title: Vertrouwlijkheidaanduiding
           description: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor
             de openbaarheid bestemd is. Optioneel - indien geen waarde gekozen wordt,
@@ -11946,7 +11957,7 @@ components:
           maxLength: 1000
         betrokkeneType:
           allOf:
-          - $ref: '#/components/schemas/Rol_omschrijvingGeneriekEnum'
+          - $ref: '#/components/schemas/Rol_betrokkeneTypeEnum'
           description: |-
             Type van de `betrokkene`.
 
@@ -12235,13 +12246,24 @@ components:
           description: Een uniek nummer gekoppeld aan de onderneming.
           title: kvk nummer
           maxLength: 8
-    Rol_omschrijvingGeneriekEnum:
+    Rol_betrokkeneTypeEnum:
       enum:
       - natuurlijk_persoon
       - niet_natuurlijk_persoon
       - vestiging
       - organisatorische_eenheid
       - medewerker
+      type: string
+    Rol_omschrijvingGeneriekEnum:
+      enum:
+      - adviseur
+      - behandelaar
+      - belanghebbende
+      - beslisser
+      - initiator
+      - klantcontacter
+      - zaakcoordinator
+      - mede_initiator
       type: string
     Status:
       type: object
@@ -12509,17 +12531,6 @@ components:
       - duur
       - reden
       nullable: true
-    VertrouwelijkheidaanduidingEnum:
-      enum:
-      - openbaar
-      - beperkt_openbaar
-      - intern
-      - zaakvertrouwelijk
-      - vertrouwelijk
-      - confidentieel
-      - geheim
-      - zeer_geheim
-      type: string
     Wijzigingen:
       type: object
       properties:
@@ -12698,7 +12709,7 @@ components:
           title: producten of diensten
         vertrouwelijkheidaanduiding:
           allOf:
-          - $ref: '#/components/schemas/VertrouwelijkheidaanduidingEnum'
+          - $ref: '#/components/schemas/MaximaleVertrouwelijkheidaanduidingEnum'
           title: Vertrouwlijkheidaanduiding
           description: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor
             de openbaarheid bestemd is. Optioneel - indien geen waarde gekozen wordt,
@@ -13475,7 +13486,7 @@ components:
           title: startdatum__lte
         rol__betrokkeneType:
           allOf:
-          - $ref: '#/components/schemas/Rol_omschrijvingGeneriekEnum'
+          - $ref: '#/components/schemas/Rol_betrokkeneTypeEnum'
           description: 'Type van de betrokkene. Uitleg bij mogelijke waarden: * natuurlijk_persoon
             - Natuurlijk persoon * niet_natuurlijk_persoon - Niet-natuurlijk persoon
             * vestiging - Vestiging * organisatorische_eenheid - Organisatorische
@@ -13496,9 +13507,14 @@ components:
             \ - Mede-initiator\n"
           title: rol__omschrijvingGeneriek
         maximaleVertrouwelijkheidaanduiding:
-          type: string
-          description: Aanduiding van de mate waarin het zaakdossier van de ZAAK voor
-            de openbaarheid bestemd is.
+          allOf:
+          - $ref: '#/components/schemas/MaximaleVertrouwelijkheidaanduidingEnum'
+          description: 'Zaken met een vertrouwelijkheidaanduiding die beperkter is
+            dan de aangegeven aanduiding worden uit de resultaten gefiltered. Uitleg
+            bij mogelijke waarden: * `openbaar` - Openbaar * `beperkt_openbaar` -
+            Beperkt openbaar * `intern` - Intern * `zaakvertrouwelijk` - Zaakvertrouwelijk
+            * `vertrouwelijk` - Vertrouwelijk * `confidentieel` - Confidentieel *
+            `geheim` - Geheim * `zeer_geheim` - Zeer geheim'
           title: maximaleVertrouwelijkheidaanduiding
         rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie:
           type: string
@@ -13538,6 +13554,10 @@ components:
           description: Een korte unieke aanduiding van de MEDEWERKER.
           title: rol__betrokkeneIdentificatie__medewerker__identificatie
           maxLength: 24
+        rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie:
+          type: string
+          description: Een korte identificatie van de organisatorische eenheid.
+          title: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
         registratiedatum:
           type: string
           description: De datum waarop de zaakbehandelende organisatie de ZAAK heeft
