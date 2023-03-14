@@ -125,11 +125,11 @@ class ZaakFilter(FilterSet):
         ),
         help_text="Het veld waarop de resultaten geordend worden.",
     )
-
-    archiefactiedatum__isnull = filters.BooleanFilter(
-        help_text="De archiefactiedatum is leeg"
-    )
-    einddatum__isnull = filters.BooleanFilter(help_text="De einddatum is leeg")
+    #
+    # archiefactiedatum__isnull = filters.BooleanFilter(
+    #     help_text="De archiefactiedatum is leeg"
+    # )
+    # einddatum__isnull = filters.BooleanFilter(help_text="De einddatum is leeg")
 
     class Meta:
         model = Zaak
@@ -142,7 +142,7 @@ class ZaakFilter(FilterSet):
             "archiefstatus": ["exact", "in"],
             "startdatum": ["exact", "gt", "gte", "lt", "lte"],
             "registratiedatum": ["exact", "gt", "lt"],
-            "einddatum": ["exact", "gt", "lt"],
+            "einddatum": ["exact", "gt", "lt", "isnull"],
             "einddatum_gepland": ["exact", "gt", "lt"],
             "uiterlijke_einddatum_afdoening": ["exact", "gt", "lt"],
             # filters for werkvoorraad
