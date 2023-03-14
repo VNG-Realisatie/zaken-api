@@ -30,7 +30,7 @@ from vng_api_common.serializers import (
     NestedGegevensGroepMixin,
     add_choice_values_help_text,
 )
-from vng_api_common.utils import get_help_text
+from vng_api_common.utils import get_field_attribute, get_help_text
 from vng_api_common.validators import (
     IsImmutableValidator,
     PublishValidator,
@@ -522,7 +522,7 @@ class GeoWithinSerializer(serializers.Serializer):
 
 
 class ZaakZoekSerializer(serializers.Serializer):
-    zaakgeometrie = GeoWithinSerializer(required=False)
+    zaakgeometrie = GeoWithinSerializer(required=False, label="GeoWithin")
     uuid__in = serializers.ListField(
         child=serializers.UUIDField(),
         required=False,
@@ -530,7 +530,9 @@ class ZaakZoekSerializer(serializers.Serializer):
     )
 
     identificatie = serializers.CharField(
-        help_text=_("De unieke aanduiding van een KLANTCONTACT"),
+        help_text=_(
+            "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK."
+        ),
         required=False,
     )
 
@@ -541,7 +543,13 @@ class ZaakZoekSerializer(serializers.Serializer):
             "RSIN zijn van 9 nummers en voldoen aan "
             "https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef"
         ),
+        label="Bronorganisatie",
         required=False,
+    )
+    bronorganisatie__in = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        help_text=_("Array van bronorganisaties."),
     )
     zaaktype = serializers.URLField(
         help_text=_(
@@ -549,20 +557,75 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
         required=False,
     )
-    archiefnominatie = serializers.CharField(
-        help_text=_(
-            "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden."
+    zaaktype__in = serializers.ListField(
+        child=serializers.URLField(),
+        required=False,
+        help_text=_("Array van zaaktypen."),
+    )
+    archiefnominatie = serializers.ChoiceField(
+        choices=(
+            ("blijvend_bewaren", "blijvend_bewaren"),
+            ("vernietigen", "vernietigen"),
         ),
+        help_text="Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Uitleg bij mogelijke waarden: * blijvend_bewaren - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen worden naar een archiefbewaarplaats. * vernietigen - Het zaakdossier moet op of na de Archiefactiedatum vernietigd worden.",
         required=False,
     )
 
     archiefnominatie__in = serializers.ListField(
         child=serializers.CharField(),
         required=False,
-        help_text=_("Array of archiefnominaties"),
+        help_text=_("Multiple values may be separated by commas."),
     )
 
-    archiefactiedatum = serializers.DateField(
+    einddatum = serializers.CharField(
+        required=False,
+        help_text=_("De datum waarop de uitvoering van de zaak afgerond is."),
+    )
+    einddatum__gt = serializers.CharField(
+        required=False,
+        help_text=_(""),
+    )
+    einddatum__lt = serializers.CharField(
+        required=False,
+        help_text=_(""),
+    )
+
+    einddatum__isnull = serializers.BooleanField(
+        required=False,
+        help_text=_(""),
+    )
+
+    einddatumGepland = serializers.CharField(
+        required=False,
+        help_text=_(
+            "De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt."
+        ),
+    )
+    einddatumGepland__gt = serializers.CharField(
+        required=False,
+        help_text=_(""),
+    )
+    einddatumGepland__lt = serializers.CharField(
+        required=False,
+        help_text=_(""),
+    )
+
+    uiterlijkeEinddatumAfdoening = serializers.CharField(
+        required=False,
+        help_text=_(
+            "De laatste datum waarop volgens wet- en regelgeving de zaak afgerond dient te zijn."
+        ),
+    )
+    uiterlijkeEinddatumAfdoening__gt = serializers.CharField(
+        required=False,
+        help_text=_(""),
+    )
+    uiterlijkeEinddatumAfdoening__lt = serializers.CharField(
+        required=False,
+        help_text=_(""),
+    )
+
+    archiefactiedatum = serializers.CharField(
         required=False,
         help_text=_(
             "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
@@ -571,59 +634,73 @@ class ZaakZoekSerializer(serializers.Serializer):
         ),
     )
 
-    archiefactiedatum__lt = serializers.DateField(
+    archiefactiedatum__lt = serializers.CharField(
         required=False,
-        help_text=_(
-            "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
-            "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
-            "een RESULTAAT aan deze ZAAK indien nog leeg."
-        ),
+        label="Archiefactiedatum lt",
+        help_text=_(""),
     )
-    archiefactiedatum__gt = serializers.DateField(
+    archiefactiedatum__gt = serializers.CharField(
         required=False,
-        help_text=_(
-            "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet "
-            "worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van "
-            "een RESULTAAT aan deze ZAAK indien nog leeg."
-        ),
+        label="Archiefactiedatum gt",
+        help_text=_(""),
     )
 
-    archiefstatus = serializers.CharField(
-        help_text=_(
-            "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden."
+    archiefactiedatum__isnull = serializers.BooleanField(
+        required=False,
+        label="Archiefactiedatum is leeg",
+        help_text=_("De archiefactiedatum is leeg"),
+    )
+
+    archiefstatus = serializers.ChoiceField(
+        choices=(
+            ("nog_te_archiveren", "nog_te_archiveren"),
+            ("gearchiveerd", "gearchiveerd"),
+            (
+                "gearchiveerd_procestermijn_onbekend",
+                "gearchiveerd_procestermijn_onbekend",
+            ),
+            ("overgedragen", "overgedragen"),
         ),
+        help_text="Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Uitleg bij mogelijke waarden: * nog_te_archiveren - De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd. * gearchiveerd - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt. * gearchiveerd_procestermijn_onbekend - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum kan nog niet bepaald worden. * overgedragen - De zaak cq. het zaakdossier is overgebracht naar een archiefbewaarplaats.",
         required=False,
     )
 
     archiefstatus__in = serializers.ListField(
         child=serializers.CharField(),
         required=False,
-        help_text=_("Array of archiefstatus"),
+        help_text=_("Multiple values may be separated by commas."),
     )
 
-    startdatum = serializers.DateField(
+    startdatum = serializers.CharField(
         required=False,
         help_text="De datum waarop met de uitvoering van de zaak is gestart",
     )
-    startdatum__gt = serializers.DateField(
+    startdatum__gt = serializers.CharField(
         required=False,
         help_text="De datum waarop met de uitvoering van de zaak is gestart",
     )
-    startdatum__gte = serializers.DateField(
+    startdatum__gte = serializers.CharField(
         required=False,
         help_text="De datum waarop met de uitvoering van de zaak is gestart",
     )
-    startdatum__lt = serializers.DateField(
+    startdatum__lt = serializers.CharField(
         required=False,
         help_text="De datum waarop met de uitvoering van de zaak is gestart",
     )
-    startdatum__lte = serializers.DateField(
+    startdatum__lte = serializers.CharField(
         required=False,
         help_text="De datum waarop met de uitvoering van de zaak is gestart",
     )
 
-    rol__betrokkene_type = serializers.CharField(
-        help_text=_("Type van de `betrokkene`."),
+    rol__betrokkene_type = serializers.ChoiceField(
+        choices=(
+            ("natuurlijk_persoon", "natuurlijk_persoon"),
+            ("niet_natuurlijk_persoon", "niet_natuurlijk_persoon"),
+            ("vestiging", "vestiging"),
+            ("organisatorische_eenheid", "organisatorische_eenheid"),
+            ("medewerker", "medewerker"),
+        ),
+        help_text="Type van de betrokkene. Uitleg bij mogelijke waarden: * natuurlijk_persoon - Natuurlijk persoon * niet_natuurlijk_persoon - Niet-natuurlijk persoon * vestiging - Vestiging * organisatorische_eenheid - Organisatorische eenheid * medewerker - Medewerker",
         required=False,
     )
 
@@ -632,26 +709,103 @@ class ZaakZoekSerializer(serializers.Serializer):
         required=False,
     )
 
-    rol__omschrijving_generiek = serializers.CharField(
+    rol__omschrijving_generiek = serializers.ChoiceField(
+        choices=(
+            ("adviseur", "adviseur"),
+            ("behandelaar", "behandelaar"),
+            ("belanghebbende", "belanghebbende"),
+            ("beslisser", "beslisser"),
+            ("initiator", "initiator"),
+            ("klantcontacter", "klantcontacter"),
+            ("zaakcoordinator", "zaakcoordinator"),
+            ("mede_initiator", "mede_initiator"),
+        ),
         help_text=_(
-            "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE."
+            "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE. Uitleg bij mogelijke waarden:\n"
+            "\n`adviseur` - Adviseur\n"
+            "\n`behandelaar` - Behandelaar\n"
+            "\n`belanghebbende` - Belanghebbende\n"
+            "\n`beslisser` - Beslisser\n"
+            "\n`initiator` - Initiator\n"
+            "\n`klantcontacter` - Klantcontacter\n"
+            "\n`zaakcoordinator` - Zaakcoördinator\n "
+            "\n`mede_initiator` - Mede-initiator\n"
         ),
         required=False,
     )
 
-    maximale_vertrouwelijkheidaanduiding = serializers.CharField(
-        help_text=_(
-            "Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is."
+    maximale_vertrouwelijkheidaanduiding = serializers.ChoiceField(
+        choices=(
+            ("openbaar", "openbaar"),
+            ("beperkt_openbaar", "beperkt_openbaar"),
+            ("intern", "intern"),
+            ("zaakvertrouwelijk", "zaakvertrouwelijk"),
+            ("vertrouwelijk", "vertrouwelijk"),
+            ("confidentieel", "confidentieel"),
+            ("geheim", "geheim"),
+            ("zeer_geheim", "zeer_geheim"),
         ),
+        help_text="Zaken met een vertrouwelijkheidaanduiding die beperkter is dan de aangegeven aanduiding worden uit de resultaten gefiltered. Uitleg bij mogelijke waarden: * `openbaar` - Openbaar * `beperkt_openbaar` - Beperkt openbaar * `intern` - Intern * `zaakvertrouwelijk` - Zaakvertrouwelijk * `vertrouwelijk` - Vertrouwelijk * `confidentieel` - Confidentieel * `geheim` - Geheim * `zeer_geheim` - Zeer geheim",
         required=False,
     )
+
+    rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie = (
+        serializers.CharField(
+            help_text=get_help_text("datamodel.NatuurlijkPersoon", "anp_identificatie"),
+            max_length=get_field_attribute(
+                "datamodel.NatuurlijkPersoon", "anp_identificatie", "max_length"
+            ),
+            required=False,
+        )
+    )
+
     rol__betrokkene_identificatie__natuurlijk_persoon__inp_bsn = serializers.CharField(
         help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_bsn"),
+        required=False,
+        max_length=get_field_attribute(
+            "datamodel.NatuurlijkPersoon", "inp_bsn", "max_length"
+        ),
+    )
+
+    rol__betrokkene_identificatie__natuurlijk_persoon__inp_a_nummer = (
+        serializers.CharField(
+            help_text=get_help_text("datamodel.NatuurlijkPersoon", "inp_a_nummer"),
+            max_length=get_field_attribute(
+                "datamodel.NatuurlijkPersoon", "inp_a_nummer", "max_length"
+            ),
+            required=False,
+        )
+    )
+    rol__betrokkene_identificatie__niet_natuurlijk_persoon__inn_nnp_id = (
+        serializers.CharField(
+            help_text=get_help_text("datamodel.NietNatuurlijkPersoon", "inn_nnp_id"),
+            required=False,
+        )
+    )
+    rol__betrokkene_identificatie__niet_natuurlijk_persoon__ann_identificatie = (
+        serializers.CharField(
+            help_text=get_help_text(
+                "datamodel.NietNatuurlijkPersoon", "ann_identificatie"
+            ),
+            max_length=get_field_attribute(
+                "datamodel.NietNatuurlijkPersoon", "ann_identificatie", "max_length"
+            ),
+            required=False,
+        )
+    )
+    rol__betrokkene_identificatie__vestiging__vestigings_nummer = serializers.CharField(
+        help_text=get_help_text("datamodel.Vestiging", "vestigings_nummer"),
+        max_length=get_field_attribute(
+            "datamodel.Vestiging", "vestigings_nummer", "max_length"
+        ),
         required=False,
     )
 
     rol__betrokkene_identificatie__medewerker__identificatie = serializers.CharField(
         help_text=get_help_text("datamodel.Medewerker", "identificatie"),
+        max_length=get_field_attribute(
+            "datamodel.Medewerker", "identificatie", "max_length"
+        ),
         required=False,
     )
     rol__betrokkene_identificatie__organisatorische_eenheid__identificatie = (
@@ -661,6 +815,37 @@ class ZaakZoekSerializer(serializers.Serializer):
             ),
             required=False,
         )
+    )
+
+    registratiedatum = serializers.CharField(
+        required=False,
+        help_text="De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt.",
+    )
+    registratiedatum__gt = serializers.CharField(
+        required=False,
+        help_text="",
+    )
+    registratiedatum__lt = serializers.CharField(
+        required=False,
+        help_text="",
+    )
+    ordering = serializers.ChoiceField(
+        choices=(
+            ("startdatum", "startdatum"),
+            ("-startdatum", "-startdatum"),
+            ("einddatum", "einddatum"),
+            ("-einddatum", "-einddatum"),
+            ("publicatiedatum", "publicatiedatum"),
+            ("-publicatiedatum", "-publicatiedatum"),
+            ("archiefactiedatum", "archiefactiedatum"),
+            ("-archiefactiedatum", "-archiefactiedatum"),
+            ("registratiedatum", "registratiedatum"),
+            ("-registratiedatum", "-registratiedatum"),
+            ("identificatie", "identificatie"),
+            ("-identificatie", "-identificatie"),
+        ),
+        help_text="Het veld waarop de resultaten geordend worden. Het minnetje betekent omgekeerde volgorde.",
+        required=False,
     )
 
     def validate(self, attrs):
