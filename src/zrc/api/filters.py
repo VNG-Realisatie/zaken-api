@@ -125,6 +125,7 @@ class ZaakFilter(FilterSet):
         ),
         help_text="Het veld waarop de resultaten geordend worden.",
     )
+
     class Meta:
         model = Zaak
         fields = {

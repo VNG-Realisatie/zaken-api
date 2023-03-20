@@ -6625,6 +6625,16 @@ paths:
             deze ZAAK indien nog leeg.
           schema:
             type: string
+        - name: archiefactiedatum__isnull
+          required: false
+          in: query
+          description:
+            De datum waarop het gearchiveerde zaakdossier vernietigd moet
+            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
+            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
+            deze ZAAK indien nog leeg.
+          schema:
+            type: string
         - name: archiefstatus
           required: false
           in: query
