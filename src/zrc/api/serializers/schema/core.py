@@ -1,10 +1,12 @@
+from django.conf import settings
+
 from vng_api_common.validators import ResourceValidator
 
-from ..core import StatusSerializer
 from zrc.datamodel.models import Status
+
 from ...auth import get_auth
 from ...validators import DateNotInFutureValidator
-from django.conf import settings
+from ..core import StatusSerializer
 
 
 class StatusCreateSerializer(StatusSerializer):

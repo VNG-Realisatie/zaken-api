@@ -1030,6 +1030,7 @@ class StatusSerializer(serializers.HyperlinkedModelSerializer):
 
         return obj
 
+
 class ObjectTypeOverigeDefinitieSerializer(serializers.Serializer):
     url = serializers.URLField(
         label="Objecttype-URL",
