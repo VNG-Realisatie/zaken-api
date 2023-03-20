@@ -90,6 +90,7 @@ from .serializers import (
     ZaakVerzoekSerializer,
     ZaakZoekSerializer,
 )
+from .serializers.schema.core import StatusCreateSerializer
 from .validators import ZaakBesluitValidator
 
 logger = logging.getLogger(__name__)
@@ -341,11 +342,17 @@ class StatusViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_STATUSSEN_TOEVOEGEN
-        | SCOPEN_ZAKEN_HEROPENEN,
+                  | SCOPE_STATUSSEN_TOEVOEGEN
+                  | SCOPEN_ZAKEN_HEROPENEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
+
+    @extend_schema(
+        responses={201: StatusCreateSerializer},
+    )
+    def create(self, request, *args, **kwargs):
+        return super(StatusViewSet, self).create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         """
@@ -450,13 +457,13 @@ class ZaakObjectViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+                  | SCOPE_ZAKEN_BIJWERKEN
+                  | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
-        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+                   | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+                   | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -534,13 +541,13 @@ class ZaakInformatieObjectViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+                  | SCOPE_ZAKEN_BIJWERKEN
+                  | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
-        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+                   | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+                   | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     audit = AUDIT_ZRC
 
