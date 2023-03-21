@@ -11,7 +11,7 @@ from ..core import StatusSerializer
 
 class StatusCreateSerializer(StatusSerializer):
     """Identical to StatusSerializer, but removed `zaakinformatieobjecten` from response. This serializer is used only
-    for AOS generation."""
+    for OAS generation."""
 
     class Meta:
         model = Status
