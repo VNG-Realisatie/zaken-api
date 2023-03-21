@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0025_remove_rol_betrokkene")]
 
     operations = [

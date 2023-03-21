@@ -20,7 +20,6 @@ ZAAKTYPE = "https://example.com/api/v1/zaaktype/1"
 
 
 class US42TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
 
@@ -60,7 +59,6 @@ class US42TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(response_data[0]["url"], f"http://testserver{detail_url}")
 
     def test_filter_ook_zaaktype(self):
-
         # both in district
         ZaakFactory.create(
             zaakgeometrie=Point(4.887990, 52.377595),

@@ -31,7 +31,6 @@ VERANTWOORDELIJKE_ORGANISATIE = "517439943"
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class US169TestCase(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE]
     zaaktype = ZAAKTYPE
 

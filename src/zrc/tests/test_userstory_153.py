@@ -67,7 +67,6 @@ STATUSTYPE_RESPONSE = {
 
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class US153TestCase(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_ALLES_LEZEN, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 

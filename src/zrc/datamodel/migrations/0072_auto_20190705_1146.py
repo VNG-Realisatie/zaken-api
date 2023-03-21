@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0071_migrate_to_flattened_urls")]
 
     operations = [

@@ -18,7 +18,6 @@ ZAAKTYPE = "https://example.com/api/v1/zaaktype/1"
 
 
 class US345TestCase(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
     # TODO: Required for PATCH to work! This should work without or otherwise, why can I create a ZAAK without this?
     zaaktype = ZAAKTYPE

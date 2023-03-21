@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0062_rol_registratiedatum")]
 
     operations = [

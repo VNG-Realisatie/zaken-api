@@ -7,7 +7,6 @@ from zrc.datamodel.tests.factories import ZaakObjectFactory
 
 
 class ZaakObjectFilterTestCase(JWTAuthMixin, APITestCase):
-
     heeft_alle_autorisaties = True
 
     def test_filter_type(self):

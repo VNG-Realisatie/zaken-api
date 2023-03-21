@@ -20,7 +20,6 @@ RESPONSES = {ZAAKTYPE: {"url": ZAAKTYPE}}
 
 
 class PermissionTests(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
 

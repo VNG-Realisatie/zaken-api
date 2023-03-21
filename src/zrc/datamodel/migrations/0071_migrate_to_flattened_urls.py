@@ -41,7 +41,6 @@ def rewrite_urls(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0070_auto_20190627_1404")]
 
     operations = [migrations.RunPython(rewrite_urls, migrations.RunPython.noop)]

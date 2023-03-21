@@ -6,7 +6,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("datamodel", "0086_zaakcontactmoment"),
     ]

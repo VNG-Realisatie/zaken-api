@@ -6,7 +6,6 @@ import vng_api_common.validators
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = []

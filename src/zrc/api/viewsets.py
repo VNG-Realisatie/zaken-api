@@ -278,7 +278,6 @@ class ZaakViewSet(
             zaaktype=zaak.zaaktype,
             vertrouwelijkheidaanduiding=zaak.vertrouwelijkheidaanduiding,
         ):
-
             if zaak.is_closed:
                 msg = "Modifying a closed case with current scope is forbidden"
                 raise PermissionDenied(detail=msg)

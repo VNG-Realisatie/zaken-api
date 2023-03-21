@@ -35,7 +35,6 @@ ZAAKTYPE = "https://example.com/api/v1/zaaktype/1"
 
 
 class US349TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_ALLES_VERWIJDEREN]
     zaaktype = ZAAKTYPE
 

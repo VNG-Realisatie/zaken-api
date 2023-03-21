@@ -33,7 +33,6 @@ def copy_from_relation(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0063_auto_20190628_0938")]
 
     operations = [migrations.RunPython(copy_to_relation, copy_from_relation)]

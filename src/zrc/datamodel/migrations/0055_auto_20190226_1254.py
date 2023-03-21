@@ -6,7 +6,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0054_auto_20190129_1204")]
 
     operations = [

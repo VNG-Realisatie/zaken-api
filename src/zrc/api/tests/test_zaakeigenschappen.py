@@ -27,7 +27,6 @@ RESPONSES = {
 
 
 class ZaakEigenschappenTest(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     zaaktype = ZAAKTYPE
 

@@ -6,7 +6,6 @@ import vng_api_common.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0012_zaak_zaakgeometrie")]
 
     operations = [

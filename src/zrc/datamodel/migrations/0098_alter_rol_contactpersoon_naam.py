@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("datamodel", "0097_vestiging_kvk_nummer"),
     ]

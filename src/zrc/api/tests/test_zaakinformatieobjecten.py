@@ -56,7 +56,6 @@ def dt_to_api(dt: datetime):
 class ZaakInformatieObjectAPITests(
     ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase
 ):
-
     list_url = reverse(ZaakInformatieObject)
 
     heeft_alle_autorisaties = True

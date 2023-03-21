@@ -29,7 +29,6 @@ def gen_uuid(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0019_auto_20180724_0941")]
 
     operations = [migrations.RunPython(gen_uuid, migrations.RunPython.noop)]

@@ -6,7 +6,6 @@ import vng_api_common.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0075_auto_20190711_1403")]
 
     operations = [

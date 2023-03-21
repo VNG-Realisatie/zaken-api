@@ -47,7 +47,6 @@ ROLTYPE3_RESPONSE = {
 
 
 class US45TestCase(JWTAuthMixin, TypeCheckMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 

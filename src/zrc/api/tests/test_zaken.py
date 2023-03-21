@@ -965,9 +965,7 @@ class ZakenFilterTests(JWTAuthMixin, APITestCase):
             "einddatum_gepland",
             "uiterlijke_einddatum_afdoening",
         ]:
-
             with self.subTest(filter_on=filter_to_test):
-
                 response_gt = self.client.get(
                     url,
                     {f"{convert_to_camelcase(filter_to_test)}__gt": "2019-02-01"},

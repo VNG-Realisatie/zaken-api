@@ -91,7 +91,6 @@ class TyperingWaterUpdate(UpdateChoiceValues):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0081_auto_20190729_1013")]
 
     operations = [

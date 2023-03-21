@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0017_zaak_bronorganisatie")]
 
     operations = [

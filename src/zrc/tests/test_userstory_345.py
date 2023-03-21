@@ -71,7 +71,6 @@ EIND_STATUSTYPE_RESPONSE = {
     ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
 )
 class US345TestCase(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN, SCOPE_ZAKEN_ALLES_LEZEN]
     # TODO: Required for PATCH to work! This should work without or otherwise, why can I create a ZAAK without this?
     zaaktype = ZAAKTYPE

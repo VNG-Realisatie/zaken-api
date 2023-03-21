@@ -60,7 +60,6 @@ STATUSTYPE_RESPONSE = {
 @patch("vng_api_common.validators.obj_has_shape", return_value=True)
 @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
 class US39TestCase(JWTAuthMixin, APITestCase):
-
     scopes = [SCOPE_ZAKEN_CREATE, SCOPE_ZAKEN_BIJWERKEN]
     zaaktype = ZAAKTYPE
 

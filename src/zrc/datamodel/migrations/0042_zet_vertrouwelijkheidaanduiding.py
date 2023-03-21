@@ -52,7 +52,6 @@ def zet_aanduiding(apps, _):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("datamodel", "0041_zaak_vertrouwlijkheidaanduiding")]
 
     operations = [migrations.RunPython(zet_aanduiding, migrations.RunPython.noop)]
