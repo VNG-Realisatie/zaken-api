@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Zaken API
-  version: 1.4.0-rc1
+  version: 1.4.0
   description: "Een API om een zaakregistratiecomponent (ZRC) te benaderen.
 
 
@@ -10,6 +10,11 @@ info:
     resources gerelateerd zijn. De Zaken API werkt samen met andere API's voor
 
     Zaakgericht werken om tot volledige functionaliteit te komen.
+
+
+    **Wat is nieuw?**
+
+    * Query parameters en zoekvelden voor archivering.
 
 
     **Afhankelijkheden**
@@ -2726,7 +2731,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Status'
+                $ref: '#/components/schemas/StatusRequestbody'
           description: Created
         '400':
           headers:
@@ -6546,6 +6551,7 @@ paths:
             verantwoordelijk is voor de behandeling van de ZAAK.
           schema:
             type: string
+            example: "zaak123"
         - name: bronorganisatie
           required: false
           in: query
@@ -6555,6 +6561,7 @@ paths:
             en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
           schema:
             type: string
+            example: "000000000"
         - name: bronorganisatie__in
           required: false
           in: query
@@ -6563,6 +6570,7 @@ paths:
             type: array
             items:
               type: string
+            example: ["000000000","479559740","875883461"]
           style: form
           explode: false
         - name: zaaktype
@@ -6574,6 +6582,7 @@ paths:
           schema:
             type: string
             format: uri
+            example: "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/e80b7507-199a-484c-ad49-c41a1e43a6e7"
         - name: archiefnominatie
           required: false
           in: query
@@ -6585,6 +6594,7 @@ paths:
             enum:
               - blijvend_bewaren
               - vernietigen
+            example: "blijvend_bewaren"
         - name: archiefnominatie__in
           required: false
           in: query
@@ -6593,6 +6603,7 @@ paths:
             type: array
             items:
               type: string
+            example: ["blijvend_bewaren", "vernietigen"]
           style: form
           explode: false
         - name: archiefactiedatum
@@ -6605,36 +6616,28 @@ paths:
             deze ZAAK indien nog leeg.
           schema:
             type: string
-        - name: archiefactiedatum__lt
-          required: false
-          in: query
-          description:
-            De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
-            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
-            deze ZAAK indien nog leeg.
-          schema:
-            type: string
-        - name: archiefactiedatum__gt
-          required: false
-          in: query
-          description:
-            De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
-            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
-            deze ZAAK indien nog leeg.
-          schema:
-            type: string
+            example: "2019-01-02"
         - name: archiefactiedatum__isnull
           required: false
           in: query
-          description:
-            De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt
-            automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan
-            deze ZAAK indien nog leeg.
+          description: De archiefactiedatum is leeg.
+          schema:
+            type: boolean
+            example: false
+        - name: archiefactiedatum__lt
+          required: false
+          in: query
+          description: De archiefactiedatum is kleiner dan de opgegeven datum.
           schema:
             type: string
+            example: "2020-01-02"
+        - name: archiefactiedatum__gt
+          required: false
+          in: query
+          description: De archiefactiedatum is groter dan de opgegeven datum.
+          schema:
+            type: string
+            example: "2018-01-02"
         - name: archiefstatus
           required: false
           in: query
@@ -6648,6 +6651,7 @@ paths:
               - gearchiveerd
               - gearchiveerd_procestermijn_onbekend
               - overgedragen
+            example: "nog_te_archiveren"
         - name: archiefstatus__in
           required: false
           in: query
@@ -6656,6 +6660,7 @@ paths:
             type: array
             items:
               type: string
+            example: ["nog_te_archiveren","gearchiveerd","gearchiveerd_procestermijn_onbekend","overgedragen"]
           style: form
           explode: false
         - name: startdatum
@@ -6664,30 +6669,35 @@ paths:
           description: De datum waarop met de uitvoering van de zaak is gestart
           schema:
             type: string
+            example: "2017-01-02"
         - name: startdatum__gt
           required: false
           in: query
-          description: De datum waarop met de uitvoering van de zaak is gestart
+          description: De startdatum is groter dan de opgegeven datum.
           schema:
             type: string
+            example: "2018-01-02"
         - name: startdatum__gte
           required: false
           in: query
-          description: De datum waarop met de uitvoering van de zaak is gestart
+          description: De startdatum is groter dan of gelijk dan de opgegeven datum.
           schema:
             type: string
+            example: "2016-01-02"
         - name: startdatum__lt
           required: false
           in: query
-          description: De datum waarop met de uitvoering van de zaak is gestart
+          description: De startdatum is kleiner dan de opgegeven datum.
           schema:
             type: string
+            example: "2018-01-02"
         - name: startdatum__lte
           required: false
           in: query
-          description: De datum waarop met de uitvoering van de zaak is gestart
+          description: De startdatum is kleiner of gelijk dan de opgegeven datum.
           schema:
             type: string
+            example: "2018-01-02"
         - name: registratiedatum
           required: false
           in: query
@@ -6697,48 +6707,51 @@ paths:
             gebruikt.
           schema:
             type: string
+            example: "2015-01-02"
         - name: registratiedatum__gt
           required: false
           in: query
           description:
-            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
-            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
-            gebruikt.
+           De registratiedatum is groter dan de opgegeven datum.
           schema:
             type: string
+            example: "2014-01-02"
         - name: registratiedatum__lt
           required: false
           in: query
           description:
-            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
-            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
-            gebruikt.
+            De registratiedatum is kleiner dan de opgegeven datum.
           schema:
             type: string
+            example: "2016-01-02"
         - name: einddatum
           required: false
           in: query
           description: De datum waarop de uitvoering van de zaak afgerond is.
           schema:
             type: string
-        - name: einddatum__gt
-          required: false
-          in: query
-          description: De datum waarop de uitvoering van de zaak afgerond is.
-          schema:
-            type: string
-        - name: einddatum__lt
-          required: false
-          in: query
-          description: De datum waarop de uitvoering van de zaak afgerond is.
-          schema:
-            type: string
+            example: "2022-01-02"
         - name: einddatum__isnull
           required: false
           in: query
-          description: De datum waarop de uitvoering van de zaak afgerond is.
+          description: De einddatum is leeg.
+          schema:
+            type: boolean
+            example: false
+        - name: einddatum__gt
+          required: false
+          in: query
+          description: De einddatum is groter dan de opgegeven datum.
           schema:
             type: string
+            example: "2021-01-02"
+        - name: einddatum__lt
+          required: false
+          in: query
+          description: De einddatum is kleiner dan de opgegeven datum.
+          schema:
+            type: string
+            example: "2023-01-02"
         - name: einddatumGepland
           required: false
           in: query
@@ -6747,22 +6760,23 @@ paths:
             afgerond wordt.
           schema:
             type: string
+            example: "2022-01-02"
         - name: einddatumGepland__gt
           required: false
           in: query
           description:
-            De datum waarop volgens de planning verwacht wordt dat de zaak
-            afgerond wordt.
+            De geplande einddatum is groter dan de opgegeven datum.
           schema:
             type: string
+            example: "2021-01-02"
         - name: einddatumGepland__lt
           required: false
           in: query
           description:
-            De datum waarop volgens de planning verwacht wordt dat de zaak
-            afgerond wordt.
+            De geplande einddatum is kleiner dan de opgegeven datum.
           schema:
             type: string
+            example: "2024-01-02"
         - name: uiterlijkeEinddatumAfdoening
           required: false
           in: query
@@ -6771,22 +6785,23 @@ paths:
             dient te zijn.
           schema:
             type: string
+            example: "2024-01-02"
         - name: uiterlijkeEinddatumAfdoening__gt
           required: false
           in: query
           description:
-            De laatste datum waarop volgens wet- en regelgeving de zaak afgerond
-            dient te zijn.
+            De uiterlijke einddatumafdoening is groter dan de opgegeven datum.
           schema:
             type: string
+            example: "2023-01-02"
         - name: uiterlijkeEinddatumAfdoening__lt
           required: false
           in: query
           description:
-            De laatste datum waarop volgens wet- en regelgeving de zaak afgerond
-            dient te zijn.
+            De uiterlijke einddatumafdoening is kleiner dan de opgegeven datum.
           schema:
             type: string
+            example: "2025-01-02"
         - name: rol__betrokkeneType
           required: false
           in: query
@@ -6799,6 +6814,7 @@ paths:
               - vestiging
               - organisatorische_eenheid
               - medewerker
+            example: "natuurlijk_persoon"
         - name: rol__betrokkene
           required: false
           in: query
@@ -6806,6 +6822,7 @@ paths:
           schema:
             type: string
             format: uri
+            example: "https://example.com"
         - name: rol__omschrijvingGeneriek
           required: false
           in: query
@@ -6823,6 +6840,7 @@ paths:
               - klantcontacter
               - zaakcoordinator
               - mede_initiator
+            example: "initiator"
         - name: maximaleVertrouwelijkheidaanduiding
           required: false
           in: query
@@ -6840,6 +6858,7 @@ paths:
               - confidentieel
               - geheim
               - zeer_geheim
+            example: "zaakvertrouwelijk"
         - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
           required: false
           in: query
@@ -6849,6 +6868,7 @@ paths:
           schema:
             type: string
             maxLength: 9
+            example: "123456789"
         - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
           required: false
           in: query
@@ -6858,6 +6878,7 @@ paths:
           schema:
             type: string
             maxLength: 17
+            example: "123456789"
         - name: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer
           required: false
           in: query
@@ -6865,6 +6886,7 @@ paths:
           schema:
             type: string
             maxLength: 10
+            example: "123456789"
         - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
           required: false
           in: query
@@ -6873,6 +6895,7 @@ paths:
             NIET-NATUURLIJK PERSOON
           schema:
             type: string
+            example: "123456789"
         - name: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
           required: false
           in: query
@@ -6882,6 +6905,7 @@ paths:
           schema:
             type: string
             maxLength: 17
+            example: "123456789"
         - name: rol__betrokkeneIdentificatie__vestiging__vestigingsNummer
           required: false
           in: query
@@ -6889,6 +6913,7 @@ paths:
           schema:
             type: string
             maxLength: 24
+            example: "123456789"
         - name: rol__betrokkeneIdentificatie__medewerker__identificatie
           required: false
           in: query
@@ -6896,29 +6921,36 @@ paths:
           schema:
             type: string
             maxLength: 24
+            example: "123456789"
         - name: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
           required: false
           in: query
           description: Een korte identificatie van de organisatorische eenheid.
           schema:
             type: string
+            example: "123456789"
         - name: ordering
           required: false
           in: query
-          description: Het veld waarop de resultaten geordend worden.
+          description: Het veld waarop de resultaten geordend worden. Het minnetje betekent omgekeerde volgorde.
           schema:
             type: array
             items:
               type: string
               enum:
-                - - startdatum
-                  - -startdatum
-                  - einddatum
-                  - -einddatum
-                  - publicatiedatum
-                  - -publicatiedatum
-                  - archiefactiedatum
-                  - -archiefactiedatum
+                - startdatum
+                - -startdatum
+                - einddatum
+                - -einddatum
+                - publicatiedatum
+                - -publicatiedatum
+                - archiefactiedatum
+                - -archiefactiedatum
+                - registratiedatum
+                - -registratiedatum
+                - identificatie
+                - -identificatie
+              example: "-startdatum"
           style: form
           explode: false
         - name: page
@@ -6927,6 +6959,7 @@ paths:
           description: Een pagina binnen de gepagineerde set resultaten.
           schema:
             type: integer
+            example: 1
         - in: header
           name: Accept-Crs
           schema:
@@ -10879,6 +10912,14 @@ components:
         - gedeeltelijk
         - geheel
       type: string
+    BetrokkeneTypeEnum:
+      enum:
+        - natuurlijk_persoon
+        - niet_natuurlijk_persoon
+        - vestiging
+        - organisatorische_eenheid
+        - medewerker
+      type: string
     BlankEnum:
       enum:
         - ''
@@ -10928,7 +10969,7 @@ components:
           type: string
           description: De opgemaakte naam van de contactpersoon namens de BETROKKENE.
           title: naam
-          maxLength: 200
+          maxLength: 40
       required:
         - naam
       nullable: true
@@ -11155,17 +11196,6 @@ components:
               items:
                 $ref: '#/components/schemas/Point2D'
               minItems: 2
-    MaximaleVertrouwelijkheidaanduidingEnum:
-      enum:
-        - openbaar
-        - beperkt_openbaar
-        - intern
-        - zaakvertrouwelijk
-        - vertrouwelijk
-        - confidentieel
-        - geheim
-        - zeer_geheim
-      type: string
     MultiLineString:
       title: Multi-line string
       description: GeoJSON multi-line-string geometry
@@ -11887,21 +11917,6 @@ components:
         - indicatie
         - reden
       nullable: true
-    OrderingEnum:
-      enum:
-        - startdatum
-        - -startdatum
-        - einddatum
-        - -einddatum
-        - publicatiedatum
-        - -publicatiedatum
-        - archiefactiedatum
-        - -archiefactiedatum
-        - registratiedatum
-        - -registratiedatum
-        - identificatie
-        - -identificatie
-      type: string
     PaginatedKlantContactList:
       type: object
       properties:
@@ -12189,7 +12204,7 @@ components:
           title: producten of diensten
         vertrouwelijkheidaanduiding:
           allOf:
-            - $ref: '#/components/schemas/MaximaleVertrouwelijkheidaanduidingEnum'
+            - $ref: '#/components/schemas/VertrouwelijkheidaanduidingEnum'
           title: Vertrouwlijkheidaanduiding
           description:
             Aanduiding van de mate waarin het zaakdossier van de ZAAK voor
@@ -12931,7 +12946,7 @@ components:
           maxLength: 1000
         betrokkeneType:
           allOf:
-            - $ref: '#/components/schemas/Rol_betrokkeneTypeEnum'
+            - $ref: '#/components/schemas/BetrokkeneTypeEnum'
           description: 'Type van de `betrokkene`.
 
 
@@ -13051,11 +13066,11 @@ components:
       discriminator:
         propertyName: betrokkeneType
         mapping:
+          medewerker: '#/components/schemas/medewerker_Rol'
           natuurlijk_persoon: '#/components/schemas/natuurlijk_persoon_Rol'
           niet_natuurlijk_persoon: '#/components/schemas/niet_natuurlijk_persoon_Rol'
-          vestiging: '#/components/schemas/vestiging_Rol'
           organisatorische_eenheid: '#/components/schemas/organisatorische_eenheid_Rol'
-          medewerker: '#/components/schemas/medewerker_Rol'
+          vestiging: '#/components/schemas/vestiging_Rol'
     RolMedewerker:
       type: object
       properties:
@@ -13249,25 +13264,6 @@ components:
           description: Een uniek nummer gekoppeld aan de onderneming.
           title: kvk nummer
           maxLength: 8
-    Rol_betrokkeneTypeEnum:
-      enum:
-        - natuurlijk_persoon
-        - niet_natuurlijk_persoon
-        - vestiging
-        - organisatorische_eenheid
-        - medewerker
-      type: string
-    Rol_omschrijvingGeneriekEnum:
-      enum:
-        - adviseur
-        - behandelaar
-        - belanghebbende
-        - beslisser
-        - initiator
-        - klantcontacter
-        - zaakcoordinator
-        - mede_initiator
-      type: string
     Status:
       type: object
       properties:
@@ -13336,8 +13332,75 @@ components:
             minLength: 1
             maxLength: 1000
           readOnly: true
-          title: status
+          title: zaakInformatieobjecten
           uniqueItems: true
+      required:
+        - datumStatusGezet
+        - indicatieLaatstGezetteStatus
+        - statustype
+        - url
+        - uuid
+        - zaak
+        - zaakinformatieobjecten
+    StatusRequestbody:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+          title: url
+          description:
+            URL-referentie naar dit object. Dit is de unieke identificatie
+            en locatie van dit object.
+          minLength: 1
+          maxLength: 1000
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+          title: uuid
+        zaak:
+          type: string
+          format: uri
+          description: URL-referentie naar de ZAAK.
+          title: zaak
+          minLength: 1
+          maxLength: 1000
+        statustype:
+          type: string
+          format: uri
+          description: URL-referentie naar het STATUSTYPE (in de Catalogi API).
+          title: statustype
+          maxLength: 1000
+        datumStatusGezet:
+          type: string
+          format: date-time
+          description: De datum waarop de ZAAK de status heeft verkregen.
+          title: datum status gezet
+        statustoelichting:
+          type: string
+          description:
+            Een, voor de initiator van de zaak relevante, toelichting op
+            de status van een zaak.
+          title: statustoelichting
+          maxLength: 1000
+        indicatieLaatstGezetteStatus:
+          type: boolean
+          readOnly: true
+          description:
+            Het gegeven is afleidbaar uit de historie van de attribuutsoort
+            Datum status gezet van van alle statussen bij de desbetreffende zaak.
+          title: indicatieLaatstGezetteStatus
+        gezetdoor:
+          type: string
+          format: uri
+          title: Gezet door
+          description:
+            De BETROKKENE die in zijn/haar ROL in een ZAAK heeft geregistreerd
+            dat STATUSsen in die ZAAK bereikt zijn.
+          maxLength: 200
       required:
         - datumStatusGezet
         - indicatieLaatstGezetteStatus
@@ -13546,6 +13609,17 @@ components:
         - duur
         - reden
       nullable: true
+    VertrouwelijkheidaanduidingEnum:
+      enum:
+        - openbaar
+        - beperkt_openbaar
+        - intern
+        - zaakvertrouwelijk
+        - vertrouwelijk
+        - confidentieel
+        - geheim
+        - zeer_geheim
+      type: string
     Wijzigingen:
       type: object
       properties:
@@ -13736,7 +13810,7 @@ components:
           title: producten of diensten
         vertrouwelijkheidaanduiding:
           allOf:
-            - $ref: '#/components/schemas/MaximaleVertrouwelijkheidaanduidingEnum'
+            - $ref: '#/components/schemas/VertrouwelijkheidaanduidingEnum'
           title: Vertrouwlijkheidaanduiding
           description:
             Aanduiding van de mate waarin het zaakdossier van de ZAAK voor
@@ -14462,268 +14536,312 @@ components:
         - verzoek
         - zaak
     ZaakZoek:
-      type: object
-      properties:
-        zaakgeometrie:
-          allOf:
-            - $ref: '#/components/schemas/GeoWithin'
-          title: GeoWithin
-        uuid__in:
-          type: array
-          items:
-            type: string
-            format: uuid
-            title: ''
-          description: Array of unieke resource identifiers (UUID4)
-          title: uuid__in
-        identificatie:
-          type: string
-          description:
-            De unieke identificatie van de ZAAK binnen de organisatie die
-            verantwoordelijk is voor de behandeling van de ZAAK.
-          title: identificatie
-        bronorganisatie:
-          type: string
-          description:
-            Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
-            die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers
-            en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
-          title: bronorganisatie
-        bronorganisatie__in:
-          type: array
-          items:
-            type: string
-            title: ''
-          description: Array van bronorganisaties.
-          title: bronorganisatie__in
-        zaaktype:
-          type: string
-          format: uri
-          description:
-            URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de
-            CATALOGUS waar deze voorkomt
-          title: zaaktype
-        zaaktype__in:
-          type: array
-          items:
-            type: string
-            format: uri
-            title: ''
-          description: Array van zaaktypen.
-          title: zaaktype__in
-        archiefnominatie:
-          allOf:
-            - $ref: '#/components/schemas/ArchiefnominatieEnum'
-          description:
-            'Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden. Uitleg bij mogelijke waarden: * blijvend_bewaren
-            - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen
-            worden naar een archiefbewaarplaats. * vernietigen - Het zaakdossier moet
-            op of na de Archiefactiedatum vernietigd worden.'
-          title: archiefnominatie
-        archiefnominatie__in:
-          type: array
-          items:
-            type: string
-            title: ''
-          description: Multiple values may be separated by commas.
-          title: archiefnominatie__in
-        einddatum:
-          type: string
-          description: De datum waarop de uitvoering van de zaak afgerond is.
-          title: einddatum
-        einddatum__gt:
-          type: string
-          title: einddatum__gt
-        einddatum__lt:
-          type: string
-          title: einddatum__lt
-        einddatum__isnull:
-          type: boolean
-          title: einddatum__isnull
-        einddatumGepland:
-          type: string
-          description:
-            De datum waarop volgens de planning verwacht wordt dat de zaak
-            afgerond wordt.
-          title: einddatumGepland
-        einddatumGepland__gt:
-          type: string
-          title: einddatumGepland__gt
-        einddatumGepland__lt:
-          type: string
-          title: einddatumGepland__lt
-        uiterlijkeEinddatumAfdoening:
-          type: string
-          description:
-            De laatste datum waarop volgens wet- en regelgeving de zaak
-            afgerond dient te zijn.
-          title: uiterlijkeEinddatumAfdoening
-        uiterlijkeEinddatumAfdoening__gt:
-          type: string
-          title: uiterlijkeEinddatumAfdoening__gt
-        uiterlijkeEinddatumAfdoening__lt:
-          type: string
-          title: uiterlijkeEinddatumAfdoening__lt
-        archiefactiedatum:
-          type: string
-          description:
-            De datum waarop het gearchiveerde zaakdossier vernietigd moet
-            worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
-            Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
-            aan deze ZAAK indien nog leeg.
-          title: archiefactiedatum
-        archiefactiedatum__lt:
-          type: string
-          title: Archiefactiedatum lt
-        archiefactiedatum__gt:
-          type: string
-          title: Archiefactiedatum gt
-        archiefactiedatum__isnull:
-          type: boolean
-          title: Archiefactiedatum is leeg
-          description: De archiefactiedatum is leeg
-        archiefstatus:
-          allOf:
-            - $ref: '#/components/schemas/ArchiefstatusEnum'
-          description:
-            'Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
-            termijn vernietigd moet worden. Uitleg bij mogelijke waarden: * nog_te_archiveren
-            - De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd. * gearchiveerd
-            - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar
-            gemaakt. * gearchiveerd_procestermijn_onbekend - De zaak cq. het zaakdossier
-            is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum
-            kan nog niet bepaald worden. * overgedragen - De zaak cq. het zaakdossier
-            is overgebracht naar een archiefbewaarplaats.'
-          title: archiefstatus
-        archiefstatus__in:
-          type: array
-          items:
-            type: string
-            title: ''
-          description: Multiple values may be separated by commas.
-          title: archiefstatus__in
-        startdatum:
-          type: string
-          description: De datum waarop met de uitvoering van de zaak is gestart
-          title: startdatum
-        startdatum__gt:
-          type: string
-          description: De datum waarop met de uitvoering van de zaak is gestart
-          title: startdatum__gt
-        startdatum__gte:
-          type: string
-          description: De datum waarop met de uitvoering van de zaak is gestart
-          title: startdatum__gte
-        startdatum__lt:
-          type: string
-          description: De datum waarop met de uitvoering van de zaak is gestart
-          title: startdatum__lt
-        startdatum__lte:
-          type: string
-          description: De datum waarop met de uitvoering van de zaak is gestart
-          title: startdatum__lte
-        rol__betrokkeneType:
-          allOf:
-            - $ref: '#/components/schemas/Rol_betrokkeneTypeEnum'
-          description:
-            'Type van de betrokkene. Uitleg bij mogelijke waarden: * natuurlijk_persoon
-            - Natuurlijk persoon * niet_natuurlijk_persoon - Niet-natuurlijk persoon
-            * vestiging - Vestiging * organisatorische_eenheid - Organisatorische
-            eenheid * medewerker - Medewerker'
-          title: rol__betrokkeneType
-        rol__betrokkene:
-          type: string
-          description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
-          title: rol__betrokkene
-        rol__omschrijvingGeneriek:
-          allOf:
-            - $ref: '#/components/schemas/Rol_omschrijvingGeneriekEnum'
-          description:
-            "Algemeen gehanteerde benaming van de aard van de ROL, afgeleid\
-            \ uit het ROLTYPE. Uitleg bij mogelijke waarden:\n\n`adviseur` - Adviseur\n\
-            \n`behandelaar` - Behandelaar\n\n`belanghebbende` - Belanghebbende\n\n\
-            `beslisser` - Beslisser\n\n`initiator` - Initiator\n\n`klantcontacter`\
-            \ - Klantcontacter\n\n`zaakcoordinator` - Zaakco\xF6rdinator\n \n`mede_initiator`\
-            \ - Mede-initiator\n"
-          title: rol__omschrijvingGeneriek
-        maximaleVertrouwelijkheidaanduiding:
-          allOf:
-            - $ref: '#/components/schemas/MaximaleVertrouwelijkheidaanduidingEnum'
-          description:
-            'Zaken met een vertrouwelijkheidaanduiding die beperkter is
-            dan de aangegeven aanduiding worden uit de resultaten gefiltered. Uitleg
-            bij mogelijke waarden: * `openbaar` - Openbaar * `beperkt_openbaar` -
-            Beperkt openbaar * `intern` - Intern * `zaakvertrouwelijk` - Zaakvertrouwelijk
-            * `vertrouwelijk` - Vertrouwelijk * `confidentieel` - Confidentieel *
-            `geheim` - Geheim * `zeer_geheim` - Zeer geheim'
-          title: maximaleVertrouwelijkheidaanduiding
-        rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie:
-          type: string
-          description:
-            Het door de gemeente uitgegeven unieke nummer voor een ANDER
-            NATUURLIJK PERSOON
-          title: rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie
-          maxLength: 17
-        rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn:
-          type: string
-          description:
-            Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet
-            algemene bepalingen burgerservicenummer.
-          title: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn
-          maxLength: 9
-        rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer:
-          type: string
-          description: Het administratienummer van de persoon, bedoeld in de Wet BRP
-          title: rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer
-          maxLength: 10
-        rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId:
-          type: string
-          description:
-            Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
-            NIET-NATUURLIJK PERSOON
-          title: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId
-        rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie:
-          type: string
-          description:
-            Het door de gemeente uitgegeven unieke nummer voor een ANDER
-            NIET-NATUURLIJK PERSOON
-          title: rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie
-          maxLength: 17
-        rol__betrokkeneIdentificatie__vestiging__vestigingsNummer:
-          type: string
-          description: Een korte unieke aanduiding van de Vestiging.
-          title: rol__betrokkeneIdentificatie__vestiging__vestigingsNummer
-          maxLength: 24
-        rol__betrokkeneIdentificatie__medewerker__identificatie:
-          type: string
-          description: Een korte unieke aanduiding van de MEDEWERKER.
-          title: rol__betrokkeneIdentificatie__medewerker__identificatie
-          maxLength: 24
-        rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie:
-          type: string
-          description: Een korte identificatie van de organisatorische eenheid.
-          title: rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie
-        registratiedatum:
-          type: string
-          description:
-            De datum waarop de zaakbehandelende organisatie de ZAAK heeft
-            geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag
-            gebruikt.
-          title: registratiedatum
-        registratiedatum__gt:
-          type: string
-          title: registratiedatum__gt
-        registratiedatum__lt:
-          type: string
-          title: registratiedatum__lt
-        ordering:
-          allOf:
-            - $ref: '#/components/schemas/OrderingEnum'
-          description:
-            Het veld waarop de resultaten geordend worden. Het minnetje
-            betekent omgekeerde volgorde.
-          title: ordering
+          type: object
+          properties:
+            zaakgeometrie:
+              $ref: '#/components/schemas/GeoWithin'
+            uuid__in:
+              description: Array of unieke resource identifiers (UUID4)
+              type: array
+              items:
+                type: string
+                format: uuid
+              example: ["e80b7507-199a-484c-ad49-c41a1e43a6e7", "78e12133-c467-4202-91ba-4417baa52801"]
+            identificatie:
+              title: Identificatie
+              description: De unieke identificatie van de ZAAK binnen de organisatie die
+                verantwoordelijk is voor de behandeling van de ZAAK.
+              type: string
+              example: "zaak123"
+            bronorganisatie:
+              title: Bronorganisatie
+              description: Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie
+                die de zaak heeft gecreeerd. Dit moet een geldig RSIN zijn van 9 nummers
+                en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef
+              type: string
+              example: "000000000"
+            bronorganisatie__in:
+              description: Array van bronorganisaties.
+              type: array
+              items:
+                type: string
+                format: string
+              example: ["000000000","479559740","875883461"]
+            zaaktype:
+              title: Zaaktype
+              description: URL-referentie naar het ZAAKTYPE (in de Catalogi API) in de
+                CATALOGUS waar deze voorkomt
+              type: string
+              example: "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/e80b7507-199a-484c-ad49-c41a1e43a6e7"
+            zaaktype__in:
+              description: Array van zaaktypen.
+              type: array
+              items:
+                type: string
+                format: uri
+              example: ["https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/e80b7507-199a-484c-ad49-c41a1e43a6e7","https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/78e12133-c467-4202-91ba-4417baa52801"]
+            archiefnominatie:
+              title: Archiefnominatie
+              description: 'Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+                termijn vernietigd moet worden.
+                Uitleg bij mogelijke waarden:
+                * `blijvend_bewaren` - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum
+                overgedragen worden naar een archiefbewaarplaats.
+                * `vernietigen` - Het zaakdossier moet op of na de Archiefactiedatum vernietigd
+                worden.'
+              type: string
+              enum:
+              - blijvend_bewaren
+              - vernietigen
+              example: "blijvend_bewaren"
+            archiefnominatie__in:
+              title: Archiefnominatie in
+              description: Multiple values may be separated by commas.
+              type: array
+              items:
+                type: string
+              example: [ "blijvend_bewaren", "vernietigen" ]
+            archiefactiedatum:
+              title: Archiefactiedatum
+              description: De datum waarop het gearchiveerde zaakdossier vernietigd moet
+                worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
+                Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT
+                aan deze ZAAK indien nog leeg.
+              type: string
+              example: "2019-01-02"
+            archiefactiedatum__isnull:
+              title: Archiefactiedatum is leeg
+              type: boolean
+              example: false
+            archiefactiedatum__lt:
+              title: Archiefactiedatum kleiner dan
+              type: string
+              example: "2020-01-02"
+            archiefactiedatum__gt:
+              title: Archiefactiedatum  groter dan
+              type: string
+              example: "2018-01-02"
+            archiefstatus:
+              title: Archiefstatus
+              description: 'Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde
+                termijn vernietigd moet worden.
+                Uitleg bij mogelijke waarden:
+                * `nog_te_archiveren` - De zaak cq. het zaakdossier is nog niet als geheel
+                gearchiveerd.
+                * `gearchiveerd` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar
+                bewaarbaar gemaakt.
+                * `gearchiveerd_procestermijn_onbekend` - De zaak cq. het zaakdossier
+                is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum
+                kan nog niet bepaald worden.
+                * `overgedragen` - De zaak cq. het zaakdossier is overgebracht naar een
+                archiefbewaarplaats.'
+              type: string
+              enum:
+              - nog_te_archiveren
+              - gearchiveerd
+              - gearchiveerd_procestermijn_onbekend
+              - overgedragen
+              example: "nog_te_archiveren"
+            archiefstatus__in:
+              title: Archiefstatus in
+              description: Multiple values may be separated by commas.
+              type: array
+              items:
+                type: string
+              example: [ "nog_te_archiveren","gearchiveerd","gearchiveerd_procestermijn_onbekend","overgedragen" ]
+            startdatum:
+              title: Startdatum
+              description: De datum waarop met de uitvoering van de zaak is gestart
+              type: string
+              example: "2017-01-02"
+            startdatum__gt:
+              title: Startdatum groter dan
+              type: string
+              example: "2018-01-02"
+            startdatum__gte:
+              title: Startdatum groter dan of gelijk
+              type: string
+              example: "2016-01-02"
+            startdatum__lt:
+              title: Startdatum kleiner dan
+              type: string
+              example: "2018-01-02"
+            startdatum__lte:
+              title: Startdatum kleiner dan of gelijk
+              type: string
+              example: "2018-01-02"
+            registratiedatum:
+              title: Registratiedatum
+              description: De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt.
+              type: string
+              example: "2015-01-02"
+            registratiedatum__gt:
+              title: Registratiedatum groter dan
+              type: string
+              example: "2014-01-02"
+            registratiedatum__lt:
+              title: Registratiedatum kleiner dan
+              type: string
+              example: "2016-01-02"
+            einddatum:
+              title: Einddatum
+              description: De datum waarop de uitvoering van de zaak afgerond is.
+              type: string
+              example: "2022-01-02"
+            einddatum__isnull:
+              title: Einddatum is leeg
+              type: boolean
+              example: false
+            einddatum__gt:
+              title: Einddatum groter dan
+              type: string
+              example: "2021-01-02"
+            einddatum__lt:
+              title: Einddatum kleiner dan
+              type: string
+              minLength: 1
+              example: "2023-01-02"
+            einddatumGepland:
+              title: Einddatum gepland
+              description: De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.
+              type: string
+              example: "2022-01-02"
+            einddatumGepland__gt:
+              title: Einddatum gepland groter dan
+              type: string
+              example: "2021-01-02"
+            einddatumGepland__lt:
+              title: Einddatum gepland kleiner dan
+              type: string
+              example: "2024-01-02"
+            uiterlijkeEinddatumAfdoening:
+              title: Uiterlijke einddatumAfdoening
+              description: De laatste datum waarop volgens wet- en regelgeving de zaak afgerond dient te zijn.
+              type: string
+              example: "2024-01-02"
+            uiterlijkeEinddatumAfdoening__gt:
+              title: Uiterlijke einddatumAfdoening groter dan
+              type: string
+              example: "2023-01-02"
+            uiterlijkeEinddatumAfdoening__lt:
+              title: Uiterlijke einddatumAfdoening kleiner dan
+              type: string
+              example: "2025-01-02"
+            rol__betrokkeneType:
+              title: Rol  betrokkenetype
+              description: 'Type van de `betrokkene`.
+                Uitleg bij mogelijke waarden:
+                * `natuurlijk_persoon` - Natuurlijk persoon
+                * `niet_natuurlijk_persoon` - Niet-natuurlijk persoon
+                * `vestiging` - Vestiging
+                * `organisatorische_eenheid` - Organisatorische eenheid
+                * `medewerker` - Medewerker'
+              type: string
+              enum:
+              - natuurlijk_persoon
+              - niet_natuurlijk_persoon
+              - vestiging
+              - organisatorische_eenheid
+              - medewerker
+              example: "natuurlijk_persoon"
+            rol__betrokkene:
+              title: Rol  betrokkene
+              description: URL-referentie naar een betrokkene gerelateerd aan de ZAAK.
+              type: string
+              example: "https://example.com"
+            rol__omschrijvingGeneriek:
+              title: Rol  omschrijvinggeneriek
+              description:
+                Algemeen gehanteerde benaming van de aard van de ROL, afgeleid uit het ROLTYPE.
+              type: string
+              enum:
+              - adviseur
+              - behandelaar
+              - belanghebbende
+              - beslisser
+              - initiator
+              - klantcontacter
+              - zaakcoordinator
+              - mede_initiator
+              example: "initiator"
+            maximaleVertrouwelijkheidaanduiding:
+              title: Maximalevertrouwelijkheidaanduiding
+              description:
+                Zaken met een vertrouwelijkheidaanduiding die beperkter is
+                dan de aangegeven aanduiding worden uit de resultaten gefiltered.
+              type: string
+              enum:
+              - openbaar
+              - beperkt_openbaar
+              - intern
+              - zaakvertrouwelijk
+              - vertrouwelijk
+              - confidentieel
+              - geheim
+              - zeer_geheim
+              example: "zaakvertrouwelijk"
+            rol__betrokkeneIdentificatie__natuurlijkPersoon__inpBsn:
+              title: Rol  betrokkeneidentificatie  natuurlijkpersoon  inpbsn
+              description: Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet
+                algemene bepalingen burgerservicenummer.
+              type: string
+              example: "123456789"
+            rol__betrokkeneIdentificatie__natuurlijkPersoon__anpIdentificatie:
+              title: Rol  betrokkeneidentificatie  natuurlijkpersoon  anpidentificatie
+              description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+                NATUURLIJK PERSOON
+              type: string
+              example: "123456789"
+            rol__betrokkeneIdentificatie__natuurlijkPersoon__inpA_nummer:
+              title: Rol  betrokkeneidentificatie  natuurlijkpersoon  inpa nummer
+              description: Het administratienummer van de persoon, bedoeld in de Wet BRP
+              type: string
+              example: "123456789"
+            rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__innNnpId:
+              title: Rol  betrokkeneidentificatie  nietnatuurlijkpersoon  innnnpid
+              description: Het door een kamer toegekend uniek nummer voor de INGESCHREVEN
+                NIET-NATUURLIJK PERSOON
+              type: string
+              example: "123456789"
+            rol__betrokkeneIdentificatie__nietNatuurlijkPersoon__annIdentificatie:
+              title: Rol  betrokkeneidentificatie  nietnatuurlijkpersoon  annidentificatie
+              description: Het door de gemeente uitgegeven unieke nummer voor een ANDER
+                NIET-NATUURLIJK PERSOON
+              type: string
+              example: "123456789"
+            rol__betrokkeneIdentificatie__vestiging__vestigingsNummer:
+              title: Rol  betrokkeneidentificatie  vestiging  vestigingsnummer
+              description: Een korte unieke aanduiding van de Vestiging.
+              type: string
+              example: "123456789"
+            rol__betrokkeneIdentificatie__medewerker__identificatie:
+              title: Rol  betrokkeneidentificatie  medewerker  identificatie
+              description: Een korte unieke aanduiding van de MEDEWERKER.
+              type: string
+              example: "123456789"
+            rol__betrokkeneIdentificatie__organisatorischeEenheid__identificatie:
+              title: Rol  betrokkeneidentificatie  organisatorischeeenheid  identificatie
+              description: Een korte identificatie van de organisatorische eenheid.
+              type: string
+              example: "123456789"
+            ordering:
+              title: Ordering
+              description: Het veld waarop de resultaten geordend worden. Het minnetje betekent omgekeerde volgorde.
+              type: string
+              enum:
+              - startdatum
+              - -startdatum
+              - einddatum
+              - -einddatum
+              - publicatiedatum
+              - -publicatiedatum
+              - archiefactiedatum
+              - -archiefactiedatum
+              - registratiedatum
+              - -registratiedatum
+              - identificatie
+              - -identificatie
+              example: "-startdatum"
     ZakelijkRechtHeeftAlsGerechtigde:
       type: object
       properties:
@@ -14735,20 +14853,20 @@ components:
           allOf:
             - $ref: '#/components/schemas/RolNietNatuurlijkPersoon'
           title: nietNatuurlijkPersoon
-    adres_PatchedZaakObject:
-      allOf:
-        - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectAdres'
     adres_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectAdres'
-    besluit_PatchedZaakObject:
+    adres_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
+        - $ref: '#/components/schemas/object_identificatie_ObjectAdres'
     besluit_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
+    besluit_PatchedZaakObject:
+      allOf:
+        - $ref: '#/components/schemas/PatchedZaakObject'
     betrokkene_identificatie_RolMedewerker:
       type: object
       properties:
@@ -14784,80 +14902,76 @@ components:
           allOf:
             - $ref: '#/components/schemas/RolVestiging'
           title: betrokkeneIdentificatie
-    buurt_PatchedZaakObject:
-      allOf:
-        - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectBuurt'
     buurt_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectBuurt'
-    enkelvoudig_document_PatchedZaakObject:
+    buurt_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
+        - $ref: '#/components/schemas/object_identificatie_ObjectBuurt'
     enkelvoudig_document_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
-    gemeente_PatchedZaakObject:
+    enkelvoudig_document_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectGemeente'
     gemeente_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectGemeente'
-    gemeentelijke_openbare_ruimte_PatchedZaakObject:
+    gemeente_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectGemeentelijkeOpenbareRuimte'
+        - $ref: '#/components/schemas/object_identificatie_ObjectGemeente'
     gemeentelijke_openbare_ruimte_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectGemeentelijkeOpenbareRuimte'
-    huishouden_PatchedZaakObject:
+    gemeentelijke_openbare_ruimte_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectHuishouden'
+        - $ref: '#/components/schemas/object_identificatie_ObjectGemeentelijkeOpenbareRuimte'
     huishouden_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectHuishouden'
-    inrichtingselement_PatchedZaakObject:
+    huishouden_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectInrichtingselement'
+        - $ref: '#/components/schemas/object_identificatie_ObjectHuishouden'
     inrichtingselement_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectInrichtingselement'
-    kadastrale_onroerende_zaak_PatchedZaakObject:
+    inrichtingselement_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectKadastraleOnroerendeZaak'
+        - $ref: '#/components/schemas/object_identificatie_ObjectInrichtingselement'
     kadastrale_onroerende_zaak_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectKadastraleOnroerendeZaak'
-    kunstwerkdeel_PatchedZaakObject:
+    kadastrale_onroerende_zaak_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectKunstwerkdeel'
+        - $ref: '#/components/schemas/object_identificatie_ObjectKadastraleOnroerendeZaak'
     kunstwerkdeel_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectKunstwerkdeel'
-    maatschappelijke_activiteit_PatchedZaakObject:
+    kunstwerkdeel_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectMaatschappelijkeActiviteit'
+        - $ref: '#/components/schemas/object_identificatie_ObjectKunstwerkdeel'
     maatschappelijke_activiteit_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectMaatschappelijkeActiviteit'
-    medewerker_PatchedZaakObject:
+    maatschappelijke_activiteit_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolMedewerker'
+        - $ref: '#/components/schemas/object_identificatie_ObjectMaatschappelijkeActiviteit'
     medewerker_Rol:
       allOf:
         - $ref: '#/components/schemas/Rol'
@@ -14865,11 +14979,11 @@ components:
     medewerker_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolMedewerker'
-    natuurlijk_persoon_PatchedZaakObject:
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolMedewerker'
+    medewerker_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolNatuurlijkPersoon'
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolMedewerker'
     natuurlijk_persoon_Rol:
       allOf:
         - $ref: '#/components/schemas/Rol'
@@ -14877,11 +14991,11 @@ components:
     natuurlijk_persoon_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolNatuurlijkPersoon'
-    niet_natuurlijk_persoon_PatchedZaakObject:
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolNatuurlijkPersoon'
+    natuurlijk_persoon_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolNietNatuurlijkPersoon'
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolNatuurlijkPersoon'
     niet_natuurlijk_persoon_Rol:
       allOf:
         - $ref: '#/components/schemas/Rol'
@@ -14889,7 +15003,11 @@ components:
     niet_natuurlijk_persoon_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolNietNatuurlijkPersoon'
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolNietNatuurlijkPersoon'
+    niet_natuurlijk_persoon_PatchedZaakObject:
+      allOf:
+        - $ref: '#/components/schemas/PatchedZaakObject'
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolNietNatuurlijkPersoon'
     object_identificatie_ObjectAdres:
       type: object
       properties:
@@ -15086,18 +15204,14 @@ components:
           allOf:
             - $ref: '#/components/schemas/RolVestiging'
           title: objectIdentificatie
-    openbare_ruimte_PatchedZaakObject:
-      allOf:
-        - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectOpenbareRuimte'
     openbare_ruimte_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectOpenbareRuimte'
-    organisatorische_eenheid_PatchedZaakObject:
+    openbare_ruimte_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolOrganisatorischeEenheid'
+        - $ref: '#/components/schemas/object_identificatie_ObjectOpenbareRuimte'
     organisatorische_eenheid_Rol:
       allOf:
         - $ref: '#/components/schemas/Rol'
@@ -15105,57 +15219,57 @@ components:
     organisatorische_eenheid_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolOrganisatorischeEenheid'
-    overige_PatchedZaakObject:
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolOrganisatorischeEenheid'
+    organisatorische_eenheid_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectOverige'
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolOrganisatorischeEenheid'
     overige_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectOverige'
-    pand_PatchedZaakObject:
+    overige_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectPand'
+        - $ref: '#/components/schemas/object_identificatie_ObjectOverige'
     pand_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectPand'
-    spoorbaandeel_PatchedZaakObject:
+    pand_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectSpoorbaandeel'
+        - $ref: '#/components/schemas/object_identificatie_ObjectPand'
     spoorbaandeel_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectSpoorbaandeel'
-    status_PatchedZaakObject:
+    spoorbaandeel_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
+        - $ref: '#/components/schemas/object_identificatie_ObjectSpoorbaandeel'
     status_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
-    terrein_gebouwd_object_PatchedZaakObject:
+    status_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectTerreinGebouwdObject'
     terrein_gebouwd_object_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectTerreinGebouwdObject'
-    terreindeel_PatchedZaakObject:
+    terrein_gebouwd_object_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectTerreindeel'
+        - $ref: '#/components/schemas/object_identificatie_ObjectTerreinGebouwdObject'
     terreindeel_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectTerreindeel'
-    vestiging_PatchedZaakObject:
+    terreindeel_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolVestiging'
+        - $ref: '#/components/schemas/object_identificatie_ObjectTerreindeel'
     vestiging_Rol:
       allOf:
         - $ref: '#/components/schemas/Rol'
@@ -15163,70 +15277,74 @@ components:
     vestiging_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_RolVestiging'
-    waterdeel_PatchedZaakObject:
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolVestiging'
+    vestiging_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectWaterdeel'
+        - $ref: '#/components/schemas/betrokkene_identificatie_RolVestiging'
     waterdeel_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectWaterdeel'
-    wegdeel_PatchedZaakObject:
+    waterdeel_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectWegdeel'
+        - $ref: '#/components/schemas/object_identificatie_ObjectWaterdeel'
     wegdeel_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectWegdeel'
-    wijk_PatchedZaakObject:
+    wegdeel_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectWijk'
+        - $ref: '#/components/schemas/object_identificatie_ObjectWegdeel'
     wijk_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectWijk'
-    woonplaats_PatchedZaakObject:
+    wijk_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectWoonplaats'
+        - $ref: '#/components/schemas/object_identificatie_ObjectWijk'
     woonplaats_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectWoonplaats'
-    woz_deelobject_PatchedZaakObject:
+    woonplaats_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectWozDeelobject'
+        - $ref: '#/components/schemas/object_identificatie_ObjectWoonplaats'
     woz_deelobject_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectWozDeelobject'
-    woz_object_PatchedZaakObject:
+    woz_deelobject_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectWozObject'
+        - $ref: '#/components/schemas/object_identificatie_ObjectWozDeelobject'
     woz_object_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectWozObject'
-    woz_waarde_PatchedZaakObject:
+    woz_object_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectWozWaarde'
+        - $ref: '#/components/schemas/object_identificatie_ObjectWozObject'
     woz_waarde_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectWozWaarde'
-    zakelijk_recht_PatchedZaakObject:
+    woz_waarde_PatchedZaakObject:
       allOf:
         - $ref: '#/components/schemas/PatchedZaakObject'
-        - $ref: '#/components/schemas/object_identificatie_ObjectZakelijkRecht'
+        - $ref: '#/components/schemas/object_identificatie_ObjectWozWaarde'
     zakelijk_recht_ZaakObject:
       allOf:
         - $ref: '#/components/schemas/ZaakObject'
+        - $ref: '#/components/schemas/object_identificatie_ObjectZakelijkRecht'
+    zakelijk_recht_PatchedZaakObject:
+      allOf:
+        - $ref: '#/components/schemas/PatchedZaakObject'
         - $ref: '#/components/schemas/object_identificatie_ObjectZakelijkRecht'
   securitySchemes:
     JWT-Claims:
@@ -15234,8 +15352,8 @@ components:
       bearerFormat: JWT
       scheme: bearer
 servers:
+  - url: https://zaken-api.test.vng.cloud/api/v1
   - url: https://zaken-api.vng.cloud/api/v1
-    description: Productie Omgeving
 tags:
   - name: klantcontacten
     description: ''
