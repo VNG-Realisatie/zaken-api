@@ -2,7 +2,7 @@
 Zaken API
 =========
 
-:Version: 1.4.0-rc3
+:Version: 1.4.0
 :Source: https://github.com/VNG-Realisatie/zaken-api
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, ZRC
 
@@ -23,7 +23,19 @@ Versie      Release datum   API specificatie                                    
 ==========  ==============  ====================================================================================================================================================================================================  =======================================================================================================================  =================================================================================================================================
 master      n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/master/src/openapi.yaml>`_,                                                                   `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/master/src/autorisaties.md>`_                                  `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/master/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/master/src/openapi.yaml>`_
-                            (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.2.0..master?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+                            (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.4.0..master?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+1.4.0       2023-03-27      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.4.0/src/openapi.yaml>`_,                                                                    `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/1.4.0/src/autorisaties.md>`_                                   `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/1.4.0/src/notificaties.md>`_
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.4.0/src/openapi.yaml>`_
+                            (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.4.0..1.3.2?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+1.3.2       2023-03-13      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.3.2/src/openapi.yaml>`_,                                                                    `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/1.3.2/src/autorisaties.md>`_                                   `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/1.3.2/src/notificaties.md>`_
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.3.2/src/openapi.yaml>`_
+                            (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.2.0..1.3.2?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+1.3.1       2023-02-21      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.3.1/src/openapi.yaml>`_,                                                                    `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/1.3.1/src/autorisaties.md>`_                                   `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/1.3.1/src/notificaties.md>`_
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.3.1/src/openapi.yaml>`_
+                            (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.2.0..1.3.1?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+1.3.0       2022-12-20      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.3.0/src/openapi.yaml>`_,                                                                    `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/1.3.0/src/autorisaties.md>`_                                   `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/1.3.0/src/notificaties.md>`_
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.3.0/src/openapi.yaml>`_
+                            (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.2.0..1.3.0?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
 1.2.0       2021-08-27      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.2.0/src/openapi.yaml>`_,                                                                    `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/1.2.0/src/autorisaties.md>`_                                   `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/1.2.0/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.2.0/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.1.2..1.2.0?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
@@ -63,7 +75,7 @@ Versie      Release datum   Einddatum ondersteuning     Documentatie
 Referentie implementatie
 ========================
 
-|build-status| |coverage| |docker| |black| |python-versions|
+|build-status| |ci| |coverage| |black|
 
 Referentieimplementatie van de Zaken API. Ook wel
 zaakregistratiecomponent (ZRC) genoemd.
@@ -99,9 +111,13 @@ Licensed under the EUPL_
 
 .. _EUPL: LICENCE.md
 
-.. |build-status| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/ci-build/badge.svg
-    :alt: Build status
+.. |ci| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/ci/badge.svg
+    :alt: CI
     :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Aci-build
+
+.. |build-status| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/build/badge.svg
+    :alt: Build
+    :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Abuild
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/zaken-api/requirements.svg?branch=master
      :target: https://requires.io/github/VNG-Realisatie/zaken-api/requirements/?branch=master
@@ -111,26 +127,6 @@ Licensed under the EUPL_
     :alt: Coverage
     :target: https://codecov.io/gh/VNG-Realisatie/zaken-api
 
-.. |docker| image:: https://img.shields.io/badge/docker-latest-blue.svg
-    :alt: Docker image
-    :target: https://hub.docker.com/r/vngr/gemma-zrc/
-
 .. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :alt: Code style
     :target: https://github.com/psf/black
-
-.. |python-versions| image:: https://img.shields.io/badge/python-3.7%2B-blue.svg
-    :alt: Supported Python version
-    :target: https://hub.docker.com/r/vngr/gemma-zrc/
-
-.. |lint-oas| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/lint-oas/badge.svg
-    :alt: Lint OAS
-    :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Alint-oas
-
-.. |generate-sdks| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/generate-sdks/badge.svg
-    :alt: Generate SDKs
-    :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Agenerate-sdks
-
-.. |generate-postman-collection| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/generate-postman-collection/badge.svg
-    :alt: Generate Postman collection
-    :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Agenerate-postman-collection

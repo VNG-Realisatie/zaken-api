@@ -10,7 +10,7 @@ services:
   redis:
     image: redis
   web:
-    image: vngr/gemma-zrc
+    image: ghcr.io/vng-realisatie/zaken-api
     environment:
       - DJANGO_SETTINGS_MODULE=zrc.conf.docker
       - SECRET_KEY=${SECRET_KEY}
