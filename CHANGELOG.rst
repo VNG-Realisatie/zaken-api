@@ -1,6 +1,13 @@
 ===========
 Wijzigingen
 ===========
+1.4.0 (2022-03-27)
+===========
+
+Implementation changes
+----------------------
+
+* Added new search parameters to `_zoek` request and added new query parameters to the LIST call.   (`Issue 2139`_):
 
 1.3.2 (2022-03-03)
 ===========
