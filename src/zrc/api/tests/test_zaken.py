@@ -1161,7 +1161,7 @@ class ZakenExpandTests(JWTAuthMixin, APITestCase):
         rol2 = RolFactory.create(
             zaak=zaak,
         )
-        status = StatusFactory.create(zaak=zaak)
+        status1 = StatusFactory.create(zaak=zaak)
         status2 = StatusFactory.create(zaak=zaak)
 
         url = reverse("zaak-list")

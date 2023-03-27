@@ -321,22 +321,45 @@ class ZaakViewSet(
             .get("data", {}).get("expand", "")
         )
         fields_to_expand = filters.split(",")
+        if fields_to_expand:
+            pass
+
         for result in serializer.data:
+            result["_inclusions"] = {}
             for exp_field in fields_to_expand:
 
                 urls = result[exp_field]
-                for url in urls:
-                    uuid = url.split("/")[-1]
-                    model = apps.get_model(app_label="datamodel", model_name='Rol')
-                    breakpoint()
-                    rol = get_object_or_404(Rol, uuid=uuid)
-                    serializer2 = RolSerializer(rol, context={'request': self.request})
-                    for obj in serializer.data:
-                        obj.update({"_inclusions": {"rollen": serializer2.data}})
+                if not isinstance(urls, list):
+                    uuid = urls.split("/")[-1]
+                    model = get_object_or_404(URI_NAME_TO_MODEL_NAME_MAPPER[exp_field], uuid=uuid)
+                    serializer2 = URI_NAME_TO_SERIALIZER_MAPPER[exp_field](model, context={'request': self.request})
+                    result["_inclusions"].update({exp_field: serializer2.data})
+
+                else:
+                    result["_inclusions"][exp_field] = []
+                    for url in urls:
+                        uuid = url.split("/")[-1]
+                        # model = apps.get_model(app_label="datamodel", model_name=URI_NAME_TO_MODEL_NAME_MAPPER[exp_field])
+
+                        model = get_object_or_404(URI_NAME_TO_MODEL_NAME_MAPPER[exp_field], uuid=uuid)
+                        # serializer2 = RolSerializer(rol, context={'request': self.request})
+                        serializer2 = URI_NAME_TO_SERIALIZER_MAPPER[exp_field](model, context={'request': self.request})
+
+                        result["_inclusions"][exp_field].append(serializer2.data)
+
         return serializer
 
 
-URI_NAME_TO_MODEL_NAME_MAPPER = {"rollen": "Rol", "status": "Status"}
+class ExpandField:
+    def __init__(self, resources_to_expand, serialized_data):
+        self.resources_to_expand: list = resources_to_expand
+        self.levels_deep = len(self.resources_to_expand)
+        self.serialized_data = serialized_data
+        self.models = []
+
+
+URI_NAME_TO_MODEL_NAME_MAPPER = {"rollen": Rol, "status": Status}
+URI_NAME_TO_SERIALIZER_MAPPER = {"rollen": RolSerializer, "status": StatusSerializer}
 
 
 @extend_schema_view(
