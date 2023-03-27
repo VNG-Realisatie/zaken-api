@@ -21,6 +21,8 @@ from zrc.datamodel.models import (
 def get_most_recent_status(queryset, name, value):
     return queryset.order_by("-datum_status_gezet")[:1]
 
+def expand_filter(queryset, name, value):
+    return queryset
 
 class MaximaleVertrouwelijkheidaanduidingFilter(filters.ChoiceFilter):
     def __init__(self, *args, **kwargs):
@@ -124,6 +126,14 @@ class ZaakFilter(FilterSet):
             "archiefactiedatum",
         ),
         help_text="Het veld waarop de resultaten geordend worden.",
+    )
+
+    expand = filters.Filter(
+        method=expand_filter,
+        help_text=_(
+            "Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum "
+            "status gezet van van alle statussen bij de desbetreffende zaak."
+        ),
     )
 
     class Meta:

@@ -3,6 +3,8 @@ import logging
 from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
@@ -296,6 +298,46 @@ class ZaakViewSet(
         else:
             super().perform_destroy(instance)
 
+    def list(self, request, *args, **kwargs):
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            serializer = self.inclusions(serializer, queryset)
+
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def inclusions(self, serializer, queryset):
+        from django.apps import apps
+
+        filters = (
+            self.filter_backends[0]()
+            .get_filterset_kwargs(self.request, queryset, self)
+            .get("data", {}).get("expand", "")
+        )
+        fields_to_expand = filters.split(",")
+        for result in serializer.data:
+            for exp_field in fields_to_expand:
+
+                urls = result[exp_field]
+                for url in urls:
+                    uuid = url.split("/")[-1]
+                    model = apps.get_model(app_label="datamodel", model_name='Rol')
+                    breakpoint()
+                    rol = get_object_or_404(Rol, uuid=uuid)
+                    serializer2 = RolSerializer(rol, context={'request': self.request})
+                    for obj in serializer.data:
+                        obj.update({"_inclusions": {"rollen": serializer2.data}})
+        return serializer
+
+
+URI_NAME_TO_MODEL_NAME_MAPPER = {"rollen": "Rol", "status": "Status"}
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -341,8 +383,8 @@ class StatusViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_STATUSSEN_TOEVOEGEN
-        | SCOPEN_ZAKEN_HEROPENEN,
+                  | SCOPE_STATUSSEN_TOEVOEGEN
+                  | SCOPEN_ZAKEN_HEROPENEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -450,13 +492,13 @@ class ZaakObjectViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+                  | SCOPE_ZAKEN_BIJWERKEN
+                  | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
-        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+                   | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+                   | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -534,13 +576,13 @@ class ZaakInformatieObjectViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-        | SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+                  | SCOPE_ZAKEN_BIJWERKEN
+                  | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
-        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
-        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+                   | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+                   | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     audit = AUDIT_ZRC
 

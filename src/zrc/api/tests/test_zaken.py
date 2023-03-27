@@ -1149,6 +1149,36 @@ class ZakenFilterTests(JWTAuthMixin, APITestCase):
             self.assertEqual(response.data["count"], 1)
 
 
+class ZakenExpandTests(JWTAuthMixin, APITestCase):
+    heeft_alle_autorisaties = True
+
+    def test_expand_filter(self):
+        from pprint import pprint
+        zaak = ZaakFactory.create()
+        rol = RolFactory.create(
+            zaak=zaak,
+        )
+        rol2 = RolFactory.create(
+            zaak=zaak,
+        )
+        status = StatusFactory.create(zaak=zaak)
+        status2 = StatusFactory.create(zaak=zaak)
+
+        url = reverse("zaak-list")
+
+        with self.subTest():
+            response = self.client.get(
+                url,
+                {
+                    "expand": "rollen,status"
+                },
+                **ZAAK_READ_KWARGS,
+            )
+            pprint(response.json())
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
     """
     Test that the queries to build up a 'werkvoorraad' work as expected.
