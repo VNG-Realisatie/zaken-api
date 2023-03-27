@@ -63,7 +63,7 @@ Versie      Release datum   Einddatum ondersteuning     Documentatie
 Referentie implementatie
 ========================
 
-|build-status| |coverage| |docker| |black| |python-versions|
+|build-status| |ci| |coverage| |black|
 
 Referentieimplementatie van de Zaken API. Ook wel
 zaakregistratiecomponent (ZRC) genoemd.
@@ -99,9 +99,13 @@ Licensed under the EUPL_
 
 .. _EUPL: LICENCE.md
 
-.. |build-status| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/ci-build/badge.svg
-    :alt: Build status
+.. |ci| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/ci/badge.svg
+    :alt: CI
     :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Aci-build
+
+.. |build-status| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/build/badge.svg
+    :alt: Build
+    :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Abuild
 
 .. |requirements| image:: https://requires.io/github/VNG-Realisatie/zaken-api/requirements.svg?branch=master
      :target: https://requires.io/github/VNG-Realisatie/zaken-api/requirements/?branch=master
@@ -111,26 +115,6 @@ Licensed under the EUPL_
     :alt: Coverage
     :target: https://codecov.io/gh/VNG-Realisatie/zaken-api
 
-.. |docker| image:: https://img.shields.io/badge/docker-latest-blue.svg
-    :alt: Docker image
-    :target: https://hub.docker.com/r/vngr/gemma-zrc/
-
 .. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :alt: Code style
     :target: https://github.com/psf/black
-
-.. |python-versions| image:: https://img.shields.io/badge/python-3.7%2B-blue.svg
-    :alt: Supported Python version
-    :target: https://hub.docker.com/r/vngr/gemma-zrc/
-
-.. |lint-oas| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/lint-oas/badge.svg
-    :alt: Lint OAS
-    :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Alint-oas
-
-.. |generate-sdks| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/generate-sdks/badge.svg
-    :alt: Generate SDKs
-    :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Agenerate-sdks
-
-.. |generate-postman-collection| image:: https://github.com/VNG-Realisatie/zaken-api/workflows/generate-postman-collection/badge.svg
-    :alt: Generate Postman collection
-    :target: https://github.com/VNG-Realisatie/zaken-api/actions?query=workflow%3Agenerate-postman-collection
