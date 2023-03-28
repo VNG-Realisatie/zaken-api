@@ -1158,11 +1158,15 @@ class ZakenExpandTests(JWTAuthMixin, APITestCase):
         rol = RolFactory.create(
             zaak=zaak,
         )
+
+        status1 = StatusFactory.create(zaak=zaak)
+        status2 = StatusFactory.create(zaak=zaak)
+        rol.statussen.add(status1)
+
         rol2 = RolFactory.create(
             zaak=zaak,
         )
-        status1 = StatusFactory.create(zaak=zaak)
-        status2 = StatusFactory.create(zaak=zaak)
+        rol2.statussen.add(status2)
 
         url = reverse("zaak-list")
 
@@ -1170,7 +1174,7 @@ class ZakenExpandTests(JWTAuthMixin, APITestCase):
             response = self.client.get(
                 url,
                 {
-                    "expand": "rollen,status"
+                    "expand": "rollen.statussen,status"
                 },
                 **ZAAK_READ_KWARGS,
             )

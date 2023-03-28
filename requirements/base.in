@@ -2,7 +2,6 @@
 jq
 jsonschema
 markdown
-psycopg2
 python-dateutil
 python-decouple
 python-dotenv
