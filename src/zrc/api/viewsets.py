@@ -320,39 +320,47 @@ class ZaakViewSet(
                                                                                      'request': request})
 
         return serializer_exp_field.data
-
+    def impregnate_array(self,array_data, sub_field):
+        array_data["_inclusions"][sub_field] = []
+        for url in array_data[sub_field]:
+            data_from_url = self.get_data(url, sub_field, self.request)
+            array_data["_inclusions"][sub_field].append(data_from_url)
+            recursion_data = array_data["_inclusions"][sub_field]
+        return recursion_data
     def build_inclusions_schema(self, result, fields_to_expand):
         for exp_field in fields_to_expand:
-            for i, sub_field in enumerate(exp_field.split(".")):
-                if i == 0:
+            for counter, sub_field in enumerate(exp_field.split(".")):
+                if counter == 0:
                     if isinstance(result[sub_field], list):
-                        result["_inclusions"][sub_field] = []
+                        # result["_inclusions"][sub_field] = []
+                        # for url in result[sub_field]:
+                        #     data_from_url = self.get_data(url, sub_field, self.request)
+                        #     result["_inclusions"][sub_field].append(data_from_url)
+                        #     recursion_data = result["_inclusions"][sub_field]
 
-                        for url in result[sub_field]:
-                            data = self.get_data(url, sub_field, self.request)
-                            result["_inclusions"][sub_field].append(data)
-                            test = result["_inclusions"][sub_field]
+                        recursion_data = self.impregnate_array(result, sub_field)
+
 
                     else:
-                        data = self.get_data(result[sub_field], sub_field, self.request)
-                        result["_inclusions"][sub_field] = data
-                        test = result["_inclusions"][sub_field]
+                        data_from_url = self.get_data(result[sub_field], sub_field, self.request)
+                        result["_inclusions"][sub_field] = data_from_url
+                        recursion_data = result["_inclusions"][sub_field]
                 else:
-                    if isinstance(test,list):
-                       for dikt in test:
-                           dikt["_inclusions"] = {}
-                           if isinstance(dikt[sub_field], list):
-                               dikt["_inclusions"][sub_field] = []
+                    if isinstance(recursion_data, list):
+                        for array_data in recursion_data:
+                            array_data["_inclusions"] = {}
+                            if isinstance(array_data[sub_field], list):
+                                # array_data["_inclusions"][sub_field] = []
+                                # for url in array_data[sub_field]:
+                                #     data_from_url = self.get_data(url, sub_field, self.request)
+                                #     array_data["_inclusions"][sub_field].append(data_from_url)
+                                #     recursion_data = array_data["_inclusions"][sub_field]
+                                recursion_data = self.impregnate_array(array_data, sub_field)
 
-                               for url in dikt[sub_field]:
-                                   data = self.get_data(url, sub_field, self.request)
-                                   dikt["_inclusions"][sub_field].append(data)
-                                   test = dikt["_inclusions"][sub_field]
-
-                           else:
-                               data = self.get_data(dikt[sub_field], sub_field, self.request)
-                               dikt["_inclusions"][sub_field] = data
-                               test = dikt["_inclusions"][sub_field]
+                            else:
+                                data_from_url = self.get_data(array_data[sub_field], sub_field, self.request)
+                                array_data["_inclusions"][sub_field] = data_from_url
+                                recursion_data = dikt["_inclusions"][sub_field]
 
         return result
 
@@ -364,11 +372,12 @@ class ZaakViewSet(
         )
         fields_to_expand = filters.split(",")
 
-        for result in serializer.data:
-            result["_inclusions"] = {}
-            result = self.build_inclusions_schema(result, fields_to_expand)
+        for serialized_data in serializer.data:
+            serialized_data["_inclusions"] = {}
+            serialized_data = self.build_inclusions_schema(serialized_data, fields_to_expand)
 
         return serializer
+
 
 URI_NAME_TO_MODEL_NAME_MAPPER = {"rollen": Rol, "rol": Rol, "statussen": Status, "status": Status}
 URI_NAME_TO_SERIALIZER_MAPPER = {"rollen": RolSerializer, "rol": RolSerializer, "statussen": StatusSerializer,
