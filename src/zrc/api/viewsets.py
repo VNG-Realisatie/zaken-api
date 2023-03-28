@@ -312,6 +312,50 @@ class ZaakViewSet(
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    def get_data(self, url, resource_to_expand, request):
+        uuid = url.split("/")[-1]
+        model = get_object_or_404(URI_NAME_TO_MODEL_NAME_MAPPER[resource_to_expand], uuid=uuid)
+        serializer_exp_field = URI_NAME_TO_SERIALIZER_MAPPER[resource_to_expand](model,
+                                                                                 context={
+                                                                                     'request': request})
+
+        return serializer_exp_field.data
+
+    def build_inclusions_schema(self, result, fields_to_expand):
+        for exp_field in fields_to_expand:
+            for i, sub_field in enumerate(exp_field.split(".")):
+                if i == 0:
+                    if isinstance(result[sub_field], list):
+                        result["_inclusions"][sub_field] = []
+
+                        for url in result[sub_field]:
+                            data = self.get_data(url, sub_field, self.request)
+                            result["_inclusions"][sub_field].append(data)
+                            test = result["_inclusions"][sub_field]
+
+                    else:
+                        data = self.get_data(result[sub_field], sub_field, self.request)
+                        result["_inclusions"][sub_field] = data
+                        test = result["_inclusions"][sub_field]
+                else:
+                    if isinstance(test,list):
+                       for dikt in test:
+                           dikt["_inclusions"] = {}
+                           if isinstance(dikt[sub_field], list):
+                               dikt["_inclusions"][sub_field] = []
+
+                               for url in dikt[sub_field]:
+                                   data = self.get_data(url, sub_field, self.request)
+                                   dikt["_inclusions"][sub_field].append(data)
+                                   test = dikt["_inclusions"][sub_field]
+
+                           else:
+                               data = self.get_data(dikt[sub_field], sub_field, self.request)
+                               dikt["_inclusions"][sub_field] = data
+                               test = dikt["_inclusions"][sub_field]
+
+        return result
+
     def inclusions(self, serializer, queryset):
         filters = (
             self.filter_backends[0]()
@@ -319,106 +363,12 @@ class ZaakViewSet(
             .get("data", {}).get("expand", "")
         )
         fields_to_expand = filters.split(",")
-        inclusions = BuildInclusion(serializer.data)
+
         for result in serializer.data:
             result["_inclusions"] = {}
-            for exp_field in fields_to_expand:
-                for i, sub_field in enumerate(exp_field.split(".")):
-                    if not inclusions.fields.get(i, []):
-                        inclusions.fields.update({i: []})
-                    if i == 0:
-                        if isinstance(result[sub_field], list):
-                            for m2m_uri in result[sub_field]:
-                                exp_field_obj = ExpandField(sub_field, result, self.request, m2m_uri, i, True,
-                                                            exp_field.split("."))
-                                exp_field_obj.expand()
-                                inclusions.fields[i].append(exp_field_obj)
-                        else:
-                            exp_field_obj = ExpandField(sub_field, result, self.request, result[sub_field], i, False,
-                                                        exp_field.split("."))
-                            exp_field_obj.expand()
-                            inclusions.fields[i].append(exp_field_obj)
-                    else:
-                        if isinstance(exp_field_obj.result[sub_field], list):
-                            for m2m_uri in exp_field_obj.result[sub_field]:
-                                exp_field_obj = ExpandField(sub_field, exp_field_obj.result, self.request, m2m_uri, i,
-                                                            True, exp_field.split("."))
-                                exp_field_obj.expand()
-                                inclusions.fields[i].append(exp_field_obj)
-                        else:
-                            exp_field_obj = ExpandField(sub_field, exp_field_obj.result, self.request,
-                                                        exp_field_obj.result[sub_field], i, False, exp_field.split("."))
-                            exp_field_obj.expand()
-                            inclusions.fields[i].append(exp_field_obj)
+            result = self.build_inclusions_schema(result, fields_to_expand)
 
-        inclusions.build_inclusion()
         return serializer
-
-
-class BuildInclusion:
-    def __init__(self, main_serializer_data):
-        self.fields = {}
-        self.serializer_data = main_serializer_data[0]
-        self.serializer_copy = None
-
-    def build_inclusion(self):
-        if not self.serializer_data.get("_inclusions", None):
-            self.serializer_data.update({"_inclusions": {}})
-        test = self.serializer_data["_inclusions"]
-
-        for level in self.fields.keys():
-            level_fields = self.fields[level]
-            if level == 0:
-                for field in level_fields:
-                    if field.is_m2m:
-                        if not self.serializer_data["_inclusions"].get(field.resource_to_expand, []):
-                            self.serializer_data["_inclusions"].update({field.resource_to_expand: []})
-                        self.serializer_data["_inclusions"][field.resource_to_expand].append(field.result)
-                    else:
-                        self.serializer_data["_inclusions"].update({field.resource_to_expand: field.result})
-
-            else:
-                for field in level_fields:
-                    if max(list(self.fields.keys())) == level:
-                        test = test[field.all_exp_fields[level - 1]]
-
-                    else:
-                        test = test[field.all_exp_fields[level - 1]][0]
-
-                    if not test[0].get("_inclusions", None):
-                        test[0].update({"_inclusions": {}})
-
-                    breakpoint()
-                    if field.is_m2m:
-                        if not test["_inclusions"].get(field.resource_to_expand, []):
-                            test["_inclusions"].update({field.resource_to_expand: []})
-                        test["_inclusions"][field.resource_to_expand].append(field.result)
-                    else:
-                        test["_inclusions"].update({field.resource_to_expand: field.result})
-        return self.serializer_data
-
-
-class ExpandField:
-    def __init__(self, resource_to_expand: str, serialized_data, request, parent: str, level: int, is_m2m: bool,
-                 all_exp_fields):
-        self.request = request
-        self.resource_to_expand: str = resource_to_expand
-        self.serialized_data: dict = serialized_data
-        self.result = {}
-        self.parent = parent
-        self.level = level
-        self.is_m2m = is_m2m
-        self.all_exp_fields = all_exp_fields
-
-    def expand(self):
-        uuid = self.parent.split("/")[-1]
-        model = get_object_or_404(URI_NAME_TO_MODEL_NAME_MAPPER[self.resource_to_expand], uuid=uuid)
-        serializer_exp_field = URI_NAME_TO_SERIALIZER_MAPPER[self.resource_to_expand](model,
-                                                                                      context={
-                                                                                          'request': self.request})
-
-        self.result = serializer_exp_field.data
-
 
 URI_NAME_TO_MODEL_NAME_MAPPER = {"rollen": Rol, "rol": Rol, "statussen": Status, "status": Status}
 URI_NAME_TO_SERIALIZER_MAPPER = {"rollen": RolSerializer, "rol": RolSerializer, "statussen": StatusSerializer,
