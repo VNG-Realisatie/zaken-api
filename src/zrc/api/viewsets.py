@@ -344,13 +344,13 @@ class ZaakViewSet(
                         recursion_data = self.impregnate_dict(result, sub_field)
                 else:
                     if isinstance(recursion_data, list):
-                        for array_data in recursion_data:
-                            array_data["_inclusions"] = {}
-                            if isinstance(array_data[sub_field], list):
-                                recursion_data = self.impregnate_array(array_data, sub_field)
+                        for data in recursion_data:
+                            data["_inclusions"] = {}
+                            if isinstance(data[sub_field], list):
+                                recursion_data = self.impregnate_array(data, sub_field)
 
                             else:
-                                recursion_data = self.impregnate_dict(array_data, sub_field)
+                                recursion_data = self.impregnate_dict(data, sub_field)
                     else:
                         recursion_data["_inclusions"] = {}
                         if isinstance(recursion_data[sub_field], list):

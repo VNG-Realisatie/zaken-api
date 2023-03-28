@@ -1174,7 +1174,7 @@ class ZakenExpandTests(JWTAuthMixin, APITestCase):
             response = self.client.get(
                 url,
                 {
-                    "expand": "rollen.statussen,status.zaak"
+                    "expand": "rollen.statussen,status"
                 },
                 **ZAAK_READ_KWARGS,
             )
