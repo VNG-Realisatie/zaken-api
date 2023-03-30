@@ -23,6 +23,7 @@ def get_most_recent_status(queryset, name, value):
 
 
 def expand_filter(queryset, name, value):
+    """expansion filter logic is placed at view level"""
     return queryset
 
 
@@ -130,11 +131,10 @@ class ZaakFilter(FilterSet):
         help_text="Het veld waarop de resultaten geordend worden.",
     )
 
-    expand = filters.Filter(
+    expand = filters.CharFilter(
         method=expand_filter,
         help_text=_(
-            "Het gegeven is afleidbaar uit de historie van de attribuutsoort Datum "
-            "status gezet van van alle statussen bij de desbetreffende zaak."
+            "Example: `expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype, hoofdzaak.deelzaken.status.statustype`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
         ),
     )
 

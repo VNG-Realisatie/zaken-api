@@ -132,7 +132,7 @@ class Inclusions:
             )
             return serializer_exp_field.data
 
-    def impregnate_array(
+    def expand_array(
         self,
         array_data: dict,
         sub_field: str,
@@ -152,7 +152,7 @@ class Inclusions:
         else:
             return True, array_data
 
-    def impregnate_dict(
+    def expand_dict(
         self,
         array_data: dict,
         sub_field: str,
@@ -179,11 +179,11 @@ class Inclusions:
             for counter, sub_field in enumerate(exp_field.split(".")):
                 if counter == 0:
                     if isinstance(result[sub_field], list):
-                        break_off, recursion_data = self.impregnate_array(
+                        break_off, recursion_data = self.expand_array(
                             result, sub_field, called_external_uris, jwt_auth
                         )
                     else:
-                        break_off, recursion_data = self.impregnate_dict(
+                        break_off, recursion_data = self.expand_dict(
                             result, sub_field, called_external_uris, jwt_auth
                         )
                     if break_off:
@@ -193,11 +193,11 @@ class Inclusions:
                         for data in recursion_data:
                             data["_inclusions"] = {}
                             if isinstance(data[sub_field], list):
-                                break_off, recursion_data = self.impregnate_array(
+                                break_off, recursion_data = self.expand_array(
                                     data, sub_field, called_external_uris, jwt_auth
                                 )
                             else:
-                                break_off, recursion_data = self.impregnate_dict(
+                                break_off, recursion_data = self.expand_dict(
                                     data, sub_field, called_external_uris, jwt_auth
                                 )
                             if not break_off:
@@ -205,14 +205,14 @@ class Inclusions:
                     else:
                         recursion_data["_inclusions"] = {}
                         if isinstance(recursion_data[sub_field], list):
-                            break_off, recursion_data = self.impregnate_array(
+                            break_off, recursion_data = self.expand_array(
                                 recursion_data,
                                 sub_field,
                                 called_external_uris,
                                 jwt_auth,
                             )
                         else:
-                            break_off, recursion_data = self.impregnate_dict(
+                            break_off, recursion_data = self.expand_dict(
                                 recursion_data,
                                 sub_field,
                                 called_external_uris,
@@ -221,7 +221,7 @@ class Inclusions:
                         if break_off:
                             break
 
-    def inclusions(self, serializer, request):
+    def inclusions(self, serializer, request: Request):
         expand_filter = request.query_params.get("expand", "")
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
