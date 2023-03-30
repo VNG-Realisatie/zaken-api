@@ -61,6 +61,7 @@ from .filters import (
     ZaakObjectFilter,
     ZaakVerzoekFilter,
 )
+from .inclusions import Inclusions
 from .kanalen import KANAAL_ZAKEN
 from .mixins import ClosedZaakMixin
 from .permissions import (
@@ -199,6 +200,7 @@ class ZaakViewSet(
     GeoMixin,
     SearchMixin,
     CheckQueryParamsMixin,
+    Inclusions,
     ListFilterByAuthorizationsMixin,
     viewsets.ModelViewSet,
 ):
@@ -297,88 +299,6 @@ class ZaakViewSet(
             )
         else:
             super().perform_destroy(instance)
-
-    def list(self, request, *args, **kwargs):
-
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            serializer = self.inclusions(serializer, queryset)
-
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def get_data(self, url, resource_to_expand, request):
-        uuid = url.split("/")[-1]
-        model = get_object_or_404(URI_NAME_TO_MODEL_NAME_MAPPER[resource_to_expand], uuid=uuid)
-        serializer_exp_field = URI_NAME_TO_SERIALIZER_MAPPER[resource_to_expand](model,
-                                                                                 context={
-                                                                                     'request': request})
-
-        return serializer_exp_field.data
-
-    def impregnate_array(self, array_data, sub_field):
-        array_data["_inclusions"][sub_field] = []
-        for url in array_data[sub_field]:
-            data_from_url = self.get_data(url, sub_field, self.request)
-            array_data["_inclusions"][sub_field].append(data_from_url)
-            recursion_data = array_data["_inclusions"][sub_field]
-        return recursion_data
-
-    def impregnate_dict(self, array_data, sub_field):
-        data_from_url = self.get_data(array_data[sub_field], sub_field, self.request)
-        array_data["_inclusions"][sub_field] = data_from_url
-        return array_data["_inclusions"][sub_field]
-
-    def build_inclusions_schema(self, result, fields_to_expand):
-        for exp_field in fields_to_expand:
-            for counter, sub_field in enumerate(exp_field.split(".")):
-                if counter == 0:
-                    if isinstance(result[sub_field], list):
-                        recursion_data = self.impregnate_array(result, sub_field)
-                    else:
-                        recursion_data = self.impregnate_dict(result, sub_field)
-                else:
-                    if isinstance(recursion_data, list):
-                        for data in recursion_data:
-                            data["_inclusions"] = {}
-                            if isinstance(data[sub_field], list):
-                                recursion_data = self.impregnate_array(data, sub_field)
-
-                            else:
-                                recursion_data = self.impregnate_dict(data, sub_field)
-                    else:
-                        recursion_data["_inclusions"] = {}
-                        if isinstance(recursion_data[sub_field], list):
-                            recursion_data = self.impregnate_array(recursion_data, sub_field)
-                        else:
-                            recursion_data = self.impregnate_dict(recursion_data, sub_field)
-
-        return result
-
-    def inclusions(self, serializer, queryset):
-        filters = (
-            self.filter_backends[0]()
-            .get_filterset_kwargs(self.request, queryset, self)
-            .get("data", {}).get("expand", "")
-        )
-        fields_to_expand = filters.split(",")
-
-        for serialized_data in serializer.data:
-            serialized_data["_inclusions"] = {}
-            serialized_data = self.build_inclusions_schema(serialized_data, fields_to_expand)
-
-        return serializer
-
-
-URI_NAME_TO_MODEL_NAME_MAPPER = {"rollen": Rol, "rol": Rol, "statussen": Status, "status": Status, "zaak": Zaak,
-                                 "zaken": Zaak}
-URI_NAME_TO_SERIALIZER_MAPPER = {"rollen": RolSerializer, "rol": RolSerializer, "statussen": StatusSerializer,
-                                 "status": StatusSerializer, "zaak": ZaakSerializer, "zaken": ZaakSerializer}
 
 
 @extend_schema_view(

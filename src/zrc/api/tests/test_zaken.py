@@ -1155,6 +1155,12 @@ class ZakenExpandTests(JWTAuthMixin, APITestCase):
     def test_expand_filter(self):
         from pprint import pprint
         zaak = ZaakFactory.create()
+        zaak2 = ZaakFactory.create()
+
+        rol3 = RolFactory.create(
+            zaak=zaak2,
+        )
+
         rol = RolFactory.create(
             zaak=zaak,
         )
