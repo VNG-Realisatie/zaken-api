@@ -1,4 +1,5 @@
 import unittest
+import uuid
 from datetime import date, timedelta
 from unittest.mock import patch
 
@@ -15,6 +16,7 @@ from vng_api_common.constants import (
     RolOmschrijving,
     RolTypes,
     VertrouwelijkheidsAanduiding,
+    ZaakobjectTypes,
 )
 from vng_api_common.tests import (
     JWTAuthMixin,
@@ -59,6 +61,7 @@ from ..scopes import (
     SCOPE_ZAKEN_CREATE,
     SCOPEN_ZAKEN_HEROPENEN,
 )
+from .test_zaakobject import OBJECT
 
 # ZTC
 ZTC_ROOT = "https://example.com/ztc/api/v1"
@@ -1149,13 +1152,43 @@ class ZakenFilterTests(JWTAuthMixin, APITestCase):
             self.assertEqual(response.data["count"], 1)
 
 
-class ZakenExpandTests(JWTAuthMixin, APITestCase):
+@override_settings(
+    LINK_FETCHER="vng_api_common.mocks.link_fetcher_200",
+    ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient",
+)
+class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase):
     heeft_alle_autorisaties = True
+    ZTC_ROOT = "https://example.com/ztc/api/v1"
+    CATALOGUS = f"{ZTC_ROOT}/catalogus/878a3318-5950-4642-8715-189745f91b04"
+    ZAAKTYPE = f"{CATALOGUS}/zaaktypen/283ffaf5-8470-457b-8064-90e5728f413f"
+    EIGENSCHAP = f"{ZTC_ROOT}/eigenschappen/f420c3e0-8345-44d9-a981-0f424538b9e9"
+    ZAAKOBJECTTYPE = (
+        "http://testserver/api/v1/zaakobjecttypen/c340323d-31a5-46b4-93e8-fdc2d621be13"
+    )
+    INFORMATIEOBJECT = f"http://example.com/drc/api/v1/enkelvoudiginformatieobjecten/{uuid.uuid4().hex}"
 
-    def test_expand_filter(self):
-        from pprint import pprint
+    @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_expand_filter_few_levels_deep(self, *mocks):
         zaak = ZaakFactory.create()
         zaak2 = ZaakFactory.create()
+
+        zaakeigenschap = ZaakEigenschapFactory.create(
+            zaak=zaak, eigenschap=self.EIGENSCHAP, waarde="This is a value"
+        )
+        zaakobject = ZaakObjectFactory.create(
+            zaak=zaak,
+            object=OBJECT,
+            object_type=ZaakobjectTypes.besluit,
+            zaakobjecttype=self.ZAAKOBJECTTYPE,
+        )
+        zio = ZaakInformatieObjectFactory.create(zaak=zaak)
+        # valid_url = "https://catalogi-api.vng.cloud/api/v1/zaaktypen/fb3d4874-7793-4784-b231-0db4fdffaae1"
+        # zaak.zaaktype = "https://catalogi-api.vng.cloud/api/v1/zaaktypen/fb3d4874-7793-4784-b231-0db4fdffaae1"
+        # zaak2.zaaktype = "https://catalogi-api.vng.cloud/api/v1/zaaktypen/fb3d4874-7793-4784-b231-0db4fdffaae1"
+        # zaak.save()
+        # zaak2.save()
 
         rol3 = RolFactory.create(
             zaak=zaak2,
@@ -1176,17 +1209,14 @@ class ZakenExpandTests(JWTAuthMixin, APITestCase):
 
         url = reverse("zaak-list")
 
-        with self.subTest():
-            response = self.client.get(
-                url,
-                {
-                    "expand": "rollen.statussen,status"
-                },
-                **ZAAK_READ_KWARGS,
-            )
-            pprint(response.json())
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+        response = self.client.get(
+            url,
+            {
+                "expand": "rollen.statussen.zaak.rollen,status.zaak,eigenschappen,zaakobjecten,zaakinformatieobjecten"
+            },
+            **ZAAK_READ_KWARGS,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):

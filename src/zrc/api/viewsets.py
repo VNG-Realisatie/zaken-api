@@ -3,8 +3,6 @@ import logging
 from django.core.cache import caches
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
@@ -18,6 +16,7 @@ from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.settings import api_settings
 from vng_api_common.audittrails.viewsets import (
@@ -345,8 +344,8 @@ class StatusViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-                  | SCOPE_STATUSSEN_TOEVOEGEN
-                  | SCOPEN_ZAKEN_HEROPENEN,
+        | SCOPE_STATUSSEN_TOEVOEGEN
+        | SCOPEN_ZAKEN_HEROPENEN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -454,13 +453,13 @@ class ZaakObjectViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-                  | SCOPE_ZAKEN_BIJWERKEN
-                  | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        | SCOPE_ZAKEN_BIJWERKEN
+        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
-                   | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
-                   | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     notifications_kanaal = KANAAL_ZAKEN
     audit = AUDIT_ZRC
@@ -538,13 +537,13 @@ class ZaakInformatieObjectViewSet(
         "list": SCOPE_ZAKEN_ALLES_LEZEN,
         "retrieve": SCOPE_ZAKEN_ALLES_LEZEN,
         "create": SCOPE_ZAKEN_CREATE
-                  | SCOPE_ZAKEN_BIJWERKEN
-                  | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
+        | SCOPE_ZAKEN_BIJWERKEN
+        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "partial_update": SCOPE_ZAKEN_BIJWERKEN | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN,
         "destroy": SCOPE_ZAKEN_BIJWERKEN
-                   | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
-                   | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
+        | SCOPE_ZAKEN_GEFORCEERD_BIJWERKEN
+        | SCOPE_ZAKEN_ALLES_VERWIJDEREN,
     }
     audit = AUDIT_ZRC
 

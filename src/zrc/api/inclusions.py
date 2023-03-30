@@ -1,5 +1,14 @@
+import json
+import urllib
+from typing import Union
+from urllib.request import Request, urlopen
+
 from django.shortcuts import get_object_or_404
+
+from rest_framework.request import Request
 from rest_framework.response import Response
+from vng_api_common.middleware import JWTAuth
+
 from zrc.datamodel.models import (
     KlantContact,
     Resultaat,
@@ -12,6 +21,7 @@ from zrc.datamodel.models import (
     ZaakInformatieObject,
     ZaakObject,
 )
+
 from .serializers import (
     KlantContactSerializer,
     ResultaatSerializer,
@@ -28,45 +38,46 @@ from .serializers import (
     ZaakZoekSerializer,
 )
 
-# zaaktype extern
-# hoofdzaak extern
-# deelzaken extern
-# relevanteAndereZaken extern
+EXTERNAL_URIS = [
+    "zaaktype",
+    "hoofdzaak",
+    "deelzaken",
+    "relevanteAndereZaken",
+    "statustypen",
+]
 
-EXTERNAL_URIS = ["zaaktype", "hoofdzaak", "deelzaken", "relevanteAndereZaken"]
-
-URI_NAME_TO_MODEL_NAME_MAPPER = {"rollen": Rol,
-                                 "rol": Rol,
-                                 "statussen": Status,
-                                 "status": Status,
-                                 "zaak": Zaak,
-                                 "zaken": Zaak,
-                                 "eigenschappen": ZaakEigenschap,
-                                 "eigenschap": ZaakEigenschap,
-                                 "zaakinformatieobjecten": ZaakInformatieObject,
-                                 "zaakinformatieobject": ZaakInformatieObject,
-                                 "zaakobjecten": ZaakObject,
-                                 "zaakobject": ZaakObject,
-                                 "resultaten": Resultaat,
-                                 "resultaat": Resultaat,
-
-                                 }
-URI_NAME_TO_SERIALIZER_MAPPER = {"rollen": RolSerializer,
-                                 "rol": RolSerializer,
-                                 "statussen": StatusSerializer,
-                                 "status": StatusSerializer,
-                                 "zaak": ZaakSerializer,
-                                 "zaken": ZaakSerializer,
-                                 "eigenschappen": ZaakEigenschapSerializer,
-                                 "eigenschap": ZaakEigenschapSerializer,
-                                 "zaakinformatieobjecten": ZaakInformatieObjectSerializer,
-                                 "zaakinformatieobject": ZaakInformatieObjectSerializer,
-                                 "zaakobjecten": ZaakObjectSerializer,
-                                 "zaakobject": ZaakObjectSerializer,
-                                 "resultaten": ResultaatSerializer,
-                                 "resultaat": ResultaatSerializer,
-
-                                 }
+URI_NAME_TO_MODEL_NAME_MAPPER = {
+    "rollen": Rol,
+    "rol": Rol,
+    "statussen": Status,
+    "status": Status,
+    "zaak": Zaak,
+    "zaken": Zaak,
+    "eigenschappen": ZaakEigenschap,
+    "eigenschap": ZaakEigenschap,
+    "zaakinformatieobjecten": ZaakInformatieObject,
+    "zaakinformatieobject": ZaakInformatieObject,
+    "zaakobjecten": ZaakObject,
+    "zaakobject": ZaakObject,
+    "resultaten": Resultaat,
+    "resultaat": Resultaat,
+}
+URI_NAME_TO_SERIALIZER_MAPPER = {
+    "rollen": RolSerializer,
+    "rol": RolSerializer,
+    "statussen": StatusSerializer,
+    "status": StatusSerializer,
+    "zaak": ZaakSerializer,
+    "zaken": ZaakSerializer,
+    "eigenschappen": ZaakEigenschapSerializer,
+    "eigenschap": ZaakEigenschapSerializer,
+    "zaakinformatieobjecten": ZaakInformatieObjectSerializer,
+    "zaakinformatieobject": ZaakInformatieObjectSerializer,
+    "zaakobjecten": ZaakObjectSerializer,
+    "zaakobject": ZaakObjectSerializer,
+    "resultaten": ResultaatSerializer,
+    "resultaat": ResultaatSerializer,
+}
 
 
 class Inclusions:
@@ -84,81 +95,144 @@ class Inclusions:
         serializer = self.inclusions(serializer, request)
         return Response(serializer.data)
 
-    def get_data(self, url, resource_to_expand, request):
+    def get_data(
+        self,
+        url: str,
+        resource_to_expand: list,
+        called_external_uris: dict,
+        jwt_auth: JWTAuth,
+    ) -> dict:
         if resource_to_expand in EXTERNAL_URIS:
-            return {}
+            if not called_external_uris.get(url, []):
+                try:
+                    access_token = jwt_auth.encoded
+                    # access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoic2RmLW1lS3hCVnpLY2dmYiJ9.eyJpc3MiOiJzZGYtbWVLeEJWektjZ2ZiIiwiaWF0IjoxNjgwMTczMjA1LCJjbGllbnRfaWQiOiJzZGYtbWVLeEJWektjZ2ZiIiwidXNlcl9pZCI6IiIsInVzZXJfcmVwcmVzZW50YXRpb24iOiIifQ.aTiQCDW9thEcv_E_yH4SnL3ACb_pwLrvCvne9Aqfuuc"
+                    with urlopen(
+                        Request(
+                            url, headers={"Authorization": f"Bearer {access_token}"}
+                        )
+                    ) as response:
+                        data = json.loads(response.read().decode("utf8"))
+                        called_external_uris[url] = data
+                        return data
+
+                except urllib.error.HTTPError as e:
+                    called_external_uris[url] = {f"HTTPError {e.code}": f"{e.read()}"}
+                    return {f"HTTPError": f"{e.code} {e.read()}"}
+            else:
+                return called_external_uris[url]
+
         else:
             uuid = url.split("/")[-1]
-            model = get_object_or_404(URI_NAME_TO_MODEL_NAME_MAPPER[resource_to_expand], uuid=uuid)
-            serializer_exp_field = URI_NAME_TO_SERIALIZER_MAPPER[resource_to_expand](model,
-                                                                                     context={
-                                                                                         'request': request})
+            model = get_object_or_404(
+                URI_NAME_TO_MODEL_NAME_MAPPER[resource_to_expand], uuid=uuid
+            )
+            serializer_exp_field = URI_NAME_TO_SERIALIZER_MAPPER[resource_to_expand](
+                model, context={"request": self.request}
+            )
             return serializer_exp_field.data
 
-    def impregnate_array(self, array_data, sub_field):
+    def impregnate_array(
+        self,
+        array_data: dict,
+        sub_field: str,
+        called_external_uris: dict,
+        jwt_auth: JWTAuth,
+    ) -> Union[dict, bool]:
         if array_data[sub_field]:
             array_data["_inclusions"][sub_field] = []
             for url in array_data[sub_field]:
-                data_from_url = self.get_data(url, sub_field, self.request)
+                data_from_url = self.get_data(
+                    url, sub_field, called_external_uris, jwt_auth
+                )
                 array_data["_inclusions"][sub_field].append(data_from_url)
                 recursion_data = array_data["_inclusions"][sub_field]
 
-            return recursion_data
+            return False, recursion_data
         else:
-            return False
+            return True, array_data
 
-    def impregnate_dict(self, array_data, sub_field):
+    def impregnate_dict(
+        self,
+        array_data: dict,
+        sub_field: str,
+        called_external_uris: dict,
+        jwt_auth: JWTAuth,
+    ):
         if array_data[sub_field]:
-            data_from_url = self.get_data(array_data[sub_field], sub_field, self.request)
+            data_from_url = self.get_data(
+                array_data[sub_field], sub_field, called_external_uris, jwt_auth
+            )
             array_data["_inclusions"][sub_field] = data_from_url
-            return array_data["_inclusions"][sub_field]
+            return False, array_data["_inclusions"][sub_field]
         else:
-            return False
+            return True, array_data
 
-    def build_inclusions_schema(self, result, fields_to_expand):
+    def build_inclusions_schema(
+        self,
+        result: dict,
+        fields_to_expand: list,
+        called_external_uris: dict,
+        jwt_auth: JWTAuth,
+    ):
         for exp_field in fields_to_expand:
             for counter, sub_field in enumerate(exp_field.split(".")):
                 if counter == 0:
                     if isinstance(result[sub_field], list):
-                        recursion_data = self.impregnate_array(result, sub_field)
-                        if not recursion_data:
-                            break
+                        break_off, recursion_data = self.impregnate_array(
+                            result, sub_field, called_external_uris, jwt_auth
+                        )
                     else:
-                        recursion_data = self.impregnate_dict(result, sub_field)
-                        if not recursion_data:
-                            break
+                        break_off, recursion_data = self.impregnate_dict(
+                            result, sub_field, called_external_uris, jwt_auth
+                        )
+                    if break_off:
+                        break
                 else:
                     if isinstance(recursion_data, list):
                         for data in recursion_data:
                             data["_inclusions"] = {}
                             if isinstance(data[sub_field], list):
-                                recursion_data = self.impregnate_array(data, sub_field)
-                                if not recursion_data:
-                                    break
-
+                                break_off, recursion_data = self.impregnate_array(
+                                    data, sub_field, called_external_uris, jwt_auth
+                                )
                             else:
-                                recursion_data = self.impregnate_dict(data, sub_field)
-                                if not recursion_data:
-                                    break
+                                break_off, recursion_data = self.impregnate_dict(
+                                    data, sub_field, called_external_uris, jwt_auth
+                                )
+                            if not break_off:
+                                break
                     else:
                         recursion_data["_inclusions"] = {}
                         if isinstance(recursion_data[sub_field], list):
-                            recursion_data = self.impregnate_array(recursion_data, sub_field)
-                            if not recursion_data:
-                                break
+                            break_off, recursion_data = self.impregnate_array(
+                                recursion_data,
+                                sub_field,
+                                called_external_uris,
+                                jwt_auth,
+                            )
                         else:
-                            recursion_data = self.impregnate_dict(recursion_data, sub_field)
-                            if not recursion_data:
-                                break
-
-        return result
+                            break_off, recursion_data = self.impregnate_dict(
+                                recursion_data,
+                                sub_field,
+                                called_external_uris,
+                                jwt_auth,
+                            )
+                        if break_off:
+                            break
 
     def inclusions(self, serializer, request):
         expand_filter = request.query_params.get("expand", "")
-        fields_to_expand = expand_filter.split(",")
-
-        for serialized_data in serializer.data:
-            serialized_data["_inclusions"] = {}
-            self.build_inclusions_schema(serialized_data, fields_to_expand)
+        if expand_filter:
+            fields_to_expand = expand_filter.split(",")
+            called_external_uris = {}
+            for serialized_data in serializer.data:
+                serialized_data["_inclusions"] = {}
+                self.build_inclusions_schema(
+                    serialized_data,
+                    fields_to_expand,
+                    called_external_uris,
+                    request.jwt_auth,
+                )
 
         return serializer
