@@ -374,3 +374,40 @@ class ObjectTypeOverigeDefinitieValidator:
                 {"object": _("The object data does not match the specified schema.")},
                 code="invalid-schema",
             )
+
+
+class ExpandFieldValidator:
+    CODE = "invalid-resource"
+    MAX_STEPS = 3
+
+    def __init__(self, expanded_fields, internal_uris, external_uris):
+        self.expanded_fields: list = expanded_fields
+        self.internal_uris: list = internal_uris
+        self.external_uris: list = external_uris
+
+    def __call__(self, *args, **kwargs):
+        self.validate_fields_exist()
+        self.validate_maximum_depth_reached()
+
+    def validate_fields_exist(self):
+        """Validate submitted expansion fields are recognized by API"""
+        valid_inclusions = self.internal_uris + self.external_uris
+        for expand_combination in self.expanded_fields:
+            for field in expand_combination.split("."):
+                if field not in valid_inclusions:
+                    raise serializers.ValidationError(
+                        {"expand": _(
+                            f"The submitted field {field} does not match valid expandable fields in API. Valid choices are {valid_inclusions}")},
+                        code="invalid-expand-field",
+                    )
+
+    def validate_maximum_depth_reached(self):
+        """Validate maximum iterations to prevent infinite recursion"""
+        valid_inclusions = self.internal_uris + self.external_uris
+        for expand_combination in self.expanded_fields:
+            if len(expand_combination.split(".")) > self.MAX_STEPS:
+                raise serializers.ValidationError(
+                    {"expand": _(
+                        f"The submitted fields have surpassed its maximum recursion limit of {self.MAX_STEPS}")},
+                    code="expansion-recursion-limit",
+                )

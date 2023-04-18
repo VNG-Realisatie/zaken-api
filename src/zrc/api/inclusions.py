@@ -5,7 +5,7 @@ from urllib.request import Request, urlopen
 
 from django.shortcuts import get_object_or_404
 
-from rest_framework.request import Request
+from rest_framework.request import Request as DRFRequest
 from rest_framework.response import Response
 from vng_api_common.middleware import JWTAuth
 
@@ -37,6 +37,7 @@ from .serializers import (
     ZaakVerzoekSerializer,
     ZaakZoekSerializer,
 )
+from .validators import ExpandFieldValidator
 
 EXTERNAL_URIS = [
     "zaaktype",
@@ -44,6 +45,7 @@ EXTERNAL_URIS = [
     "deelzaken",
     "relevanteAndereZaken",
     "statustypen",
+    "catalogus",
 ]
 
 URI_NAME_TO_MODEL_NAME_MAPPER = {
@@ -82,6 +84,7 @@ URI_NAME_TO_SERIALIZER_MAPPER = {
 
 class Inclusions:
     def list(self, request, *args, **kwargs):
+        """Override LIST operation to override serializer and add inclusions"""
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
@@ -102,23 +105,21 @@ class Inclusions:
         called_external_uris: dict,
         jwt_auth: JWTAuth,
     ) -> dict:
+        """Get data from external url or from local database"""
         if resource_to_expand in EXTERNAL_URIS:
             if not called_external_uris.get(url, []):
                 try:
                     access_token = jwt_auth.encoded
-                    # access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoic2RmLW1lS3hCVnpLY2dmYiJ9.eyJpc3MiOiJzZGYtbWVLeEJWektjZ2ZiIiwiaWF0IjoxNjgwMTczMjA1LCJjbGllbnRfaWQiOiJzZGYtbWVLeEJWektjZ2ZiIiwidXNlcl9pZCI6IiIsInVzZXJfcmVwcmVzZW50YXRpb24iOiIifQ.aTiQCDW9thEcv_E_yH4SnL3ACb_pwLrvCvne9Aqfuuc"
-                    with urlopen(
-                        Request(
-                            url, headers={"Authorization": f"Bearer {access_token}"}
-                        )
-                    ) as response:
+                    access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoic2RmLW1lS3hCVnpLY2dmYiJ9.eyJpc3MiOiJzZGYtbWVLeEJWektjZ2ZiIiwiaWF0IjoxNjgwMTczMjA1LCJjbGllbnRfaWQiOiJzZGYtbWVLeEJWektjZ2ZiIiwidXNlcl9pZCI6IiIsInVzZXJfcmVwcmVzZW50YXRpb24iOiIifQ.aTiQCDW9thEcv_E_yH4SnL3ACb_pwLrvCvne9Aqfuuc"
+                    headers = {"Authorization": f"Bearer {access_token}"}
+                    with urlopen(Request(url, headers=headers)) as response:
                         data = json.loads(response.read().decode("utf8"))
                         called_external_uris[url] = data
                         return data
 
-                except urllib.error.HTTPError as e:
-                    called_external_uris[url] = {f"HTTPError {e.code}": f"{e.read()}"}
-                    return {f"HTTPError": f"{e.code} {e.read()}"}
+                except:
+                    called_external_uris[url] = {}
+                    return {}
             else:
                 return called_external_uris[url]
 
@@ -139,6 +140,7 @@ class Inclusions:
         called_external_uris: dict,
         jwt_auth: JWTAuth,
     ) -> Union[dict, bool]:
+        """Expand array of urls"""
         if array_data[sub_field]:
             array_data["_inclusions"][sub_field] = []
             for url in array_data[sub_field]:
@@ -221,10 +223,11 @@ class Inclusions:
                         if break_off:
                             break
 
-    def inclusions(self, serializer, request: Request):
+    def inclusions(self, serializer, request: DRFRequest):
         expand_filter = request.query_params.get("expand", "")
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
+            self.validate_expand_fields(fields_to_expand)
             called_external_uris = {}
             for serialized_data in serializer.data:
                 serialized_data["_inclusions"] = {}
@@ -236,3 +239,10 @@ class Inclusions:
                 )
 
         return serializer
+
+    @staticmethod
+    def validate_expand_fields(expand_fields):
+        validator = ExpandFieldValidator(expand_fields, list(URI_NAME_TO_MODEL_NAME_MAPPER.keys()), EXTERNAL_URIS)
+        validator()
+
+    # todo rename _inclusions / block how deep we can include / what to return with external erros / validate input on syntax
