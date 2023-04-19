@@ -16,7 +16,6 @@ from rest_framework import mixins, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.settings import api_settings
 from vng_api_common.audittrails.viewsets import (
@@ -60,7 +59,7 @@ from .filters import (
     ZaakObjectFilter,
     ZaakVerzoekFilter,
 )
-from .inclusions import Inclusions
+from .inclusions import ExpandFieldValidator, Inclusions
 from .kanalen import KANAAL_ZAKEN
 from .mixins import ClosedZaakMixin
 from .permissions import (
@@ -199,6 +198,7 @@ class ZaakViewSet(
     GeoMixin,
     SearchMixin,
     CheckQueryParamsMixin,
+    ExpandFieldValidator,
     Inclusions,
     ListFilterByAuthorizationsMixin,
     viewsets.ModelViewSet,

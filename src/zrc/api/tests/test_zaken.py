@@ -1172,7 +1172,6 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_expand_filter_few_levels_deep(self, *mocks):
         zaak = ZaakFactory.create()
-        # zaak2 = ZaakFactory.create()
 
         zaakeigenschap = ZaakEigenschapFactory.create(
             zaak=zaak, eigenschap=self.EIGENSCHAP, waarde="This is a value"
@@ -1184,9 +1183,6 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             zaakobjecttype=self.ZAAKOBJECTTYPE,
         )
         zio = ZaakInformatieObjectFactory.create(zaak=zaak)
-        valid_url = "https://catalogi-api.vng.cloud/api/v1/zaaktypen/fb3d4874-7793-4784-b231-0db4fdffaa24"
-        zaak.zaaktype = valid_url
-        zaak.save()
 
         rol = RolFactory.create(
             zaak=zaak,
@@ -1206,15 +1202,11 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         response = self.client.get(
             url,
             {
-                # "expand": "rollen.statussen.zaak.rollen,status.zaak,eigenschappen,zaakobjecten,zaakinformatieobjecten"
-                "expand": "rollen.statussen,zaaktype"
-
+                "expand": "rollen.statussen.zaak.rollen,status.zaak,eigenschappen,zaakobjecten,zaakinformatieobjecten"
             },
             **ZAAK_READ_KWARGS,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        from pprint import pprint
-        pprint(response.json())
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):

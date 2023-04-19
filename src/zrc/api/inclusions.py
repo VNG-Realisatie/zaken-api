@@ -1,10 +1,11 @@
 import json
-import urllib
 from typing import Union
 from urllib.request import Request, urlopen
 
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 
+from rest_framework import serializers
 from rest_framework.request import Request as DRFRequest
 from rest_framework.response import Response
 from vng_api_common.middleware import JWTAuth
@@ -37,7 +38,6 @@ from .serializers import (
     ZaakVerzoekSerializer,
     ZaakZoekSerializer,
 )
-from .validators import ExpandFieldValidator
 
 EXTERNAL_URIS = [
     "zaaktype",
@@ -110,7 +110,6 @@ class Inclusions:
             if not called_external_uris.get(url, []):
                 try:
                     access_token = jwt_auth.encoded
-                    access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoic2RmLW1lS3hCVnpLY2dmYiJ9.eyJpc3MiOiJzZGYtbWVLeEJWektjZ2ZiIiwiaWF0IjoxNjgwMTczMjA1LCJjbGllbnRfaWQiOiJzZGYtbWVLeEJWektjZ2ZiIiwidXNlcl9pZCI6IiIsInVzZXJfcmVwcmVzZW50YXRpb24iOiIifQ.aTiQCDW9thEcv_E_yH4SnL3ACb_pwLrvCvne9Aqfuuc"
                     headers = {"Authorization": f"Bearer {access_token}"}
                     with urlopen(Request(url, headers=headers)) as response:
                         data = json.loads(response.read().decode("utf8"))
@@ -227,7 +226,6 @@ class Inclusions:
         expand_filter = request.query_params.get("expand", "")
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
-            self.validate_expand_fields(fields_to_expand)
             called_external_uris = {}
             for serialized_data in serializer.data:
                 serialized_data["_inclusions"] = {}
@@ -240,9 +238,48 @@ class Inclusions:
 
         return serializer
 
-    @staticmethod
-    def validate_expand_fields(expand_fields):
-        validator = ExpandFieldValidator(expand_fields, list(URI_NAME_TO_MODEL_NAME_MAPPER.keys()), EXTERNAL_URIS)
-        validator()
 
-    # todo rename _inclusions / block how deep we can include / what to return with external erros / validate input on syntax
+class ExpandFieldValidator:
+    MAX_STEPS = 3
+
+    def _validate_fields_exist(self, expanded_fields, valid_inclusions):
+        """Validate submitted expansion fields are recognized by API"""
+
+        for expand_combination in expanded_fields.split(","):
+            for field in expand_combination.split("."):
+                if field not in valid_inclusions:
+                    raise serializers.ValidationError(
+                        {
+                            "expand": _(
+                                f"The submitted field {field} does not match valid expandable fields in API. Valid choices are {valid_inclusions}"
+                            )
+                        },
+                        code="invalid-expand-field",
+                    )
+
+    def _validate_maximum_depth_reached(self, expanded_fields):
+        """Validate maximum iterations to prevent infinite recursion"""
+        for expand_combination in expanded_fields:
+            if len(expand_combination.split(".")) > self.MAX_STEPS:
+                raise serializers.ValidationError(
+                    {
+                        "expand": _(
+                            f"The submitted fields have surpassed its maximum recursion limit of {self.MAX_STEPS}"
+                        )
+                    },
+                    code="recursion-limit",
+                )
+
+    def list(self, request, *args, **kwargs):
+        expand_filter = request.query_params.get("expand", "")
+
+        if not request.query_params or not expand_filter:
+            return super().list(request, *args, **kwargs)
+
+        internal_uris = list(URI_NAME_TO_MODEL_NAME_MAPPER.keys())
+        external_uris = EXTERNAL_URIS
+        valid_inclusions = internal_uris + external_uris
+
+        self._validate_fields_exist(expand_filter, valid_inclusions)
+        self._validate_maximum_depth_reached(expand_filter)
+        return super().list(request, *args, **kwargs)
