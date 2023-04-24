@@ -140,8 +140,10 @@ class Inclusions:
         jwt_auth: JWTAuth,
     ) -> Union[dict, bool]:
         """Expand array of urls"""
+        array_data["_inclusions"][sub_field] = []
+        if sub_field=="statussen":
+            breakpoint()
         if array_data[sub_field]:
-            array_data["_inclusions"][sub_field] = []
             for url in array_data[sub_field]:
                 data_from_url = self.get_data(
                     url, sub_field, called_external_uris, jwt_auth
@@ -167,6 +169,7 @@ class Inclusions:
             array_data["_inclusions"][sub_field] = data_from_url
             return False, array_data["_inclusions"][sub_field]
         else:
+            array_data["_inclusions"][sub_field] = {}
             return True, array_data
 
     def build_inclusions_schema(
@@ -201,8 +204,9 @@ class Inclusions:
                                 break_off, recursion_data = self.expand_dict(
                                     data, sub_field, called_external_uris, jwt_auth
                                 )
-                            if not break_off:
+                            if break_off:
                                 break
+
                     else:
                         recursion_data["_inclusions"] = {}
                         if isinstance(recursion_data[sub_field], list):
