@@ -1,6 +1,7 @@
 import json
 from typing import Union
 from urllib.request import Request, urlopen
+import re
 
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
@@ -244,6 +245,7 @@ class Inclusions:
 
 class ExpandFieldValidator:
     MAX_STEPS = 3
+    REGEX = r"^[\w']+([.,][\w']+)*$"
 
     def _validate_fields_exist(self, expanded_fields, valid_inclusions):
         """Validate submitted expansion fields are recognized by API"""
@@ -273,6 +275,17 @@ class ExpandFieldValidator:
                     code="recursion-limit",
                 )
 
+    def _validate_regex(self, expanded_fields):
+        if not re.match(self.REGEX, expanded_fields):
+            raise serializers.ValidationError(
+                {
+                    "expand": _(
+                        f"The submitted expand fields do not match the required regex of {self.REGEX}"
+                    )
+                },
+                code="expand-format-error",
+            )
+
     def list(self, request, *args, **kwargs):
         expand_filter = request.query_params.get("expand", "")
 
@@ -283,6 +296,7 @@ class ExpandFieldValidator:
         external_uris = EXTERNAL_URIS
         valid_inclusions = internal_uris + external_uris
 
+        self._validate_regex(expand_filter)
         self._validate_fields_exist(expand_filter, valid_inclusions)
         self._validate_maximum_depth_reached(expand_filter)
         return super().list(request, *args, **kwargs)

@@ -1188,14 +1188,14 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             zaak=zaak,
         )
 
-        # status1 = StatusFactory.create(zaak=zaak)
-        # status2 = StatusFactory.create(zaak=zaak)
-        # rol.statussen.add(status1)
-        #
+        status1 = StatusFactory.create(zaak=zaak)
+        status2 = StatusFactory.create(zaak=zaak)
+        rol.statussen.add(status1)
+
         rol2 = RolFactory.create(
             zaak=zaak,
         )
-        # rol2.statussen.add(status2)
+        rol2.statussen.add(status2)
 
         url = reverse("zaak-list")
 
@@ -1207,9 +1207,6 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             **ZAAK_READ_KWARGS,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        from pprint import pprint
-        pprint(response.json())
-
 
 
 
