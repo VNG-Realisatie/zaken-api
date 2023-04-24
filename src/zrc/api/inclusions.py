@@ -141,8 +141,6 @@ class Inclusions:
     ) -> Union[dict, bool]:
         """Expand array of urls"""
         array_data["_inclusions"][sub_field] = []
-        if sub_field=="statussen":
-            breakpoint()
         if array_data[sub_field]:
             for url in array_data[sub_field]:
                 data_from_url = self.get_data(
@@ -193,6 +191,7 @@ class Inclusions:
                     if break_off:
                         break
                 else:
+
                     if isinstance(recursion_data, list):
                         for data in recursion_data:
                             data["_inclusions"] = {}
@@ -204,8 +203,8 @@ class Inclusions:
                                 break_off, recursion_data = self.expand_dict(
                                     data, sub_field, called_external_uris, jwt_auth
                                 )
-                            if break_off:
-                                break
+                        if break_off:
+                            break
 
                     else:
                         recursion_data["_inclusions"] = {}

@@ -1192,9 +1192,9 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         # status2 = StatusFactory.create(zaak=zaak)
         # rol.statussen.add(status1)
         #
-        # rol2 = RolFactory.create(
-        #     zaak=zaak,
-        # )
+        rol2 = RolFactory.create(
+            zaak=zaak,
+        )
         # rol2.statussen.add(status2)
 
         url = reverse("zaak-list")
@@ -1202,13 +1202,15 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         response = self.client.get(
             url,
             {
-                "expand": "rollen.statussen.zaak.rollen,status.zaak,eigenschappen,zaakobjecten,zaakinformatieobjecten"
+                "expand": "rollen.statussen.zaak,status"
             },
             **ZAAK_READ_KWARGS,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         from pprint import pprint
         pprint(response.json())
+
+
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
