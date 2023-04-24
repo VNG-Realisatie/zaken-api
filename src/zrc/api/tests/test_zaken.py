@@ -1201,13 +1201,10 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
 
         response = self.client.get(
             url,
-            {
-                "expand": "rollen.statussen.zaak,status"
-            },
+            {"expand": "rollen.statussen.zaak,status"},
             **ZAAK_READ_KWARGS,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):

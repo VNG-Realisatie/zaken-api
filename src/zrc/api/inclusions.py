@@ -1,7 +1,7 @@
 import json
+import re
 from typing import Union
 from urllib.request import Request, urlopen
-import re
 
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
