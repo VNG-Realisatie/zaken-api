@@ -12,7 +12,6 @@ from rest_framework.request import Request as DRFRequest
 from rest_framework.response import Response
 from vng_api_common.middleware import JWTAuth
 
-
 EXTERNAL_URIS = [
     "zaaktype",
     "hoofdzaak",
@@ -209,7 +208,7 @@ class ExpansionMixin:
 
 class ExpandFieldValidator:
     MAX_STEPS = 3
-    REGEX = r"^[\w']+([.,][\w']+)*$" # regex checks for field names separated by . or ,
+    REGEX = r"^[\w']+([.,][\w']+)*$"  # regex checks for field names separated by . or , (e.g "rollen,rollen.statussen")
 
     def _validate_fields_exist(self, expanded_fields):
         """Validate submitted expansion fields are recognized by API"""
