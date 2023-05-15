@@ -12,7 +12,6 @@ from rest_framework.request import Request as DRFRequest
 from rest_framework.response import Response
 from vng_api_common.middleware import JWTAuth
 
-from zrc.api.urls import router
 
 EXTERNAL_URIS = [
     "zaaktype",
@@ -214,6 +213,8 @@ class ExpandFieldValidator:
 
     def _validate_fields_exist(self, expanded_fields):
         """Validate submitted expansion fields are recognized by API"""
+        from zrc.api.urls import router
+
         valid_expand = []
         for route in router.registry:
             valid_expand.append(route[0])
