@@ -209,7 +209,7 @@ class ExpansionMixin:
 
 class ExpandFieldValidator:
     MAX_STEPS = 3
-    REGEX = r"^[\w']+([.,][\w']+)*$"
+    REGEX = r"^[\w']+([.,][\w']+)*$" # regex checks for field names separated by . or ,
 
     def _validate_fields_exist(self, expanded_fields):
         """Validate submitted expansion fields are recognized by API"""
