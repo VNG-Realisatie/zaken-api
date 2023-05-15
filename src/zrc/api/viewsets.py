@@ -48,6 +48,7 @@ from zrc.sync.signals import SyncError
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
+from .expansions import ExpandFieldValidator, ExpansionMixin
 from .filters import (
     KlantContactFilter,
     ResultaatFilter,
@@ -59,7 +60,6 @@ from .filters import (
     ZaakObjectFilter,
     ZaakVerzoekFilter,
 )
-from .inclusions import ExpandFieldValidator, Inclusions
 from .kanalen import KANAAL_ZAKEN
 from .mixins import ClosedZaakMixin
 from .permissions import (
@@ -199,7 +199,7 @@ class ZaakViewSet(
     SearchMixin,
     CheckQueryParamsMixin,
     ExpandFieldValidator,
-    Inclusions,
+    ExpansionMixin,
     ListFilterByAuthorizationsMixin,
     viewsets.ModelViewSet,
 ):

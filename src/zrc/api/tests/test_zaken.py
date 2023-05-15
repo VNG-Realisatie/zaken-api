@@ -1205,6 +1205,9 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             **ZAAK_READ_KWARGS,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        from pprint import pprint
+
+        pprint(response.json())
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
