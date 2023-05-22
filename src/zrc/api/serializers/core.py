@@ -337,7 +337,6 @@ class ZaakSerializer(
             "zaaktype": {
                 # TODO: does order matter here with the default validators?
                 "validators": [
-                    IsImmutableValidator(),
                     PublishValidator(
                         "ZaakType", settings.ZTC_API_SPEC, get_auth=get_auth
                     ),
