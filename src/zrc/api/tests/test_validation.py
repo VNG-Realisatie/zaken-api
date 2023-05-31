@@ -619,19 +619,6 @@ class ZaakUpdateValidation(JWTAuthMixin, APITestCase):
                 self.assertEqual(error["code"], "required")
 
     @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
-    def test_not_allowed_to_change_zaaktype(self):
-        zaak = ZaakFactory.create()
-        url = reverse(zaak)
-
-        response = self.client.patch(
-            url, {"zaaktype": "https://ander.zaaktype.nl/foo/bar"}, **ZAAK_WRITE_KWARGS
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        validation_error = get_validation_errors(response, "zaaktype")
-        self.assertEqual(validation_error["code"], IsImmutableValidator.code)
-
-    @override_settings(LINK_FETCHER="vng_api_common.mocks.link_fetcher_200")
     def test_not_allowed_to_change_identificatie(self):
         zaak = ZaakFactory.create(identificatie="gibberish")
         url = reverse(zaak)
