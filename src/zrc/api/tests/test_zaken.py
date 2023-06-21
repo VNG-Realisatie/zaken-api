@@ -1173,12 +1173,9 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
     def test_expand_filter_few_levels_deep(self, *mocks):
         zaak = ZaakFactory.create()
-        # zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/d9cfcd9b-e0eb-47c1-bfe7-2ee02ae4fd44"
-        # zaak.save()
 
         zaak2 = ZaakFactory.create()
-        # zaak2.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/d9cfcd9b-e0eb-47c1-bfe7-2ee02ae4fd44"
-        # zaak2.save()
+
         url = reverse("zaak-detail", kwargs={"uuid": zaak2.uuid})
 
         zaakrelatie = RelevanteZaakRelatie.objects.create(zaak=zaak, url=url, aard_relatie="test")
@@ -1210,31 +1207,29 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         )
 
         status1 = StatusFactory.create(zaak=zaak)
-        # status2 = StatusFactory.create(zaak=zaak)
         rol.statussen.add(status1)
 
         rol2 = RolFactory.create(
             zaak=zaak,
         )
-        # rol2.statussen.add(status2)
 
         url = reverse("zaak-list")
+        expand_params = ["rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen",
+                         "relevante_andere_zaken.eigenschappen",
+                         "zaaktype,status.statustype",
+                         "rollen.zaak.rollen.zaak.rollen",
+                         "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten"]
+        for param in expand_params:
+            with self.subTest(param=param):
+                response = self.client.get(
+                    url,
+                    {
+                        "expand": param
 
-        response = self.client.get(
-            url,
-            {
-                # "expand": "rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen"
-                "expand": "relevante_andere_zaken.eigenschappen"
-                # "expand": "zaaktype,status.statustype"
-                # "expand": "rollen.zaak.rollen.zaak.rollen",
-                # "expand": "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten",
-            },
-            **ZAAK_READ_KWARGS,
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        from pprint import pprint
-
-        pprint(response.json())
+                    },
+                    **ZAAK_READ_KWARGS,
+                )
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
