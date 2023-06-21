@@ -43,6 +43,10 @@ class ExpansionMixin:
         keyword = "api"
         save_sentence = False
         internal_url = "/"
+        if isinstance(url, dict):
+            url = url.get("url", None)
+        if not url:
+            return ""
         for word in url.split("/"):
             if word == keyword:
                 save_sentence = True
@@ -84,6 +88,7 @@ class ExpansionMixin:
         serializer = resolver_match.func.cls.serializer_class
 
         serializer_exp_field = serializer(obj, context={"request": self.request})
+
         return serializer_exp_field.data
 
     def get_data(
@@ -110,6 +115,7 @@ class ExpansionMixin:
             for depth, sub_field in enumerate(exp_field.split(".")):
                 if depth == 0:
                     try:
+
                         urls = result[sub_field]
                     except KeyError:
                         raise self.validation_invalid_expand_field(sub_field)
@@ -249,7 +255,7 @@ class ExpansionMixin:
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             if (
                                 not fields_of_level.value
-                                in parent_dict["_expand"][fields_of_level.sub_field]
+                                    in parent_dict["_expand"][fields_of_level.sub_field]
                             ):
                                 parent_dict["_expand"][
                                     fields_of_level.sub_field

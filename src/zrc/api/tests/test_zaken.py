@@ -35,6 +35,7 @@ from zrc.datamodel.models import (
     OrganisatorischeEenheid,
     Vestiging,
     Zaak,
+    RelevanteZaakRelatie
 )
 from zrc.datamodel.tests.factories import (
     RolFactory,
@@ -1178,6 +1179,11 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         zaak2 = ZaakFactory.create()
         # zaak2.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/d9cfcd9b-e0eb-47c1-bfe7-2ee02ae4fd44"
         # zaak2.save()
+        url = reverse("zaak-detail", kwargs={"uuid": zaak2.uuid})
+
+        zaakrelatie = RelevanteZaakRelatie.objects.create(zaak=zaak, url=url, aard_relatie="test")
+        zaak.relevante_andere_zaken.add(zaakrelatie)
+        zaak.save()
 
         zaakeigenschap = ZaakEigenschapFactory.create(
             zaak=zaak, eigenschap=self.EIGENSCHAP, waarde="This is a value"
@@ -1217,7 +1223,8 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         response = self.client.get(
             url,
             {
-                "expand": "rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen"
+                # "expand": "rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen"
+                "expand": "relevante_andere_zaken.eigenschappen"
                 # "expand": "zaaktype,status.statustype"
                 # "expand": "rollen.zaak.rollen.zaak.rollen",
                 # "expand": "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten",
