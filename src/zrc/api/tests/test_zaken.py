@@ -33,9 +33,9 @@ from zrc.datamodel.models import (
     NatuurlijkPersoon,
     NietNatuurlijkPersoon,
     OrganisatorischeEenheid,
+    RelevanteZaakRelatie,
     Vestiging,
     Zaak,
-    RelevanteZaakRelatie
 )
 from zrc.datamodel.tests.factories import (
     RolFactory,
@@ -1178,7 +1178,9 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
 
         url = reverse("zaak-detail", kwargs={"uuid": zaak2.uuid})
 
-        zaakrelatie = RelevanteZaakRelatie.objects.create(zaak=zaak, url=url, aard_relatie="test")
+        zaakrelatie = RelevanteZaakRelatie.objects.create(
+            zaak=zaak, url=url, aard_relatie="test"
+        )
         zaak.relevante_andere_zaken.add(zaakrelatie)
         zaak.save()
 
@@ -1214,22 +1216,24 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         )
 
         url = reverse("zaak-list")
-        expand_params = ["rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen",
-                         "relevante_andere_zaken.eigenschappen",
-                         "zaaktype,status.statustype",
-                         "rollen.zaak.rollen.zaak.rollen",
-                         "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten"]
+        expand_params = [
+            "rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen",
+            "relevante_andere_zaken.eigenschappen",
+            "zaaktype,status.statustype",
+            "rollen.zaak.rollen.zaak.rollen",
+            "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten",
+        ]
         for param in expand_params:
             with self.subTest(param=param):
                 response = self.client.get(
                     url,
-                    {
-                        "expand": param
-
-                    },
+                    {"expand": param},
                     **ZAAK_READ_KWARGS,
                 )
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
+        from pprint import pprint
+
+        pprint(response.json())
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):

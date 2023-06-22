@@ -115,8 +115,7 @@ class ExpansionMixin:
             for depth, sub_field in enumerate(exp_field.split(".")):
                 if depth == 0:
                     try:
-
-                        urls = result[sub_field]
+                        urls = result[self.convert_camel_to_snake(sub_field)]
                     except KeyError:
                         raise self.validation_invalid_expand_field(sub_field)
 
@@ -158,7 +157,9 @@ class ExpansionMixin:
                             if not not_empty:
                                 continue
                             try:
-                                urls = field.value[sub_field]
+                                urls = field.value[
+                                    self.convert_camel_to_snake(sub_field)
+                                ]
                             except KeyError:
                                 raise self.validation_invalid_expand_field(sub_field)
                             if isinstance(urls, list):
@@ -255,7 +256,7 @@ class ExpansionMixin:
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             if (
                                 not fields_of_level.value
-                                    in parent_dict["_expand"][fields_of_level.sub_field]
+                                in parent_dict["_expand"][fields_of_level.sub_field]
                             ):
                                 parent_dict["_expand"][
                                     fields_of_level.sub_field
@@ -343,6 +344,14 @@ class ExpansionMixin:
                 )
 
         return serializer
+
+    @staticmethod
+    def convert_camel_to_snake(string):
+        # Insert underscore before each capital letter
+        import re
+
+        snake_case = re.sub(r"(?<!^)(?=[A-Z])", "_", string).lower()
+        return snake_case
 
     @staticmethod
     def validation_invalid_expand_field(field):
