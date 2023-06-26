@@ -1178,11 +1178,11 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
 
         url = reverse("zaak-detail", kwargs={"uuid": zaak2.uuid})
 
-        # zaakrelatie = RelevanteZaakRelatie.objects.create(
-        #     zaak=zaak, url=url, aard_relatie="test"
-        # )
-        # zaak.relevante_andere_zaken.add(zaakrelatie)
-        # zaak.save()
+        zaakrelatie = RelevanteZaakRelatie.objects.create(
+            zaak=zaak, url=url, aard_relatie="test"
+        )
+        zaak.relevante_andere_zaken.add(zaakrelatie)
+        zaak.save()
 
         zaakeigenschap = ZaakEigenschapFactory.create(
             zaak=zaak, eigenschap=self.EIGENSCHAP, waarde="This is a value"

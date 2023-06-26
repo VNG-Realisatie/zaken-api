@@ -18,7 +18,16 @@ logger = logging.getLogger(__name__)
 class ExpansionMixin:
     ExpansionField = namedtuple(
         "ExpansionField",
-        ["id", "parent", "sub_field_parent", "sub_field", "level", "type", "value"],
+        [
+            "id",
+            "parent",
+            "sub_field_parent",
+            "sub_field",
+            "level",
+            "type",
+            "value",
+            "is_empty",
+        ],
     )
 
     def __init__(self, *args, **kwargs):
@@ -123,83 +132,106 @@ class ExpansionMixin:
                     try:
                         urls = result[self.convert_camel_to_snake(sub_field)]
                     except KeyError:
-                        raise self.validation_invalid_expand_field(sub_field)
+                        raise self.validation_invalid_expand_field(
+                            self.convert_camel_to_snake(sub_field)
+                        )
 
                     if isinstance(urls, list):
+                        expansion["_expand"][sub_field] = []
                         for x in urls:
-                            if x:
-                                my_tuple = self.ExpansionField(
-                                    loop_id,
-                                    result["url"],
-                                    None,
-                                    sub_field,
-                                    depth,
-                                    "list",
-                                    self.get_data(x),
-                                )
-                                my_tuple.value["loop_id"] = loop_id
-                                my_tuple.value["depth"] = depth
-
-                                self.expanded_fields.append(my_tuple)
-                    else:
-                        if urls:
-                            my_tuple = self.ExpansionField(
+                            self._add_to_expanded_fields(
                                 loop_id,
-                                result["url"],
-                                None,
+                                exp_field,
                                 sub_field,
                                 depth,
-                                "dict",
-                                self.get_data(urls),
+                                data=self.get_data(x),
+                                struc_type="list",
+                                is_empty=False,
+                                original_data=result,
                             )
-                            my_tuple.value["loop_id"] = loop_id
-                            my_tuple.value["depth"] = depth
-                            self.expanded_fields.append(my_tuple)
+                    else:
+                        expansion["_expand"][sub_field] = {}
+                        if urls:
+                            self._add_to_expanded_fields(
+                                loop_id,
+                                exp_field,
+                                sub_field,
+                                depth,
+                                data=self.get_data(urls),
+                                struc_type="dict",
+                                is_empty=False,
+                                original_data=result,
+                            )
+
                 else:
+
                     for field in self.expanded_fields:
                         if field.sub_field == exp_field.split(".")[depth - 1]:
-                            not_empty = field.value.copy()
-                            self.remove_key(not_empty, "loop_id")
-                            self.remove_key(not_empty, "depth")
-
-                            if not not_empty:
+                            if self.next_iter_if_value_is_empty(field.value):
                                 continue
                             try:
                                 urls = field.value[
                                     self.convert_camel_to_snake(sub_field)
                                 ]
                             except KeyError:
-                                raise self.validation_invalid_expand_field(sub_field)
+                                raise self.validation_invalid_expand_field(
+                                    self.convert_camel_to_snake(sub_field)
+                                )
                             if isinstance(urls, list):
-                                for x in urls:
-                                    if x:
-                                        my_tuple = self.ExpansionField(
+                                if urls:
+                                    for x in urls:
+                                        self._add_to_expanded_fields(
                                             loop_id,
-                                            field.value["url"],
-                                            exp_field.split(".")[depth - 1],
+                                            exp_field,
                                             sub_field,
                                             depth,
-                                            "list",
-                                            self.get_data(x),
+                                            data=self.get_data(x),
+                                            struc_type="list",
+                                            is_empty=False,
+                                            original_data=result,
+                                            field=field,
                                         )
-                                        my_tuple.value["loop_id"] = loop_id
-                                        my_tuple.value["depth"] = depth
+                                else:
 
-                                        self.expanded_fields.append(my_tuple)
-                            else:
-                                if urls:
-                                    my_tuple = self.ExpansionField(
+                                    self._add_to_expanded_fields(
                                         loop_id,
-                                        field.value["url"],
-                                        exp_field.split(".")[depth - 1],
+                                        exp_field,
                                         sub_field,
                                         depth,
-                                        "dict",
-                                        self.get_data(urls),
+                                        data={},
+                                        struc_type="list",
+                                        is_empty=True,
+                                        original_data=result,
+                                        field=field,
                                     )
-                                    my_tuple.value["loop_id"] = loop_id
-                                    my_tuple.value["depth"] = depth
-                                    self.expanded_fields.append(my_tuple)
+                            else:
+                                if urls:
+
+                                    self._add_to_expanded_fields(
+                                        loop_id,
+                                        exp_field,
+                                        sub_field,
+                                        depth,
+                                        data=self.get_data(urls),
+                                        struc_type="dict",
+                                        is_empty=False,
+                                        original_data=result,
+                                        field=field,
+                                    )
+
+                                else:
+
+                                    self._add_to_expanded_fields(
+                                        loop_id,
+                                        exp_field,
+                                        sub_field,
+                                        depth,
+                                        data={},
+                                        struc_type="dict",
+                                        is_empty=True,
+                                        original_data=result,
+                                        field=field,
+                                    )
 
             if not self.expanded_fields:
                 continue
@@ -251,6 +283,7 @@ class ExpansionMixin:
                             parent_dict = match[parent_dict]
                         if parent_dict.get("url", None) != fields_of_level.parent:
                             continue
+
                         if not parent_dict.get("_expand", None) and isinstance(
                             parent_dict[fields_of_level.sub_field], list
                         ):
@@ -266,13 +299,22 @@ class ExpansionMixin:
                                 not fields_of_level.value
                                 in parent_dict["_expand"][fields_of_level.sub_field]
                             ):
+                                if fields_of_level.is_empty:
+                                    parent_dict["_expand"][
+                                        fields_of_level.sub_field
+                                    ] = []
+                                else:
+                                    parent_dict["_expand"][
+                                        fields_of_level.sub_field
+                                    ].append(fields_of_level.value)
+
+                        elif isinstance(parent_dict[fields_of_level.sub_field], str):
+                            if fields_of_level.is_empty:
+                                parent_dict["_expand"][fields_of_level.sub_field] = {}
+                            else:
                                 parent_dict["_expand"][
                                     fields_of_level.sub_field
-                                ].append(fields_of_level.value)
-                        elif isinstance(parent_dict[fields_of_level.sub_field], str):
-                            parent_dict["_expand"][
-                                fields_of_level.sub_field
-                            ] = fields_of_level.value
+                                ] = fields_of_level.value
 
         return expansion
 
@@ -371,6 +413,40 @@ class ExpansionMixin:
             },
             code="invalid-expand-field",
         )
+
+    def next_iter_if_value_is_empty(self, value):
+        values = value.copy()
+        self.remove_key(values, "loop_id")
+        self.remove_key(values, "depth")
+        if not values:
+            return True
+        return False
+
+    def _add_to_expanded_fields(
+        self,
+        loop_id,
+        exp_field,
+        sub_field,
+        depth,
+        data,
+        struc_type,
+        is_empty,
+        original_data,
+        field=None,
+    ):
+        field_to_add = self.ExpansionField(
+            loop_id,
+            field.value["url"] if depth != 0 else original_data["url"],
+            exp_field.split(".")[depth - 1] if depth != 0 else None,
+            sub_field,
+            depth,
+            struc_type,
+            data,
+            is_empty,
+        )
+        field_to_add.value["loop_id"] = loop_id
+        field_to_add.value["depth"] = depth
+        self.expanded_fields.append(field_to_add)
 
 
 class ExpandFieldValidator:
