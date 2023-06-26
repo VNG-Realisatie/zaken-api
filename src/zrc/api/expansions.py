@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import uuid
 from collections import namedtuple
@@ -10,8 +11,8 @@ from django.urls.exceptions import Resolver404
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
-from rest_framework.request import Request as DRFRequest
-from vng_api_common.middleware import JWTAuth
+
+logger = logging.getLogger(__name__)
 
 
 class ExpansionMixin:
@@ -101,6 +102,11 @@ class ExpansionMixin:
             return self._get_internal_data(url)
         except Resolver404:
             return self._get_external_data(url)
+        except Exception as e:
+            logger.error(
+                f"The following error occured while trying to get data from {url}: {e}"
+            )
+            return {}
 
     def build_expand_schema(
         self,
@@ -154,6 +160,8 @@ class ExpansionMixin:
                         if field.sub_field == exp_field.split(".")[depth - 1]:
                             not_empty = field.value.copy()
                             self.remove_key(not_empty, "loop_id")
+                            self.remove_key(not_empty, "depth")
+
                             if not not_empty:
                                 continue
                             try:
