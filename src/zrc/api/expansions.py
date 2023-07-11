@@ -2,7 +2,7 @@ import json
 import logging
 import re
 import uuid
-from collections import namedtuple
+from dataclasses import dataclass
 from urllib.request import Request, urlopen
 
 from django.contrib.contenttypes.models import ContentType
@@ -15,33 +15,30 @@ from rest_framework import serializers
 logger = logging.getLogger(__name__)
 
 
+@dataclass
 class ExpansionField:
-    def __init__(self, id, parent, sub_field_parent, sub_field, level, struc_type, value, is_empty):
-        self.id = id
-        self.parent = parent
-        self.sub_field_parent = sub_field_parent
-        self.sub_field = sub_field
-        self.level = level
-        self.type = struc_type
-        self.value = value
-        self.is_empty = is_empty
+    def __init__(
+        self,
+        id,
+        parent,
+        sub_field_parent,
+        sub_field,
+        level,
+        struc_type,
+        value,
+        is_empty,
+    ):
+        self.id: str = id
+        self.parent: str = parent
+        self.sub_field_parent: str = sub_field_parent
+        self.sub_field: str = sub_field
+        self.level: int = level
+        self.type: str = struc_type
+        self.value: dict = value
+        self.is_empty: bool = is_empty
 
 
 class ExpansionMixin:
-    # ExpansionField = namedtuple(
-    #     "ExpansionField",
-    #     [
-    #         "id",
-    #         "parent",
-    #         "sub_field_parent",
-    #         "sub_field",
-    #         "level",
-    #         "type",
-    #         "value",
-    #         "is_empty",
-    #     ],
-    # )
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.expanded_fields = []
@@ -81,7 +78,6 @@ class ExpansionMixin:
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
-                access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi15WFpmUndUbUN0UjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLXlYWmZSd1RtQ3RSOSIsImlhdCI6MTY4ODk3NDk3NywiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi15WFpmUndUbUN0UjkiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.82-8YK4QU-67eAZ2HimzCCS5xmKZPoYGa3XVufrPOHk"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
@@ -148,9 +144,7 @@ class ExpansionMixin:
                         try:
                             urls = result[sub_field]
                         except KeyError:
-                            raise self.validation_invalid_expand_field(
-                                sub_field
-                            )
+                            raise self.validation_invalid_expand_field(sub_field)
 
                     if isinstance(urls, list):
                         for x in urls:
@@ -189,9 +183,7 @@ class ExpansionMixin:
                                 ]
                             except KeyError:
                                 try:
-                                    urls = field.value[
-                                        sub_field
-                                    ]
+                                    urls = field.value[sub_field]
                                 except KeyError:
                                     raise self.validation_invalid_expand_field(
                                         sub_field
@@ -269,25 +261,35 @@ class ExpansionMixin:
 
             for index, fields_of_level in enumerate(specific_levels):
                 if index == 0 and i == 0:
-                    if fields_of_level.type == "list" and not expansion["_expand"].get(fields_of_level.sub_field, None):
+                    if fields_of_level.type == "list" and not expansion["_expand"].get(
+                        fields_of_level.sub_field, None
+                    ):
                         expansion["_expand"][fields_of_level.sub_field] = []
-                    elif fields_of_level.type == "dict" and not expansion["_expand"].get(fields_of_level.sub_field,
-                                                                                         None):
+                    elif fields_of_level.type == "dict" and not expansion[
+                        "_expand"
+                    ].get(fields_of_level.sub_field, None):
                         expansion["_expand"][fields_of_level.sub_field] = {}
 
                 if i == 0:
                     if fields_of_level.type == "list":
-                        expansion["_expand"][fields_of_level.sub_field].append(
-                            fields_of_level.value
-                        )
+                        skip = False
+                        for field_dict in expansion["_expand"][
+                            fields_of_level.sub_field
+                        ]:
+                            if fields_of_level.value["url"] == field_dict["url"]:
+                                skip = True
+                        if not skip:
+                            expansion["_expand"][fields_of_level.sub_field].append(
+                                fields_of_level.value
+                            )
 
-                    elif fields_of_level.type == "dict" and not expansion["_expand"].get(fields_of_level.sub_field,
-                                                                                         None):
+                    elif fields_of_level.type == "dict" and not expansion[
+                        "_expand"
+                    ].get(fields_of_level.sub_field, None):
 
                         expansion["_expand"][
                             fields_of_level.sub_field
                         ] = fields_of_level.value
-
 
                 else:
                     match = self.get_parent_dict(
@@ -321,25 +323,29 @@ class ExpansionMixin:
                             parent_dict[fields_of_level.sub_field], list
                         ):
                             parent_dict["_expand"] = {fields_of_level.sub_field: []}
-                        elif not parent_dict.get("_expand", {}).get(fields_of_level.sub_field, None) and isinstance(
-                            parent_dict[fields_of_level.sub_field], list
-                        ):
-                            parent_dict["_expand"].update({fields_of_level.sub_field: []})
+                        elif not parent_dict.get("_expand", {}).get(
+                            fields_of_level.sub_field, None
+                        ) and isinstance(parent_dict[fields_of_level.sub_field], list):
+                            parent_dict["_expand"].update(
+                                {fields_of_level.sub_field: []}
+                            )
 
                         elif not parent_dict.get("_expand", {}) and isinstance(
                             parent_dict[fields_of_level.sub_field], str
                         ):
                             parent_dict["_expand"] = {fields_of_level.sub_field: {}}
 
-                        elif not parent_dict.get("_expand", {}).get(fields_of_level.sub_field, None) and isinstance(
-                            parent_dict[fields_of_level.sub_field], str
-                        ):
-                            parent_dict["_expand"].update({fields_of_level.sub_field: {}})
+                        elif not parent_dict.get("_expand", {}).get(
+                            fields_of_level.sub_field, None
+                        ) and isinstance(parent_dict[fields_of_level.sub_field], str):
+                            parent_dict["_expand"].update(
+                                {fields_of_level.sub_field: {}}
+                            )
 
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             if (
                                 not fields_of_level.value
-                                    in parent_dict["_expand"][fields_of_level.sub_field]
+                                in parent_dict["_expand"][fields_of_level.sub_field]
                             ):
                                 if fields_of_level.is_empty:
                                     parent_dict["_expand"][
@@ -377,14 +383,19 @@ class ExpansionMixin:
         """Get the parent dictionary of the target value."""
 
         if isinstance(data, dict):
-            to_compare = bool(data.get(target_key1) == target_value1
-                              and data.get(target_key2) == target_value2
-                              and data.get("depth") == level - 1) if target_key2 else bool(
-                data.get(target_key1) == target_value1
-                and data.get("depth") == level - 1)
-            if (
-                to_compare
-            ):
+            to_compare = (
+                bool(
+                    data.get(target_key1) == target_value1
+                    and data.get(target_key2) == target_value2
+                    and data.get("depth") == level - 1
+                )
+                if target_key2
+                else bool(
+                    data.get(target_key1) == target_value1
+                    and data.get("depth") == level - 1
+                )
+            )
+            if to_compare:
                 return parent
             for key, value in data.items():
                 if isinstance(value, (dict, list)):
