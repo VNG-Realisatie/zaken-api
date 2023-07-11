@@ -317,15 +317,24 @@ class ExpansionMixin:
                         if parent_dict.get("url", None) != fields_of_level.parent:
                             continue
 
-                        if not parent_dict.get("_expand", None) and isinstance(
+                        if not parent_dict.get("_expand", {}) and isinstance(
                             parent_dict[fields_of_level.sub_field], list
                         ):
                             parent_dict["_expand"] = {fields_of_level.sub_field: []}
+                        elif not parent_dict.get("_expand", {}).get(fields_of_level.sub_field, None) and isinstance(
+                            parent_dict[fields_of_level.sub_field], list
+                        ):
+                            parent_dict["_expand"].update({fields_of_level.sub_field: []})
 
-                        elif not parent_dict.get("_expand", None) and isinstance(
+                        elif not parent_dict.get("_expand", {}) and isinstance(
                             parent_dict[fields_of_level.sub_field], str
                         ):
                             parent_dict["_expand"] = {fields_of_level.sub_field: {}}
+
+                        elif not parent_dict.get("_expand", {}).get(fields_of_level.sub_field, None) and isinstance(
+                            parent_dict[fields_of_level.sub_field], str
+                        ):
+                            parent_dict["_expand"].update({fields_of_level.sub_field: {}})
 
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             if (
