@@ -1220,13 +1220,14 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         url = reverse("zaak-list")
         expand_params = [
             "rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen",
-            "relevante_andere_zaken.zaaktype",
+            "relevanteAndereZaken.zaaktype",
             "zaaktype.besluittypen,status.statustype,zaaktype.catalogus",
             "rollen.zaak.rollen.zaak.rollen",
             "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten",
             "zaaktype.catalogus.zaaktypen",
             "zaaktype.besluittypen.zaaktypen",
-            "status.statustype,status.gezetdoor"
+            "status.statustype,status.gezetdoor",
+            "zaaktype.gerelateerdeZaaktypen"
         ]
         for param in expand_params:
             with self.subTest(param=param):

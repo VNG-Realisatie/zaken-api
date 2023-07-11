@@ -145,12 +145,14 @@ class ExpansionMixin:
                     try:
                         urls = result[self.convert_camel_to_snake(sub_field)]
                     except KeyError:
-                        raise self.validation_invalid_expand_field(
-                            self.convert_camel_to_snake(sub_field)
-                        )
+                        try:
+                            urls = result[sub_field]
+                        except KeyError:
+                            raise self.validation_invalid_expand_field(
+                                sub_field
+                            )
 
                     if isinstance(urls, list):
-                        # expansion["_expand"][sub_field] = []
                         for x in urls:
                             self._add_to_expanded_fields(
                                 loop_id,
@@ -163,7 +165,6 @@ class ExpansionMixin:
                                 original_data=result,
                             )
                     else:
-                        # expansion["_expand"][sub_field] = {}
                         if urls:
                             self._add_to_expanded_fields(
                                 loop_id,
@@ -187,9 +188,14 @@ class ExpansionMixin:
                                     self.convert_camel_to_snake(sub_field)
                                 ]
                             except KeyError:
-                                raise self.validation_invalid_expand_field(
-                                    self.convert_camel_to_snake(sub_field)
-                                )
+                                try:
+                                    urls = field.value[
+                                        sub_field
+                                    ]
+                                except KeyError:
+                                    raise self.validation_invalid_expand_field(
+                                        sub_field
+                                    )
                             if isinstance(urls, list):
                                 if urls:
                                     for x in urls:
