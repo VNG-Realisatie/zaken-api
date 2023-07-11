@@ -15,21 +15,32 @@ from rest_framework import serializers
 logger = logging.getLogger(__name__)
 
 
+class ExpansionField:
+    def __init__(self, id, parent, sub_field_parent, sub_field, level, struc_type, value, is_empty):
+        self.id = id
+        self.parent = parent
+        self.sub_field_parent = sub_field_parent
+        self.sub_field = sub_field
+        self.level = level
+        self.type = struc_type
+        self.value = value
+        self.is_empty = is_empty
+
 
 class ExpansionMixin:
-    ExpansionField = namedtuple(
-        "ExpansionField",
-        [
-            "id",
-            "parent",
-            "sub_field_parent",
-            "sub_field",
-            "level",
-            "type",
-            "value",
-            "is_empty",
-        ],
-    )
+    # ExpansionField = namedtuple(
+    #     "ExpansionField",
+    #     [
+    #         "id",
+    #         "parent",
+    #         "sub_field_parent",
+    #         "sub_field",
+    #         "level",
+    #         "type",
+    #         "value",
+    #         "is_empty",
+    #     ],
+    # )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -139,7 +150,7 @@ class ExpansionMixin:
                         )
 
                     if isinstance(urls, list):
-                        expansion["_expand"][sub_field] = []
+                        # expansion["_expand"][sub_field] = []
                         for x in urls:
                             self._add_to_expanded_fields(
                                 loop_id,
@@ -152,7 +163,7 @@ class ExpansionMixin:
                                 original_data=result,
                             )
                     else:
-                        expansion["_expand"][sub_field] = {}
+                        # expansion["_expand"][sub_field] = {}
                         if urls:
                             self._add_to_expanded_fields(
                                 loop_id,
@@ -231,6 +242,9 @@ class ExpansionMixin:
                                         original_data=result,
                                         field=field,
                                     )
+                        else:
+                            if self.next_iter_if_value_is_empty(field.value):
+                                field.is_empty = True
 
             if not self.expanded_fields:
                 continue
@@ -249,9 +263,10 @@ class ExpansionMixin:
 
             for index, fields_of_level in enumerate(specific_levels):
                 if index == 0 and i == 0:
-                    if fields_of_level.type == "list":
+                    if fields_of_level.type == "list" and not expansion["_expand"].get(fields_of_level.sub_field, None):
                         expansion["_expand"][fields_of_level.sub_field] = []
-                    else:
+                    elif fields_of_level.type == "dict" and not expansion["_expand"].get(fields_of_level.sub_field,
+                                                                                         None):
                         expansion["_expand"][fields_of_level.sub_field] = {}
 
                 if i == 0:
@@ -259,10 +274,14 @@ class ExpansionMixin:
                         expansion["_expand"][fields_of_level.sub_field].append(
                             fields_of_level.value
                         )
-                    else:
+
+                    elif fields_of_level.type == "dict" and not expansion["_expand"].get(fields_of_level.sub_field,
+                                                                                         None):
+
                         expansion["_expand"][
                             fields_of_level.sub_field
                         ] = fields_of_level.value
+
 
                 else:
                     match = self.get_parent_dict(
@@ -274,7 +293,16 @@ class ExpansionMixin:
                         level=i,
                         field_level=fields_of_level.level,
                     )
-
+                    if not match:
+                        match = self.get_parent_dict(
+                            expansion["_expand"],
+                            target_key1="url",
+                            target_key2=None,
+                            target_value1=fields_of_level.parent,
+                            target_value2=None,
+                            level=i,
+                            field_level=fields_of_level.level,
+                        )
                     for parent_dict in match:
                         if isinstance(parent_dict, str):
                             if parent_dict != fields_of_level.sub_field_parent:
@@ -308,6 +336,7 @@ class ExpansionMixin:
                                     ].append(fields_of_level.value)
 
                         elif isinstance(parent_dict[fields_of_level.sub_field], str):
+
                             if fields_of_level.is_empty:
                                 parent_dict["_expand"][fields_of_level.sub_field] = {}
                             else:
@@ -333,10 +362,13 @@ class ExpansionMixin:
         """Get the parent dictionary of the target value."""
 
         if isinstance(data, dict):
-            if (
+            to_compare = bool(data.get(target_key1) == target_value1
+                              and data.get(target_key2) == target_value2
+                              and data.get("depth") == level - 1) if target_key2 else bool(
                 data.get(target_key1) == target_value1
-                and data.get(target_key2) == target_value2
-                and data.get("depth") == level - 1
+                and data.get("depth") == level - 1)
+            if (
+                to_compare
             ):
                 return parent
             for key, value in data.items():
@@ -436,7 +468,7 @@ class ExpansionMixin:
         field=None,
     ):
         copy_data = data.copy()
-        field_to_add = self.ExpansionField(
+        field_to_add = ExpansionField(
             loop_id,
             field.value["url"] if depth != 0 else original_data["url"],
             exp_field.split(".")[depth - 1] if depth != 0 else None,
@@ -451,6 +483,7 @@ class ExpansionMixin:
         field_to_add.value["depth"] = field_to_add.level
 
         self.expanded_fields.append(field_to_add)
+
 
 class ExpandFieldValidator:
     MAX_STEPS_DEPTH = 10

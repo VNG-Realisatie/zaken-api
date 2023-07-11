@@ -1221,10 +1221,12 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         expand_params = [
             "rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen",
             "relevante_andere_zaken.zaaktype",
-            "zaaktype,status.statustype",
+            "zaaktype.besluittypen,status.statustype,zaaktype.catalogus",
             "rollen.zaak.rollen.zaak.rollen",
             "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten",
-            "zaaktype.catalogus.zaaktypen"
+            "zaaktype.catalogus.zaaktypen",
+            "zaaktype.besluittypen.zaaktypen",
+            "status.statustype,status.gezetdoor"
         ]
         for param in expand_params:
             with self.subTest(param=param):
