@@ -15,6 +15,7 @@ from rest_framework import serializers
 logger = logging.getLogger(__name__)
 
 
+
 class ExpansionMixin:
     ExpansionField = namedtuple(
         "ExpansionField",
@@ -295,7 +296,7 @@ class ExpansionMixin:
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             if (
                                 not fields_of_level.value
-                                in parent_dict["_expand"][fields_of_level.sub_field]
+                                    in parent_dict["_expand"][fields_of_level.sub_field]
                             ):
                                 if fields_of_level.is_empty:
                                     parent_dict["_expand"][
@@ -434,6 +435,7 @@ class ExpansionMixin:
         original_data,
         field=None,
     ):
+        copy_data = data.copy()
         field_to_add = self.ExpansionField(
             loop_id,
             field.value["url"] if depth != 0 else original_data["url"],
@@ -441,13 +443,14 @@ class ExpansionMixin:
             sub_field,
             depth,
             struc_type,
-            data,
+            copy_data,
             is_empty,
         )
-        field_to_add.value["loop_id"] = loop_id
-        field_to_add.value["depth"] = depth
-        self.expanded_fields.append(field_to_add)
 
+        field_to_add.value["loop_id"] = loop_id
+        field_to_add.value["depth"] = field_to_add.level
+
+        self.expanded_fields.append(field_to_add)
 
 class ExpandFieldValidator:
     MAX_STEPS_DEPTH = 10

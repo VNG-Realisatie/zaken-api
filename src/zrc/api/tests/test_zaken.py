@@ -1174,9 +1174,11 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
     def test_expand_filter_few_levels_deep(self, *mocks):
         zaak = ZaakFactory.create()
 
-        zaak2 = ZaakFactory.create()
+        zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/65293381-ed11-413d-ab93-77293d0946a0"
 
-        url = reverse("zaak-detail", kwargs={"uuid": zaak2.uuid})
+        # zaak2 = ZaakFactory.create()
+
+        url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
 
         zaakrelatie = RelevanteZaakRelatie.objects.create(
             zaak=zaak, url=url, aard_relatie="test"
@@ -1187,21 +1189,21 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         zaakeigenschap = ZaakEigenschapFactory.create(
             zaak=zaak, eigenschap=self.EIGENSCHAP, waarde="This is a value"
         )
-        zaakeigenschap = ZaakEigenschapFactory.create(
-            zaak=zaak2, eigenschap=self.EIGENSCHAP, waarde="This is a value"
-        )
+        # zaakeigenschap = ZaakEigenschapFactory.create(
+        #     zaak=zaak2, eigenschap=self.EIGENSCHAP, waarde="This is a value"
+        # )
         zaakobject = ZaakObjectFactory.create(
             zaak=zaak,
             object=OBJECT,
             object_type=ZaakobjectTypes.besluit,
             zaakobjecttype=self.ZAAKOBJECTTYPE,
         )
-        zaakobject = ZaakObjectFactory.create(
-            zaak=zaak2,
-            object=OBJECT,
-            object_type=ZaakobjectTypes.besluit,
-            zaakobjecttype=self.ZAAKOBJECTTYPE,
-        )
+        # zaakobject = ZaakObjectFactory.create(
+        #     zaak=zaak2,
+        #     object=OBJECT,
+        #     object_type=ZaakobjectTypes.besluit,
+        #     zaakobjecttype=self.ZAAKOBJECTTYPE,
+        # )
         zio = ZaakInformatieObjectFactory.create(zaak=zaak)
 
         rol = RolFactory.create(
@@ -1222,6 +1224,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             "zaaktype,status.statustype",
             "rollen.zaak.rollen.zaak.rollen",
             "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten",
+            "zaaktype.catalogus.zaaktypen"
         ]
         for param in expand_params:
             with self.subTest(param=param):
