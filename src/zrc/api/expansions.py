@@ -11,7 +11,7 @@ from django.urls.exceptions import Resolver404
 from django.utils.translation import ugettext_lazy as _
 
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema
 from rest_framework import serializers
 
 logger = logging.getLogger(__name__)
@@ -43,8 +43,21 @@ class ExpansionField:
 EXPAND_QUERY_PARAM = OpenApiParameter(
     name="expand",
     location=OpenApiParameter.QUERY,
-    description="Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt.",
+    description="Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt.",
     type=OpenApiTypes.STR,
+    examples=[
+        OpenApiExample(name="expand zaaktype", value="zaaktype"),
+        OpenApiExample(name="expand status", value="status"),
+        OpenApiExample(name="expand status.statustype", value="status.statustype"),
+        OpenApiExample(
+            name="expand hoofdzaak.status.statustype",
+            value="hoofdzaak.status.statustype",
+        ),
+        OpenApiExample(
+            name="expand hoofdzaak.deelzaken.status.statustype",
+            value="hoofdzaak.deelzaken.status.statustype",
+        ),
+    ],
 )
 
 
@@ -455,7 +468,7 @@ class ExpansionMixin:
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
             if self.action == "list":
-                for response_data in response.data:
+                for response_data in response.data["results"]:
                     response_data["_expand"] = {}
                     self.build_expand_schema(
                         response_data,
