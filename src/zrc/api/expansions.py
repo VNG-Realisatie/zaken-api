@@ -78,6 +78,7 @@ class ExpansionMixin:
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
+                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi15WFpmUndUbUN0UjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLXlYWmZSd1RtQ3RSOSIsImlhdCI6MTY4ODk3NDk3NywiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi15WFpmUndUbUN0UjkiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.82-8YK4QU-67eAZ2HimzCCS5xmKZPoYGa3XVufrPOHk"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
