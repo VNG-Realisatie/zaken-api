@@ -10,6 +10,8 @@ from django.urls import resolve
 from django.urls.exceptions import Resolver404
 from django.utils.translation import ugettext_lazy as _
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import serializers
 
 logger = logging.getLogger(__name__)
@@ -38,23 +40,30 @@ class ExpansionField:
         self.is_empty: bool = is_empty
 
 
+EXPAND_QUERY_PARAM = OpenApiParameter(
+    name="expand",
+    location=OpenApiParameter.QUERY,
+    description="Example: `expand=informatieobjecttype,informatieobject`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt.",
+    type=OpenApiTypes.STR,
+)
+
+
 class ExpansionMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.expanded_fields = []
         self.called_external_uris = {}
 
-    def get_serializer(self, *args, **kwargs):
-        """
-        Return the serializer instance that should be used for validating and
-        deserializing input, and for serializing output. The expansion mechanism will be applied for the list operation incase the "expand" query paramter has been set.
-        """
-        serializer = super().get_serializer(*args, **kwargs)
-        if not self.request:
-            return serializer
-        if self.action in ["list"]:
-            serializer = self.inclusions(serializer)
-        return serializer
+    @extend_schema(parameters=[EXPAND_QUERY_PARAM])
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        response = self.inclusions(response)
+        return response
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        response = self.inclusions(response)
+        return response
 
     @staticmethod
     def _convert_to_internal_url(url: str) -> str:
@@ -252,7 +261,6 @@ class ExpansionMixin:
 
         self.remove_key(expansion, "loop_id")
         self.remove_key(expansion, "depth")
-
         result["_expand"].update(expansion["_expand"])
 
     def _build_json(self, expansion: dict) -> dict:
@@ -442,18 +450,22 @@ class ExpansionMixin:
                 if isinstance(item, (dict, list)):
                     self.remove_key(item, target_key)
 
-    def inclusions(self, serializer):
+    def inclusions(self, response):
         expand_filter = self.request.query_params.get("expand", "")
         if expand_filter:
             fields_to_expand = expand_filter.split(",")
-            for serialized_data in serializer.data:
-                serialized_data["_expand"] = {}
-                self.build_expand_schema(
-                    serialized_data,
-                    fields_to_expand,
-                )
+            if self.action == "list":
+                for response_data in response.data:
+                    response_data["_expand"] = {}
+                    self.build_expand_schema(
+                        response_data,
+                        fields_to_expand,
+                    )
+            elif self.action == "retrieve":
+                response.data["_expand"] = {}
+                self.build_expand_schema(response.data, fields_to_expand)
 
-        return serializer
+        return response
 
     @staticmethod
     def convert_camel_to_snake(string):

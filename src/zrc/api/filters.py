@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
 
 from django_filters import filters
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from vng_api_common.constants import VertrouwelijkheidsAanduiding
 from vng_api_common.filtersets import FilterSet
 from vng_api_common.utils import get_field_attribute, get_help_text
@@ -131,11 +133,13 @@ class ZaakFilter(FilterSet):
         help_text="Het veld waarop de resultaten geordend worden.",
     )
 
-    expand = filters.CharFilter(
-        method=expand_filter,
-        help_text=_(
-            "Example: `expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype, hoofdzaak.deelzaken.status.statustype`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
-        ),
+    expand = extend_schema_field(OpenApiTypes.STR)(
+        filters.CharFilter(
+            method=expand_filter,
+            help_text=_(
+                "Example: `expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype, hoofdzaak.deelzaken.status.statustype`. Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt."
+            ),
+        )
     )
 
     class Meta:

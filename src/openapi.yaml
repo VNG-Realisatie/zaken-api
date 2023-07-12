@@ -7411,6 +7411,15 @@ paths:
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
           required: true
+        - in: query
+          name: expand
+          schema:
+            type: string
+          description:
+            'Example: `expand=informatieobjecttype,informatieobject`. Haal
+            details van gelinkte resources direct op. Als je meerdere resources tegelijk
+            wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources
+            die een laag dieper genest zijn wordt de punt-notatie gebruikt.'
       tags:
         - zaken
       security:

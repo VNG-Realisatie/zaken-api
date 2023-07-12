@@ -1171,7 +1171,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
     @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
     @patch("vng_api_common.validators.fetcher")
     @patch("vng_api_common.validators.obj_has_shape", return_value=True)
-    def test_expand_filter_few_levels_deep(self, *mocks):
+    def test_list_expand_filter_few_levels_deep(self, *mocks):
         zaak = ZaakFactory.create()
 
         # zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/65293381-ed11-413d-ab93-77293d0946a0"
@@ -1241,6 +1241,51 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
                     **ZAAK_READ_KWARGS,
                 )
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
+    @patch("vng_api_common.validators.fetcher")
+    @patch("vng_api_common.validators.obj_has_shape", return_value=True)
+    def test_get_expand_filter_few_levels_deep(self, *mocks):
+        zaak = ZaakFactory.create()
+        zaak2 = ZaakFactory.create()
+
+        url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
+
+        zaakrelatie = RelevanteZaakRelatie.objects.create(
+            zaak=zaak, url=url, aard_relatie="test"
+        )
+        zaak.relevante_andere_zaken.add(zaakrelatie)
+        zaak.save()
+
+        zaakobject = ZaakObjectFactory.create(
+            zaak=zaak,
+            object=OBJECT,
+            object_type=ZaakobjectTypes.besluit,
+            zaakobjecttype=self.ZAAKOBJECTTYPE,
+        )
+
+        zio = ZaakInformatieObjectFactory.create(zaak=zaak)
+
+        rol = RolFactory.create(
+            zaak=zaak,
+        )
+
+        status1 = StatusFactory.create(zaak=zaak)
+        rol.statussen.add(status1)
+
+        rol2 = RolFactory.create(
+            zaak=zaak,
+        )
+
+        response = self.client.get(
+            url,
+            {"expand": "rollen.statussen,rollen.zaak"},
+            **ZAAK_READ_KWARGS,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        from pprint import pprint
+
+        pprint(response.json())
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
