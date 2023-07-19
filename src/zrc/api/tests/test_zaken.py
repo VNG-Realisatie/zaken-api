@@ -1174,7 +1174,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
     def test_list_expand_filter_few_levels_deep(self, *mocks):
         zaak = ZaakFactory.create()
 
-        # zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/65293381-ed11-413d-ab93-77293d0946a0"
+        zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
 
         # zaak2 = ZaakFactory.create()
 
@@ -1189,6 +1189,13 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         zaakeigenschap = ZaakEigenschapFactory.create(
             zaak=zaak, eigenschap=self.EIGENSCHAP, waarde="This is a value"
         )
+        zaakeigenschap2 = ZaakEigenschapFactory.create(
+            zaak=zaak, eigenschap=self.EIGENSCHAP, waarde="This is a value"
+        )
+        zaakeigenschap3 = ZaakEigenschapFactory.create(
+            zaak=zaak, eigenschap=self.EIGENSCHAP, waarde="This is a value"
+        )
+
         # zaakeigenschap = ZaakEigenschapFactory.create(
         #     zaak=zaak2, eigenschap=self.EIGENSCHAP, waarde="This is a value"
         # )
@@ -1232,6 +1239,8 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             "zaaktype.deelzaaktypen",
             "zaaktype.eigenschappen.statustype",
             "rollen.statussen,rollen.zaak",
+            "zaaktype.eigenschappen.catalogus,zaaktype.eigenschappen.zaaktype,zaaktype.eigenschappen.statustype",
+
         ]
         for param in expand_params:
             with self.subTest(param=param):
@@ -1241,6 +1250,9 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
                     **ZAAK_READ_KWARGS,
                 )
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
+                # from pprint import pprint
+                #
+                # pprint(response.json())
 
     @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
     @patch("vng_api_common.validators.fetcher")
@@ -1283,9 +1295,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             **ZAAK_READ_KWARGS,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        from pprint import pprint
 
-        pprint(response.json())
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
