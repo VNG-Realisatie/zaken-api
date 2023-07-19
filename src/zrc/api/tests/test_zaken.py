@@ -1176,7 +1176,9 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
 
         zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
 
-        # zaak2 = ZaakFactory.create()
+        zaak2 = ZaakFactory.create()
+        zaak2.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
+        zaak2.save()
 
         url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
 
@@ -1218,7 +1220,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         )
 
         status1 = StatusFactory.create(zaak=zaak)
-        rol.statussen.add(status1)
+        # rol.statussen.add(status1)
 
         rol2 = RolFactory.create(
             zaak=zaak,
@@ -1240,6 +1242,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             "zaaktype.eigenschappen.statustype",
             "rollen.statussen,rollen.zaak",
             "zaaktype.eigenschappen.catalogus,zaaktype.eigenschappen.zaaktype,zaaktype.eigenschappen.statustype",
+            "status,zaaktype"
 
         ]
         for param in expand_params:

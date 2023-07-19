@@ -193,6 +193,8 @@ class ExpansionMixin:
                                 is_empty=False,
                                 original_data=result,
                             )
+                        else:
+                            expansion["_expand"][exp_field] = {}
 
                 else:
 
