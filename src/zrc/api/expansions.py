@@ -370,8 +370,10 @@ class ExpansionMixin:
 
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             add = True
-                            for expand in parent_dict["_expand"][fields_of_level.sub_field]:
-                                if expand['url'] == fields_of_level.value["url"]:
+                            for expand in parent_dict["_expand"][
+                                fields_of_level.sub_field
+                            ]:
+                                if expand["url"] == fields_of_level.value["url"]:
                                     add = False
 
                             if add:

@@ -1174,11 +1174,11 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
     def test_list_expand_filter_few_levels_deep(self, *mocks):
         zaak = ZaakFactory.create()
 
-        zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
-
-        zaak2 = ZaakFactory.create()
-        zaak2.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
-        zaak2.save()
+        # zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
+        #
+        # zaak2 = ZaakFactory.create()
+        # zaak2.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
+        # zaak2.save()
 
         url = reverse("zaak-detail", kwargs={"uuid": zaak.uuid})
 
@@ -1242,8 +1242,8 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             "zaaktype.eigenschappen.statustype",
             "rollen.statussen,rollen.zaak",
             "zaaktype.eigenschappen.catalogus,zaaktype.eigenschappen.zaaktype,zaaktype.eigenschappen.statustype",
-            "status,zaaktype"
-
+            "status,zaaktype",
+            "zaaktype,hoofdzaak,deelzaken,relevanteAndereZaken,eigenschappen,rollen,status,zaakobjecten,resultaat",
         ]
         for param in expand_params:
             with self.subTest(param=param):
@@ -1298,7 +1298,6 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             **ZAAK_READ_KWARGS,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
 
 class ZakenWerkVoorraadTests(JWTAuthMixin, APITestCase):
