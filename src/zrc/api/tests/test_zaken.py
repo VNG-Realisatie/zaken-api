@@ -1219,7 +1219,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             zaak=zaak,
         )
 
-        status1 = StatusFactory.create(zaak=zaak)
+        # status1 = StatusFactory.create(zaak=zaak)
         # rol.statussen.add(status1)
 
         rol2 = RolFactory.create(
@@ -1244,6 +1244,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             "zaaktype.eigenschappen.catalogus,zaaktype.eigenschappen.zaaktype,zaaktype.eigenschappen.statustype",
             "status,zaaktype",
             "zaaktype,hoofdzaak,deelzaken,relevanteAndereZaken,eigenschappen,rollen,status,zaakobjecten,resultaat",
+            "status.zaak,status.statustype,status.gezetdoor",
         ]
         for param in expand_params:
             with self.subTest(param=param):

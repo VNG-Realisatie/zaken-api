@@ -196,7 +196,7 @@ class ExpansionMixin:
                                 original_data=result,
                             )
                         else:
-                            expansion["_expand"][exp_field] = {}
+                            expansion["_expand"][sub_field] = {}
 
                 else:
 
