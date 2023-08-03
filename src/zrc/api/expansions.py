@@ -18,6 +18,26 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class Records:
+    def __init__(self, depth, sub_field, loop_id, code, parent_code):
+        self.depth = depth
+        self.sub_field = sub_field
+        self.loop_id = loop_id
+        self.code = code
+        self.parent_code = parent_code
+
+
+def is_uri(s):
+    try:
+        from urllib.parse import urlparse
+
+        result = urlparse(s)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
+
+
+@dataclass
 class ExpansionField:
     def __init__(
         self,
@@ -29,17 +49,19 @@ class ExpansionField:
         struc_type,
         value,
         is_empty,
-        sub_field_parent_parent=None,
+        code=None,
+        parent_code=None,
     ):
         self.id: str = id
         self.parent: str = parent
         self.sub_field_parent: str = sub_field_parent
-        self.sub_field_parent_parent: str = sub_field_parent_parent
         self.sub_field: str = sub_field
         self.level: int = level
         self.type: str = struc_type
         self.value: dict = value
         self.is_empty: bool = is_empty
+        self.code = code
+        self.parent_code = parent_code
 
 
 EXPAND_QUERY_PARAM = OpenApiParameter(
@@ -68,6 +90,7 @@ class ExpansionMixin:
         super().__init__(*args, **kwargs)
         self.expanded_fields = []
         self.called_external_uris = {}
+        self.expanded_fields_all = []
 
     @extend_schema(parameters=[EXPAND_QUERY_PARAM])
     def retrieve(self, request, *args, **kwargs):
@@ -87,7 +110,11 @@ class ExpansionMixin:
         save_sentence = False
         internal_url = "/"
         if isinstance(url, dict):
-            url = url.get("url", None)
+            if not url.get("url", None):
+                for key, value in url.items():
+                    if is_uri(value):
+                        url = key
+                        break
         if not url:
             return ""
         for word in url.split("/"):
@@ -102,7 +129,7 @@ class ExpansionMixin:
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
-                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi04aklYUU1zRFZuOHIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLThqSVhRTXNEVm44ciIsImlhdCI6MTY4OTc1Njc4MCwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi04aklYUU1zRFZuOHIiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.wMiugU3AaPvfTj0zhYKjCQ5Ztq7WMSIxlbtIoTEXehw"
+                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi1sTlByUzVmWktwMUMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLWxOUHJTNWZaS3AxQyIsImlhdCI6MTY5MTA3MzY0MCwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi1sTlByUzVmWktwMUMiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.-iRNb816VfUWwsnOBHq3vwJKWscRd_TQ_WmmJMWqVII"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
@@ -158,6 +185,7 @@ class ExpansionMixin:
     ):
         """Build the expand schema for the response. First, the fields to expand are split on the "." character. Then, the first part of the split is used to get the urls from the result. The urls are then used to get the corresponding data from the external api or from the local database. The data is then gathered/collected inside a list consisted of namedtuples. When all data is collected, it calls the _build_json method which builds the json response."""
         expansion = {"_expand": {}}
+
         for exp_field in fields_to_expand:
             loop_id = str(uuid.uuid4())
             self.expanded_fields = []
@@ -203,7 +231,10 @@ class ExpansionMixin:
                 else:
 
                     for field in self.expanded_fields:
-                        if field.sub_field == exp_field.split(".")[depth - 1] and field.level == depth - 1:
+                        if (
+                            field.sub_field == exp_field.split(".")[depth - 1]
+                            and field.level == depth - 1
+                        ):
                             if self.next_iter_if_value_is_empty(field.value):
                                 continue
                             try:
@@ -275,11 +306,11 @@ class ExpansionMixin:
 
             if not self.expanded_fields:
                 continue
-
             expansion = self._build_json(expansion)
 
-        self.remove_key(expansion, "loop_id")
-        self.remove_key(expansion, "depth")
+        for key in ["loop_id", "depth", "code", "parent_code"]:
+            self.remove_key(expansion, key)
+
         result["_expand"].update(expansion["_expand"])
 
     def _build_json(self, expansion: dict) -> dict:
@@ -323,32 +354,14 @@ class ExpansionMixin:
                     match = self.get_parent_dict(
                         expansion["_expand"],
                         target_key1="url",
-                        target_key2="loop_id",
-                        target_key3="sub_field_parent",
+                        target_key3="code",
                         target_value1=fields_of_level.parent,
-                        target_value2=fields_of_level.id,
-                        target_value3=fields_of_level.sub_field_parent_parent,
+                        target_value3=fields_of_level.parent_code,
                         level=i,
                         field_level=fields_of_level.level,
                     )
-                    # if not match:
-                    #     breakpoint()
 
-                    # if not match:
-                    #     match = self.get_parent_dict(
-                    #         expansion["_expand"],
-                    #         target_key1="url",
-                    #         target_key2=None,
-                    #         target_key3="sub_field_parent",
-                    #         target_value1=fields_of_level.parent,
-                    #         target_value2=None,
-                    #         target_value3=fields_of_level.sub_field_parent_parent,
-                    #         level=i,
-                    #         field_level=fields_of_level.level,
-                    #     )
                     for parent_dict in match:
-                        if fields_of_level.level == 3:
-                            print(parent_dict["url"])
                         if isinstance(parent_dict, str):
                             if parent_dict != fields_of_level.sub_field_parent:
                                 continue
@@ -380,7 +393,6 @@ class ExpansionMixin:
                             parent_dict["_expand"].update(
                                 {fields_of_level.sub_field: {}}
                             )
-                        # breakpoint()
 
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             add = True
@@ -423,10 +435,8 @@ class ExpansionMixin:
         self,
         data,
         target_key1,
-        target_key2,
         target_key3,
         target_value1,
-        target_value2,
         target_value3,
         level,
         field_level,
@@ -435,31 +445,28 @@ class ExpansionMixin:
         """Get the parent dictionary of the target value."""
 
         if isinstance(data, dict):
-            if target_key2 and target_value3:
-                to_compare = bool(
-                        data.get(target_key1) == target_value1
-                        and data.get(target_key2) == target_value2
-                        and data.get(target_key3) == target_value3
-                        and data.get("depth") == level - 1)
-            elif target_key2 and not target_value3:
+            if target_value3:
                 to_compare = bool(
                     data.get(target_key1) == target_value1
-                    and data.get(target_key2) == target_value2
-                    and data.get("depth") == level - 1)
-            # try:
+                    and data.get(target_key3) == target_value3
+                    and data.get("depth") == level - 1
+                )
+            elif not target_value3:
+                to_compare = bool(
+                    data.get(target_key1) == target_value1
+                    and data.get("depth") == level - 1
+                )
+
             if to_compare:
                 return parent
-            # except UnboundLocalError:
-            #     breakpoint()
+
             for key, value in data.items():
                 if isinstance(value, (dict, list)):
                     parent_dict = self.get_parent_dict(
                         value,
                         target_key1,
-                        target_key2,
                         target_key3,
                         target_value1,
-                        target_value2,
                         target_value3,
                         level,
                         field_level,
@@ -474,10 +481,8 @@ class ExpansionMixin:
                     parent_dict = self.get_parent_dict(
                         item,
                         target_key1,
-                        target_key2,
                         target_key3,
                         target_value1,
-                        target_value2,
                         target_value3,
                         level,
                         field_level,
@@ -539,6 +544,8 @@ class ExpansionMixin:
         values = value.copy()
         self.remove_key(values, "loop_id")
         self.remove_key(values, "depth")
+        self.remove_key(values, "code")
+        self.remove_key(values, "parent_code")
         if not values:
             return True
         return False
@@ -555,6 +562,18 @@ class ExpansionMixin:
         original_data,
         field=None,
     ):
+        unique_code = uuid.uuid4().hex
+
+        for old_field in self.expanded_fields_all:
+            if (
+                old_field.level == depth
+                and old_field.sub_field == sub_field
+                and loop_id != old_field.id
+            ):
+                old_field.id = loop_id
+                self.expanded_fields.append(old_field)
+                return
+
         copy_data = data.copy()
         field_to_add = ExpansionField(
             loop_id,
@@ -565,18 +584,16 @@ class ExpansionMixin:
             struc_type,
             copy_data,
             is_empty,
-            sub_field_parent_parent=str(field.parent) if depth > 1 else None,
+            code=unique_code,
+            parent_code=field.code if depth > 0 else unique_code,
         )
-        if depth >1:
-            print(exp_field.split(".")[depth - 1])
+
         field_to_add.value["loop_id"] = loop_id
         field_to_add.value["depth"] = field_to_add.level
-        field_to_add.value["sub_field_parent_parent"] = field.parent if depth > 1 else None,
-        field_to_add.value["sub_field_parent"] = field.value["url"] if depth > 0 else None
-
-        # if depth == 2:
-        #     print(field_to_add.__dict__)
+        field_to_add.value["parent_code"] = field.code if depth > 0 else unique_code
+        field_to_add.value["code"] = unique_code if depth > 0 else unique_code
         self.expanded_fields.append(field_to_add)
+        self.expanded_fields_all.append(field_to_add)
 
 
 class ExpandFieldValidator:

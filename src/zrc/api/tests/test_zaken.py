@@ -1174,7 +1174,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
     def test_list_expand_filter_few_levels_deep(self, *mocks):
         zaak = ZaakFactory.create()
 
-        # zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
+        # zaak.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/d7f1d93c-e319-4ba0-a74d-785e83d6ba8f"
         #
         # zaak2 = ZaakFactory.create()
         # zaak2.zaaktype = "https://catalogi-api.test.vng.cloud/api/v1/zaaktypen/ed15c69d-15cd-4bc7-bc1a-b5d21d45dc36"
@@ -1219,32 +1219,33 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             zaak=zaak,
         )
 
-        # status1 = StatusFactory.create(zaak=zaak)
-        # rol.statussen.add(status1)
+        status1 = StatusFactory.create(zaak=zaak)
+        rol.statussen.add(status1)
 
         rol2 = RolFactory.create(
             zaak=zaak,
         )
+        rol2.statussen.add(status1)
 
         url = reverse("zaak-list")
         expand_params = [
-            # "rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen",
-            # "relevanteAndereZaken.zaaktype",
-            # "zaaktype.besluittypen,status.statustype,zaaktype.catalogus",
-            "rollen.zaak.rollen.zaak",
-            # "zaaktype,rollen.statussen.zaak.rollen,status.zaak,zaakobjecten,zaakinformatieobjecten",
-            # "zaaktype.catalogus.zaaktypen",
-            # "zaaktype.besluittypen.zaaktypen",
-            # "status.statustype,status.gezetdoor",
-            # "zaaktype.gerelateerdeZaaktypen",
-            # "zaaktype.zaakobjecttypen,zaaktype.statustypen",
-            # "zaaktype.deelzaaktypen",
-            # "zaaktype.eigenschappen.statustype",
-            # "rollen.statussen,rollen.zaak",
-            # "zaaktype.eigenschappen.catalogus,zaaktype.eigenschappen.zaaktype,zaaktype.eigenschappen.statustype",
-            # "status,zaaktype",
-            # "zaaktype,hoofdzaak,deelzaken,relevanteAndereZaken,eigenschappen,rollen,status,zaakobjecten,resultaat",
-            # "status.zaak,status.statustype,status.gezetdoor",
+            "rollen.statussen.zaak.rollen,zaakinformatieobjecten,zaakobjecten.zaak,eigenschappen",
+            "relevanteAndereZaken.zaaktype",
+            "zaaktype.besluittypen,status.statustype,zaaktype.catalogus",
+            "rollen.zaak.rollen.zaak.rollen",
+            "zaaktype,rollen.statussen.zaak,status.zaak,zaakobjecten,zaakinformatieobjecten",
+            "zaaktype.catalogus.zaaktypen",
+            "zaaktype.besluittypen.zaaktypen",
+            "status.statustype,status.gezetdoor",
+            "zaaktype.gerelateerdeZaaktypen",
+            "zaaktype.zaakobjecttypen,zaaktype.statustypen",
+            "zaaktype.deelzaaktypen",
+            "zaaktype.eigenschappen.statustype",
+            "rollen.statussen,rollen.zaak",
+            "zaaktype.eigenschappen.catalogus,zaaktype.eigenschappen.zaaktype,zaaktype.eigenschappen.statustype",
+            "status,zaaktype",
+            "zaaktype,hoofdzaak,deelzaken,relevanteAndereZaken,eigenschappen,rollen,status,zaakobjecten,resultaat",
+            "status.zaak,status.statustype,status.gezetdoor",
         ]
         for param in expand_params:
             with self.subTest(param=param):
@@ -1256,7 +1257,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
                 from pprint import pprint
 
-                pprint(response.json()['results'][0]['_expand'])
+                pprint(response.json()["results"][0]["_expand"])
 
     @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
     @patch("vng_api_common.validators.fetcher")
