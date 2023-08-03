@@ -29,10 +29,12 @@ class ExpansionField:
         struc_type,
         value,
         is_empty,
+        sub_field_parent_parent=None,
     ):
         self.id: str = id
         self.parent: str = parent
         self.sub_field_parent: str = sub_field_parent
+        self.sub_field_parent_parent: str = sub_field_parent_parent
         self.sub_field: str = sub_field
         self.level: int = level
         self.type: str = struc_type
@@ -201,7 +203,7 @@ class ExpansionMixin:
                 else:
 
                     for field in self.expanded_fields:
-                        if field.sub_field == exp_field.split(".")[depth - 1]:
+                        if field.sub_field == exp_field.split(".")[depth - 1] and field.level == depth - 1:
                             if self.next_iter_if_value_is_empty(field.value):
                                 continue
                             try:
@@ -322,22 +324,31 @@ class ExpansionMixin:
                         expansion["_expand"],
                         target_key1="url",
                         target_key2="loop_id",
+                        target_key3="sub_field_parent",
                         target_value1=fields_of_level.parent,
                         target_value2=fields_of_level.id,
+                        target_value3=fields_of_level.sub_field_parent_parent,
                         level=i,
                         field_level=fields_of_level.level,
                     )
-                    if not match:
-                        match = self.get_parent_dict(
-                            expansion["_expand"],
-                            target_key1="url",
-                            target_key2=None,
-                            target_value1=fields_of_level.parent,
-                            target_value2=None,
-                            level=i,
-                            field_level=fields_of_level.level,
-                        )
+                    # if not match:
+                    #     breakpoint()
+
+                    # if not match:
+                    #     match = self.get_parent_dict(
+                    #         expansion["_expand"],
+                    #         target_key1="url",
+                    #         target_key2=None,
+                    #         target_key3="sub_field_parent",
+                    #         target_value1=fields_of_level.parent,
+                    #         target_value2=None,
+                    #         target_value3=fields_of_level.sub_field_parent_parent,
+                    #         level=i,
+                    #         field_level=fields_of_level.level,
+                    #     )
                     for parent_dict in match:
+                        if fields_of_level.level == 3:
+                            print(parent_dict["url"])
                         if isinstance(parent_dict, str):
                             if parent_dict != fields_of_level.sub_field_parent:
                                 continue
@@ -369,6 +380,7 @@ class ExpansionMixin:
                             parent_dict["_expand"].update(
                                 {fields_of_level.sub_field: {}}
                             )
+                        # breakpoint()
 
                         if isinstance(parent_dict[fields_of_level.sub_field], list):
                             add = True
@@ -412,8 +424,10 @@ class ExpansionMixin:
         data,
         target_key1,
         target_key2,
+        target_key3,
         target_value1,
         target_value2,
+        target_value3,
         level,
         field_level,
         parent=None,
@@ -421,28 +435,32 @@ class ExpansionMixin:
         """Get the parent dictionary of the target value."""
 
         if isinstance(data, dict):
-            to_compare = (
-                bool(
+            if target_key2 and target_value3:
+                to_compare = bool(
+                        data.get(target_key1) == target_value1
+                        and data.get(target_key2) == target_value2
+                        and data.get(target_key3) == target_value3
+                        and data.get("depth") == level - 1)
+            elif target_key2 and not target_value3:
+                to_compare = bool(
                     data.get(target_key1) == target_value1
                     and data.get(target_key2) == target_value2
-                    and data.get("depth") == level - 1
-                )
-                if target_key2
-                else bool(
-                    data.get(target_key1) == target_value1
-                    and data.get("depth") == level - 1
-                )
-            )
+                    and data.get("depth") == level - 1)
+            # try:
             if to_compare:
                 return parent
+            # except UnboundLocalError:
+            #     breakpoint()
             for key, value in data.items():
                 if isinstance(value, (dict, list)):
                     parent_dict = self.get_parent_dict(
                         value,
                         target_key1,
                         target_key2,
+                        target_key3,
                         target_value1,
                         target_value2,
+                        target_value3,
                         level,
                         field_level,
                         parent=data,
@@ -457,8 +475,10 @@ class ExpansionMixin:
                         item,
                         target_key1,
                         target_key2,
+                        target_key3,
                         target_value1,
                         target_value2,
+                        target_value3,
                         level,
                         field_level,
                         parent=data,
@@ -545,11 +565,17 @@ class ExpansionMixin:
             struc_type,
             copy_data,
             is_empty,
+            sub_field_parent_parent=str(field.parent) if depth > 1 else None,
         )
-
+        if depth >1:
+            print(exp_field.split(".")[depth - 1])
         field_to_add.value["loop_id"] = loop_id
         field_to_add.value["depth"] = field_to_add.level
+        field_to_add.value["sub_field_parent_parent"] = field.parent if depth > 1 else None,
+        field_to_add.value["sub_field_parent"] = field.value["url"] if depth > 0 else None
 
+        # if depth == 2:
+        #     print(field_to_add.__dict__)
         self.expanded_fields.append(field_to_add)
 
 
