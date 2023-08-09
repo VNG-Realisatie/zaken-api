@@ -115,6 +115,8 @@ class ExpansionMixin:
                     if is_uri(value):
                         url = key
                         break
+            else:
+                url = url.get("url", None)
         if not url:
             return ""
         for word in url.split("/"):
