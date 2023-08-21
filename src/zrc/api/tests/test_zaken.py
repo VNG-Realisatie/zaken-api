@@ -1268,9 +1268,9 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
                     **ZAAK_READ_KWARGS,
                 )
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
-                from pprint import pprint
-
-                pprint(response.json()["results"][0]["_expand"])
+                # from pprint import pprint
+                #
+                # pprint(response.json()["results"][0]["_expand"])
 
     @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
     @patch("vng_api_common.validators.fetcher")
