@@ -1214,7 +1214,7 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         #     zaakobjecttype=self.ZAAKOBJECTTYPE,
         # )
         zio = ZaakInformatieObjectFactory.create(zaak=zaak)
-
+        #
         rol = RolFactory.create(
             zaak=zaak,
         )
