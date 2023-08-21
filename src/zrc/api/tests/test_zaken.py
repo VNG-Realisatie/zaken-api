@@ -1218,6 +1218,12 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         rol = RolFactory.create(
             zaak=zaak,
         )
+        # rol.roltype = "https://catalogi-api.test.vng.cloud/api/v1/roltypen/d03562e0-2feb-4d46-bf56-ed1d71122996"
+        # rol.save()
+
+        # zaakobject.zaakobjecttype = "https://catalogi-api.test.vng.cloud/api/v1/zaakobjecttypen/f5a24710-6902-44f3-b4dd-9e75bd4c1403"
+        # zaakobject.save()
+
 
         status1 = StatusFactory.create(zaak=zaak)
         rol.statussen.add(status1)
@@ -1252,6 +1258,8 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
             "status,zaaktype",
             "zaaktype,hoofdzaak,deelzaken,relevanteAndereZaken,eigenschappen,rollen,status,zaakobjecten,resultaat",
             "status.zaak,status.statustype,status.gezetdoor",
+            "rollen.roltype",
+            "zaakobjecten.zaakobjecttype",
         ]
         for param in expand_params:
             with self.subTest(param=param):
@@ -1261,9 +1269,9 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
                     **ZAAK_READ_KWARGS,
                 )
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
-                # from pprint import pprint
-                #
-                # pprint(response.json()["results"][0]["_expand"])
+                from pprint import pprint
+
+                pprint(response.json()["results"][0]["_expand"])
 
     @override_settings(ZDS_CLIENT_CLASS="vng_api_common.mocks.MockClient")
     @patch("vng_api_common.validators.fetcher")

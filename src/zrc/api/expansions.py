@@ -129,7 +129,7 @@ class ExpansionMixin:
         if not self.called_external_uris.get(url, None):
             try:
                 access_token = self.request.jwt_auth.encoded
-                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi1SdTgyYkpMUlNRaWciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLVJ1ODJiSkxSU1FpZyIsImlhdCI6MTY5MjA4MTY1NiwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi1SdTgyYkpMUlNRaWciLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.YBE7OTjwhB7xbBXVM1ZMuPixzY2BbhYz8XAcYxrn_GI"
+                # access_token = "eyJhbGciOiJIUzI1NiIsImNsaWVudF9pZGVudGlmaWVyIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi14eXBhcGRTV3FqMVQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhbGx0aGVzY29wZXNhcmViZWxvbmd0b3VzMjIyMjIzMTMyNTMyLXh5cGFwZFNXcWoxVCIsImlhdCI6MTY5MjYwMTAwNiwiY2xpZW50X2lkIjoiYWxsdGhlc2NvcGVzYXJlYmVsb25ndG91czIyMjIyMzEzMjUzMi14eXBhcGRTV3FqMVQiLCJ1c2VyX2lkIjoiIiwidXNlcl9yZXByZXNlbnRhdGlvbiI6IiJ9.iOCqIi9IxTfTjBmk8YuQLK7Wc1LlzVUsiJPFIijEc0s"
                 headers = {"Authorization": f"Bearer {access_token}"}
 
                 with urlopen(Request(url, headers=headers)) as response:
@@ -360,6 +360,9 @@ class ExpansionMixin:
                         level=i,
                         field_level=fields_of_level.level,
                     )
+
+                    if not match:
+                        continue
 
                     for parent_dict in match:
                         if isinstance(parent_dict, str):
