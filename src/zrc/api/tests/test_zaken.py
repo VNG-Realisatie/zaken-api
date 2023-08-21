@@ -1224,7 +1224,6 @@ class ZakenExpandTests(ZaakInformatieObjectSyncMixin, JWTAuthMixin, APITestCase)
         # zaakobject.zaakobjecttype = "https://catalogi-api.test.vng.cloud/api/v1/zaakobjecttypen/f5a24710-6902-44f3-b4dd-9e75bd4c1403"
         # zaakobject.save()
 
-
         status1 = StatusFactory.create(zaak=zaak)
         rol.statussen.add(status1)
 
