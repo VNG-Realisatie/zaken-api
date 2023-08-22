@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Zaken API
-  version: 1.4.0
+  version: 1.5.0
   description: "Een API om een zaakregistratiecomponent (ZRC) te benaderen.
 
 
@@ -6921,6 +6921,17 @@ paths:
                   - -archiefactiedatum
           style: form
           explode: false
+        - name: expand
+          required: false
+          in: query
+          description:
+            "Examples: \n`expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype,\
+            \ hoofdzaak.deelzaken.status.statustype`\nHaal details van gelinkte resources\
+            \ direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze\
+            \ scheiden met een komma. Voor het ophalen van resources die een laag dieper\
+            \ genest zijn wordt de punt-notatie gebruikt."
+          schema:
+            type: string
         - name: page
           required: false
           in: query
@@ -7400,6 +7411,31 @@ paths:
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
           required: true
+        - in: query
+          name: expand
+          schema:
+            type: string
+          description:
+            Haal details van gelinkte resources direct op. Als je meerdere
+            resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor
+            het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie
+            gebruikt.
+          examples:
+            ExpandZaaktype:
+              value: zaaktype
+              summary: expand zaaktype
+            ExpandStatus:
+              value: status
+              summary: expand status
+            ExpandStatus.statustype:
+              value: status.statustype
+              summary: expand status.statustype
+            ExpandHoofdzaak.status.statustype:
+              value: hoofdzaak.status.statustype
+              summary: expand hoofdzaak.status.statustype
+            ExpandHoofdzaak.deelzaken.status.statustype:
+              value: hoofdzaak.deelzaken.status.statustype
+              summary: expand hoofdzaak.deelzaken.status.statustype
       tags:
         - zaken
       security:
@@ -15232,7 +15268,7 @@ components:
       bearerFormat: JWT
       scheme: bearer
 servers:
-  - url: https://zaken-api.vng.cloud/api/v1
+  - url: https://zaken-api.vng.cloud/api/v1/
     description: Productie Omgeving
 tags:
   - name: klantcontacten
