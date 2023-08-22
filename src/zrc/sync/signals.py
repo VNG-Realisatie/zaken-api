@@ -20,7 +20,6 @@ class SyncError(Exception):
 
 def sync_create_zio(relation: ZaakInformatieObject):
     zaak_url = get_absolute_url("zaak-detail", relation.zaak.uuid)
-
     logger.info("Zaak: %s", zaak_url)
     logger.info("Informatieobject: %s", relation.informatieobject)
 
