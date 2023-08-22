@@ -48,6 +48,7 @@ from zrc.sync.signals import SyncError
 
 from .audits import AUDIT_ZRC
 from .data_filtering import ListFilterByAuthorizationsMixin
+from .expansions import ExpandFieldValidator, ExpansionMixin
 from .filters import (
     KlantContactFilter,
     ResultaatFilter,
@@ -195,6 +196,8 @@ class ZaakViewSet(
     GeoMixin,
     SearchMixin,
     CheckQueryParamsMixin,
+    ExpandFieldValidator,
+    ExpansionMixin,
     ListFilterByAuthorizationsMixin,
     viewsets.ModelViewSet,
 ):

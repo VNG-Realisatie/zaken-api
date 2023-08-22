@@ -8,7 +8,7 @@ REST_FRAMEWORK = BASE_REST_FRAMEWORK.copy()
 REST_FRAMEWORK["PAGE_SIZE"] = 100
 
 DOCUMENTATION_INFO_MODULE = "zrc.api.schema"
-
+ZRC_BASE_URL = os.getenv("ZRC_BASE_URL", "https://zaken-api.test.vng.cloud")
 SPECTACULAR_SETTINGS = BASE_SPECTACULAR_SETTINGS.copy()
 SPECTACULAR_SETTINGS.update(
     {
@@ -17,7 +17,7 @@ SPECTACULAR_SETTINGS.update(
         # e.g. [{'url': 'https://example.com/v1', 'description': 'Text'}, ...]
         "SERVERS": [
             {
-                "url": "https://zaken-api.vng.cloud/api/v1",
+                "url": "https://zaken-api.vng.cloud/api/v1/",
                 "description": "Productie Omgeving",
             }
         ],
