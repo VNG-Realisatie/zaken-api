@@ -1,7 +1,41 @@
 ===========
 Wijzigingen
 ===========
-1.4.0 (2022-03-27)
+1.5.0 (2023-08-22)
+===========
+
+Implementation changes
+----------------------
+
+`Issue 2192`_:
+
+**Enhancements, Bug Fixes, and Code Refactoring**
+
+- **Added:** Extension of list call functionality to accept expand parameters for enriched data retrieval.
+- **Added:** Introduction of 'ExpandField' class to manage and process expand parameters.
+- **Added:** 'Inclusion' class to facilitate data inclusion and enhance response customization.
+- **Added:** Method for building inclusion schemas.
+- **Added:** Recursion logic in later stages to support nested data inclusion.
+- **Added:** 'Inclusions' class for streamlined management of included external API calls.
+- **Added:** External API calls within the 'Inclusions' class for comprehensive data integration.
+- **Added:** Clear and descriptive text to the expand filter for better understanding.
+- **Added:** Validation mechanism and resolved issues with external API calls within 'Inclusions'.
+- **Added:** Regex validator to enhance input validation.
+- **Added:** Explanation regarding the use of regex validation.
+- **Added:** Support for nested dictionary types like 'relevante_andere_zaken' in the expansions model.
+- **Added:** Integration of the 'expand' feature into the OpenAPI Specification (OAS) and expanded GET detail endpoints.
+- **Changed:** Hard-coded mappings from 'expensions.py' for increased flexibility.
+- **Changed:** Relocated 'routers' import into a function to address circular import concerns.
+- **Changed:** Reworked the expansions model to resolve previous errors and improve reliability.
+- **Changed:** Various issues related to specific problem reports: #2280, #2279, #2269, #2270, #2271,  #2288, #2287.
+- **Changed:** Updated OAS description and resolved a bug in the expansions.
+- **Updated:** Requirements files, including 'psyopg2' for proper functionality.
+
+These changes encompass a wide range of enhancements, bug fixes, and code clean-up, significantly improving the functionality, stability, and maintainability of the system. The introduction of expand parameters, 'ExpandField' class, 'Expand' class, and various bug fixes contribute to a more robust and efficient system.
+
+.. _Issue 2192: https://github.com/VNG-Realisatie/gemma-zaken/issues/2192
+
+1.4.0 (2023-03-27)
 ===========
 
 Implementation changes

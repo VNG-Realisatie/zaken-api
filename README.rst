@@ -2,7 +2,7 @@
 Zaken API
 =========
 
-:Version: 1.4.0
+:Version: 1.5.0
 :Source: https://github.com/VNG-Realisatie/zaken-api
 :Keywords: zaken, zaakgericht werken, GEMMA, RGBZ, ZRC
 
@@ -16,14 +16,14 @@ zaken moeten ergens geregistreerd worden en opvraagbaar zijn.
 API specificaties
 =================
 
-|lint-oas| |generate-sdks| |generate-postman-collection|
-
 ==========  ==============  ====================================================================================================================================================================================================  =======================================================================================================================  =================================================================================================================================
 Versie      Release datum   API specificatie                                                                                                                                                                                      Autorisaties                                                                                                             Notificaties
 ==========  ==============  ====================================================================================================================================================================================================  =======================================================================================================================  =================================================================================================================================
 master      n.v.t.          `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/master/src/openapi.yaml>`_,                                                                   `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/master/src/autorisaties.md>`_                                  `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/master/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/master/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.4.0..master?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
+1.5.0       2023-08-22      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.5.0/src/openapi.yaml>`_,                                                                    `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/1.5.0/src/autorisaties.md>`_                                   `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/1.5.0/src/notificaties.md>`_
+                            `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.5.0/src/openapi.yaml>`_
 1.4.0       2023-03-27      `ReDoc <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.4.0/src/openapi.yaml>`_,                                                                    `Scopes <https://github.com/VNG-Realisatie/zaken-api/blob/1.4.0/src/autorisaties.md>`_                                   `Berichtkenmerken <https://github.com/VNG-Realisatie/zaken-api/blob/1.4.0/src/notificaties.md>`_
                             `Swagger <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/VNG-Realisatie/zaken-api/1.4.0/src/openapi.yaml>`_
                             (`verschillen <https://github.com/VNG-Realisatie/zaken-api/compare/1.4.0..1.3.2?diff=split#diff-b9c28fec6c3f3fa5cff870d24601d6ab7027520f3b084cc767aefd258cb8c40a>`_)
