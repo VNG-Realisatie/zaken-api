@@ -6921,17 +6921,6 @@ paths:
                   - -archiefactiedatum
           style: form
           explode: false
-        - name: expand
-          required: false
-          in: query
-          description:
-            "Examples: \n`expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype,\
-            \ hoofdzaak.deelzaken.status.statustype`\nHaal details van gelinkte resources\
-            \ direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze\
-            \ scheiden met een komma. Voor het ophalen van resources die een laag dieper\
-            \ genest zijn wordt de punt-notatie gebruikt."
-          schema:
-            type: string
         - name: page
           required: false
           in: query
@@ -7411,31 +7400,6 @@ paths:
             vraag (request body). Volgens de GeoJSON spec is WGS84 de default (EPSG:4326
             is hetzelfde als WGS84).
           required: true
-        - in: query
-          name: expand
-          schema:
-            type: string
-          description:
-            Haal details van gelinkte resources direct op. Als je meerdere
-            resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor
-            het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie
-            gebruikt.
-          examples:
-            ExpandZaaktype:
-              value: zaaktype
-              summary: expand zaaktype
-            ExpandStatus:
-              value: status
-              summary: expand status
-            ExpandStatus.statustype:
-              value: status.statustype
-              summary: expand status.statustype
-            ExpandHoofdzaak.status.statustype:
-              value: hoofdzaak.status.statustype
-              summary: expand hoofdzaak.status.statustype
-            ExpandHoofdzaak.deelzaken.status.statustype:
-              value: hoofdzaak.deelzaken.status.statustype
-              summary: expand hoofdzaak.deelzaken.status.statustype
       tags:
         - zaken
       security:
@@ -7604,14 +7568,13 @@ paths:
     put:
       operationId: zaak_update
       description:
-        "**Er wordt gevalideerd op** \n- `zaaktype` mag niet gewijzigd\
-        \ worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum`\
-        \ mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden\
-        \ als de betalingsindicatie\n\"nvt\" is.\n- `archiefnominatie` moet een waarde\
-        \ hebben indien `archiefstatus` niet de\nwaarde \"nog_te_archiveren\" heeft.\n\
-        - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n\
-        \ waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde\
-        \ anders dan \"nog_te_archiveren\"\n hebben indien van alle gerelateeerde\
+        "**Er wordt gevalideerd op** \n- `identificatie` mag niet gewijzigd\
+        \ worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum`\
+        \ mag niet gezet worden als de betalingsindicatie\n\"nvt\" is.\n- `archiefnominatie`\
+        \ moet een waarde hebben indien `archiefstatus` niet de\nwaarde \"nog_te_archiveren\"\
+        \ heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus`\
+        \ niet de\n waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen\
+        \ een waarde anders dan \"nog_te_archiveren\"\n hebben indien van alle gerelateeerde\
         \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
         \ heeft.\n**Opmerkingen**\n- er worden enkel zaken getoond van de zaaktypes\
         \ waar u toe geautoriseerd\n bent.\n- indien een zaak heropend moet worden,\
@@ -7847,14 +7810,13 @@ paths:
     patch:
       operationId: zaak_partial_update
       description:
-        "**Er wordt gevalideerd op** \n- `zaaktype` mag niet gewijzigd\
-        \ worden.\n- `identificatie` mag niet gewijzigd worden.\n- `laatsteBetaaldatum`\
-        \ mag niet in de toekomst liggen.\n- `laatsteBetaaldatum` mag niet gezet worden\
-        \ als de betalingsindicatie\n\"nvt\" is.\n- `archiefnominatie` moet een waarde\
-        \ hebben indien `archiefstatus` niet de\nwaarde \"nog_te_archiveren\" heeft.\n\
-        - `archiefactiedatum` moet een waarde hebben indien `archiefstatus` niet de\n\
-        \ waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen een waarde\
-        \ anders dan \"nog_te_archiveren\"\n hebben indien van alle gerelateeerde\
+        "**Er wordt gevalideerd op** \n- `identificatie` mag niet gewijzigd\
+        \ worden.\n- `laatsteBetaaldatum` mag niet in de toekomst liggen.\n- `laatsteBetaaldatum`\
+        \ mag niet gezet worden als de betalingsindicatie\n\"nvt\" is.\n- `archiefnominatie`\
+        \ moet een waarde hebben indien `archiefstatus` niet de\nwaarde \"nog_te_archiveren\"\
+        \ heeft.\n- `archiefactiedatum` moet een waarde hebben indien `archiefstatus`\
+        \ niet de\n waarde \"nog_te_archiveren\" heeft.\n- `archiefstatus` kan alleen\
+        \ een waarde anders dan \"nog_te_archiveren\"\n hebben indien van alle gerelateeerde\
         \ INFORMATIEOBJECTen het attribuut\n  `status` de waarde \"gearchiveerd\"\
         \ heeft.\n**Opmerkingen**\n- er worden enkel zaken getoond van de zaaktypes\
         \ waar u toe geautoriseerd\n bent.\n- indien een zaak heropend moet worden,\
@@ -15270,7 +15232,7 @@ components:
       bearerFormat: JWT
       scheme: bearer
 servers:
-  - url: https://zaken-api.vng.cloud/api/v1/
+  - url: https://zaken-api.vng.cloud/api/v1
     description: Productie Omgeving
 tags:
   - name: klantcontacten
