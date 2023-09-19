@@ -139,7 +139,6 @@ class ZaakAdmin(admin.ModelAdmin):
                     "selectielijstklasse",
                     "opdrachtgevende_organisatie",
                     "processobjectaard",
-                    "resultaattoelichting",
                     "startdatum_bewaartermijn",
                 ),
             },
