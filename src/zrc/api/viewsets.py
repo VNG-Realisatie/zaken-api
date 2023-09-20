@@ -95,6 +95,7 @@ from .validators import ZaakBesluitValidator
 
 logger = logging.getLogger(__name__)
 
+from django.db import models
 
 @extend_schema_view(
     list=extend_schema(
@@ -259,6 +260,10 @@ class ZaakViewSet(
         return self.get_search_output(queryset)
 
     _zoek.is_search_action = True
+
+    def get_search_output(self, queryset: models.QuerySet):
+        response = super().get_search_output(queryset)
+        return self.inclusions(response)
 
     def perform_update(self, serializer):
         """
