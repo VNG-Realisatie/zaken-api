@@ -315,7 +315,6 @@ class ExpansionMixin:
 
     def _build_json(self, expansion: dict) -> dict:
         max_value = max(self.expanded_fields, key=lambda x: x.level).level
-        print(self.expanded_fields[0].value["url"])
         for i in range(max_value + 1):
             specific_levels = [x for x in self.expanded_fields if x.level == i]
 

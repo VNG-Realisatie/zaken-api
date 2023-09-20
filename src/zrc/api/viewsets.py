@@ -97,6 +97,7 @@ logger = logging.getLogger(__name__)
 
 from django.db import models
 
+
 @extend_schema_view(
     list=extend_schema(
         summary=_("Alle ZAAKen opvragen."),
