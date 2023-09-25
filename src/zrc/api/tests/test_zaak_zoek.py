@@ -28,6 +28,7 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
 
     def test_zoek_uuid_in(self):
         zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
+
         url = get_operation_url("zaak__zoek")
         data = {"uuid__in": [zaak1.uuid, zaak2.uuid]}
 
@@ -41,6 +42,38 @@ class ZaakZoekTests(JWTAuthMixin, TypeCheckMixin, APITestCase):
         self.assertEqual(len(data), 2)
         self.assertEqual(data[0]["url"], f"http://testserver{reverse(zaak1)}")
         self.assertEqual(data[1]["url"], f"http://testserver{reverse(zaak2)}")
+
+    def test_zoek_expand(self):
+        zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
+
+        url = get_operation_url("zaak__zoek")
+        data = {"uuid__in": [zaak1.uuid, zaak2.uuid, zaak3.uuid], "expand": "rollen"}
+
+        rol = RolFactory.create(
+            zaak=zaak1,
+        )
+
+        rol2 = RolFactory.create(
+            zaak=zaak2,
+        )
+        rol3 = RolFactory.create(
+            zaak=zaak3,
+        )
+        response = self.client.post(url, data, **ZAAK_WRITE_KWARGS)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+        data = sorted(data, key=lambda zaak: zaak["identificatie"])
+
+        self.assertEqual(len(data), 3)
+
+        self.assertEqual(
+            data[0]["_expand"]["rollen"][0]["url"], f"http://testserver{reverse(rol)}"
+        )
+        self.assertEqual(
+            data[1]["_expand"]["rollen"][0]["url"], f"http://testserver{reverse(rol2)}"
+        )
 
     def test_zoek_identificatie(self):
         zaak1, zaak2, zaak3 = ZaakFactory.create_batch(3)
