@@ -1,6 +1,6 @@
 {
   "name": "zrc",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "zrc referentie implementatie API",
   "directories": {
     "doc": "doc"
