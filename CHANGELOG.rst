@@ -1,6 +1,30 @@
 ===========
 Wijzigingen
 ===========
+1.5.1 (2023-09-25)
+===========
+
+New Features and Bug Fixes
+---------------------------
+
+`Issue 2157`_:
+
+**Field Removal**
+
+- **Removed:** The 'resultaattoelichting' field has been removed, resolving issue #2157.
+
+.. _Issue 2157: https://github.com/VNG-Realisatie/gemma-zaken/issues/2157
+
+
+`Issue 2345`_:
+
+**Enhancements**
+
+- **Added:** Introduced the 'expand' query parameter to the '/zoek' endpoint.
+
+.. _Issue 2345: https://github.com/VNG-Realisatie/gemma-zaken/issues/2157
+
+===========
 1.5.0 (2023-08-22)
 ===========
 
