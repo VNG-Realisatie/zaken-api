@@ -323,7 +323,6 @@ class ZaakSerializer(
             "resultaat",
             "opdrachtgevende_organisatie",
             "processobjectaard",
-            "resultaattoelichting",
             "startdatum_bewaartermijn",
             "processobject",
         )
@@ -531,6 +530,15 @@ class ZaakZoekSerializer(serializers.Serializer):
     identificatie = serializers.CharField(
         help_text=_(
             "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK."
+        ),
+        required=False,
+    )
+
+    expand = serializers.CharField(
+        help_text=_(
+            "Examples: \n"
+            "`expand=zaaktype, status, status.statustype, hoofdzaak.status.statustype, hoofdzaak.deelzaken.status.statustype`\n"
+            "Haal details van gelinkte resources direct op. Als je meerdere resources tegelijk wilt ophalen kun je deze scheiden met een komma. Voor het ophalen van resources die een laag dieper genest zijn wordt de punt-notatie gebruikt.",
         ),
         required=False,
     )
